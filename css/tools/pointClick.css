@@ -1,0 +1,580 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+
+/* --------------------------- */
+#pointClickTableDiv {
+   position: absolute;
+   top: 50px;
+   bottom: 10px;
+   right: 10px;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   width: 220px;
+   overflow: hidden;
+}
+#pointClickTableDiv.editor {
+   width: 240px;
+}
+
+#pointClickTableContainer {
+   position: absolute;
+   top: 0px;
+   bottom: 50px;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   width: 100%;
+   border: none;
+   overflow: auto;
+}
+#pointClickTableContainer.editor {
+   bottoM: 65px;
+}
+
+#pointClickTable {
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   border: none;
+   border-collapse: collapse;
+   font-size: 11px;
+}
+
+.pointClickTableRow {
+   height: 15px;
+   padding: 0;
+   margin: 0;
+   color: #000;
+   border: none;
+}
+.pointClickTableRow.over {
+   background: #fcc;
+}
+.pointClickTableRow.selected {
+   color: #ccc;
+   background: #ccf;
+}
+
+.pointClickTableCell {
+   height: 15px;
+   padding: 0;
+   margin: 0;
+   color: #000;
+   border: solid 1px #aaa;
+   border: none;
+   white-space: normal;
+   vertical-align: top;
+}
+.pointClickTableCell.id {
+   width: 10%;
+   vertical-align: top;
+}
+.pointClickTableCell.desc {
+   width: 90%;
+   vertical-align: top;
+}
+
+.pointClickEntryId {
+   padding: 1px 0 0 2px;
+   margin: 0;
+   border: none;
+}
+
+.pointClickEntryRef {
+   padding: 0 0 0 4px;
+   margin: 0;
+   border: none;
+   text-align: left;
+}
+
+.pointClickEntryDesc {
+   padding: 0 4px;
+   margin: 0;
+   border: none;
+}
+
+#pointClickBottomBit {
+   position: absolute;
+   bottom: 0px;
+   padding: 0px;
+   margin: 0px;
+   height: 45px;
+   width: 100%;
+   border: none;
+}
+#pointClickBottomBit.editor {
+   height: 65px;
+}
+
+#pointClickButtonContainer {
+   position: relative;
+   top: 2px;
+   padding: 0px;
+   margin: 0 auto;
+   color: #000;
+   height: 22px;
+   width: 220px;
+   border: none;
+}
+
+#pointClickChkbxContainer {
+   position: relative;
+   top: 2px;
+   padding: 0px;
+   margin: 0 auto;
+   color: #000;
+   height: 22px;
+   width: 220px;
+   border: none;
+}
+
+#pointClickEditorButtonContainer {
+   position: relative;
+   top: 2px;
+   padding: 0px;
+   margin: 0 auto;
+   color: #000;
+   height: 22px;
+   width: 234px;
+   border: none;
+}
+
+.pointClickEntryButton {
+   position: relative;
+   top: 3px;
+   left: 0px;
+   float: left;
+   padding: 0px;
+   margin: 0px 2px;
+   height: 15px;
+   font-size: 11px;
+   text-align: center;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+.pointClickEntryButton.over {
+   background: #ddd;
+}
+.pointClickEntryButton.out {
+   background: #eee;
+}
+.pointClickEntryButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+#pointClickShowAllButton {
+   width: 52px;
+   left: 30px;
+}
+#pointClickHideAllButton {
+   width: 52px;
+   left: 30px;
+}
+#pointClickHideSelectedButton {
+   width: 76px;
+}
+#pointClickSaveAllButton {
+   width: 52px;
+}
+#pointClickSaveSelectedButton {
+   width: 100px;
+}
+#pointClickDeleteSelectedButton {
+   width: 100px;
+}
+
+.pointClickEntryButtonText {
+   position: relative;
+   top: 1px;
+   padding: 0px;
+   margin: 0px auto;
+   color: #333;
+}
+#pointClickSaveButtonText {
+   width: 90px;
+}
+#pointClickClearButtonText {
+   width: 90px;
+}
+#pointClickRemoveButtonText {
+   width: 130px;
+}
+#pointClickCancelButtonText {
+   width: 90px;
+}
+
+#pointClickShowClosestDiv {
+   position: relative;
+   top: 3px;
+   left: 0px;
+   float: left;
+   padding: 0px;
+   margin: 0px 2px;
+   height: 15px;
+   font-size: 11px;
+   text-align: center;
+   background: #eee;
+}
+
+#pointClickShowClosestChkbx {
+   position: relative;
+   top: -1px;
+   left: 0px;
+   padding: 0px;
+   margin: 0px;
+}
+
+#pointClickShowClosestLabel {
+   position: relative;
+   top: -6px;
+   left: 0px;
+   padding: 0px;
+   margin: 0px 0px 0px 2px;
+}
+
+#pointClickShowTxtDiv {
+   position: relative;
+   top: 3px;
+   left: 0px;
+   float: left;
+   padding: 0px;
+   margin: 0px 2px;
+   height: 15px;
+   font-size: 11px;
+   text-align: center;
+   background: #eee;
+}
+#pointClickShowTxtDiv.editor {
+   left: 35px;
+}
+
+#pointClickShowTxtChkbx {
+   position: relative;
+   top: -1px;
+   left: 0px;
+   padding: 0px;
+   margin: 0px;
+}
+
+#pointClickShowTxtLabel {
+   position: relative;
+   top: -6px;
+   left: 0px;
+   padding: 0px;
+   margin: 0px 0px 0px 2px;
+}
+
+.markerImgDiv {
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   width: 20px;
+   height: 34px;
+   padding: 0px;
+   margin: 0px;
+   z-index: 200;
+   visibility: hidden;
+}
+
+.markerTxtDiv {
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   width: 20px;
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+   z-index: 200;
+   color: #000;
+   font-size: 9px;
+   text-align: center;
+   visibility: hidden;
+}
+
+.markerLabelDiv {
+   position: absolute;
+   width: auto;
+   padding: 2px;
+   margin: 0px;
+   color: #111;
+   font-size: 11px;
+   background: #eee;
+   border: solid 1px #aaa;
+   z-index: 300;
+   visibility: hidden;
+}
+
+.markerMapDiv {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   width: 20px;
+   height: 34px;
+   padding: 0px;
+   margin: 0px;
+   background: #f00;
+   background: transparent;
+   border: solid 1px #afa;
+   z-index: 300;
+}
+
+.markerMapImg {
+   position: absolute;
+   left: -1px;
+   top: 0px;
+   width: 20px;
+   height: 34px;
+   padding: 0px;
+   margin: 0px;
+   background: transparent;
+   border: dotted 1px #f00;
+   z-index: 1000;
+}
+
+.markerBigLabelContainerDiv {
+   position: absolute;
+   width: 200px;
+   padding: 2px;
+   margin: 0px;
+   overflow: visible;
+   color: #111;
+   font-size: 11px;
+   background: #eee;
+   border: solid 1px #aaa;
+   z-index: 300;
+   visibility: hidden;
+}
+
+.markerBigLabelTitleDiv {
+   position: relative;
+   left: 0px;
+   height: 14px;
+   width: 150px;
+   padding: 0px;
+   margin: 0px;
+   border-bottom: solid 1px #ccc;
+}
+
+.markerBigLabelTitleText {
+   position: relative;
+   height: 14px;
+   padding: 0px;
+   margin: 0px;
+   color: #111;
+   font-size: 11px;
+}
+
+.markerBigLabelEmapDiv {
+   position: relative;
+   top: 15px;
+   height: 14px;
+   width: 98%;
+   padding: 0px 2px;
+   margin: 0px 2px;
+   text-align: left;
+   display: block;
+}
+
+.markerBigLabelEmapText {
+   position: relative;
+   padding: 0px;
+   margin: 0px;
+   color: #111;
+   font-size: 11px;
+}
+
+.markerBigLabelDescDiv {
+   position: relative;
+   top: 20px;
+   width: 98%;
+   padding: 0px 2px;
+   margin: 0px 2px;
+   text-align: left;
+   display: block;
+}
+
+.markerBigLabelDescText {
+   position: relative;
+   padding: 0px;
+   margin: 0px auto;
+   color: #111;
+   font-size: 11px;
+}
+
+.markerQueryButtonContainer {
+   position: absolute;
+   bottom: 2px;
+   left: 11px;
+   width: 180px;
+   height: 16px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   background: #eee;
+}
+
+.markerQueryDiv {
+   position: relative;
+   width: 80px;
+   float:left;
+   padding: 0px 2px;
+   margin: 0px 2px;
+   text-align: center;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+.markerQueryDiv.over {
+   background: #ddd;
+}
+.markerQueryDiv.out {
+   background: #eee;
+}
+.markerQueryDiv.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+.markerQueryText {
+   position: relative;
+   padding: 0px;
+   margin: 0px;
+   color: #111;
+   font-size: 11px;
+}
+
+.markerBigLabelCloseDiv {
+   float: right;
+   position: relative;
+   width: 10px;
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+
+.markerBigLabelCloseDiv.over {
+   background: #ddd;
+}
+.markerBigLabelCloseDiv.out {
+   background: #eee;
+}
+.markerBigLabelCloseDiv.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+.markerBigLabelCloseImg {
+   position: relative;
+   width: 10px;
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+}
+/* --------------------------- */
+#markerLabelTableContainer {
+   position: absolute;
+   top: 15px;
+   left: -1px;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   width: 204px;
+   height: 150px;
+   border-right: solid 1px #aaa;
+   border-left: solid 1px #aaa;
+   border-bottom: solid 1px #aaa;
+   background: #eee;
+}
+
+#markerLabelTable {
+   position: relative;
+   left: 0px;
+   padding: 0px;
+   margin: 4px;
+   color: #000;
+   border: none;
+   border-collapse: collapse;
+   font-size: 11px;
+}
+
+.markerLabelTableRow {
+   height: 15px;
+   padding: 0;
+   margin: 0;
+   color: #000;
+   border: none;
+}
+.markerLabelTableRow.over {
+   background: #555;
+   color: #fff;
+}
+
+.markerLabelTableCell {
+   height: 15px;
+   padding: 2px;
+   margin: 0;
+   color: #000;
+   border: solid 1px #aaa;
+   border: none;
+   white-space: normal;
+   vertical-align: top;
+}
+.markerLabelTableCell.over {
+   background: #555;
+   color: #fff;
+}
+.markerLabelTableSpacerRow {
+   height: 1px;
+   padding: 0;
+   margin: 0;
+   color: #000;
+   border: none;
+}
+.markerLabelTableSpacerCell {
+   height: 1px;
+   padding: 0px;
+   margin: 0;
+   color: #000;
+   border: none;
+   white-space: normal;
+   vertical-align: top;
+   background: #aaa;
+}

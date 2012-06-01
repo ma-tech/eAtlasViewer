@@ -1,0 +1,59 @@
+#!  /bin/bash
+
+#for i in tools/*.css tree/colourPick.css utils/busyIndicator.css
+for i in project.css
+
+do
+
+   echo ${i}
+
+   sed -i -e 's/font-size\: 10px/font-size\: 9px/' ${i}
+
+#cp _EMA49/tiledImageModelData.jso ${i}
+
+   #cd ${i}
+
+#sed -i -e 's/\(MA\)\([0][0]*\)\([1-9][1-9]*\)\(\.png\)/EMA\3\4/' -e 's/\(MA\)\([0][0]*\)\([1-9][1-9]*\)/EMA:\3/' data.jso
+#sed -e 's/\(EMA\):\([0-9][0-9]*\)\(\.png\)/EMA\1\2\3/' data.jso
+#sed -i -e 's/\(MA\)\([0][0]*\)\([1-9][1-9]*\)/EMA:\3/' ${i}/tiledImageModelData.jso
+#sed -i -e 's/EMA:/EMA/' ${i}/tiledImageModelData.jso
+#sed -i -e 's/Model EMA/Model EMA:/' ${i}/tiledImageModelData.jso
+#sed -n '/pixelResolution/ p' ${i}/tiledImageModelData.jso
+
+#sed -i -e '/fileSystemRoot/ d' tiledImageModelData.jso
+#sed -i -e '/clientRoot/ d' tiledImageModelData.jso
+#sed -i -e '/dataRoot/ d' tiledImageModelData.jso
+#sed -i -e '/interfaceImageDir/ d' tiledImageModelData.jso
+#sed -i -e '/menuContentFile/ d' tiledImageModelData.jso
+#sed -i -e '/menuStructureFile/ d' tiledImageModelData.jso
+#sed -i -e '/imageDir/ d' tiledImageModelData.jso
+
+#sed -i -e '/iipServerPath/ a\
+#   \"metadataRoot\": \"\/eAtlasViewer_ema\/data\/ema\/wlz\/XXX\/\",' tiledImageModelData.jso
+
+#sed -i -e '/stackMetadataFilename/ a\
+#sed -i -e '/toolsMetadataFilename/ a\
+#   \"interfaceImageDir\": \"\/eAtlasViewer_ema\/images\/\",' tiledImageModelData.jso
+
+#sed -i -e '/pixelResolution/ a\
+#   \"menuStructureFile\": \"\/eAtlasViewer_ema\/data\/ema\/wlz\/XXX\/menu\/menuStructure.jso\",' tiledImageModelData.jso
+
+#sed -i -e '/menuStructureFile/ a\
+#   \"menuContentFile\": \"\/eAtlasViewer_ema\/data\/ema\/wlz\/XXX\/menu\/menuContent.jso\",' tiledImageModelData.jso
+
+#sed -i -e '/^[ ][ ]*[{]/ a\
+#         \"imageDir\": \"\/export\/data0\/eAtlasViewer\/data\/ema\/wlz\/XXX\/\",' tiledImageModelData.jso
+
+#sed -i -e '/layerData/ a\
+#      {\
+#         \"imageDir\": \"\/export\/data0\/eAtlasViewer\/data\/ema\/wlz\/XXX\/pyramidalTiffs\/\",\
+#         \"selectorName\":\"zsel.jpg.256.pyr.tif\",\
+#	 \"visible\":\"true\"\
+#      }' tiledImageModelData.jso
+
+#sed  -i -e 's/XXX/'"${i}"'/' tiledImageModelData.jso
+
+   #cd ..
+done
+
+echo finished

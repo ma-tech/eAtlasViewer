@@ -1,0 +1,851 @@
+<html>
+   <head>
+      <link rel=stylesheet type=text/css media=all href=../css/utils/iframe.css />
+      <!-- <link rel=stylesheet type=text/css media=all href=./iframe.css /> -->
+   </head>
+   <body class=iframe>
+<!-- ================================================ contents ============================================================================= -->
+      <h4 id=top class=help>Help Index</h4>
+      <div id=IIP3DViewerHelp_contentsDiv>
+               <!-- ........................................................ Contents .........-->
+         <ul class='IIP3DViewerHelp'>
+            <li id=li_Overview>
+               <a href=#Overview>Overview</a>
+            </li>
+            <li id=li_Modes>
+               <a href=#Modes>Viewer Modes</a>
+               <!-- ........................................................ Viewer Modes .........-->
+               <ul class='IIP3DViewerHelp level1'>
+                  <li id=li_Modes_Move>
+                     <a href=#Modes_Move>Move</a>
+                  </li>
+                  <li id=li_Modes_Measurement>
+                     <a href=#Modes_Measurement>Measurement</a>
+                  </li>
+                  <li id=li_Modes_Equivalent_Section>
+                     <a href=#Modes_Equivalent_Section>Equivalent Section</a>
+                  </li>
+                  <li id=li_Modes_Fixed_Point>
+                     <a href=#Modes_Fixed_Point>Fixed Point</a>
+                  </li>
+               </ul>
+               <!-- ........................................................ Viewer Modes .........-->
+            </li>
+            <li id=li_Context>
+               <a href=#Context>Context Menu</a>
+               <!-- ........................................................ Context Menu .........-->
+               <ul class='IIP3DViewerHelp level1'>
+                  <li id=li_Context_Help>
+                     <a href=#Context_Help>Help</a>
+                  </li>
+                  <li id=li_Context_Reload>
+                     <a href=#Context_Reload>Reload Image</a>
+                  </li>
+                  <li id=li_Context_Maximise>
+                     <a href=#Context_Maximise>Maximise Image</a>
+                  </li>
+                  <li id=li_Context_Toolbox>
+                     <a href=#Context_Toolbox>Toolbox</a>
+                  </li>
+                  <li id=li_Context_Hover>
+                     <a href=#Context_Hover>Image Hover Feedback</a>
+                  </li>
+                  <li id=li_Context_Move>
+                     <a href=#Context_Move>Move Mode</a>
+                  </li>
+                  <li id=li_Context_Measurement>
+                     <a href=#Context_Measurement>Measurement Mode</a>
+                  </li>
+                  <li id=li_Context_Equivalent_Section>
+                     <a href=#Context_Equivalent_Section>Equivalent Section Mode</a>
+                  </li>
+                  <li id=li_Context_Fixed_Point>
+                     <a href=#Context_Fixed_Point>Fixed_Point Mode</a>
+                  </li>
+                  <li id=li_Context_Query>
+                     <a href=#Context_Query>Query External Data</a>
+                  </li>
+                  <li id=li_Context_Cancel>
+                     <a href=#Context_Cancel>Cancel</a>
+                  </li>
+               </ul>
+               <!-- ........................................................ Context Menu .........-->
+            </li>
+            <li id=li_Toolbox>
+               <a href=#Toolbox>Toolbox</a>
+               <!-- ........................................................ Toolbox .........-->
+               <ul class='IIP3DViewerHelp level1'>
+                  <li id=li_Toolbox_Reload>
+                     <a href=#Toolbox_Reload>Reload</a>
+                  </li>
+                  <li id=li_Toolbox_Scale>
+                     <a href=#Toolbox_Scale>Magnification</a>
+                  </li>
+                  <li id=li_Toolbox_Distance>
+                     <a href=#Toolbox_Distance>Distance</a>
+                  </li>
+                  <li id=li_Toolbox_Combined>
+                     <a href=#Toolbox_Combined>Combined Distance</a>
+                  </li>
+                  <li id=li_Toolbox_Section>
+                     <a href=#Toolbox_Section>Section Selector</a>
+                  </li>
+                  <li id=li_Toolbox_Locator>
+                     <a href=#Toolbox_Locator>Locator</a>
+                  </li>
+                  <li id=li_Toolbox_Rotation>
+                     <a href=#Toolbox_Rotation>Rotation</a>
+                  </li>
+                  <li id=li_Toolbox_Layer>
+                     <a href=#Toolbox_Layer>Layer</a>
+                  </li>
+                  <li id=li_Toolbox_Pitch_Yaw>
+                     <a href=#Toolbox_Pitch_Yaw>PitchYaw</a>
+                  </li>
+                  <li id=li_Toolbox_Tree>
+                     <a href=#Toolbox_Tree>Tree</a>
+                  </li>
+                  <li id=li_Toolbox_Scalebar>
+                     <a href=#Toolbox_Scalebar>Scalebar</a>
+                  </li>
+               </ul>
+               <!-- ........................................................ Toolbox .........-->
+            </li>
+         </ul>
+         <!-- ........................................................ Contents .........-->
+      </div>
+      <div id=wlzIIPViewerIFrameTextDiv>
+<!-- ================================================ overview ============================================================================= -->
+         <hr class='help content'>
+         <div id='Overview' class='help_header four'>Overview</div>  <a class='help_internalLink' href=#li_Overview>top</a>
+         <p class='help'>
+               The IIP3D viewer is used to display very large images on a web browser.
+               <br>Images may be:
+         </p>
+               <!-- ........................................................ image types .........-->
+               <ul class='IIP3DViewerHelp level1 bulleted'>
+                  <li>
+                     Arbitrary sections through 3D images in the proprietry <i>Woolz</i> format.
+                  </li>
+                  <li>
+                     Stacks of <i>pyramidal tiff</i> images.
+                  </li>
+                  <li>
+                     A single <i>pyramidal tiff</i> image.
+                  </li>
+               </ul>
+               <!-- ........................................................ image types .........-->
+         <p class='help content'>
+               The visible part of the image, which may be only a small part of the complete image, consists of rectangular tiles supplied by an IIP3D server.
+	 </p>
+<!-- ================================================ modes ============================================================================= -->
+         <hr class='help content'>
+         <div id='Modes' class='help_header four'>Viewer Modes</div>  <a class='help_internalLink' href=#top>top</a>
+         <br>
+         <!-- ........................................................ Move .........-->
+         <div id='Modes_Move' class='help_header five'>Move Mode</div>  <a class='help_internalLink' href=#Modes>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            This is the default mode of the viewer, it may also be selected using the <a class=help href=#Context>Context Menu</a>.
+            <br>Move mode supports the following user actions:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               <i>Pan</i> the image by clicking and dragging the left mouse button.
+            </li>
+            <li>
+               Change the <i>magnification</i> by scrolling the mouse wheel.
+            </li>
+         </ul>
+         <!-- ........................................................ Move .........-->
+
+         <!-- ........................................................ Measurement .........-->
+         <div id='Modes_Measurement' class='help_header five'>Measurement Mode</div>  <a class='help_internalLink' href=#Modes>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Measurement mode is selected using the <a class=help href=#Context>Context Menu</a>. When it is selected the <i>measurement</i> dialogue box appears.
+            <br>Measurement mode supports the following user actions:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               <i>Measure</i> between 2 user-selected points on the image.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    Clicking the mouse over the image will cause a blue cross to be drawn (the measurement origin).
+	    <br>If the mouse is moved away from the measurement origin and then paused, the current distance will be indicated in the dialogue box.
+	    <br>Clicking the left mouse button over the image again will cause a second blue cross to be drawn. The distance between the crosses is indicated.
+	    <br>Note: the indicated value refers to the image at 1:1 magnification.
+	 </p>
+         <!-- ........................................................ Measurement .........-->
+
+         <!-- ........................................................ Equivalent Section .........-->
+         <div id='Modes_Equivalent_Section' class='help_header five'>Equivalent Section Mode</div>  <a class='help_internalLink' href=#Modes>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Equivalent Section mode is selected using the <a class=help href=#Context>Context Menu</a>. When it is selected the <i>equivalent section</i> dialogue box appears.
+            <br>Equivalent Section mode supports the following user actions:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               Select the <i>High Resolution section</i> which passes through a user-selected point on a 3D image section.
+            </li>
+         </ul>
+         <p class='help level1'>
+            Clicking the mouse over the image will cause a blue cross to be drawn on the image (the point through which an equivalent high resolution section passes).
+            <br>The user must now click <i>OK</i> in the dialogue box to view the equivalent section.
+            <br>Note: this action is only supported for 3D Woolz images where appropriate high resolution sections are available.
+	 </p>
+         <!-- ........................................................ Equivalent Section .........-->
+
+         <!-- ........................................................ Fixed Point .........-->
+         <div id='Modes_Fixed_Point' class='help_header five'>Fixed Point Mode</div>  <a class='help_internalLink' href=#Modes>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Fixed Point mode is selected using the <a class=help href=#Context>Context Menu</a>. When it is selected the <i>fixed point</i> dialogue box appears.
+            Fixed Point mode may also be selected from the rotation tool in the <a class=help href=#Toolbox>Toolbox</a>.
+            <br>Fixed Point mode supports the following user actions:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               Change the <i>Fixed Point</i> about which a 3D Woolz image rotates.
+            </li>
+         </ul>
+         <p class='help level1'>
+            Clicking the mouse over the image will cause a blue cross to be drawn on the image (the new fixed point).
+            <br>Closing the dialogue box will apply the new fixed point.
+	    <br>Note: the distance will be reset to 0 at the new fixed point. 
+            <br>Note: this action is only supported for 3D Woolz images.
+	 </p>
+         <!-- ........................................................ Fixed Point .........-->
+<!-- ================================================ context menu ============================================================================= -->
+         <hr class='help content'>
+         <div id='Context' class='help_header four'>Context Menu</div>  <a class='help_internalLink' href=#top>top</a>
+         <br>
+         <p class='help level1'>
+            The context menu is accessed by clicking the right mouse button over the image.
+	 </p>
+
+         <!-- ........................................................ Help .........-->
+         <div id='Context_Help' class='help_header five'>Help</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Clicking on the <i>Help</i> context menu item causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               This help page is displayed.               
+            </li>
+         </ul>
+         <p class='help level1'>
+	 </p>
+         <!-- ........................................................ Help .........-->
+
+         <!-- ........................................................ Reload Image .........-->
+         <div id='Context_Reload' class='help_header five'>Reload Image</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Clicking on the <i>Reload Image</i> context menu item causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               The IIP3D server sends the visible tiles of the image to the viewer again.
+            </li>
+         </ul>
+         <p class='help level1'>
+            This is useful if, for example, the image is scrambled or incomplete.
+            <br>There is also a <i>Reload Image</i> button in the <i>Toolbox</i>.
+	 </p>
+         <!-- ........................................................ Reload Image .........-->
+
+         <!-- ........................................................ Maximise Image .........-->
+         <div id='Context_Maximise' class='help_header five'>Maximise Image</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Maximise Image</i> context menu item is a toggle. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated checkbox is un-checked the image borders will be extended to the edge of the browser window and the checkbox will be checked.
+            </li>
+            <li>
+               If the associated checkbox is checked the image borders will be returned to their initial position and the checkbox will be un-checked.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The checkbox is initially un-checked.
+            <br>If the image is large enough to fill the browser window, the <i>Toolbox</i> will be displayed on top of the image.
+	 </p>
+         <!-- ........................................................ Maximise Image .........-->
+
+         <!-- ........................................................ Toolbox .........-->
+         <div id='Context_Toolbox' class='help_header five'>Toolbox</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Toolbox</i> context menu item is a toggle. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated checkbox is un-checked the <i>Toolbox</i> will be made visible and the checkbox will be checked.
+            </li>
+            <li>
+               If the associated checkbox is checked the <i>Toolbox</i> will be hidden and the checkbox will be un-checked.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The checkbox is initially checked.
+	 </p>
+         <!-- ........................................................ Toolbox .........-->
+
+         <!-- ........................................................ Image Hover Feedback .........-->
+         <div id='Context_Hover' class='help_header five'>Image Hover Feedback</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Image Hover Feedback</i> context menu item is a toggle. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated checkbox is un-checked, feedback labels (provoked by hovering the mouse over an image) will be made visible and the checkbox will be checked.
+            </li>
+            <li>
+               If the associated checkbox is checked, feedback labels (provoked by hovering the mouse over an image) will be hidden and the checkbox will be un-checked.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The checkbox is initially checked.
+	 </p>
+         <!-- ........................................................ Image Hover Feedback .........-->
+
+         <!-- ........................................................ Move Mode .........-->
+         <div id='Context_Move' class='help_header five'>Move Mode</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Move Mode</i> context menu item is a radio button. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated radio button is un-selected, the viewer will be set to <i>Move Mode</i> and the radio button will be selected.
+               <br>All other radio buttons will be de-selected.
+            </li>
+            <li>
+               If the associated radio button is selected, clicking on it will have no effect.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The radio button is initially selected (this is the default mode).
+	 </p>
+         <!-- ........................................................ Move Mode .........-->
+
+         <!-- ........................................................ Measurement Mode .........-->
+         <div id='Context_Measurement' class='help_header five'>Measurement Mode</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Measurement Mode</i> context menu item is a radio button. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated radio button is un-selected, the viewer will be set to <i>Measurement Mode</i> and the radio button will be selected.
+               <br>All other radio buttons will be de-selected.
+            </li>
+            <li>
+               If the associated radio button is selected, clicking on it will have no effect.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The radio button is initially un-selected.
+            <br>When the radio button is selected the <i>Measurement</i> dialogue will appear.
+	 </p>
+         <!-- ........................................................ Measurement Mode .........-->
+
+         <!-- ........................................................ Equivalent Section Mode .........-->
+         <div id='Context_Equivalent_Section' class='help_header five'>Equivalent Section Mode</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Equivalent Section Mode</i> context menu item is a radio button. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated radio button is un-selected, the viewer will be set to <i>Equivalent Section Mode</i> and the radio button will be selected.
+               <br>All other radio buttons will be de-selected.
+            </li>
+            <li>
+               If the associated radio button is selected, clicking on it will have no effect.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The radio button is initially un-selected.
+            <br>When the radio button is selected the <i>Equivalent Section</i> dialogue will appear.
+	 </p>
+         <!-- ........................................................ Equivalent Section Mode .........-->
+
+         <!-- ........................................................ Fixed Point Mode .........-->
+         <div id='Context_Fixed_Point' class='help_header five'>Fixed Point Mode</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Fixed Point Mode</i> context menu item is a radio button. Clicking on it causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               If the associated radio button is un-selected, the viewer will be set to <i>Fixed Point Mode</i> and the radio button will be selected.
+               <br>All other radio buttons will be de-selected.
+            </li>
+            <li>
+               If the associated radio button is selected, clicking on it will have no effect.
+            </li>
+         </ul>
+         <p class='help level1'>
+            The radio button is initially un-selected.
+            <br>When the radio button is selected the <i>Fixed Point</i> dialogue will appear.
+            <br><i>Fixed Point Mode</i> can also be selected from the <i>Toolbox Rotation</i> control.
+	 </p>
+         <!-- ........................................................ Fixed Point Mode .........-->
+
+         <!-- ........................................................ Query External Data .........-->
+         <div id='Context_Query' class='help_header five'>Query External Data</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Mouse over the <i>Query External Data</i> context menu item causes the following sub-menus to appear:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               <!-- ........................................................ Query Anatomy .........-->
+               <div id='Context_Anatomy' class='help_header five'>By Anatomy</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+               <p class='help level1'>
+                  Mouse over the <i>By Anatomy</i> context menu item causes the following sub-menus to appear:
+	       </p>
+               <ul class='IIP3DViewerHelp level1 bulleted'>
+                  <li>
+                     <!-- ........................................................ EMAGE .........-->
+                     <div id='Context_EMAGE' class='help_header five'>EMAGE</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+                     <p class='help level1'>
+                        Clicking the <i>EMAGE</i> context menu item causes the following action:
+                     </p>
+                     <ul class='IIP3DViewerHelp level1 bulleted'>
+                        <li>
+                           The <i>Query Anatomy</i> dialogue appears.
+                        </li>
+                     </ul>
+                     <p class='help level1'>
+                        If <i>Image Hover Feedback</i> is enabled, hovering over the image will show anatomy components at the mouse position.
+                        <br>A left mouse click will initiate a query (on the indicated anatomy components) to the EMAGE Gene Expression database.
+                        <br>Query results returned from the EMAGE database will appear in a separate browser window.
+                     </p>
+                     <!-- ........................................................ EMAGE .........-->
+                  </li>
+                  <li>
+                     <!-- ........................................................ MGI-GXD .........-->
+                     <div id='Context_MGI' class='help_header five'>MGI-GXD</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+                     <p class='help level1'>
+                        Clicking the <i>MGI-GXD</i> context menu item causes the following action:
+                     </p>
+                     <ul class='IIP3DViewerHelp level1 bulleted'>
+                        <li>
+                           The <i>Query Anatomy</i> dialogue appears.
+                        </li>
+                     </ul>
+                     <p class='help level1'>
+                        If <i>Image Hover Feedback</i> is enabled, hovering over the image will show anatomy components at the mouse position.
+                        <br>A left mouse click will initiate a query (on the indicated anatomy components) to the MGI-GXD database.
+                        <br>Query results returned from the MGI-GXD database will appear in a separate browser window.
+                     </p>
+                     <!-- ........................................................ MGI-GXD .........-->
+                  </li>
+               </ul>
+               <!-- ........................................................ Query Anatomy .........-->
+            </li>
+            <li>
+               <!-- ........................................................ Query Spatial .........-->
+               <div id='Context_Spatial' class='help_header five'>By Spatial Region</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+               <p class='help level1'>
+                  Clicking the <i>By Spatial Region</i> context menu item causes the following action:
+               </p>
+               <ul class='IIP3DViewerHelp level1 bulleted'>
+                  <li>
+                     The <i>Spatial Query</i> dialogue appears.
+                  </li>
+               </ul>
+               <p class='help level1'>
+                  Note: <i>Spatial Query</i> is not enabled in this version of the viewer.
+               </p>
+               <!-- ........................................................ Query Spatial .........-->
+            </li>
+         </ul>
+         <p class='help level1'>
+	 </p>
+         <!-- ........................................................ Query External Data .........-->
+
+         <!-- ........................................................ Cancel .........-->
+         <div id='Context_Cancel' class='help_header five'>Cancel</div>  <a class='help_internalLink' href=#Context>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Clicking on the <i>Cancel</i> context menu item causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               The context menu is hidden.               
+            </li>
+         </ul>
+         <p class='help level1'>
+	 </p>
+         <!-- ........................................................ Cancel .........-->
+<!-- ================================================ toolbox ============================================================================= -->
+         <hr class='help content'>
+         <div id='Toolbox' class='help_header four'>Toolbox</div>  <a class='help_internalLink' href=#top>top</a>
+         <p class='help content'>
+	 </p>
+
+         <!-- ........................................................ Reload .........-->
+         <div id='Toolbox_Reload' class='help_header five'>Reload</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            Clicking on the <i>Reload Image</i> button in the Toolbox causes the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+               The IIP3D server sends the visible tiles of the image to the viewer again.
+            </li>
+         </ul>
+         <p class='help level1'>
+            This is useful if, for example, the image is scrambled or incomplete.
+            <br>There is also a <i>Reload Image</i> menu item in the <i>Context Menu</i>.
+	 </p>
+         <!-- ........................................................ Reload .........-->
+
+         <!-- ........................................................ Scale .........-->
+         <div id='Toolbox_Scale' class='help_header five'>Magnification</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Magnification</i> control in the Toolbox is a slider.
+	    <br>Moving the slider cursor causes the following action:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              The magnification of the image is increased or decreased by a factor of 2. 
+            </li>
+         </ul>
+         <p class='help level1'>
+	    The slider cursor may be moved by:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              Pressing the left mouse button over the red slider-cursor and dragging the mouse left or right.
+            </li>
+            <li>
+              Clicking the left mouse button over the grey slider bar.
+            </li>
+         </ul>
+         <!-- ........................................................ Scale .........-->
+
+         <!-- ........................................................ Distance .........-->
+         <div id='Toolbox_Distance' class='help_header five'>Distance</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Distance</i> control in the Toolbox is a slider.
+	    <br>Moving the slider cursor causes the following action:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              The distance of the section plane from a fixed point in the image is increased or decreased. 
+            </li>
+         </ul>
+         <p class='help level1'>
+	    The slider cursor may be moved by:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              Pressing the left mouse button over the red slider-cursor and dragging the mouse left or right.
+            </li>
+            <li>
+              Clicking the left mouse button over the grey slider bar.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    The <i>Distance</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          3D <i>Woolz</i> images.
+            </li>
+         </ul>
+         <!-- ........................................................ Distance .........-->
+
+         <!-- ........................................................ Combined Distance .........-->
+         <div id='Toolbox_Combined' class='help_header five'>Key Sections</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Key Sections</i> control in the Toolbox combines the above <i>Distance</i> tool with <i>Key Section</i> arrow buttons.
+	    <br>Clicking on the various Arrow Buttons causes the following actions:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              <img src="../images/firstIcon_10x12.png"> The first available section delineated with anatomy is displayed.
+            </li>
+            <li>
+              <img src="../images/prevIcon_10x12.png"> The previous available section delineated with anatomy is displayed.
+            </li>
+            <li>
+              <img src="../images/nextIcon_10x12.png"> The next available section delineated with anatomy is displayed.
+            </li>
+            <li>
+              <img src="../images/lastIcon_10x12.png"> The last available section delineated with anatomy is displayed.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    The <i>Key Section</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          3D <i>Woolz</i> images comprising orthoganal sections, where some of the sections have been delineated with anatomy.
+            </li>
+         </ul>
+         <!-- ........................................................ Combined Distance .........-->
+
+         <!-- ........................................................ Section .........-->
+         <div id='Toolbox_Section' class='help_header five'>Section Selector</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Section Selector</i> control in the Toolbox consists of a wholemount image with a red cursor bar through it. It also has arrow buttons.
+	    <br>Moving the red cursor bar, or clicking the arrows will cause the following action:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              A section from up or down the stack of images will be displayed. 
+            </li>
+         </ul>
+         <p class='help level1'>
+	    Note that the section numbers may increase towards the top or towards the bottom of the image depending upon the way the stack has been constructed.
+	 </p>
+         <p class='help level1'>
+	    The <i>Section Selector</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          Stacks of 2D pyramidal tiff images.
+            </li>
+            <li>
+	          3D <i>Woolz</i> images comprising orthoganal sections.
+            </li>
+         </ul>
+         <!-- ........................................................ Section .........-->
+
+         <!-- ........................................................ Locator .........-->
+         <div id='Toolbox_Locator' class='help_header five'>Locator</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Locator</i> control in the Toolbox consists of a thumbnail of the displayed image with a grey box indicating the visible region of the image.
+	    <br>The <i>Locator</i> control is used to alter the visible region of the image. This is done by the following user action:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              Press the left mouse button over grey box in the <i>Locator</i> control thumbnail, then drag the grey box to the desired location. 
+            </li>
+         </ul>
+         <p class='help level1'>
+	    In some viewer modes it is also possible to press the left mouse button over the actual image and then drag the image to the desired location.
+	 </p>
+         <p class='help level1'>
+	    The <i>Locator</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          3D <i>Woolz</i> images.
+            </li>
+         </ul>
+         <!-- ........................................................ Locator .........-->
+
+         <!-- ........................................................ Rotation .........-->
+         <div id='Toolbox_Rotation' class='help_header five'>Rotation</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Rotation</i> control in the Toolbox comprises 3 slider controls (pitch, yaw, roll) and 3 pre-set buttons (Trans, Sagit, Front).
+	    <br>Moving one of the slider cursors causes the following action:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              The appropriate viewing angle (pitch, yaw, roll) of the displayed section is increased or decreased.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    <br>Clicking one of the pre-set buttons on the <i>Rotation</i> control causes the following action:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              <i>Trans</i> The viewing angles (pitch, yaw, roll) of the displayed section are set for a <i>Transverse</i> section view.
+            </li>
+            <li>
+              <i>Sagit</i> The viewing angles (pitch, yaw, roll) of the displayed section are set for a <i>Sagittal</i> section view.
+            </li>
+            <li>
+              <i>Front</i> The viewing angles (pitch, yaw, roll) of the displayed section are set for a <i>Frontal</i> (or <i>Coronal</i>) section view.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    Note that the actual values of pitch, yaw and roll will depend upon how the 3D image was re-constructed.
+	 </p>
+         <p class='help level1'>
+	    The <i>Rotation</i> control also has a button which opens the <i>Fixed Point</i> control.
+	 </p>
+            <!-- ........................................................ Fixed Point .........-->
+            <div id='Toolbox_Fixed' class='help_header five'>Fixed Point</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+            <p class='help level2'>
+	       The <i>Fixed Point</i> control displays the current X,Y,Z coordinates of the fixed point in terms of the underlying 3D <i>Woolz</i> coordinates.
+	       <br>The <i>Fixed Point</i> can be changed by the following user action:
+	    </p>
+            <ul class='IIP3DViewerHelp level2 bulleted'>
+               <li>
+                 While the <i>Fixed Point</i> control is visible, click on the image at the required coordinates. A blue cross will appear and the new coordinates will be displayed in the <i>Fixed Point</i> control.
+               </li>
+               <li>
+                 Click on the <img src="../images/close_10x8.png"> <i>close</i> button at the top riight of the <i>Fixed Point</i> control to accept the new <i>Fixed Point</i>.
+               </li>
+               <li>
+                 <b>Or</b> click the <i>Cancel</i> button on the <i>Fixed Point</i> control to revert to the previous <i>Fixed Point</i>.
+               </li>
+               <li>
+                 <b>Or</b> click the <i>Default</i> button on the <i>Fixed Point</i> control to revert to the default <i>Fixed Point</i> (usually the centre of the image).
+               </li>
+            </ul>
+            <p class='help level2'>
+	       Note: The position in the displayed section determines the X and Y coordinates of the <i>Fixed Point</i>, the Z coordinate is determined by the current value of <i>Distance</i>.
+	       <br>Note: when the <i>Fixed Point</i> is changed, <i>Distance</i> is reset to 0.
+	    </p>
+            <!-- ........................................................ Fixed Point .........-->
+         <p class='help level1'>
+	    The <i>Rotation</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          3D <i>Woolz</i> images.
+            </li>
+         </ul>
+         <!-- ........................................................ Rotation .........-->
+
+         <!-- ........................................................ Layer .........-->
+         <div id='Toolbox_Layer' class='help_header five'>Layer</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+	    The <i>Layer</i> tool in the Toolbox has a checkbox and a <i>Properties</i> button for each available layer.
+	    <br>The following behaviours are supported:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	       If a layer's checkbox is checked, the layer will be displayed (although it may be obscured by another layer).
+            </li>
+            <li>
+	       The current selected layer is highlighted in blue in the <i>Layer</i> tool. This layer is not necessarily visible. 
+            </li>
+            <li>
+	       If a layer represents a composite image, it must be selected and visible for any delineated regions to be visible.
+            </li>
+            <li>
+	       If the <i>Layer</i> button is clicked, the <i>Properties</i> tool will be displayed.
+            </li>
+         </ul>
+            <!-- ........................................................ Properties .........-->
+            <div id='Toolbox_Properties' class='help_header five'>Properties</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+            <p class='help level2'>
+	       The <i>Properties</i> tool has a slider control for <i>opacity</i> and 3 slider controls for filtering red, green, and blue respectively.
+	       <br>Moving the slider cursor of the <i>opacity</i> control causes the following action:
+	    </p>
+            <ul class='IIP3DViewerHelp level2 bulleted'>
+               <li>
+                 The opacity (as determined by the browser) of the selected layer is increased or decreased.
+		 <br>If the image tiles delivered by the IIP3DServer are fully opaque then 0.0 on the <i>opacity</i> slider means fully transparent and 1.0 means full opaque.
+		 <br>If the image tiles delivered by the IIP3DServer have a pre-set opacity, then 1.0 on the <i>opacity</i> slider will give this pre-set value.
+               </li>
+            </ul>
+            <p class='help level2'>
+	       <br>Moving the slider cursor of any of the 3 <i>filter</i> controls causes the following action:
+	    </p>
+            <ul class='IIP3DViewerHelp level2 bulleted'>
+               <li>
+                 The appropriate colour channel (red, green or blue) of the image is filtered to allow a maximum value between 0 and 255.
+		 <br>A <i>filter</i> slider value of 0 does not allow any of the colour through.
+		 <br>A <i>filter</i> slider value of 255 allows all of the colour through.
+               </li>
+            </ul>
+            <p class='help level2'>
+	       The <i>Properties</i> tool relates to the layer which is selected (highlighted in blue).
+	       <br>The <i>Filter</i> controls do not have any effect on composite images.
+	    </p>
+            <!-- ........................................................ Properties .........-->
+         <p class='help level1'>
+	    The <i>Layer</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          Composite 3D <i>Woolz</i> images.
+            </li>
+            <li>
+	          3D <i>Woolz</i> images with overlays.
+            </li>
+            <li>
+	          Multiple 3D <i>Woolz</i> images.
+            </li>
+         </ul>
+         <!-- ........................................................ Layer .........-->
+
+         <!-- ........................................................ Pitch Yaw .........-->
+         <div id='Toolbox_Pitch_Yaw' class='help_header five'>Pitch Yaw</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+            The <i>Pitch Yaw</i> tool in the Toolbox consists of a representation of the 3D <i>Woolz</i> image, intersected by a disc which represents the plane of the displayed image.
+	    <br>The angle of the disc through the 3D image provides visual feedback of the Pitch, Yaw and Roll angles set by the <i>Rotation</i> tool.
+	 </p>
+         <p class='help level1'>
+	    The <i>Layer</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          3D <i>Woolz</i> images.
+            </li>
+         </ul>
+         <!-- ........................................................ Pitch Yaw .........-->
+
+         <!-- ........................................................ Tree .........-->
+         <div id='Toolbox_Tree' class='help_header five'>Tree</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+	    The <i>Tree</i> tool contains an expandable tree which represents delineated regions in a 3D <i>Woolz</i> image.
+	    <br>The <i>Tree</i> tool supports the following behaviours:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              Checking the checkbox of a node will cause the corresponding delineated region in the image to be highlighted according to the coloured box next to the node. 
+	      <br>If the current section intersects the region, the intersecting area will be displayed, in the appropriate colour.
+            </li>
+            <li>
+              Un-checking the checkbox of a node will cause the corresponding region in the image to be hidden. 
+            </li>
+            <li>
+	       Clicking on the coloured box next to a node will open a <i>colour chooser</i> which enables the colour associated with a delineated region to be changed.
+	       <br>If the colour of a node is changed, this will be reflected immediately in any part of the appropriate delineated region which is visible.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    There are 2 buttons at the top of the <i>Tree</i> tool which have the following behaviour:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+              The <i>Select All</i> button causes the checkbox of every node with a corresponding delineated region to be checked.
+	      <br>If the current section intersects any of these regions, the intersecting areas will be displayed, in the appropriate colour.
+            </li>
+            <li>
+              The <i>Clear All</i> button causes the checkbox of every node with a corresponding delineated region to be un-checked.
+	      <br>No delineated regions will be visible.
+            </li>
+         </ul>
+         <p class='help level1'>
+	    Double-clicking over a part of the image which has a delineated region will cause the checkbox of the corresponding node to be checked / un-checked.
+	 </p>
+         <p class='help level1'>
+	    The <i>Layer</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          composite 3D <i>Woolz</i> images.
+            </li>
+            <li>
+	          3D <i>Woolz</i> images with overlay.
+            </li>
+         </ul>
+         <!-- ........................................................ Tree .........-->
+
+         <!-- ........................................................ Scalebar .........-->
+         <div id='Toolbox_Scalebar' class='help_header five'>Scalebar</div>  <a class='help_internalLink' href=#Toolbox>up</a> <a class='help_internalLink' href=#top>top</a>
+         <p class='help level1'>
+	    The <i>Scalebar</i> tool consists of a horizontal line (black on top of white) with the length of the line indicated above it.
+            <br>The scalebar can be dragged around the image by pressing the left mouse button over the scalebar, then dragging the <i>Scalebar</i> to the desired location.
+	    <br>The indicated length of the line is with respect to the undelying image at scale 1:1.
+	 </p>
+         <p class='help level1'>
+	    The <i>Scalebar</i> tool is supported for:
+	 </p>
+         <ul class='IIP3DViewerHelp level1 bulleted'>
+            <li>
+	          3D <i>Woolz</i> images.
+            </li>
+            <li>
+	          Stacks of 2D Pyramidal Tiff images.
+            </li>
+         </ul>
+         <!-- ........................................................ Scalebar .........-->
+<!-- ============================================================================================================================= -->
+      </div>
+   </body>
+</html>

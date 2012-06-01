@@ -1,0 +1,166 @@
+/* style for right click menu */
+
+.emapMenuContainer {
+   position: absolute;
+   margin: 0px;
+   padding: 0px;
+   visibility: hidden;
+   border: none;
+   z-index: 2000;
+   background: #fafafa;
+   font-family:Arial,'DejaVu Sans','Liberation Sans',Freesans,sans-serif;
+   font-size: 12px;
+   font-style: normal;
+   color: #111;
+}
+.emapMenuContainer.rightClick {
+   top: 0px;
+   left: 0px;
+}
+.emapMenuContainer.normal {
+   top: 22px;
+   left: 0px;
+   background: #fafafa;
+}
+
+.emapMenuList {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   list-style-type: none;
+   margin: 0px;
+   padding: 0px;
+   border: solid 1px #aaa;
+   z-index: 1000;
+}
+.emapSubSubMenuList {
+   position: absolute;
+   list-style-type: none;
+   margin: 0px;
+   padding: 0px;
+   border: solid 1px #aaa;
+}
+
+.emapMenuItem {
+   width: 100px;
+   height: 18px;
+   padding: 2px 0 0 5px;
+   margin: 0px;
+   background: #ddd;
+   z-index: 100;
+   text-align: left;
+   color: #333;
+}
+.emapMenuItem.normal.mouseover {
+   background: #ccc;
+}
+.emapMenuItem.rightClick.mouseover {
+   background: #ccc;
+}
+.emapMenuItem.normal {
+}
+.emapMenuItem.rightClick {
+   width: 210px;
+   height: 18px;
+}
+.emapMenuItem.rightClick.disabled {
+   color: #999;
+}
+.emapMenuItem.rightClick.disabled.mouseover {
+   color: #999;
+}
+.emapMenuItem.normal.disabled {
+   color: #999;
+}
+.emapMenuItem.normal.disabled.mouseover {
+   color: #999;
+}
+.emapMenuItem.chkbx {
+   position: relative;
+   top: -2px;
+   float: right;
+   width: 10px;
+   height: 10px;
+   margin: 0 3px;
+   padding: 0px;
+   z-index: 200;
+}
+.emapMenuItem.radio {
+   position: relative;
+   top: -2px;
+   float: right;
+   width: 10px;
+   height: 10px;
+   margin: 0 3px;
+   padding: 0px;
+   z-index: 200;
+}
+
+.emapMenuSpacer{
+   height: 18px;
+   padding: 0px;
+   margin: 0px;
+   background: #ddd;
+}
+
+.emapMenuSpacerBGdark{
+   position: relative;
+   top: 9px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #999;
+}
+.emapMenuSpacerBGlight{
+   position: relative;
+   top: 9px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #fff;
+}
+
+.emapMoreDiv {
+   position: relative;
+   top: 0px;
+   float: right;
+   width: 20px;
+   height: 20px;
+   margin: 0px;
+   padding: 0px;
+   border: dotted 1px #f0f;
+   border: none;
+   z-index: 200;
+}
+
+.emapMoreImg {
+   position: relative;
+   top: 2px;
+   float: right;
+   width: 10px;
+   height: 10px;
+   margin: 0px;
+   padding: 0px 4px;
+   z-index: 200;
+}
+
+.emapSubMenuItem {
+   width: 100px;
+   height: 20px;
+   padding: 0 0 0 5px;
+   margin: 0px;
+   background: #ffa;
+   text-align: left;
+}
+.emapSubMenuItem.mouseover {
+   background: #ccc;
+}
+
+#contextMenuActionsDummyDiv.dummyDiv {
+   width: 100px;
+   height: 20px;
+   padding: 0px;
+   margin: 0px;
+   background: #cfa;
+   visibility: visible;
+}

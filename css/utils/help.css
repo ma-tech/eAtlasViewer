@@ -1,0 +1,108 @@
+/* common style for help & info iFrames */
+
+.wlzIIPViewerIFrameContainer {
+   position: absolute;
+   top: 100px;
+   right: 200px;
+   visibility: hidden;
+   border: ridge 4px #555;
+   width: 60%;
+   height: 600px;
+   margin: 0px;
+   padding: 0px;
+   color: #222;
+   background: #ffd;
+   z-index: 1000;
+   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+   opacity: 0.8;
+}
+.wlzIIPViewerIFrameContainer.modelInfo {
+   width: 450px;
+   height: 370px;
+   top: 100px;
+   left: 200px;
+}
+
+.wlzIIPViewerIFrameTopDiv {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 100%;
+   margin: 0px;
+   padding: 0px;
+}
+
+.wlzIIPViewerIFrameCloseDiv {
+   position: absolute;
+   top: 0px;
+   right: 4px;
+   padding: 0px;
+   margin: 0px;
+   border: outset 1px #555;
+   height: 10px;
+   width: 11px;
+}
+
+img.iframeClose {
+   padding: 0px;
+   margin: 0px;
+   position: absolute;
+   top: 1px;
+   left: 1px;
+}
+
+.wlzIIPViewerIFrameHeaderDiv {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 100%;
+   height: 20px;
+   margin: 0px;
+   padding: 0px;
+}
+
+.wlzIIPViewerIFrame {
+   position: relative;
+   overflow: scroll;
+   top: 0px;
+   left: 0px;
+   visibility: hidden;
+   width: 100%;
+   height: 91%;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   z-index: 1000;
+}
+.wlzIIPViewerIFrame.modelInfo {
+   height: 89%;
+}
+
+h3.help {
+   font-size: 14px;
+   font-weight: bold;
+   padding: 0px;
+   margin: 0px;
+}
+
+h4.help {
+   font-size: 12px;
+   font-style: normal;
+   padding: 0px;
+   margin: 6px 0 2px;
+}
+
+h5.help {
+   font-size: 10px;
+   font-style: normal;
+   padding: 0px;
+   margin: 0px;
+}
+
+h6.help {
+   font-size: 10px;
+   font-style: normal;
+   padding: 0px;
+   margin: 0px;
+   color: #33c;
+}

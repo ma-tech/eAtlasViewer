@@ -1,0 +1,159 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+
+#imgLabelContainerDiv {
+   position: absolute;
+   padding: 0px;
+   margin: 0px;
+   overflow: visible;
+   font-size: 11px;
+   background: #eee;
+   z-index: 300;
+   visibility: hidden;
+}
+
+.imgLabelRowDiv {
+   position: relative;
+   top: 15px;
+   height: 14px;
+   width: 98%;
+   padding: 0px 2px;
+   margin: 0px 2px;
+   text-align: left;
+   display: block;
+}
+
+.imgLabelRowText {
+   position: relative;
+   padding: 0px;
+   margin: 0px;
+   font-size: 11px;
+}
+
+#imgLabelCloseDiv {
+   float: right;
+   position: relative;
+   right: 2px;
+   top: 2px;
+   width: 10px;
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+
+#imgLabelCloseDiv.over {
+   background: #ddd;
+}
+#imgLabelCloseDiv.out {
+   background: #eee;
+}
+#imgLabelCloseDiv.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+#imgLabelCloseImg {
+   position: relative;
+   width: 10px;
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+}
+/* --------------------------- */
+#imgLabelTableContainer {
+   position: relative;
+   top: 0px;
+   margin-left: auto;
+   margin-right: auto;
+   padding: 0px;
+   margin: 0px;
+   background: #eee;
+   border: solid 1px #999;
+}
+
+#imgLabelTable {
+   position: relative;
+   left: 0px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   border-collapse: collapse;
+   font-size: 11px;
+}
+
+.imgLabelTableRow {
+   height: 15px;
+   padding: 0px;
+   margin: 0;
+   border: none;
+}
+.imgLabelTableRow.content {
+   color: #000;
+}
+.imgLabelTableRow.header {
+   color: #f33;
+}
+.imgLabelTableRow.spacer {
+   height: 1px;
+   padding: 0;
+   background: #777;
+}
+
+.imgLabelTableEntry {
+   padding: 2px 1px;
+   margin: 0;
+   text-align: center;
+   border: none;
+}
+.imgLabelTableEntry.content {
+   color: #333;
+   background: #ddd;
+}
+.imgLabelTableEntry.header {
+   color: #fff;
+   background: #777;
+   border none;
+}
+.imgLabelTableEntry.spacer {
+   padding: 0;
+   margin: 0;
+}
+.imgLabelTableEntry.divider {
+   height: 1px;
+   padding: 0;
+   border-bottom: dotted 1px #555;
+}
+
+.imgLabelTableCell {
+   padding: 0;
+   margin: 0;
+   border: none;
+   white-space: normal;
+   vertical-align: top;
+}

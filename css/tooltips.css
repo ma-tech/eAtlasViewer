@@ -1,0 +1,35 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for toolTips for tools in emap IIP viewer */
+
+.toolTipContainer {
+   position: absolute;
+   margin: 0px;
+   padding: 0 2px 0 2px;
+   border: solid 1px #aaa;
+   border: none;
+   background: #333;
+   color: #fff;
+   font-size: 12px;
+   visibility: hidden;
+   height: 16px;
+   z-index: 700;
+}

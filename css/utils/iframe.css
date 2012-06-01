@@ -1,0 +1,289 @@
+/* common style for help & info iFrames */
+
+body.iframe {
+   font-family: Verdana, Arial, sans-serif;
+   background: #ffd;
+}
+
+a {
+   text-decoration: none;
+}
+a:link {
+   color:#0000ff;
+}
+a:visited {
+   color:#0000ff;
+}
+a:hover {
+   color:#990099;
+}
+a:active {
+   color:#0055bb;
+}
+
+p.help {
+   position: relative;
+   left: 0px;
+   padding: 0;
+   margin: 0;
+   font-size: 12px;
+   font-style: normal;
+   font-weight: normal;
+   color: #777;
+}
+p.help.level1 {
+   left: 20px;
+}
+p.help.level2 {
+   left: 40px;
+}
+
+hr.help {
+   position: relative;
+   left: 0px;
+   height: 1px;
+   padding: 0px;
+   margin: 0px;
+   color: #ddd;
+   background: #ffd;
+}
+hr.help.backTo {
+   width: 40px;
+   border-top: dashed 1px #999;
+}
+hr.help.backTo.level1 {
+   left: 20px;
+   width: 40px;
+   border-top: dashed 1px #999;
+}
+hr.help.content {
+   height: 6px;
+   width: 510px;
+   border: none;
+   border-bottom: solid 1px #ddd;
+}
+
+div.help_header {
+   display: inline;
+   width: 250px;
+   height: 14px;
+   font-weight: bold;
+   padding: 0px;
+   margin: 0px;
+}
+div.help_header.four {
+   font-size: 12px;
+}
+div.help_header.five {
+   font-size: 11px;
+}
+
+.helpContent {
+   color: #000;
+   padding: 0px;
+   margin: 0px;
+}
+
+h3.help {
+   font-size: 14px;
+   font-weight: bold;
+   padding: 0px;
+   margin: 0px;
+}
+
+h4.help {
+   width: 200px;
+   font-size: 12px;
+   font-style: normal;
+   padding: 0px;
+   margin: 6px 0 2px;
+   display: inline;
+}
+
+h5.help {
+   font-size: 11px;
+   font-style: normal;
+   padding: 0px;
+   margin: 10px 0 1px;
+}
+h5.help.level1 {
+   position: relative;
+   left: 20px;
+}
+
+h6.help {
+   font-size: 10px;
+   font-style: normal;
+   padding: 0px;
+   margin: 0px;
+   color: #33c;
+}
+
+table {
+   table-layout: fixed;
+   font-family: Verdana, Arial, sans-serif;
+   font-size: 11px; /* for IE8 which doesn't inherit font-size */
+}
+
+th.rowHeader {
+   padding: 2px 4px;
+   margin: 0;
+   text-align: left;
+   font-size: 12px;
+   font-style: normal;
+   background: #ddd;
+   min-width: 210px;
+}
+
+td.rowHeader {
+   padding: 2px 4px;
+   margin: 0;
+   text-align: left;
+   font-size: 11px;
+   font-style: normal;
+   font-weight: bold;
+   background: #ddd;
+   min-width: 210px;
+}
+
+td.rowData {
+   padding: 2px 4px;
+   margin: 0;
+   text-align: center;
+   font-size: 11px;
+   font-style: normal;
+   background: #eee;
+   min-width: 150px;
+}
+
+tr.help.row {
+   padding: 0px;
+   margin: 0px;
+   text-align: left;
+   font-size: 12px;
+   font-style: normal;
+}
+
+tr.help.header {
+   padding: 0px;
+   margin: 0px;
+   text-align: left;
+   font-size: 12px;
+   font-weight: bold;
+}
+
+.wlzIIPViewerIFrameTextDiv {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   margin: 4px;
+   padding: 4px;
+}
+.wlzIIPViewerIFrameTextDiv.aspect {
+   margin: 4px;
+   padding: 4px;
+}
+
+.wlzIIPViewerIFrameTextDiv p.help {
+   font-style: normal;
+   font-size: 12px;
+   color: #333;
+   padding: 0px;
+   margin: 0 0 6px;
+}
+
+img.helpIcon {
+   padding: 0px;
+   margin: 0px 2px;
+   position: relative;
+   top: 4px;
+}
+
+img.infoIcon {
+   padding: 0px;
+   margin: 0px 2px;
+   position: relative;
+   top: 4px;
+}
+
+#modelInfoMainContainer {
+   height: 100%;
+}
+
+#IIP3DViewerHelp_contentsDiv {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   font-style: normal;
+   font-size: 12px;
+   color: #333;
+   padding: 0px;
+   margin: 0px;
+}
+
+ul.IIP3DViewerHelp {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   font-style: normal;
+   font-size: 12px;
+   color: #333;
+   padding: 0px;
+   margin: 0px;
+   /* list-style: none; */
+   /* list-style-type: disc; */
+   list-style-type: circle;
+}
+ul.IIP3DViewerHelp.level0 {
+   left: 0px;
+}
+ul.IIP3DViewerHelp.level1 {
+   left: 20px;
+}
+ul.IIP3DViewerHelp.level1.bulleted {
+   left: 40px;
+   list-style-type: disc;
+}
+ul.IIP3DViewerHelp.level2 {
+   left: 60px;
+}
+ul.IIP3DViewerHelp.level3 {
+   left: 60px;
+}
+
+li.IIP3DViewerHelp {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   padding: 0px;
+   margin: 0px;
+}
+li.IIP3DViewerHelp.level0 {
+   left: 0px;
+}
+li.IIP3DViewerHelp.level1 {
+   left: 20px;
+}
+li.IIP3DViewerHelp.level2 {
+   left: 40px;
+}
+li.IIP3DViewerHelp.level3 {
+   left: 60px;
+}
+
+.help_internalLink {
+   display: inline;
+   font-size: 10px;
+   font-style: normal;
+}
+
+.backTo {
+   font-size: 10px;
+   font-style: normal;
+}
+.backTo.level1 {
+   position: relative;
+   left: 20px;
+   font-size: 10px;
+   font-style: normal;
+}
