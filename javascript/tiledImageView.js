@@ -1160,6 +1160,7 @@ emouseatlas.emap.tiledImageView = function() {
             mode === "fixedPoint" ||
 	    mode === "measuring" ||
 	    mode === "HRSection" ||
+            (mode === "pointClick" && pointClickEditor) ||
 	    mode === "queryAnatomy") {
 	    obj += "&obj=Wlz-coordinate-3D";
 	 }
@@ -1262,6 +1263,7 @@ emouseatlas.emap.tiledImageView = function() {
          mode === "measuring" ||
          mode === "HRSection" ||
          mode === "querySpatial" ||
+         mode === "pointClick" ||
 	 mode === "queryAnatomy") {
 
 	 if(respArr[1]) {
@@ -1297,6 +1299,10 @@ emouseatlas.emap.tiledImageView = function() {
 	       HRSectionPoint = {x:Math.round(pArr[0]), y:Math.round(pArr[1]), z:Math.round(pArr[2])};
 	       viewChanges.HRSection = true;
 	       notify("getDataAtMouseCallback HRSection");
+            } else if(mode === "pointClick") {
+	       pointClickPoint = {x:pArr[0], y:pArr[1], z:pArr[2]};
+	       viewChanges.editorPointClick = true;
+	       notify("getDataAtMouseCallback fixedPoint");
 	    } else if(indexName) {
 	       getGreyValue(point);
                showImgLabel_cb(indexArray);
@@ -1563,7 +1569,6 @@ emouseatlas.emap.tiledImageView = function() {
       var layerData = model.getLayerData();
       var layer = layerData[currentLayer];
       if(typeof(layer) === 'undefined') {
-         //console.log("getDataAtMouse returning, layer undefined");
          return false;
       }
 
@@ -1623,7 +1628,7 @@ emouseatlas.emap.tiledImageView = function() {
       var coordstr = substr.replace(/^\s+|\s+$/g, '') ;
 
       var pArr = coordstr.split(" ");
-      //console.log(pArr);
+      console.log(pArr);
       testCoordSystem2(pArr);
      
       //console.log("exit testCoordSystemCallback");
@@ -2550,6 +2555,25 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   // get the screen position given the coords in the image.
+   var getDisplayPositionGivenImgCoords = function(imgCoords) {
+      var viewport_x = getViewerContainerPos().x;
+      var viewport_y = getViewerContainerPos().y;
+      var imgToViewport_x = getViewportLeftEdge();
+      var imgToViewport_y = getViewportTopEdge();
+      console.log("getDisplayPositionGivenImgCoords: imgCoords %d,%d viewport %d,%d  imgToViewport %d,%d  scale %d",imgCoords.x,imgCoords.y,viewport_x,viewport_y,imgToViewport_x,imgToViewport_y,scale.cur);
+      var fudgeFactor = {x:-3, y:-8};
+      //var x = Number(imgCoords.x) + Number(getViewerContainerPos().x) - Number(getViewportLeftEdge()) - Number(fudgeFactor.x);
+      //var y = Number(imgCoords.y) + Number(getViewerContainerPos().y) - Number(getViewportTopEdge()) - Number(fudgeFactor.x);
+      var x = Number(imgCoords.x) - Number(fudgeFactor.x);
+      var y = Number(imgCoords.y) - Number(fudgeFactor.x);
+      ret = {x:x, y:y};
+
+      console.log("getDisplayPositionGivenImgCoords ",ret);
+      return ret;
+   };
+
+   //---------------------------------------------------------
    var completeInitialisation = function () {
  
       // make sure the window can use scrollbars
@@ -3168,6 +3192,10 @@ emouseatlas.emap.tiledImageView = function() {
 
       if(typeof(tools.pointClick) !== 'undefined') {
          emouseatlas.emap.pointClick.initialize();
+      }
+
+      if(typeof(tools.tprPointClick) !== 'undefined') {
+         emouseatlas.emap.tprPointClick.initialize();
       }
 
       if(typeof(tools.queryAnatomy) !== 'undefined') {
@@ -4324,6 +4352,7 @@ emouseatlas.emap.tiledImageView = function() {
       getDrawOrigin: getDrawOrigin,
       getPointClickPoint: getPointClickPoint,
       getDataAtMouse: getDataAtMouse,
+      getDisplayPositionGivenImgCoords: getDisplayPositionGivenImgCoords,
       getCompObjIndxArr: getCompObjIndxArr,
       testCoordSystem: testCoordSystem,
       isMouseDownInImage: isMouseDownInImage,

@@ -365,11 +365,11 @@ var tiledImageSelectorTool = new Class ({
             var shortname = name.substring(0, indx);
 	    this.feedbackText.set('text', shortname);
 	 } else if(this.kaufman) {
-	    var kaufmanImg = this.model.getKaufmanImg();
-	    this.feedbackText.set('text', 'plate ' + kaufmanImg);
+	    var pointClickImg = this.model.getPointClickImg();
+	    this.feedbackText.set('text', 'image ' + pointClickImg);
 	 } else {
 	    var cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
-	    this.feedbackText.set('text', "Section: "+ (cur3).toString());
+	    this.feedbackText.set('text', "section: "+ (cur3).toString());
 	 }
       }
 
@@ -396,11 +396,11 @@ var tiledImageSelectorTool = new Class ({
             var shortname = name.substring(0, indx);
 	    this.feedbackText.set('text', shortname);
 	 } else if(this.kaufman) {
-	    var kaufmanImg = this.model.getKaufmanImg();
-	    this.feedbackText.set('text', 'plate ' + kaufmanImg);
+	    var pointClickImg = this.model.getPointClickImg();
+	    this.feedbackText.set('text', 'image ' + pointClickImg);
 	 } else {
 	    var cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
-	    this.feedbackText.set('text', "Section: "+ (cur3).toString());
+	    this.feedbackText.set('text', "section: "+ (cur3).toString());
 	 }
 
 	 this.window.setVisible(true);
