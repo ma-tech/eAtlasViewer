@@ -3948,12 +3948,16 @@ emouseatlas.emap.tiledImageView = function() {
       var targetId = model.getViewerTargetId();
       var div = document.getElementById(targetId);
       var infoIcon = document.getElementById("infoFrameIconContainer");
+      var helpIcon = document.getElementById("helpFrameIconContainer");
 
       div.className = '';
       if(imageIsMaximised) {
          div.className = 'maximised';
 	 if(infoIcon) {
 	    infoIcon.style.visibility = "hidden";
+	 }
+	 if(helpIcon) {
+	    helpIcon.style.visibility = "hidden";
 	 }
       } else {
          if(typeof(tools.tree) !== 'undefined') {
@@ -3964,6 +3968,9 @@ emouseatlas.emap.tiledImageView = function() {
          }
 	 if(infoIcon) {
 	    infoIcon.style.visibility = "visible";
+	 }
+	 if(helpIcon) {
+	    helpIcon.style.visibility = "visible";
 	 }
       }
 
