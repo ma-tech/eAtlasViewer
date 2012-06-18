@@ -569,12 +569,15 @@
    border: none;
 }
 .markerLabelTableSpacerCell {
-   height: 1px;
+   height: 5px;
    padding: 0px;
    margin: 0;
    color: #000;
    border: none;
    white-space: normal;
    vertical-align: top;
+}
+.markerLabelTableSpacerCell.ruled {
+   height: 1px;
    background: #aaa;
 }
