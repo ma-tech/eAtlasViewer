@@ -1007,6 +1007,45 @@ if(!emouseatlas.emap.utilities) {
          var url = matched[0].substring(1,matched[0].length-1);
          return url;
       },
+   
+      //---------------------------------------------------------------
+      // returns the url param for a given key
+      // assumes urlParam of the form
+      // key1=param1&key2=param2
+      //---------------------------------------------------------------
+      getURLParam: function (key, params) {
+         
+         var paramArr;
+         var param;
+         var entry;
+         var indx;
+         var len;
+         var i;
+         var found = false;
+   
+         paramArr = params.split('&');
+         //console.log(paramArr);
+   
+         len = paramArr.length;
+         for(i=0; i<len; i++) {
+            entry = paramArr[i];
+            indx = entry.indexOf(key + "=");
+            if(indx === 0) {
+               found = true;
+               break;
+            }
+         }
+         if(!found) {
+            return undefined;
+         }
+   
+         indx = entry.indexOf("=");
+         indx = Number(indx) + Number(1);
+         param = entry.substring(indx);
+         //console.log("param for %s = %s",key,param);
+
+         return param;
+      },
 
       //---------------------------------------------------------
       /**
