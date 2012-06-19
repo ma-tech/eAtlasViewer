@@ -1,0 +1,29 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/kaufman/plate33b/",
+   "stackMetadataFilename": "stack.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "dataType": "pyrTiff_origNames",
+   "dataSubType": "kaufman",
+   "layerNames": [
+      "histology"
+   ],
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerData": [
+      {
+         "imageDir": "/export/data2/eAtlasViewer/data/kaufman/plate33b/pyramidalTiffs/",
+         "selectorName":"zsel.jpg.256.pyr.tif",
+	 "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"0.03125", "distance":"10", "mode":"pointClick"},
+   "pixelResolution": {"x":"0.68", "y":"0.68", "z":"1", "units":["\u03BC\u006D","\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/kaufman/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/kaufman/menu/menuContent.jso",
+   "tableMenuStructureFile": "/eAtlasViewer_dev/application/kaufman/menu/tableMenuStructure.jso",                                                                                     
+   "tableMenuContentFile": "/eAtlasViewer_dev/application/kaufman/menu/tableMenuContent.jso",
+   "pointClickImgData": {"plate":"33", "subplate":"33b", "sectionMap":{10:"33ba", 11:"33bb",}},
+   "tileframe": {"enabled": "true"}
+}

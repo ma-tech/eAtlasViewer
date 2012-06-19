@@ -1,0 +1,117 @@
+{
+   "toBeUsed": [
+      "locator",
+      "distance",
+      "rotation",
+      "layer",
+      "properties",
+      "fixedPoint",
+      "help",
+      "scale",
+      "refresh",
+      "measure"
+   ],
+   "pitchYaw": {
+      "width":"130",
+      "height":"130",
+      "x":"2",
+      "y":"10",
+      "draggable":"false",
+      "maxPitch":"175",
+      "maxYaw":"355",
+      "gap":"5",
+      "navImage":"NavigTile.tif",
+      "targetId":"toolContainerDiv"
+   },
+   "rotation": {
+      "width":"130",
+      "height":"85",
+      "x":"2",
+      "y":"110",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "layer": {
+      "width":"130",
+      "x":"2",
+      "y":"235",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "thinTopEdge":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "scale": {
+      "width":"130",
+      "height":"20",
+      "x":"2",
+      "y":"75",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "refresh": {
+      "width":"134",
+      "height":"20",
+      "x":"0",
+      "y":"200",
+      "draggable":"false",
+      "borders":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "distance": {
+      "width":"130",
+      "height":"20",
+      "x":"2",
+      "y":"40",
+      "draggable":"false",
+      "isHorizontal":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "locator": {
+      "width":"130",
+      "height":"130",
+      "x":"0",
+      "y":"0",
+      "draggable":"true",
+      "toBottom":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "properties": {
+      "width":"130",
+      "height":"130",
+      "x":"50",
+      "y":"50",
+      "draggable":"true",
+      "isHorizontal":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "fixedPoint": {
+      "width":"120",
+      "height":"120",
+      "x":"75",
+      "y":"150",
+      "draggable":"true",
+      "isHorizontal":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "tree": {
+      "width":"230",
+      "height":"600",
+      "x":"8",
+      "y":"60",
+      "draggable":"false",
+      "thinTopEdge":"false",
+      "targetId":"projectDiv"
+   },
+   "measure": {
+      "width":"100",
+      "height":"20",
+      "x":"200",
+      "y":"150",
+      "draggable":"true",
+      "borders":"false",
+      "transparent":"true",
+      "targetId":"emapIIPViewerDiv"
+   }
+}

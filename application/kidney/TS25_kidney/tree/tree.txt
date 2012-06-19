@@ -1,0 +1,92 @@
+Anatomy
+   juxtamedullary nephron 1
+      maturing_glomerular_tuft                     
+      parietal_layer_of_bowmans_capsule            
+      extraglomerular_mesangium                    
+      macula_densa                                 
+      renal_proximal_tubule
+         epithelium                                
+         lumen                                     
+      distal_convoluted_tubule
+         epithelium                                
+         lumen                                     
+      ascending_portion_of_the_loop_of_Henle
+         epithelium                                
+         lumen                                     
+      descending_portion_of_the_loop_of_Henle
+         epithelium                                
+         lumen                                     
+      collecting_duct
+         epithelium                                
+         lumen                                     
+      U_bend
+         epithelium                                
+         lumen                                     
+   cortical nephron 1
+      maturing_glomerular_tuft                     
+      bowmans_capsule                              
+      prospective_macula_densa                     
+      renal_proximal_tubule
+         epithelium                                
+         lumen                                     
+      distal_convoluted_tubule
+         epithelium                                
+         lumen                                     
+      ascending_limb
+         epithelium                                
+         lumen                                     
+      cortical_collecting_duct
+         epithelium                                
+         lumen                                     
+      connecting_tubule
+         epithelium                                
+         lumen                                     
+      bend
+         epithelium                                
+         lumen                                     
+      loop_of_henle
+         epithelium                                
+         lumen                                     
+      tree_terminal_branch_excluding_tip_itself
+         epithelium                                
+         lumen                                     
+      ureteric_tip
+         epithelium                                
+         lumen                                     
+   cortical nephron 2
+      maturing_glomerular_tuft                    
+      bowmans_capsule                              
+      prospective_macula_densa                     
+      renal_proximal_tubule                        
+      distal_convoluted_tubule                     
+      connecting_tubule                            
+      loop_of_henle                                
+      ureteric_tip
+         epithelium                                
+         lumen                                     
+      tree_terminal_branch_excluding_tip_itself
+         epithelium                               
+         lumen                                     
+      collecting_duct
+         epithelium                                
+         lumen                                     
+   Urinary system
+      ureter
+         epithelium                                
+         lumen                                     
+      metanephros
+         calyx
+	    lumen                                  
+	 s_shaped_body                             
+            proximal segment                       
+            distal segment                         
+            medial segment                         
+         comma_shaped_body                         
+	 epithelium
+            viseral                                
+            parietal                               
+	 extraglomerular_mesangium
+         renal capsule                             
+         renal vesicle                             
+         presumptive_endothelium_of_renal_corpuscle
+         cap_mesenchyme                            

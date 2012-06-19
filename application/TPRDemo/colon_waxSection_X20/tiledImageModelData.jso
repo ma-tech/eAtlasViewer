@@ -1,0 +1,30 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/TPRDemo/colon_waxSection_X20/",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "dataType": "singlePyrTiff",
+   "layerNames": [
+      "histology"
+   ],
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerData": [
+      {
+         "imageDir": "/export/fast0/eAtlasViewer/data/TPRDemo/single/",
+        "imageName":"colon_waxSection_X20.jpg.256.pyr.tif",
+	 "visible":"true"
+      }
+   ],
+   "initialState": {
+      "scale":"0.125",
+      "distance":"0",
+      "mode":"pointClick"
+   },
+   "pixelResolution": {"x":"0.68", "y":"0.68", "z":"", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/TPRDemo/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/TPRDemo/menu/menuContent.jso",
+   "pointClickImgData": {"image":"colon_waxSection_X20"},
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "tileframe": {"enabled": "true"}
+}

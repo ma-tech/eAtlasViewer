@@ -1,0 +1,33 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/duke/grass/",
+   "toolsMetadataFilename": "./tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "0"},
+   "sagittalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "180", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grass"
+   ],
+   "layerData": [
+      {
+         "imageDir": "/export/fast0/eAtlasViewer/data/duke/",
+         "imageName":"grass_mm.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "current":"true",
+         "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"1", "distance":"0", "pitch":"0", "yaw":"0", "roll":"0"},
+   "pixelResolution": {"x":"0.025", "y":"0.025", "z":"0.025", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/duke/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/duke/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "sectionOrderReversed": "false",
+   "tileframe": {"enabled": "true"}
+}

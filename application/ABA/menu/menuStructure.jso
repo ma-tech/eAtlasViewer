@@ -1,0 +1,38 @@
+[
+   {
+      "target": "emapIIPViewerDiv",
+      "type": "rightClick",
+      "itemWidthPx": "210",
+      "itemHeightPx": "20",
+      "structure": [
+         {
+            "id":"0",
+            "children":[]
+         },
+         {
+            "id":"1",
+            "children":[]
+         },
+         {
+            "id":"2",
+            "children":[]
+         },
+         {
+            "id":"3",
+            "spacer":""
+         },
+         {
+            "id":"4",
+            "children": []
+         },
+         {
+            "id":"5",
+            "spacer": ""
+         },
+         {
+            "id":"6",
+            "children":[]
+         }
+      ]
+   }
+]

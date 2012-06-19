@@ -1,0 +1,81 @@
+{
+   "imageTitleTooltip": {
+      "project": "ABA",
+      "logo": "/eAtlasViewer_dev/images/logo_AIBS.png",
+      "text": [
+         "Data provided for demonstration",
+         "of overlays and labelling"
+      ]
+   },
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/ABA/",
+   "toolsMetadataFilename": "tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "0"},
+   "sagittalView": {"pitch": "90", "yaw": "0", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "canon_T2star",
+      "canon_T2W",
+      "canon_T1",
+      "canon_hist",
+      "Nissl",
+      "Labels"
+   ],
+   "layerData": [
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/ABA/",
+         "imageName":"canon_T2star.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true"
+      },
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/ABA/",
+         "imageName":"canon_T2W.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "visible":"false"
+      },
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/ABA/",
+         "imageName":"canon_T1.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "visible":"false"
+      },
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/ABA/",
+         "imageName":"canon_hist.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "visible":"false"
+      },
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/ABA/",
+         "imageName":"Nissl.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "visible":"false"
+      },
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/ABA/",
+         "imageName":"StructureLabels.wlz",
+         "type":"label",
+         "opacity":"0.5",
+         "visible":"false",
+         "treeStructureFile": "/eAtlasViewer_dev/application/ABA/tree/treeStructure.jso",
+         "treeDataFile": "/eAtlasViewer_dev/application/ABA/tree/treeData.jso"
+      }
+   ],
+   "initialState": {"scale":"1", "distance":"0", "pitch":"0", "yaw":"0", "roll":"0"},
+   "menuStructureFile": "/eAtlasViewer_dev/application/ABA/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/ABA/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "tileframe": {"enabled": "true"}
+}

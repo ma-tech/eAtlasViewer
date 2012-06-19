@@ -1,0 +1,67 @@
+{
+   "toBeUsed": [
+      "locator",
+      "help",
+      "scale",
+      "refresh",
+      "scalebar",
+      "measure"
+   ],
+   "scale": {
+      "width":"100",
+      "height":"15",
+      "x":"1",
+      "y":"41",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "scalebar": {
+      "width":"130",
+      "height":"20",
+      "x":"2",
+      "y":"10",
+      "draggable":"true",
+      "borders":"false",
+      "transparent":"true",
+      "toBottom":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "refresh": {
+      "width":"104",
+      "height":"20",
+      "x":"0",
+      "y":"62",
+      "draggable":"false",
+      "borders":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "locator": {
+      "width":"100",
+      "height":"150",
+      "x":"0",
+      "y":"98",
+      "draggable":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "selector": {
+      "maxdim":"100",
+      "x":"10",
+      "y":"52",
+      "draggable":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "measure": {
+      "width":"75",
+      "height":"15",
+      "x":"200",
+      "y":"150",
+      "draggable":"true",
+      "borders":"true",
+      "transparent":"false",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "contextMenu": {
+      "targetId":"emapIIPViewerDiv"
+   }
+}

@@ -1,0 +1,59 @@
+[
+   {
+      "target": "emapIIPViewerDiv",
+      "content": [
+         {
+            "id":"0",
+            "name":["reload image"],
+            "action":"emouseatlas.emap.tiledImageView.refreshImage()",
+            "enabled":"true"
+         },
+         {
+            "id":"1",
+            "name":["maximise image"],
+            "action":"emouseatlas.emap.tiledImageView.maximiseImage()",
+	    "checkbox": "true",
+            "checked": "false",
+            "enabled":"true"
+         },
+         {
+            "id":"2",
+            "name":["toolbox"],
+            "action":"emouseatlas.emap.tiledImageView.setToolboxVisibility()",
+            "checkbox":"true",
+            "checked":"true",
+            "enabled":"true"
+         },
+         {
+            "id":"3",
+            "spacer":"true"
+         },
+         {
+            "id":"4",
+            "name":["move mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(0)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"5",
+            "name":["measurement mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(1)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"6",
+            "spacer":"true"
+         },
+         {
+            "id":"7",
+            "name":["download"],
+            "action":"",
+            "enabled":"false"
+         }
+      ]
+   }
+]

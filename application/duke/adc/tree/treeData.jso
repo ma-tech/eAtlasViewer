@@ -1,0 +1,527 @@
+         [
+            {
+               "nodeId":"0",
+               "name":"forelimb",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"0", "domainColour":["133","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"1",
+               "name":"hand",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"2",
+               "name":"bones",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"3",
+               "name":"capitate",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"1", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"4",
+               "name":"centrale",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"2", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"5",
+               "name":"falciform",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"3", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"6",
+               "name":"hamate",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"4", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"7",
+               "name":"metacarpals",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"5", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"8",
+               "name":"pisiform",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"6", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"9",
+               "name":"scapholunate",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"7", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"10",
+               "name":"trapezium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"8", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"11",
+               "name":"trapezoid",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"9", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"12",
+               "name":"triquetrum",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"10", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"13",
+               "name":"muscles_and_tendons",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"14",
+               "name":"abductor_digiti_quinti",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"11", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"15",
+               "name":"abductor_pollicis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"12", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"16",
+               "name":"adductor_pollicis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"13", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"17",
+               "name":"flexor_digiti_primi_brevis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"14", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"18",
+               "name":"flexor_digiti_quinti_brevis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"15", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"19",
+               "name":"interossei",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"16", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"20",
+               "name":"lumbricales",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"17", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"21",
+               "name":"opponens_digiti_quinti",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"18", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"22",
+               "name":"superficial_flexor_tendons",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"19", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"23",
+               "name":"lower_arm",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"24",
+               "name":"bones",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"25",
+               "name":"radius",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"20", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"26",
+               "name":"ulna",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"21", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"27",
+               "name":"muscles_and_tendons",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"28",
+               "name":"extensors",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"29",
+               "name":"extensor_carpi_radialis__longus_and_brevis_",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"22", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"30",
+               "name":"extensor_carpi_ulnaris",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"23", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"31",
+               "name":"extensor_digitorum_communis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"24", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"32",
+               "name":"extensor_digitorum_lateralis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"25", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"33",
+               "name":"extensor_indicis_proprius",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"26", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"34",
+               "name":"extensor_pollicis__longus_and_brevis_",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"27", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"35",
+               "name":"flexors",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"36",
+               "name":"flexor_carpi_radialis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"28", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"37",
+               "name":"flexor_carpi_ulnaris",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"29", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"38",
+               "name":"flexor_digitorum_profundus_humeral_or_superficial_head",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"30", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"39",
+               "name":"flexor_digitorum_profundus_radial_head",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"31", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"40",
+               "name":"flexor_digitorum_profundus_tendon",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"32", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"41",
+               "name":"flexor_digitorum_profundus_ulnar_head",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"33", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"42",
+               "name":"flexor_digitorum_superficialis_1",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"34", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"43",
+               "name":"flexor_digitorum_superficialis_2",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"35", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"44",
+               "name":"flexor_digitorum_superficial_tendon",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"36", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"45",
+               "name":"flexor_digitorum_superficial_tendon_branches",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"37", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"46",
+               "name":"palmaris_longus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"38", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"47",
+               "name":"pronator_quadratus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"39", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"48",
+               "name":"pronator_teres",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"40", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"49",
+               "name":"supinator",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"41", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"50",
+               "name":"shoulder",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"51",
+               "name":"bones",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"52",
+               "name":"scapula",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"42", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"53",
+               "name":"muscles_and_tendons",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"54",
+               "name":"acromiodeltoidus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"43", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"55",
+               "name":"infrascapularis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"44", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"56",
+               "name":"latissimus_dorsi",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"45", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"57",
+               "name":"spinodeltoidus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"46", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"58",
+               "name":"subscapularis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"47", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"59",
+               "name":"supraspinatous",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"48", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"60",
+               "name":"teres_major",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"49", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"61",
+               "name":"teres_minor",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"50", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"62",
+               "name":"upper_arm",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"63",
+               "name":"bones",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"64",
+               "name":"humerus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"51", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"65",
+               "name":"muscles_and_tendons",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"66",
+               "name":"aconeus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"52", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"67",
+               "name":"biceps_brachii_long",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"53", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"68",
+               "name":"biceps_brachii_short",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"54", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"69",
+               "name":"brachialis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"55", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"70",
+               "name":"coracobrachilis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"56", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"71",
+               "name":"dorsoepitrachlearis_brachii",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"57", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"72",
+               "name":"triceps_brachii_lateral",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"58", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"73",
+               "name":"triceps_brachii_long",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"59", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"74",
+               "name":"triceps_brachii_medial",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"60", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            }
+         ]

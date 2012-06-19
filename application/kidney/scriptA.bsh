@@ -1,0 +1,161 @@
+#!  /bin/bash
+
+#for i in EMA*; do
+for i in *.php; do
+
+#if [ -d "${i}" ] ; then
+#   echo "directory" ${i}
+#else
+#   echo "file" ${i}
+#fi
+#
+
+if [ -d "${i}" ] ; then
+   DIR=true
+   #echo "directory" ${i}
+else
+   DIR=false
+   #echo "file" ${i}
+fi
+
+if $DIR ; then
+   #echo "cd " ${i}
+   cd ${i}
+   #cp /export/data0/MAWWW/Public/html/bugfixes/eAtlasViewer/application/ema/wlz/${i}/*.jso ${i}
+fi
+
+#mv ${i}/${i}.php .
+
+#   cd ${i}
+
+#sed -i -e 's/data\/ema/application\/ema/' ${i}.php
+#sed -i -e 's/eAtlasViewer_ema\/data\/ema/eAtlasViewer_ema\/application\/ema/' tiledImageModelData.jso
+
+#sed -i -e '/busyIndicatorSrc/ d' tiledImageModelData.jso
+#sed -i -e '/wlzMode/ a\
+#   \"busyIndicatorSrc\": \"busyIndicator.gif\",' tiledImageModelData.jso
+
+#sed -i -e '/busyIndicatorSrc/ a\
+#   \"tools\": [\
+#      \"locator\",\
+#      \"distance\",\
+#      \"pitchYaw\",\
+#      \"rotation\",\
+#      \"fixedPoint\",\
+#      \"help\",\
+#      \"scale\",\
+#      \"refresh\",\
+#      \"equivalentSection\",\
+#      \"measure\"\
+#   ],' tiledImageModelData.jso
+
+#sed -i -e '/toolContainerDiv/ c\
+#	 \<div id=\"toolContainerDiv\" class=\"ema_wlz\"\>\
+#	    \<div id=\"contextMenuHintDiv\" class=\"ema_wlz\"\>\
+#	       right-click over main image for context menu\
+#	    \<\/div\>\
+#	 \<\/div\>' ${i}
+
+#sed -i -e 's/tiledImageToolParams/..\/tiledImageToolParams/' tiledImageModelData.jso
+sed -i -e 's/_ema/_dev/' ${i}
+#sed -i -e 's/_ema/_dev/' tiledImageModelData.jso
+#sed -i -e 's/_dev/_ema/' tiledImageModelData.jso
+#sed -i -e 's/glenluig.hgu.mrc.ac.uk/testwww.emouseatlas.org/' tiledImageModelData.jso
+#sed -i -e 's/testwww.emouseatlas.org/glenluig.hgu.mrc.ac.uk/' tiledImageModelData.jso
+
+
+#sed -i -e '/\"refresh\":true/ a\
+#             \"equivalentSection\":true,' ${i}
+#sed -i -e '/equivalentSection/ d' ${i}
+#sed -i -e '/measuring.css/ a\
+#      \<link rel=\"stylesheet\" type=\"text\/css\" media=\"all\" href=\"..\/..\/..\/css\/tools\/equivalentSection.css\" \/\>' ${i}
+#sed -i -e '/busyIndicator.css/ a\
+#      \<link rel=\"stylesheet\" type=\"text\/css\" media=\"all\" href=\"..\/..\/..\/css\/utils\/marker.css\" \/\>' ${i}
+#sed -i  -e '/Mif/ d' ${i}
+#sed -i -e '/tiledImageRefreshTool.js/ a\
+#      \<script type=\"text\/javascript\" src=\"..\/..\/..\/javascript\/tools\/tiledImageEquivalentSectionTool.js\"\>\<\/script\>' ${i}
+
+
+#sed -i -e 's/\(MA\)\([0][0]*\)\([1-9][1-9]*\)\(\.png\)/EMA\3\4/' -e 's/\(MA\)\([0][0]*\)\([1-9][1-9]*\)/EMA:\3/' data.jso
+#sed -e 's/\(EMA\):\([0-9][0-9]*\)\(\.png\)/EMA\1\2\3/' data.jso
+#sed -i -e 's/\(MA\)\([0][0]*\)\([1-9][1-9]*\)/EMA:\3/' ${i}/tiledImageModelData.jso
+#sed -i -e 's/EMA:/EMA/' ${i}/tiledImageModelData.jso
+#sed -i -e 's/Model EMA/Model EMA:/' ${i}/tiledImageModelData.jso
+#sed -n '/pixelResolution/ p' ${i}/tiledImageModelData.jso
+
+#sed -i -e '/fileSystemRoot/ d' tiledImageModelData.jso
+#sed -i -e '/clientRoot/ d' tiledImageModelData.jso
+#sed -i -e '/dataRoot/ d' tiledImageModelData.jso
+#sed -i -e '/interfaceImageDir/ d' tiledImageModelData.jso
+#sed -i -e '/menuContentFile/ d' tiledImageModelData.jso
+#sed -i -e '/menuStructureFile/ d' tiledImageModelData.jso
+#sed -i -e '/imageDir/ d' tiledImageModelData.jso
+
+#sed -i -e '/contextMenu/ d' ${i}
+
+#sed -i -e '/iipServerPath/ a\
+#   \"metadataRoot\": \"\/eAtlasViewer_ema\/data\/ema\/wlz\/XXX\/\",' tiledImageModelData.jso
+
+#sed -i -e '/stackMetadataFilename/ a\
+#sed -i -e '/toolsMetadataFilename/ a\
+#   \"interfaceImageDir\": \"\/eAtlasViewer_ema\/images\/\",' tiledImageModelData.jso
+
+#sed -i -e '/pixelResolution/ a\
+#   \"menuStructureFile\": \"\/eAtlasViewer_ema\/data\/ema\/wlz\/XXX\/menu\/menuStructure.jso\",' tiledImageModelData.jso
+
+#sed -i -e '/menuStructureFile/ a\
+#   \"menuContentFile\": \"\/eAtlasViewer_ema\/data\/ema\/wlz\/XXX\/menu\/menuContent.jso\",' tiledImageModelData.jso
+
+#sed -i -e '/^[ ][ ]*[{]/ a\
+#         \"imageDir\": \"\/export\/data0\/eAtlasViewer\/data\/ema\/wlz\/XXX\/\",' tiledImageModelData.jso
+
+#sed -i -e '/layerData/ a\
+#      {\
+#         \"imageDir\": \"\/export\/data0\/eAtlasViewer\/data\/ema\/wlz\/XXX\/pyramidalTiffs\/\",\
+#         \"selectorName\":\"zsel.jpg.256.pyr.tif\",\
+#	 \"visible\":\"true\"\
+#      }' tiledImageModelData.jso
+
+#sed -i  -e '/pageHeaderDiv/ a\
+#            \<div id=\"infoFrameIconContainer\" class=\"infoFrameIconContainer\"\>\
+#               \<img id=\"infoFrameIconImg\" src=\"..\/..\/..\/images\/info-26.png\"\>\<\/img\>\
+#            \<\/div\>' ${i}
+
+#sed  -n -e '145 p' ${i}
+#sed -i -e '145 i\
+#	    \<div id=\"wlzIIPViewerTitle\"\>\
+#               3D Model (EMA:49): TS17(10.5 dpc)\
+#            \<\/div\>' ${i}
+
+#sed -i  -e '/busyIndicator.js/ a\
+#      \<script type=\"text\/javascript\" src=\"..\/..\/..\/javascript\/utils\/viewerInfoFrame.js\"\>\<\/script\>' ${i}
+
+#sed -n  -e '127,128 p' ${i}
+#sed -i -e '128 a\
+#         \<div id=\"wlzIIPViewerInfoIFrameContainer\" class=\"wlzIIPViewerIFrameContainer\"\>\
+#            \<div id=\"wlzIIPViewerInfoIFrameTopDiv\" class=\"wlzIIPViewerIFrameTopDiv\"\>\
+#               \<h4 class=\"help\"\>Model Information\<\/h4\>\
+#               \<h6 class=\"help\"\>(Click the \<img src=\"..\/..\/..\/images\/info-26.png\" class=\"infoIcon\"\> icon to keep this page displayed.)\<\/h6\>\
+#               \<div id=\"wlzIIPViewerInfoIFrameCloseDiv\" class=\"wlzIIPViewerIFrameCloseDiv\"\>\
+#                  \<img class=\"iframeClose\" src=\"..\/..\/..\/images\/close_10x8.png\"\>\
+#               \<\/div\>\
+#            \<\/div\>\
+#	    \<iframe id=\"wlzIIPViewerInfoIFrame\" class=\"wlzIIPViewerIFrame modelInfo\" src=\"..\/..\/..\/html\/infoFrame.html\" name=\"wlzIIPViewerInfoIFrame\" scrolling=\"no\"\>\
+#	    \<\/iframe\>\
+#         \<\/div\>' ${i}
+
+#            \<div id=\"infoFrameIconContainer\" class=\"infoFrameIconContainer\"\>\
+#               \<img id=\"infoFrameIconImg\" src=\"..\/..\/..\/images\/info-26.png\"\>\<\/img\>\
+#            \<\/div\>' ${i}
+
+#sed -i -e 's/'"${i}"'\///' tiledImageModelData.jso
+
+if $DIR ; then
+   #echo "done"
+   #echo "cd .."
+   cd ..
+fi
+
+done
+
+echo finished

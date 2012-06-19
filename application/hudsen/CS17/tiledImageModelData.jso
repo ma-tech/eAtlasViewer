@@ -1,0 +1,56 @@
+{
+   "imageTitleTooltip": {
+      "project": "Hudsen",
+      "logo": "/eAtlasViewer_dev/application/hudsen/hudsenLogoTooltip_50.png",
+      "text": [
+         "3D models of the developing human embryo for",
+	 "understanding development and genes.",
+	 "www.hudsen.org"
+      ]
+   },
+   "webServer": "glenluig.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/emaiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/hudsen/CS17/",
+   "toolsMetadataFilename": "tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "0"},
+   "sagittalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "0", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grey",
+      "labels"
+   ],
+   "layerData": [
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/hudsen/CS17/",
+         "imageName":"N365_Model.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "visible":"true"
+      },
+      {
+         "imageDir":"/export/data2/eAtlasViewer/data/hudsen/CS17/",
+         "imageName":"N365_compound.wlz",
+         "type":"label",
+         "opacity":"1.0",
+         "visible":"true",
+	 "current":"",
+         "treeStructureFile": "/eAtlasViewer_dev/application/hudsen/CS17/tree/treeStructure.jso",
+         "treeDataFile": "/eAtlasViewer_dev/application/hudsen/CS17/tree/treeData.jso"
+      }
+   ],
+   "initialState": {"scale":"1.0", "distance":"0", "pitch":"90", "yaw":"90", "roll":"90"},
+   "pixelResolution": {"x":"8", "y":"8", "z":"8", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/hudsen/CS17/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/hudsen/CS17/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "infoDetails": {
+      "jso":"CS17/modelInfo.jso",
+      "id":"N365",
+      "assocIndx":"cs17"
+   },
+   "tileframe": {"enabled": "true"}
+}

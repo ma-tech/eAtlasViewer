@@ -1,0 +1,35 @@
+Anatomy:
+Diagonal Band Area			any/DGA_Def(N365).wlz
+Hypothalamus  			anatomy/Hypothalamus_Def(N365).wlz
+Lateral Ganglionic Eminence	anatomy/LGE_Def(N365).wlz
+Medial Ganglionic Eminence	anatomy/MGE_Def(N365).wlz
+Mesencephalon 	  		anatomy/Mesencephalon_Def(N365).wlz
+Dorsal Root Ganglia		anatomy/N365_DRG_131003.wlz
+Ear						anatomy/N365_ear_131003.wlz
+Eye						anatomy/N365_eye_131003.wlz
+Heart					anatomy/N365_heart_131003.wlz
+Liver					anatomy/N365_liver_131003.wlz
+Preoptic Area				anatomy/POA_Def(N365).wlz
+Pallium					anatomy/Pallium_Def(N365).wlz
+Prosomere 1				anatomy/p1_Def(N365).wlz
+Prosomere 2				anatomy/p2_Def(N365).wlz
+Prosomere 3				anatomy/p3_Def(N365).wlz
+Rhombomere 0			anatomy/r0_Def(N365).wlz
+Rhombomere 1			anatomy/r1_Def(N365).wlz
+Rhombomere 2			anatomy/r2_Def(N365).wlz
+Rhombomere 3			anatomy/r3_Def(N365).wlz
+Rhombomere 4			anatomy/r4_Def(N365).wlz
+Rhombomere 5			anatomy/r5_Def(N365).wlz
+Rhombomere 6			anatomy/r6_Def(N365).wlz
+Rhombomere 7			anatomy/r7-r11_Def(N365).wlz
+Spinal cord				anatomy/spinal_cord_(N365)_JK.wlz
+
+
+Gene Expression:
+BTN1A1 strong expression		gene_expression/N365_BT_strong.wlz
+BTN1A1 weak expression 		gene_expression/N365_BT_weak.wlz
+GAP43 strong expression		gene_expression/N365_GAP43_strong.wlz
+GAP43 weak Expression			gene_expression/N365_GAP43_weak.wlz
+MAP2 strong expression			gene_expression/N365_MAP2_strong.wlz
+MAP2 weak expression			gene_expression/N365_MAP2_weak.wlz
+PAX6 expression				gene_expression/N365_PAX6.wlz

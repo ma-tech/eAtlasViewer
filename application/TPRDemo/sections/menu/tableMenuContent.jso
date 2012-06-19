@@ -1,0 +1,29 @@
+[
+   {
+      "target": "pointClickTableDiv",
+      "content": [
+         {
+            "id":"0",
+            "name":["query EMAGE"],
+            "action":"emouseatlas.emap.pointClick.doTableEmageQuery()",
+            "enabled":"true"
+         },
+         {
+            "id":"1",
+            "name":["query GXDB"],
+            "action":"emouseatlas.emap.pointClick.doTableGxdbQuery()",
+            "enabled":"true"
+         },
+         {
+            "id":"2",
+            "spacer":"true"
+         },
+         {
+            "id":"3",
+            "name":["cancel"],
+            "action":"emouseatlas.emap.pointClick.doTableCancel()",
+            "enabled":"true"
+         }
+      ]
+   }
+]

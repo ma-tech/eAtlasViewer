@@ -1,0 +1,646 @@
+         [
+            {
+               "nodeId":"0",
+               "name":"Anatomy",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"1",
+               "name":"juxtamedullary nephron 1",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"2",
+               "name":"maturing_glomerular_tuft",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"2", "domainColour":["133","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"3",
+               "name":"parietal_layer_of_bowmans_capsule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"3", "domainColour":["133","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"4",
+               "name":"extraglomerular_mesangium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"4", "domainColour":["255","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"5",
+               "name":"macula_densa",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"5", "domainColour":["255","17","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"6",
+               "name":"renal_proximal_tubule",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"7",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"6", "domainColour":["0","45","225","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"8",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"7", "domainColour":["25","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"9",
+               "name":"distal_convoluted_tubule",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"10",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"8", "domainColour":["112","130","105","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"11",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"9", "domainColour":["25","248","92","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"12",
+               "name":"ascending_portion_of_the_loop_of_Henle",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"13",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"10", "domainColour":["38","13","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"14",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"11", "domainColour":["55","178","42","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"15",
+               "name":"descending_portion_of_the_loop_of_Henle",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"16",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"12", "domainColour":["0","240","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"17",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"13", "domainColour":["255","178","92","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"18",
+               "name":"collecting_duct",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"19",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"14", "domainColour":["180","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"20",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"15", "domainColour":["200","78","102","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"21",
+               "name":"U_bend",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"22",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"16", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"23",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"17", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"24",
+               "name":"cortical nephron 1",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"25",
+               "name":"maturing_glomerular_tuft",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"18", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"26",
+               "name":"bowmans_capsule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"19", "domainColour":["200","255","10","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"27",
+               "name":"prospective_macula_densa",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"20", "domainColour":["180","155","9","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"28",
+               "name":"renal_proximal_tubule",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"29",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"21", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"30",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"22", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"31",
+               "name":"distal_convoluted_tubule",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"32",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"23", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"33",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"24", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"34",
+               "name":"ascending_limb",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"35",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"25", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"36",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"26", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"37",
+               "name":"cortical_collecting_duct",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"38",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"27", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"39",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"28", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"40",
+               "name":"connecting_tubule",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"41",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"29", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"42",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"30", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"43",
+               "name":"bend",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"44",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"31", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"45",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"32", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"46",
+               "name":"loop_of_henle",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"47",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"33", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"48",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"34", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"49",
+               "name":"tree_terminal_branch_excluding_tip_itself",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"50",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"35", "domainColour":["30","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"51",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"36", "domainColour":["255","75","92","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"52",
+               "name":"ureteric_tip",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"53",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"37", "domainColour":["28","130","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"54",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"38", "domainColour":["155","150","130","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"55",
+               "name":"cortical nephron 2",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"56",
+               "name":"maturing_glomerular_tuft",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"39", "domainColour":["240","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"57",
+               "name":"bowmans_capsule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"40", "domainColour":["250","240","155","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"58",
+               "name":"prospective_macula_densa",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"41", "domainColour":["133","77","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"59",
+               "name":"renal_proximal_tubule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"42", "domainColour":["255","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"60",
+               "name":"distal_convoluted_tubule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"43", "domainColour":["133","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"61",
+               "name":"connecting_tubule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"44", "domainColour":["220","137","55","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"62",
+               "name":"loop_of_henle",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"45", "domainColour":["83","210","99","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"63",
+               "name":"ureteric_tip",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"64",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"46", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"65",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"47", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"66",
+               "name":"tree_terminal_branch_excluding_tip_itself",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"67",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"48", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"68",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"49", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"69",
+               "name":"collecting_duct",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"70",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"50", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"71",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"51", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"72",
+               "name":"Urinary system",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"73",
+               "name":"ureter",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"74",
+               "name":"epithelium",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"52", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"75",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"53", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"76",
+               "name":"metanephros",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"77",
+               "name":"calyx",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"78",
+               "name":"lumen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"54", "domainColour":["255","10","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"79",
+               "name":"s_shaped_body",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"80",
+               "name":"proximal segment",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"56", "domainColour":["255","78","78","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"81",
+               "name":"distal segment",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"57", "domainColour":["25","200","72","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"82",
+               "name":"medial segment",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"58", "domainColour":["40","178","239","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"83",
+               "name":"comma_shaped_body",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"59", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"84",
+               "name":"epithelium",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"85",
+               "name":"viseral",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"60", "domainColour":["240","0","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"86",
+               "name":"parietal",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"61", "domainColour":["5","240","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"87",
+               "name":"extraglomerular_mesangium",
+               "nodeState":{"open":"false", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"88",
+               "name":"renal capsule",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"62", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"89",
+               "name":"renal vesicle",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"63", "domainColour":["5","200","200","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"90",
+               "name":"presumptive_endothelium_of_renal_corpuscle",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"64", "domainColour":["200","18","235","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"91",
+               "name":"cap_mesenchyme",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"65", "domainColour":["88","178","12","255"], "domainSelected":"false"}
+            },
+         ]

@@ -1,0 +1,92 @@
+[
+   {
+      "target": "emapIIPViewerDiv",
+      "content": [
+         {
+            "id":"0",
+            "name":["reload image"],
+            "action":"emouseatlas.emap.tiledImageView.refreshImage()",
+            "enabled":"true"
+         },
+         {
+            "id":"1",
+            "name":["maximise image"],
+            "action":"emouseatlas.emap.tiledImageView.maximiseImage()",
+	    "checkbox": "true",
+            "checked": "false",
+            "enabled":"true"
+         },
+         {
+            "id":"2",
+            "name":["show tile border"],
+            "action":"emouseatlas.emap.tiledImageView.showTileBorders()",
+	    "checkbox": "true",
+            "checked": "false",
+            "enabled":"true"
+         },
+         {
+            "id":"3",
+            "name":["toolbox"],
+            "action":"emouseatlas.emap.tiledImageView.setToolboxVisibility()",
+            "checkbox":"true",
+            "checked":"true",
+            "enabled":"true"
+         },
+         {
+            "id":"4",
+            "spacer":"true"
+         },
+         {
+            "id":"5",
+            "name":["move mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(0)",
+	    "radio": "true",
+            "radioGroup": "mode",
+	    "checked": "true",
+            "enabled":"true"
+         },
+         {
+            "id":"6",
+            "name":["measurement mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(1)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"7",
+            "name":["draw (query) mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(2)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"8",
+            "name":["equivalent section mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(3)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"9",
+            "name":["fixed point mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(4)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"10",
+            "spacer":"true"
+         },
+         {
+            "id":"11",
+            "name":["download"],
+            "action":"",
+            "enabled":"false"
+         }
+      ]
+   }
+]

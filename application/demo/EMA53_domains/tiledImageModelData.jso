@@ -1,0 +1,49 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/demo/EMA53_domains/",
+   "toolsMetadataFilename": "tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "180"},
+   "sagittalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "180", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grey",
+      "genes"
+   ],
+   "layerData": [
+      {
+         "imageDir": "/export/data0/eAtlasViewer/data/demo/EMA53/",
+         "imageName":"EMA53_norm.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true"
+      },
+      {
+         "imageDir":"/export/data0/eAtlasViewer/data/demo/EMA53/",
+         "imageName":"EMA53_comp.wlz",
+         "type":"label",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true",
+         "treeStructureFile": "/eAtlasViewer_dev/application/demo/EMA53_domains/tree/treeStructure.jso",
+         "treeDataFile": "/eAtlasViewer_dev/application/demo/EMA53_domains/tree/treeData.jso"
+      }
+   ],
+   "initialState": {"scale":"2", "distance":"0", "pitch":"0", "yaw":"0", "roll":"180"},
+   "pixelResolution": {"x":"8", "y":"8", "z":"8", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/demo/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/demo/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "sectionOrderReversed": "false",
+   "infoDetails": {
+      "jso":"http://aberlour.hgu.mrc.ac.uk/emap/ema/json/modelSelector/modelInfo.jso",
+      "id":"EMA:53",
+      "assocIndx":"ts17"
+   },
+   "tileframe": {"enabled": "true"}
+}

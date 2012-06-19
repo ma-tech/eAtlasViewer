@@ -1,0 +1,93 @@
+Anatomy
+   juxtamedullary nephron 1
+      maturing_glomerular_tuft                     151009_maturing_glomerular_tuftEMAP27954.wlz
+      parietal_layer_of_bowmans_capsule            151009_parietal_layer_of_bowmans_capsule_EMAP27978.wlz
+      extraglomerular_mesangium                    151009_extraglomerular_mesangiumEMAP27966.wlz
+      macula_densa                                 151009_macula_densaEMAP28401.wlz
+      renal_proximal_tubule
+         epithelium                                         151009_epithelium_of_renal_proximal_tubuleEMAP28283.wlz
+         lumen                                              151009_lumen_of_renal_proximal_tubuleEMAP28283.wlz
+      distal_convoluted_tubule
+         epithelium                                         151009_epithelium_of_distal_convoluted_tubuleEMAP28395.wlz
+         lumen                                              151009_lumen_of_distal_convoluted_tubuleEMAP28395.wlz
+      ascending_portion_of_the_loop_of_Henle
+         epithelium                                         151009_epithelium_of_ascending_portion_of_the_loop_of_HenleEMAP28330.wlz
+         lumen                                              151009_lumen_of_ascending_portion_of_the_loop_of_HenleEMAP28330.wlz
+      descending_portion_of_the_loop_of_Henle
+         epithelium                                         151009_epithelium_descending_portion_of_the_loop_of_HenleEMAP28327.wlz
+         lumen                                              151009_lumen_descending_portion_of_the_loop_of_HenleEMAP28327.wlz
+      collecting_duct
+         epithelium                                         151009_epithelium_of_collecting_ductEMAP28412.wlz
+         lumen                                              151009_lumen_of_collecting_ductEMAP28412.wlz
+      U_bend
+         epithelium                                         151009_epithelium_U_bendEMAP28360.wlz
+         lumen                                              151009_U_bend_EMAP28360.wlz
+   cortical nephron 1
+      maturing_glomerular_tuft                     Stack02_131009_cn_maturing_glomerular_tuft_EMAP27954.wlz
+      bowmans_capsule                              Stack02_131009_cn_bowmans_capsule_EMAP27978.wlz
+      prospective_macula_densa                     Stack02_131009_cn_prospective_macula_densa_EMAP28401.wlz
+      renal_proximal_tubule
+         epithelium                                         Stack02_131009_cn_epithelium_renal_proximal_tubule_EMAP28283.wlz
+         lumen                                              Stack02_131009_cn_lumen_renal_proximal_tubule_EMAP28283.wlz
+      distal_convoluted_tubule
+         epithelium                                         Stack02_131009_cn_epithelium_distal_convoluted_tubule_EMAP28395.wlz
+         lumen                                              Stack02_131009_cn_lumen_distal_convoluted_tubule_EMAP28395.wlz
+      ascending_limb
+         epithelium                                         Stack02_131009_cn_epithelium_ascending_limb_EMAP28330 .wlz
+         lumen                                              Stack02_131009_cn_lumen_ascending_limb_EMAP28330.wlz
+      cortical_collecting_duct
+         epithelium                                         epithelium_cortical_collecting_duct.wlz
+         lumen                                              lumen_cortical_collecting_duct.wlz
+      connecting_tubule
+         epithelium                                         Stack02_131009_cn_epithelium_of_connecting_tubule_EMAP28016.wlz
+         lumen                                              Stack02_131009_cn_lumen_of_connecting_tubule_EMAP28016.wlz
+      bend
+         epithelium                                         Stack03_cn_141009_epithelium_bend_EMAP28360.wlz
+         lumen                                              Stack03_cn_141009_lumen_bend_EMAP28360.wlz
+      loop_of_henle
+         epithelium                                         Stack03_cn_141009_epithelium_loop_of_Henle_EMAP28324.wlz
+         lumen                                              Stack03_cn_141009_lumen_loop_of_Henle_EMAP28324.wlz
+      tree_terminal_branch_excluding_tip_itself
+         epithelium                                         epithelium_tree_terminal_branch_excluding_tip_itself.wlz
+         lumen                                              lumen_tree_terminal_branch_excluding_tip_itself.wlz
+      ureteric_tip
+         epithelium                                         epithelium_ureteric_tip.wlz
+         lumen                                              lumen_of_ureteric_tips
+   cortical nephron 2
+      maturin g_glomerular_tuft                    Stack06_glomerular_tuft_EMAP27954.wlz
+      bowmans_capsule                              Stack06_bowmans_capsule_EMAP27978.wlz
+      prospective_macula_densa                     Stack06_prospective_macula_densa_EMAP28401.wlz
+      renal_proximal_tubule                        Stack06_proximal_tubule_EMAP28283.wlz
+      distal_convoluted_tubule                     Stack06_distal_convoluted_tubule_EMAP28395.wlz
+      connecting_tubule                            Stack06_connecting_tubule_EMAP28016.wlz
+      loop_of_henle                                Stack06_loop_of_henle_EMAAP28324.wlz
+      ureteric_tip
+         epithelium                                         Stack06_epithelium_ureteric_tips_EMAP27755.wlz
+         lumen                                              Stack06_lumen_ureteric_tips_EMAP27755.wlz
+      tree_terminal_branch_excluding_tip_itself
+         epithelium                                         Stack06_epithelium_ureteric_tree_terminal_branch_excluding_tip_itself_EMAP31051.wlz
+         lumen                                              Stack06_lumen_ureteric_tree_terminal_branch_excluding_tip_itself_EMAP31051.wlz
+      collecting_duct
+         epithelium                                         epithelium_of_collecting_duct.wlz
+         lumen                                              lumen_of_collecting_duct.wlz
+   Urinary system
+      ureter
+         epithelium                                         epithelium_of_ureter.wlz
+         lumen                                              lumen_of_ureter.wlz
+      metanephros
+         calyx
+	    lumen                                                    calyx.wlz
+	 s_shaped_body                                      s_shaped_body.wlz
+            proximal segment                                         proximal_segment_of_s_shaped_body.wlz
+            distal segment                                           distal_segment_of_s_shaped_body.wlz
+            medial segment                                           medial_segment_of_s_shaped_body.wlz
+         comma_shaped_body                                  Stack06_comma_shaped_body_EMAP27840.wlz
+	 epithelium
+            viseral                                                  viseral_epithelium.wlz
+            parietal                                                 parietal_epithelium.wlz
+	 extraglomerular_mesangium
+         renal capsule                                      Stack02_131009_renal_capsule_EMAP12267.wlz
+         renal vesicle                                      Stack02_131009_renal_vesicle_EMAP27834.wlz
+         presumptive_endothelium_of_renal_corpuscle         presumptive_endothelium_of_renal_corpuscle.wlz
+         cap_mesenchyme                                     cap_mesenchyme.wlz
+                  

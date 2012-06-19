@@ -1,0 +1,16 @@
+Carnegie Stage				TS15
+HUDSEN Code					N365
+Model						embryo	
+Strain						N/A	
+Embryo Preparation				Bouins Fixative
+Optical Projection Tomography	yes
+Section Imaging				no
+Embedding Media				opt
+Histological Stain				n/a
+2D Pixel Size X,Y				n/a
+Histological Section			n/a
+3D Voxel Size X,Y,Z				8,8,8 μm
+Objective Lens					x6.3
+Anatomical Painting			yes
+notes						HUDSEN model for gene-expression data
+source						Embryo from HDBR

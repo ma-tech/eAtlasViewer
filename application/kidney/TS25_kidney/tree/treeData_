@@ -1,0 +1,184 @@
+         [
+            {
+               "nodeId":"0",
+               "name":"Genes",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"1",
+               "name":"Wnt",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"2",
+               "name":"01_Wnt1.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"1", "domainColour":["133","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"3",
+               "name":"02_Wnt2.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"2", "domainColour":["133","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"4",
+               "name":"03_Wnt3.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"3", "domainColour":["133","137","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"5",
+               "name":"04_Wnt3A.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"4", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"6",
+               "name":"05_Wnt4.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"5", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"7",
+               "name":"06_Wnt5A.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"6", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"8",
+               "name":"07_Wnt6.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"7", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"9",
+               "name":"08_Wnt7A.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"8", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"10",
+               "name":"09_Wnt8A.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"9", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"11",
+               "name":"10_Wnt8B.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"10", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"12",
+               "name":"11_Wnt9A.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"11", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"13",
+               "name":"12_Wnt9B.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"12", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"14",
+               "name":"13_Wnt10A.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"13", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"15",
+               "name":"14_Wnt11.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"14", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"16",
+               "name":"15_Wnt16.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"15", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"17",
+               "name":"Fzd",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"18",
+               "name":"17_Fzd2.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"16", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"19",
+               "name":"18_Fzd3.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"17", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"20",
+               "name":"19_Fzd5.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"18", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"21",
+               "name":"20_Fzd6.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"19", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"22",
+               "name":"21_Fzd7.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"20", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"23",
+               "name":"22_Fzd8.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"21", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"24",
+               "name":"23_Fzd9.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"22", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"25",
+               "name":"24_Fzd10.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"23", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            }
+         ]

@@ -1,0 +1,260 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for test page containing emap IIP viewer */
+
+body {
+   margin: 0px;
+   padding: 0px;
+   font-family: "Arial", sans-serif;
+   color: gray;
+   background: #fff;
+}
+
+a {
+   text-decoration: none;
+}
+a:link {
+   color:#0000ff;
+}
+a:visited {
+   color:#0000bb;
+}
+a:hover {
+   color:#9900bb;
+}
+a:active {
+   color:#0055bb;
+}
+
+#projectDiv {
+   margin: 0px;
+   padding: 0px;
+}
+
+#logoContainer {
+   position: absolute;
+   left: 25px;
+   top: 10px;
+   margin: 0px;
+   padding: 0px;
+   width: 70px;
+   height: 70px;
+   z-index: 1000;
+}
+
+#helpFrameIconContainer.helpFrameIconContainer {
+   position: absolute;
+   right: 4px;
+   bottom: 4px;
+   margin: 0px;
+   padding: 0px;
+   width: 16px;
+   height: 16px;
+   z-index: 1000;
+   visibility: visible;
+}
+#helpFrameIconContainer.noToolBox {
+   visibility: hidden;
+}
+
+#infoFrameIconContainer.infoFrameIconContainer {
+   position: relative;
+   top: 2px;
+   float: left;
+   margin: 0 10px;
+   padding: 0px;
+   width: 16px;
+   height: 16px;
+   z-index: 1000;
+   visibility: visible;
+}
+#infoFrameIconContainer.noToolBox {
+   visibility: hidden;
+}
+
+#pageHeaderDiv {
+   position: relative;
+   left: -45px;
+   top: 10px;
+   width: 910px;
+   margin-left: auto;
+   margin-right: auto;
+   font-size: 20px;
+   font-family: "Arial", sans-serif;
+   font-style: normal;
+}
+#pageHeaderDiv.multiple {
+   width: 940px;
+}
+#pageHeaderDiv h1 {
+   margin: 6px 0 0;
+   padding: 0px;
+}
+
+#wlzIIPViewerTitle {
+   background: #fafaff;
+   height: 25px;
+}
+#titleTooltipContainerDiv {
+   position: relative;
+   left: 0px;
+   top: 40px;
+   width: 280px;
+   height: 50px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #ffe;
+   visibility: hidden;
+   z-index: 1000;
+}
+
+#contextMenuHintDiv {
+   font-size: 9px;
+   text-align: center;
+   position: relative;
+   left: 10px;
+   top: 0px;
+   width: 82px;
+   height: 32px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 2px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #ffe;
+   visibility: visible;
+   z-index: 1000;
+}
+
+#titleTooltipTextContainer {
+   position: relative;
+   left: 0px;
+   top: 0px;
+   float: left;
+   height: 50px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 4px;
+   border: none;
+   background: #ffe;
+   z-index: 1000;
+}
+
+#titleTooltipLogoDiv {
+   position: relative;
+   left: 0px;
+   top: 0px;
+   float: left;
+   width: 50px;
+   height: 50px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   background: #fef;
+   z-index: 1000;
+}
+
+.titleTooltipLogoImg {
+   margin: 0px;
+   padding: 0px;
+   border: none;
+}
+.titleTooltipTextDiv {
+   font-size: 12px;
+}
+
+#emapIIPViewerDiv {
+   position: absolute;
+   left: 120px;
+   right: 2px;
+   top: 50px;
+   bottom: 10px;
+   width: auto;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: solid 2px #ccc;
+   background: #fff;
+}
+#emapIIPViewerDiv.maximised {
+   right: 0px;
+   left: 0px;
+   top: 0px;
+   bottom: 0px;
+   border: none;
+}
+#emapIIPViewerDiv.tree {
+   right: 250px;
+}
+#emapIIPViewerDiv.pointClick {
+   right: 235px;
+}
+#emapIIPViewerDiv.pointClick.editor {
+   right: 255px;
+}
+
+#toolboxCloseImg {
+   position: relative;
+   top: -7px;
+   left: 1px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+}
+
+#toolboxCloseDiv {
+   position: absolute;
+   width: 12px;
+   height: 10px;
+   top: -13px;
+   right: -1px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fff;
+}
+
+#toolContainerDiv {
+   position: absolute;
+   height: 430px;
+   top: 100px;
+   left: 4px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   z-index: 1;
+}
+
+#treeContainerDiv {
+   position: absolute;
+   top: 100px;
+   margin: 0px;
+   padding: 0px;
+   height: 600px;
+   width: 250px;
+   overflow: auto;
+   border: solid 1px #ccc;
+}

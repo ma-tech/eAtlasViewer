@@ -1,0 +1,26 @@
+[
+   {
+      "target": "pointClickTableDiv",
+      "type": "rightClick",
+      "itemWidthPx": "110",
+      "itemHeightPx": "20",
+      "structure": [
+         {
+            "id":"0",
+            "children":[]
+         },
+         {
+            "id":"1",
+            "children":[]
+         },
+         {
+            "id":"2",
+            "spacer": ""
+         },
+         {
+            "id":"3",
+            "children":[]
+         }
+      ]
+   }
+]

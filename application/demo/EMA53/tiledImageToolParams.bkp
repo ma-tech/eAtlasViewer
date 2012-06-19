@@ -1,0 +1,157 @@
+{
+   "toBeUsed": [
+      "locator",
+      "distance",
+      "pitchYaw",
+      "rotation",
+      "fixedPoint",
+      "sectionChooser",
+      "help",
+      "scale",
+      "refresh",
+      "equivalentSection",
+      "measure",
+      "draw"
+   ],
+   "pitchYaw": {
+      "width":"130",
+      "height":"130",
+      "x":"5",
+      "y":"40",
+      "draggable":"false",
+      "maxPitch":"175",
+      "maxYaw":"355",
+      "gap":"5",
+      "navImage":"NavigTile.tif",
+      "targetId":"toolContainerDiv"
+   },
+   "rotation": {
+      "width":"130",
+      "height":"85",
+      "x":"5",
+      "y":"186",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "layer": {
+      "width":"130",
+      "x":"5",
+      "y":"285",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "thinTopEdge":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "sectionChooser": {
+      "width":"130",
+      "x":"10",
+      "y":"120",
+      "draggable":"true",
+      "isHorizontal":"true",
+      "thinTopEdge":"false",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "scale": {
+      "width":"130",
+      "height":"20",
+      "x":"5",
+      "y":"310",
+      "draggable":"false",
+      "isHorizontal":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "scalebar": {
+      "width":"130",
+      "height":"20",
+      "x":"200",
+      "y":"325",
+      "draggable":"true",
+      "targetId":"toolContainerDiv"
+   },
+   "refresh": {
+      "width":"134",
+      "height":"20",
+      "x":"2",
+      "y":"275",
+      "draggable":"false",
+      "borders":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "distance": {
+      "width":"130",
+      "height":"20",
+      "x":"5",
+      "y":"345",
+      "draggable":"false",
+      "isHorizontal":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "locator": {
+      "width":"130",
+      "height":"130",
+      "x":"3",
+      "y":"380",
+      "draggable":"false",
+      "targetId":"toolContainerDiv"
+   },
+   "properties": {
+      "width":"130",
+      "height":"130",
+      "x":"75",
+      "y":"330",
+      "draggable":"true",
+      "isHorizontal":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "fixedPoint": {
+      "width":"120",
+      "height":"80",
+      "x":"75",
+      "y":"180",
+      "draggable":"true",
+      "isHorizontal":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "tree": {
+      "width":"300",
+      "height":"600",
+      "x":"8",
+      "y":"60",
+      "draggable":"true",
+      "thinTopEdge":"false",
+      "targetId":"projectDiv"
+   },
+   "measure": {
+      "width":"75",
+      "height":"15",
+      "x":"200",
+      "y":"150",
+      "draggable":"true",
+      "borders":"true",
+      "transparent":"true",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "equivalentSection": {
+      "width":"175",
+      "height":"45",
+      "x":"200",
+      "y":"150",
+      "draggable":"true",
+      "borders":"true",
+      "transparent":"false",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "draw": {
+      "width":"110",
+      "height":"90",
+      "x":"20",
+      "y":"10",
+      "draggable":"true",
+      "borders":"true",
+      "isHorizontal":"true",
+      "transparent":"false",
+      "allowClose":"true",
+      "targetId":"emapIIPViewerDiv"
+   }
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+
+<head>
+  <title>Bill's Test Pages</title>
+</head>
+
+
+<body>
+  <h1>Bill's Test Pages</h1>
+
+  <p>These are tests are for developing the WlzIIP server.</p>
+
+  <h2>Bill's WlzIIP Tests</h2>
+
+  <ol>
+    <br><li>
+    Image from big tiled object.
+    <p>
+    <a href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?DST=500&WLZ=/opt/MAWWW/Public/Wlz/kl-finalwithheart.wlz&QLT=50&CVT=jpeg">DST=500</a>
+    </p>
+    </li><br>
+    <br><li>
+    Image components of ts14 compound.
+    <p>
+    <a href="http://aberlour.hgu.mrc.ac.uk/fcgi-bin/newiipsrv.fcgi?PIT=90&DST=1000&WLZ=/export/data0/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=0&QLT=50&CVT=jpeg">PIT=90 DST=1000 SEL=0</a>
+    </p>
+    <p>
+    <a href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1000&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=1,255,0,0,255&QLT=50&CVT=jpeg">PIT=90 DST=1000 SEL=1,255,0,0,255</a>
+    </p>
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1000&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=2,0,255,0,255&QLT=50&CVT=jpeg">PIT=90 DST=1000 SEL=2,0,255,0,255</a>
+    </p>
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1000&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=3,0,0,255,255&QLT=50&CVT=jpeg">PIT=90 DST=1000 SEL=3,0,0,255,255</a>
+    </p>
+    </li><br>
+    <br><li>
+    3D bounding box of ts14 compound.
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1000&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=0&OBJ=Wlz-3d-bounding-box">PIT=90 DST=1000 SEL=0 OBJ=Wlz-3d-bounding-box</a>
+    </p>
+    </li><br>
+    <br><li>
+    Transformed 3D bounding box of ts14 compound.
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1000&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=0&OBJ=Wlz-transformed-3d-bounding-box">PIT=90 DST=1000 SEL=0 OBJ=Wlz-transformed-3d-bounding-box</a>
+    </p>
+    </li><br>
+    <br><li>
+    Morphological operations.
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?DST=600&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=union(diff(dilation(2,1),2),diff(dilation(1,1),1))&QLT=50&CVT=jpeg">DST=600&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=union(diff(dilation(2,1),2),diff(dilation(1,1),1))&QLT=50&CVT=jpeg</a>
+    </p>
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1020&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=diff(1,2)&QLT=50&CVT=jpeg">PIT=90&DST=1020&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=diff(1,2)&QLT=50&CVT=jpeg</a>
+    </p>
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1020&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=threshold(0,250,lt)&QLT=50&CVT=jpeg">PIT=90&DST=1020&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=threshold(0,250,lt)&QLT=50&CVT=jpeg</a>
+    </p>
+    <p>
+    <a
+    href="http://ancnoc.hgu.mrc.ac.uk/fcgi-bin/demoiipsrv.fcgi?PIT=90&DST=1020&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=diff(dilation(erosion(threshold(0,250,lt),3),3),2),0,255,0,255&QLT=50&CVT=jpeg">PIT=90&DST=1020&WLZ=/opt/MAWWW/Public/Wlz/ts14-cpd.wlz&SEL=diff(dilation(erosion(threshold(0,250,lt),3),3),2),0,255,0,255&QLT=50&CVT=jpeg</a>
+    </p>
+    </li><br>
+  </ol>
+</body>
+
+</html>

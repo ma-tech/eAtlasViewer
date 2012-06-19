@@ -1,0 +1,49 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/kidney/TS25_kidney/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "0"},
+   "sagittalView": {"pitch": "90", "yaw": "0", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grey",
+      "anatomy"
+   ],
+   "layerData": [
+      {
+         "imageDir": "/export/data0/eAtlasViewer/data/ema/wlz/EMA103/",
+         "imageName":"EMA103_norm_mm.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true"
+      },
+      {
+         "imageDir":"/export/data0/eAtlasViewer/data/ema/wlz/EMA103/",
+         "imageName":"EMA103_compound.wlz",
+         "type":"label",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true",
+         "treeStructureFile": "/eAtlasViewer_dev/application/kidney/TS25_kidney/tree/treeStructure.jso",
+         "treeDataFile": "/eAtlasViewer_dev/application/kidney/TS25_kidney/tree/treeData.jso"
+      }
+   ],
+   "initialState": {"scale":"0.125", "distance":"0", "pitch":"0", "yaw":"0", "roll":"0"},
+   "pixelResolution": {"x":"0.34", "y":"0.34", "z":"2", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/kidney/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/kidney/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "sectionOrderReversed": "true",
+   "infoDetails": {
+      "jso":"http://aberlour.hgu.mrc.ac.uk/emap/ema/json/modelSelector/modelInfo.jso",
+      "id":"EMA:103",
+      "assocIndx":"ts25"
+   },
+   "tileframe": {"enabled": "true"}
+}

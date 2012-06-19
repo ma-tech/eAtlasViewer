@@ -1,0 +1,86 @@
+[
+   {
+      "target": "emapIIPViewerDiv",
+      "content": [
+         {
+            "id":"0",
+            "name":["Help"],
+            "action":"emouseatlas.emap.tiledImageView.showViewerHelp()",
+            "enabled":"true"
+         },
+         {
+            "id":"1",
+            "spacer":"true"
+         },
+         {
+            "id":"2",
+            "name":["Reload Image"],
+            "action":"emouseatlas.emap.tiledImageView.refreshImage()",
+            "enabled":"true"
+         },
+         {
+            "id":"3",
+            "name":["Maximise Image"],
+            "action":"emouseatlas.emap.tiledImageView.maximiseImage()",
+	    "checkbox": "true",
+            "checked": "false",
+            "enabled":"true"
+         },
+         {
+            "id":"4",
+            "name":["Toolbox"],
+            "action":"emouseatlas.emap.tiledImageView.setToolboxVisibility()",
+            "checkbox":"true",
+            "checked":"true",
+            "enabled":"true"
+         },
+         {
+            "id":"5",
+            "spacer":"true"
+         },
+         {
+            "id":"6",
+            "name":["Move Mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(0)",
+	    "radio": "true",
+            "radioGroup": "mode",
+	    "checked": "true",
+            "enabled":"true"
+         },
+         {
+            "id":"7",
+            "name":["Measurement Mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(1)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"8",
+            "name":["Equivalent Section Mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(2)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"9",
+            "name":["Fixed Point Mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(3)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
+         },
+         {
+            "id":"10",
+            "spacer":"true"
+         },
+         {
+            "id":"11",
+            "name":["Cancel"],
+            "action":"emouseatlas.emap.tiledImageView.cancelContextMenu()",
+            "enabled":"true"
+         }
+      ]
+   }
+]

@@ -1,0 +1,702 @@
+         [
+            {
+               "nodeId":"0",
+               "name":"Basic cell groups and regions",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"1", "domainSelected":"false", "domainColour":["176","255","255","127"]}
+            },
+            {
+               "nodeId":"1",
+               "name":"Cerebrum",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"2", "domainSelected":"false", "domainColour":["176","240","255","127"]}
+            },
+            {
+               "nodeId":"2",
+               "name":"Cerebral cortex",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"3", "domainSelected":"false", "domainColour":["176","255","184","127"]}
+            },
+            {
+               "nodeId":"3",
+               "name":"Cortical plate",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"4", "domainSelected":"false", "domainColour":["112","255","112","127"]}
+            },
+            {
+               "nodeId":"4",
+               "name":"Olfactory areas",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"5", "domainSelected":"false", "domainColour":["144","255","144","127"]}
+            },
+            {
+               "nodeId":"5",
+               "name":"Main olfactory bulb",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"6", "domainSelected":"false", "domainColour":["160","255","171","127"]}
+            },
+            {
+               "nodeId":"6",
+               "name":"Accessory olfactory bulb",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"7", "domainSelected":"false", "domainColour":["160","255","176","127"]}
+            },
+            {
+               "nodeId":"7",
+               "name":"Anterior olfactory nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"8", "domainSelected":"false", "domainColour":["144","255","184","127"]}
+            },
+            {
+               "nodeId":"8",
+               "name":"Taenia tecta",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"9", "domainSelected":"false", "domainColour":["160","255","160","127"]}
+            },
+            {
+               "nodeId":"9",
+               "name":"Piriform area",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"10", "domainSelected":"false", "domainColour":["160","255","167","127"]}
+            },
+            {
+               "nodeId":"10",
+               "name":"Nucleus of the lateral olfactory tract",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"11", "domainSelected":"false", "domainColour":["160","255","170","127"]}
+            },
+            {
+               "nodeId":"11",
+               "name":"Piriform-amygdalar area",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"12", "domainSelected":"false", "domainColour":["160","255","169","127"]}
+            },
+            {
+               "nodeId":"12",
+               "name":"Cortical amygdalar area",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"13", "domainSelected":"false", "domainColour":["160","255","177","127"]}
+            },
+            {
+               "nodeId":"13",
+               "name":"Postpiriform transition area",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"14", "domainSelected":"false", "domainColour":["160","255","166","127"]}
+            },
+            {
+               "nodeId":"14",
+               "name":"Hippocampal formation",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"15", "domainSelected":"false", "domainColour":["144","255","176","127"]}
+            },
+            {
+               "nodeId":"15",
+               "name":"Hippocampal region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"16", "domainSelected":"false", "domainColour":["121","255","128","127"]}
+            },
+            {
+               "nodeId":"16",
+               "name":"Ammon's Horn",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"17", "domainSelected":"false", "domainColour":["122","255","122","127"]}
+            },
+            {
+               "nodeId":"17",
+               "name":"Dentate gyrus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"18", "domainSelected":"false", "domainColour":["114","250","114","127"]}
+            },
+            {
+               "nodeId":"18",
+               "name":"Retrohippocampal region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"19", "domainSelected":"false", "domainColour":["144","255","176","127"]}
+            },
+            {
+               "nodeId":"19",
+               "name":"Subiculum",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"20", "domainSelected":"false", "domainColour":["128","255","151","127"]}
+            },
+            {
+               "nodeId":"20",
+               "name":"Cerebral nuclei",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"21", "domainSelected":"false", "domainColour":["176","216","255","127"]}
+            },
+            {
+               "nodeId":"21",
+               "name":"Striatum",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"22", "domainSelected":"false", "domainColour":["160","200","232","127"]}
+            },
+            {
+               "nodeId":"22",
+               "name":"Striatum dorsal region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"23", "domainSelected":"false", "domainColour":["160","216","232","127"]}
+            },
+            {
+               "nodeId":"23",
+               "name":"Caudoputamen",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"24", "domainSelected":"false", "domainColour":["160","216","248","127"]}
+            },
+            {
+               "nodeId":"24",
+               "name":"Striatum ventral region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"25", "domainSelected":"false", "domainColour":["160","232","232","127"]}
+            },
+            {
+               "nodeId":"25",
+               "name":"Nucleus accumbens",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"26", "domainSelected":"false", "domainColour":["160","232","224","127"]}
+            },
+            {
+               "nodeId":"26",
+               "name":"Fundus of striatum",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"27", "domainSelected":"false", "domainColour":["160","228","224","127"]}
+            },
+            {
+               "nodeId":"27",
+               "name":"Olfactory tubercle",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"28", "domainSelected":"false", "domainColour":["160","224","224","127"]}
+            },
+            {
+               "nodeId":"28",
+               "name":"Lateral septal complex",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"29", "domainSelected":"false", "domainColour":["160","239","232","127"]}
+            },
+            {
+               "nodeId":"29",
+               "name":"Lateral septal nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"30", "domainSelected":"false", "domainColour":["153","239","232","127"]}
+            },
+            {
+               "nodeId":"30",
+               "name":"Septofimbrial nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"31", "domainSelected":"false", "domainColour":["147","239","232","127"]}
+            },
+            {
+               "nodeId":"31",
+               "name":"Striatum-like amygdalar nuclei",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"32", "domainSelected":"false", "domainColour":["160","208","232","127"]}
+            },
+            {
+               "nodeId":"32",
+               "name":"Central amygdalar nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"33", "domainSelected":"false", "domainColour":["171","208","248","127"]}
+            },
+            {
+               "nodeId":"33",
+               "name":"Anterior amygdalar area",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"34", "domainSelected":"false", "domainColour":["186","208","248","127"]}
+            },
+            {
+               "nodeId":"34",
+               "name":"Medial amygdalar nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"35", "domainSelected":"false", "domainColour":["176","208","248","127"]}
+            },
+            {
+               "nodeId":"35",
+               "name":"Pallidum",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"36", "domainSelected":"false", "domainColour":["160","200","176","127"]}
+            },
+            {
+               "nodeId":"36",
+               "name":"Pallidum_ dorsal region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"37", "domainSelected":"false", "domainColour":["160","216","176","127"]}
+            },
+            {
+               "nodeId":"37",
+               "name":"Pallidum_ ventral region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"38", "domainSelected":"false", "domainColour":["160","208","176","127"]}
+            },
+            {
+               "nodeId":"38",
+               "name":"Magnocellular nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"39", "domainSelected":"false", "domainColour":["162","208","176","127"]}
+            },
+            {
+               "nodeId":"39",
+               "name":"Substantia innominata",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"40", "domainSelected":"false", "domainColour":["152","208","176","127"]}
+            },
+            {
+               "nodeId":"40",
+               "name":"Pallidum_ caudal region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"41", "domainSelected":"false", "domainColour":["160","190","176","127"]}
+            },
+            {
+               "nodeId":"41",
+               "name":"Bed nucleus of the anterior commissure",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"42", "domainSelected":"false", "domainColour":["160","190","152","127"]}
+            },
+            {
+               "nodeId":"42",
+               "name":"Bed nuclei of the stria terminalis",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"43", "domainSelected":"false", "domainColour":["160","190","160","127"]}
+            },
+            {
+               "nodeId":"43",
+               "name":"Pallidum_ medial region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"44", "domainSelected":"false", "domainColour":["160","224","176","127"]}
+            },
+            {
+               "nodeId":"44",
+               "name":"Brain stem",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"45", "domainSelected":"false", "domainColour":["144","96","128","127"]}
+            },
+            {
+               "nodeId":"45",
+               "name":"Interbrain",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"46", "domainSelected":"false", "domainColour":["255","95","95","127"]}
+            },
+            {
+               "nodeId":"46",
+               "name":"Thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"47", "domainSelected":"false", "domainColour":["255","112","128","127"]}
+            },
+            {
+               "nodeId":"47",
+               "name":"Thalamus_ polymodal association cortex related",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"48", "domainSelected":"false", "domainColour":["255","136","176","127"]}
+            },
+            {
+               "nodeId":"48",
+               "name":"Anterior group of the dorsal thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"49", "domainSelected":"false", "domainColour":["255","136","136","127"]}
+            },
+            {
+               "nodeId":"49",
+               "name":"Anterodorsal nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"50", "domainSelected":"false", "domainColour":["255","136","135","127"]}
+            },
+            {
+               "nodeId":"50",
+               "name":"Anteromedial nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"51", "domainSelected":"false", "domainColour":["255","136","134","127"]}
+            },
+            {
+               "nodeId":"51",
+               "name":"Anteroventral nucleus of thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"52", "domainSelected":"false", "domainColour":["255","136","133","127"]}
+            },
+            {
+               "nodeId":"52",
+               "name":"Interanterodorsal nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"53", "domainSelected":"false", "domainColour":["255","144","159","127"]}
+            },
+            {
+               "nodeId":"53",
+               "name":"Interanteromedial nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"54", "domainSelected":"false", "domainColour":["255","136","129","127"]}
+            },
+            {
+               "nodeId":"54",
+               "name":"Lateral dorsal nucleus of thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"55", "domainSelected":"false", "domainColour":["255","136","128","127"]}
+            },
+            {
+               "nodeId":"55",
+               "name":"Reticular nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"56", "domainSelected":"false", "domainColour":["255","128","128","127"]}
+            },
+            {
+               "nodeId":"56",
+               "name":"Lateral group of the dorsal thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"57", "domainSelected":"false", "domainColour":["255","130","130","127"]}
+            },
+            {
+               "nodeId":"57",
+               "name":"Lateral posterior nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"58", "domainSelected":"false", "domainColour":["255","135","130","127"]}
+            },
+            {
+               "nodeId":"58",
+               "name":"Suprageniculate nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"59", "domainSelected":"false", "domainColour":["255","131","130","127"]}
+            },
+            {
+               "nodeId":"59",
+               "name":"Geniculate group_ ventral thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"60", "domainSelected":"false", "domainColour":["255","135","133","127"]}
+            },
+            {
+               "nodeId":"60",
+               "name":"Intergeniculate leaflet of the lateral geniculate complex",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"61", "domainSelected":"false", "domainColour":["255","135","134","127"]}
+            },
+            {
+               "nodeId":"61",
+               "name":"Ventral part of the lateral geniculate complex",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"62", "domainSelected":"false", "domainColour":["255","135","135","127"]}
+            },
+            {
+               "nodeId":"62",
+               "name":"Intralaminar nuclei of the dorsal thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"63", "domainSelected":"false", "domainColour":["255","136","132","127"]}
+            },
+            {
+               "nodeId":"63",
+               "name":"Central lateral nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"64", "domainSelected":"false", "domainColour":["255","135","132","127"]}
+            },
+            {
+               "nodeId":"64",
+               "name":"Central medial nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"65", "domainSelected":"false", "domainColour":["255","134","132","127"]}
+            },
+            {
+               "nodeId":"65",
+               "name":"Paracentral nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"66", "domainSelected":"false", "domainColour":["255","132","132","127"]}
+            },
+            {
+               "nodeId":"66",
+               "name":"Parafascicular nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"67", "domainSelected":"false", "domainColour":["255","130","132","127"]}
+            },
+            {
+               "nodeId":"67",
+               "name":"Epithalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"68", "domainSelected":"false", "domainColour":["255","136","144","127"]}
+            },
+            {
+               "nodeId":"68",
+               "name":"Lateral habenula",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"69", "domainSelected":"false", "domainColour":["255","135","144","127"]}
+            },
+            {
+               "nodeId":"69",
+               "name":"Medial habenula",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"70", "domainSelected":"false", "domainColour":["255","134","144","127"]}
+            },
+            {
+               "nodeId":"70",
+               "name":"Medial group of the dorsal thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"71", "domainSelected":"false", "domainColour":["255","144","176","127"]}
+            },
+            {
+               "nodeId":"71",
+               "name":"Intermediodorsal nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"72", "domainSelected":"false", "domainColour":["255","144","164","127"]}
+            },
+            {
+               "nodeId":"72",
+               "name":"Mediodorsal nucleus of thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"73", "domainSelected":"false", "domainColour":["255","144","163","127"]}
+            },
+            {
+               "nodeId":"73",
+               "name":"Perireunensis nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"74", "domainSelected":"false", "domainColour":["255","144","160","127"]}
+            },
+            {
+               "nodeId":"74",
+               "name":"Thalamus_ sensory-motor cortex related",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"75", "domainSelected":"false", "domainColour":["255","128","176","127"]}
+            },
+            {
+               "nodeId":"75",
+               "name":"Geniculate group_ dorsal thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"76", "domainSelected":"false", "domainColour":["255","112","160","127"]}
+            },
+            {
+               "nodeId":"76",
+               "name":"Dorsal part of the lateral geniculate complex",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"77", "domainSelected":"false", "domainColour":["255","112","161","127"]}
+            },
+            {
+               "nodeId":"77",
+               "name":"Medial geniculate complex",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"78", "domainSelected":"false", "domainColour":["255","112","162","127"]}
+            },
+            {
+               "nodeId":"78",
+               "name":"Peripeduncular nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"79", "domainSelected":"false", "domainColour":["255","112","163","127"]}
+            },
+            {
+               "nodeId":"79",
+               "name":"Ventral group of the dorsal thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"80", "domainSelected":"false", "domainColour":["255","108","160","127"]}
+            },
+            {
+               "nodeId":"80",
+               "name":"Ventral medial nucleus of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"81", "domainSelected":"false", "domainColour":["255","108","162","127"]}
+            },
+            {
+               "nodeId":"81",
+               "name":"Ventral posterior complex of the thalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"82", "domainSelected":"false", "domainColour":["255","108","144","127"]}
+            },
+            {
+               "nodeId":"82",
+               "name":"Hypothalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"83", "domainSelected":"false", "domainColour":["255","80","80","127"]}
+            },
+            {
+               "nodeId":"83",
+               "name":"Periventricular zone",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"84", "domainSelected":"false", "domainColour":["255","76","80","127"]}
+            },
+            {
+               "nodeId":"84",
+               "name":"Arcuate hypothalamic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"85", "domainSelected":"false", "domainColour":["255","76","79","127"]}
+            },
+            {
+               "nodeId":"85",
+               "name":"Paraventricular hypothalamic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"86", "domainSelected":"false", "domainColour":["255","76","77","127"]}
+            },
+            {
+               "nodeId":"86",
+               "name":"Periventricular region",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"87", "domainSelected":"false", "domainColour":["255","77","80","127"]}
+            },
+            {
+               "nodeId":"87",
+               "name":"Anterodorsal preoptic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"88", "domainSelected":"false", "domainColour":["255","77","81","127"]}
+            },
+            {
+               "nodeId":"88",
+               "name":"Anterodorsal preoptic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"89", "domainSelected":"false", "domainColour":["255","77","83","127"]}
+            },
+            {
+               "nodeId":"89",
+               "name":"Anteroventral periventricular nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"90", "domainSelected":"false", "domainColour":["255","77","84","127"]}
+            },
+            {
+               "nodeId":"90",
+               "name":"Dorsomedial nucleus of the hypothalamus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"91", "domainSelected":"false", "domainColour":["255","77","85","127"]}
+            },
+            {
+               "nodeId":"91",
+               "name":"Median preoptic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"92", "domainSelected":"false", "domainColour":["255","77","86","127"]}
+            },
+            {
+               "nodeId":"92",
+               "name":"Posterodorsal preoptic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"93", "domainSelected":"false", "domainColour":["255","77","89","127"]}
+            },
+            {
+               "nodeId":"93",
+               "name":"Parastrial nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"94", "domainSelected":"false", "domainColour":["255","77","90","127"]}
+            },
+            {
+               "nodeId":"94",
+               "name":"Suprachiasmatic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"95", "domainSelected":"false", "domainColour":["255","77","94","127"]}
+            },
+            {
+               "nodeId":"95",
+               "name":"Hypothalamic medial zone",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"96", "domainSelected":"false", "domainColour":["255","78","80","127"]}
+            },
+            {
+               "nodeId":"96",
+               "name":"Anterior hypothalamic nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"97", "domainSelected":"false", "domainColour":["255","78","81","127"]}
+            },
+            {
+               "nodeId":"97",
+               "name":"Mammillary body",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"98", "domainSelected":"false", "domainColour":["255","78","82","127"]}
+            },
+            {
+               "nodeId":"98",
+               "name":"Lateral mammillary nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"99", "domainSelected":"false", "domainColour":["255","78","83","127"]}
+            },
+            {
+               "nodeId":"99",
+               "name":"Medial mammillary nucleus",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"100", "domainSelected":"false", "domainColour":["255","78","84","127"]}
+            }
+         ]

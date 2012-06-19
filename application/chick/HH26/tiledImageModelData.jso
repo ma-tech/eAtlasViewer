@@ -1,0 +1,31 @@
+{
+   "webServer": "glenluig.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/emaiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/chick/HH26/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "0"},
+   "sagittalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "0", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grey"
+   ],
+   "layerData": [
+      {
+         "imageDir":"/export/data0/eAtlasViewer/data/chick/wlz/HH26/",
+         "imageName":"Reference_26_fl_mm.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"1.0", "distance":"0", "pitch":"90", "yaw":"90", "roll":"90"},
+   "pixelResolution": {"x":"1", "y":"1", "z":"1", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/chick/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/chick/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "tileframe": {"enabled": "true"}
+}

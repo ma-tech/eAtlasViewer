@@ -1,0 +1,240 @@
+         [
+            {
+               "nodeId":"0",
+               "name":"CS17",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"1",
+               "name":"anatomy",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"2",
+               "name":"DGA_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"1", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"3",
+               "name":"Hypothalamus_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"2", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"4",
+               "name":"LGE_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"3", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"5",
+               "name":"Mesencephalon_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"4", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"6",
+               "name":"MGE_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"5", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"7",
+               "name":"N365_DRG_131003",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"6", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"8",
+               "name":"N365_ear_131003",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"7", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"9",
+               "name":"N365_eye_131003",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"8", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"10",
+               "name":"N365_heart_131003",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"9", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"11",
+               "name":"N365_liver_131003.wlz",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"10", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"12",
+               "name":"p1_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"11", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"13",
+               "name":"p2_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"12", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"14",
+               "name":"p3_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"13", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"15",
+               "name":"Pallium_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"14", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"16",
+               "name":"POA_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"15", "domainColour":["255","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"17",
+               "name":"r0_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"16", "domainColour":["0","255","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"18",
+               "name":"r1_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"17", "domainColour":["205","248","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"19",
+               "name":"r2_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"18", "domainColour":["255","150","205","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"20",
+               "name":"r3_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"19", "domainColour":["47","141","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"21",
+               "name":"r4_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"20", "domainColour":["141","0","146","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"22",
+               "name":"r5_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"21", "domainColour":["255","0","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"23",
+               "name":"r6_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"22", "domainColour":["0","255","0","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"24",
+               "name":"r7-r11_Def(N365)",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"23", "domainColour":["0","0","255","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"25",
+               "name":"spinal_cord_(N365)_JK",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"24", "domainColour":["255","178","12","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"26",
+               "name":"genes",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainSelected":"false"}
+            },
+            {
+               "nodeId":"27",
+               "name":"N365_BT_strong",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"25", "domainColour":["225","34","34","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"28",
+               "name":"N365_BT_weak",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"26", "domainColour":["140","140","240","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"29",
+               "name":"N365_GAP43_strong",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"27", "domainColour":["255","34","34","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"30",
+               "name":"N365_GAP43_weak",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"28", "domainColour":["140","140","240","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"31",
+               "name":"N365_MAP2_strong",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"29", "domainColour":["255","34","34","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"32",
+               "name":"N365_MAP2_weak",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"30", "domainColour":["140","140","240","255"], "domainSelected":"false"}
+            },
+            {
+               "nodeId":"33",
+               "name":"N365_PAX6",
+               "nodeState":{"open":"true", "selected":"false"},
+               "extId":[""],
+               "domainData":{"domainId":"31", "domainColour":["255","34","34","255"], "domainSelected":"false"}
+            }
+         ]

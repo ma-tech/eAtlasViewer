@@ -1,0 +1,25 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/DH1a/X40/",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "dataType": "singlePyrTiff",
+   "layerNames": [
+      "histology"
+   ],
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerData": [
+      {
+         "imageDir": "/export/data0/eAtlasViewer/data/DH1a/",
+         "imageName":"s08r02s15_x40.jpg.256.pyr.tif",
+	 "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"0.0625", "distance":"0"},
+   "pixelResolution": {"x":"0.68", "y":"0.68", "z":"", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/DH1a/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/DH1a/menu/menuContent.jso",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "tileframe": {"enabled": "true"}
+}

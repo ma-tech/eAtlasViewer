@@ -1,0 +1,25 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/DH1a/colonSampleReconstructed/",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "toolsMetadataFilename": "./tiledImageToolParams.jso",
+   "dataType": "wlz",
+   "layerNames": [
+      "grey level"
+   ],
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerData": [
+      {
+         "imageDir": "/export/fast0/eAtlasViewer/data/DH1a/",
+        "imageName":"Aligned3D_bg_mm.wlz",
+	 "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"0.5", "distance":"0"},
+   "pixelResolution": {"x":"2", "y":"2", "z":"2", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev/application/DH1a/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/DH1a/menu/menuContent.jso",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "tileframe": {"enabled": "true"}
+}
