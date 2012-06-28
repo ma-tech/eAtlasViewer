@@ -1,0 +1,64 @@
+[
+   {
+      "target": "emapIIPViewerDiv",
+      "type": "rightClick",
+      "itemWidthPx": "210",
+      "subItemWidthPx": "150",
+      "subSubItemWidthPx": "160",
+      "itemHeightPx": "20",
+      "structure": [
+         {
+            "id":"0",
+            "children":[]
+         },
+         {
+            "id":"1",
+            "spacer":""
+         },
+         {
+            "id":"2",
+            "children":[]
+         },
+         {
+            "id":"3",
+            "children":[]
+         },
+         {
+            "id":"4",
+            "children":[]
+         },
+         {
+            "id":"5",
+            "children":[]
+         },
+         {
+            "id":"6",
+            "spacer":""
+         },
+         {
+            "id":"7",
+            "children": []
+         },
+         {
+            "id":"8",
+            "children": []
+         },
+         {
+            "id":"9",
+            "children": []
+         },
+         {
+            "id":"10",
+            "children": []
+         },
+         {
+            "id":"11",
+            "spacer":""
+         },
+         {
+            "id":"12",
+            "children":[]
+         }
+      ]
+   }
+]

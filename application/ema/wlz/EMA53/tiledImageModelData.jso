@@ -1,0 +1,39 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/newiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev2/application/ema/wlz/EMA53/",
+   "toolsMetadataFilename": "../tiledImageToolParamsDraw.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev2/images/",
+   "dataType": "wlz",
+   "transverseView": {"pitch": "0", "yaw": "0", "roll": "180"},
+   "sagittalView": {"pitch": "90", "yaw": "90", "roll": "90"},
+   "coronalView": {"pitch": "90", "yaw": "180", "roll": "90"},
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grey"
+   ],
+   "layerData": [
+      {
+         "imageDir": "/export/data0/eAtlasViewer/data/ema/wlz/EMA53/",
+         "imageName":"EMA53_norm.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"2", "distance":"0", "pitch":"0", "yaw":"0", "roll":"180"},
+   "pixelResolution": {"x":"8", "y":"8", "z":"8", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_dev2/application/ema/wlz/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev2/application/ema/wlz/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "hasAnatomySections":"false",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "sectionOrderReversed": "false",
+   "infoDetails": {
+      "jso":"./modelInfo.jso",
+      "id":"EMA:53",
+      "assocIndx":"ts17"
+   },
+   "tileframe": {"enabled": "true"}
+}

@@ -122,7 +122,8 @@ emouseatlas.emap.tiledImageModel = function() {
       setSection: false,     // for expression sections etc
       addQuerySection: false,
       saveQuerySection: false,
-      changeQuerySection: false
+      changeQuerySection: false, // for spatial query when section has been seleceted from dialogue
+      sectionChanged: false   // if dst or angle has been changed
    };
    var image = {};
    var scale = {};
@@ -165,9 +166,11 @@ emouseatlas.emap.tiledImageModel = function() {
    var expressionSectionName = [];
    var expressionSection = {};
 
+   var currentSection = {}; // this must be an object, not an array
+
    var currentQuerySectionName;
    var querySectionNames = [];
-   var querySectionParams = {}; // this must be an object, not an array
+   var querySection = {}; // this must be an object, not an array
    var query = [];
 
    var keySectionArr = [];
@@ -1512,6 +1515,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if(modelChanges.addQuerySection) console.log("modelChanges.addQuerySection ",modelChanges.addQuerySection);
       if(modelChanges.saveQuerySection) console.log("modelChanges.saveQuerySection ",modelChanges.saveQuerySection);
       if(modelChanges.changeQuerySection) console.log("modelChanges.changeQuerySection ",modelChanges.changeQuerySection);
+      if(modelChanges.sectionChanged) console.log("modelChanges.sectionChanged ",modelChanges.sectionChanged);
       console.log("++++++++++++++++++++++++++++++++++++++++++++");
    };
 
@@ -1533,6 +1537,7 @@ emouseatlas.emap.tiledImageModel = function() {
       modelChanges.addQuerySection =  false;
       modelChanges.saveQuerySection =  false;
       modelChanges.changeQuerySection =  false;
+      modelChanges.sectionChanged =  false;
    };
 
    //---------------------------------------------------------
@@ -2015,18 +2020,19 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   //  Called on mouse up after doing some drawing.
+   //---------------------------------------------------------
    var setQuerySectionData = function (drg) {
+
       //console.log("setQuerySectionData ",drg);
-      var currentSectionParams = {
-        mod: threeDInfo.wlzMode, 
-        fxp: threeDInfo.fxp, 
-        dst: threeDInfo.dst.cur, 
-        pit: threeDInfo.pitch.cur, 
-        yaw: threeDInfo.yaw.cur, 
-        rol: threeDInfo.roll.cur 
-      }
-      //console.log("setQuerySectionData currentSectionParams.dst %d",currentSectionParams.dst);
-      var len = query.length;
+
+      var len;
+      var isSameSection;
+      var querySection;
+      var i;
+
+      //currentSection = getCurrentSection();
+      len = query.length;
       //console.log("setQuerySectionData len %d",len);
 
       // it's a new query
@@ -2035,7 +2041,7 @@ emouseatlas.emap.tiledImageModel = function() {
          addSectionToQuery();
 	 query.push({
 	    name:currentQuerySectionName,
-	    section:currentSectionParams,
+	    section:currentSection,
 	    drg:drg
 	 });
          //console.log(query[0]);
@@ -2043,13 +2049,11 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       // are we editing an existing section?
-      var isSameSection = false;
-      var section;
-      var i;
+      isSameSection = false;
       for(i=0; i<len; i++) {
          //console.log("setQuerySectionData  i = %d, name = %s",i,query[i].name);
-	 section = query[i].section;
-	 if(emouseatlas.emap.utilities.isSameSection(currentSectionParams, section)){
+	 querySection = query[i].section;
+	 if(emouseatlas.emap.utilities.isSameSection(currentSection, querySection)){
 	    //console.log("same section");
 	    isSameSection = true;
             //console.log("before: ",query[i].drg);
@@ -2062,12 +2066,12 @@ emouseatlas.emap.tiledImageModel = function() {
       // no: we need to add a new section to the query
       if(!isSameSection) {
          addSectionToQuery();
-         //console.log("currentQuerySectionName now %s",currentQuerySectionName);
+         //console.log("currentSectionName);
          //console.log("adding new section data");
          //console.log("before: ",query);
 	 query.push({
 	    name:currentQuerySectionName,
-	    section:currentSectionParams,
+	    section:currentSection,
 	    drg:drg
 	 });
          //console.log("after: ",query);
@@ -2077,14 +2081,18 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
-   var changeToQuerySection = function (indx) {
+   //  Called when sectionSelector item is clicked
+   //---------------------------------------------------------
+   var selectQuerySection = function (indx) {
+
+      //console.log("selectQuerySection %d",indx);
 
       var section;
       if(query[indx] === undefined) {
          return null;
       }
       currentQuerySectionName = query[indx].name;
-      //console.log("changeToQuerySection indx %d %s",indx,currentQuerySectionName);
+      //console.log("selectQuerySection indx %d %s",indx,currentQuerySectionName);
       section = query[indx].section;
       setSection(
          section.fxp.x,
@@ -2098,7 +2106,23 @@ emouseatlas.emap.tiledImageModel = function() {
 
       resetModelChanges();
       modelChanges.changeQuerySection = true;
-      notify("changeToQuerySection");
+      notify("selectQuerySection");
+   };
+
+   //---------------------------------------------------------
+   var getQuerySectionAtIndex = function (indx) {
+
+      //console.log("getQuerySectionAtIndex %d",indx);
+
+      var section;
+      if(query[indx] === undefined) {
+         return undefined;
+      }
+      currentQuerySectionName = query[indx].name;
+      //console.log("selectQuerySection indx %d %s",indx,currentQuerySectionName);
+      section = query[indx].section;
+
+      return section;
    };
 
 //=====================================================================================
@@ -2193,6 +2217,7 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var setInitialOrientationCallback = function () {
       //console.log("enter model.setInitialOrientationCallback");
+      setCurrentSection("setInitialOrientationCallback");
       resetModelChanges();
       modelChanges.initialState = true;
       notify("setInitialOrientationCallback");
@@ -2214,10 +2239,12 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var setOrientationCallback = function () {
       //console.log("setOrientationCallback");
+      setCurrentSection("setOrientationCallback");
       resetModelChanges();
       //modelChanges.rotation = true;
       modelChanges.locator = true;
       modelChanges.distanceRange = true;
+      modelChanges.sectionChanged = true;
       notify("setOrientationCallback");
    };
 
@@ -2238,9 +2265,11 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var modifyOrientationCallback = function () {
       //console.log("modifyOrientationCallback");
+      setCurrentSection("modifyOrientationCallback");
       resetModelChanges();
       modelChanges.locator = true;
       modelChanges.distanceRange = true;
+      modelChanges.sectionChanged = true;
       notify("modifyOrientationCallback");
    };
 
@@ -2338,9 +2367,11 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var setDistanceCallback = function () {
       //console.log("setDistanceCallback");
+      setCurrentSection("setDistanceCallback");
       resetModelChanges();
       modelChanges.locator = true;
       modelChanges.dst = true;
+      modelChanges.sectionChanged = true;
       notify("setDistanceCallback");
    };
 
@@ -2366,8 +2397,10 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var modifyDistanceCallback = function () {
       //console.log("modifyDistanceCallback");
+      setCurrentSection("modifyDistanceCallback");
       resetModelChanges();
       modelChanges.locator = true;
+      modelChanges.sectionChanged = true;
       notify("modifyDistanceCallback");
    };
 
@@ -2389,6 +2422,7 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var setSectionCallback = function () {
       //console.log("setSectionCallback");
+      setCurrentSection("setSectionCallback");
       resetModelChanges();
       modelChanges.setSection = true;
       /*
@@ -2569,6 +2603,31 @@ emouseatlas.emap.tiledImageModel = function() {
    var getThreeDInfo = function() {
       //console.log("model.getThreeDInfo: ",threeDInfo);
       return threeDInfo;;
+   };
+
+   //---------------------------------------------------------
+   var setCurrentSection = function(from) {
+
+      //console.log("setCurrentSection: %s",from);
+
+      if(threeDInfo === undefined || threeDInfo === null) {
+         return undefined;
+      }
+
+      currentSection = {
+        mod: threeDInfo.wlzMode, 
+        fxp: threeDInfo.fxp, 
+        dst: threeDInfo.dst.cur, 
+        pit: threeDInfo.pitch.cur, 
+        yaw: threeDInfo.yaw.cur, 
+        rol: threeDInfo.roll.cur 
+      }
+
+   };
+
+   //---------------------------------------------------------
+   var getCurrentSection = function() {
+      return currentSection;
    };
 
    //---------------------------------------------------------
@@ -2886,7 +2945,8 @@ emouseatlas.emap.tiledImageModel = function() {
       setQuerySectionData: setQuerySectionData,
       getQuerySectionName: getQuerySectionName,
       getAllQuerySectionNames: getAllQuerySectionNames,
-      changeToQuerySection: changeToQuerySection,
+      selectQuerySection: selectQuerySection,
+      //isSameSection: isSameSection,
 
       getIndexData: getIndexData,
       getFullImgDims: getFullImgDims,
@@ -2910,6 +2970,8 @@ emouseatlas.emap.tiledImageModel = function() {
       hasLabels: hasLabels,
       getViewerTargetId: getViewerTargetId,
       getThreeDInfo: getThreeDInfo,
+      getCurrentSection: getCurrentSection,
+      getQuerySectionAtIndex: getQuerySectionAtIndex,
       getDistance: getDistance, // for convenience when you don't need all the 3D stuff
       setDistance: setDistance,
       modifyDistance: modifyDistance,

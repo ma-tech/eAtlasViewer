@@ -1628,7 +1628,7 @@ emouseatlas.emap.tiledImageView = function() {
       var coordstr = substr.replace(/^\s+|\s+$/g, '') ;
 
       var pArr = coordstr.split(" ");
-      console.log(pArr);
+      //console.log(pArr);
       testCoordSystem2(pArr);
      
       //console.log("exit testCoordSystemCallback");
@@ -2043,7 +2043,7 @@ emouseatlas.emap.tiledImageView = function() {
 
    //---------------------------------------------------------
    var doMouseUp = function (e) {
-      //console.log("View: doMouseUp");
+      console.log("View: doMouseUp");
    };
 
    //---------------------------------------------------------
@@ -2561,7 +2561,7 @@ emouseatlas.emap.tiledImageView = function() {
       var viewport_y = getViewerContainerPos().y;
       var imgToViewport_x = getViewportLeftEdge();
       var imgToViewport_y = getViewportTopEdge();
-      console.log("getDisplayPositionGivenImgCoords: imgCoords %d,%d viewport %d,%d  imgToViewport %d,%d  scale %d",imgCoords.x,imgCoords.y,viewport_x,viewport_y,imgToViewport_x,imgToViewport_y,scale.cur);
+      //console.log("getDisplayPositionGivenImgCoords: imgCoords %d,%d viewport %d,%d  imgToViewport %d,%d  scale %d",imgCoords.x,imgCoords.y,viewport_x,viewport_y,imgToViewport_x,imgToViewport_y,scale.cur);
       var fudgeFactor = {x:-3, y:-8};
       //var x = Number(imgCoords.x) + Number(getViewerContainerPos().x) - Number(getViewportLeftEdge()) - Number(fudgeFactor.x);
       //var y = Number(imgCoords.y) + Number(getViewerContainerPos().y) - Number(getViewportTopEdge()) - Number(fudgeFactor.x);
@@ -2569,7 +2569,7 @@ emouseatlas.emap.tiledImageView = function() {
       var y = Number(imgCoords.y) - Number(fudgeFactor.x);
       ret = {x:x, y:y};
 
-      console.log("getDisplayPositionGivenImgCoords ",ret);
+      //console.log("getDisplayPositionGivenImgCoords ",ret);
       return ret;
    };
 

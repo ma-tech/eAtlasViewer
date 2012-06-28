@@ -97,7 +97,6 @@ var tiledImageSectionChooser = new Class ({
       this.querySectionNames = [];
       this.transformedOrigins = {};
 
-      //this.model.addSectionToQuery();
       this.createElements();
    },
 
@@ -135,7 +134,6 @@ var tiledImageSectionChooser = new Class ({
       // containers for the sections indicators
       //----------------------------------------
 
-      //var currentSection = this.model.getCurrentQuerySectionName();
       var sectionNames = this.model.getAllQuerySectionNames();
       var numSections = sectionNames.length;;
 
@@ -404,11 +402,15 @@ var tiledImageSectionChooser = new Class ({
 	 return;
       }
 
+      var curSection;
+      var querySection;
       var sectionDiv;
       var sectionNames = this.model.getAllQuerySectionNames();
       var name;
       var numSections = sectionNames.length;
       var i;
+
+      curSection = this.model.getCurrentSection();
 
       for(i=0; i<numSections; i++) {
          name = sectionNames[i];
@@ -417,7 +419,12 @@ var tiledImageSectionChooser = new Class ({
 	 if(target.id.indexOf(name) !== -1) {
 	    //console.log("select %s",name);
 	    sectionDiv.className = 'sectionDiv selected';
-	    this.model.changeToQuerySection(i);
+            querySection = this.model.getQuerySectionAtIndex(i);
+            //console.log("doSectionClicked: querySection ",querySection);
+            if(emouseatlas.emap.utilities.isSameSection(curSection, querySection)) {
+               //console.log("chose same section");
+            }
+	    this.model.selectQuerySection(i);
 	 } else {
 	    //console.log("deselect %s",name);
 	    sectionDiv.className = 'sectionDiv';
@@ -453,7 +460,7 @@ var tiledImageSectionChooser = new Class ({
 	 checkbox = $(name + '_sectionCheckbox');
          //console.log("checkbox: %s is checked %s",name,checkbox.checked);
 	 if(checkbox.checked) {
-	    //console.log("query with %s",name);
+	    console.log("query with %s",name);
 	    this.querySectionNames[this.querySectionNames.length] = name;
 	    names[names.length] = name;
 	 } else {
@@ -479,8 +486,6 @@ var tiledImageSectionChooser = new Class ({
 
    //---------------------------------------------------------------
    viewUpdate: function(viewChanges, from) {
-
-      //var currentSection = this.view.getCurrentSectionName();
 
       if(viewChanges.initial === true) {
 	 this.window.setVisible(false);
@@ -589,7 +594,7 @@ var tiledImageSectionChooser = new Class ({
    //---------------------------------------------------------
    getTransformedBoundingBoxCallback: function (response, name, querySectionNamesStr) {
 
-      //console.log("getTransformedBoundingBoxCallback querySectionNamesStr ",querySectionNamesStr);
+      console.log("getTransformedBoundingBoxCallback querySectionNamesStr ",querySectionNamesStr);
       var stringifiedOrigins;
       var querySectionNamesArr = [];
       var values;
