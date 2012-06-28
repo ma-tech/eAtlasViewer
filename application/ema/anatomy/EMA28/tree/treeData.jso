@@ -1,0 +1,352 @@
+[
+	{
+		"nodeId":"0",
+		"name":"mouse",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:25780"],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"1",
+		"name":"organ system",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"2",
+		"name":"cardiovascular system",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"3",
+		"name":"blood",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1316"],
+		"domainData":{"domainId":"1", "domainColour":["229","102","229","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"4",
+		"name":"heart",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"5",
+		"name":"bulbus cordis",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1325"],
+		"domainData":{"domainId":"2", "domainColour":["127","0","127","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"6",
+		"name":"heartwall",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1317"],
+		"domainData":{"domainId":"11", "domainColour":["178","178","102","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"7",
+		"name":"cavities and their linings",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"8",
+		"name":"intraembryonic coelom",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"9",
+		"name":"intraembryonic coelom ",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"10",
+		"name":"intraembryonic coelom epith",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1052"],
+		"domainData":{"domainId":"12", "domainColour":["255","153","0","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"11",
+		"name":"nervous system",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"12",
+		"name":"central nervous system",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"13",
+		"name":"future spinal cord",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"14",
+		"name":"neural tube",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1259"],
+		"domainData":{"domainId":"14", "domainColour":["255","102","76","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"15",
+		"name":"neural lumen",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1262"],
+		"domainData":{"domainId":"13", "domainColour":["127","76","0","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"16",
+		"name":"notochord",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1195"],
+		"domainData":{"domainId":"15", "domainColour":["229","102","102","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"17",
+		"name":"sensory organ",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"18",
+		"name":"eye",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"19",
+		"name":"optic vesicle",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"20",
+		"name":"opticmesenchyme",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1293"],
+		"domainData":{"domainId":"16", "domainColour":["204","0","0","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"21",
+		"name":"opticvesicle",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1293"],
+		"domainData":{"domainId":"17", "domainColour":["255","102","102","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"22",
+		"name":"ear",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"23",
+		"name":"inner ear",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"24",
+		"name":"otic pit",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1279"],
+		"domainData":{"domainId":"18", "domainColour":["51","178","51","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"25",
+		"name":"lumen",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:7146"],
+		"domainData":{"domainId":"19", "domainColour":["204","76","204","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"26",
+		"name":"arterial system",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"27",
+		"name":"dorsal aorta",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1307"],
+		"domainData":{"domainId":"3", "domainColour":["102","76","204","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"28",
+		"name":"pericardial component",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"29",
+		"name":"cavity",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"30",
+		"name":"pericardialcavity",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1054"],
+		"domainData":{"domainId":"20", "domainColour":["178","153","25","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"31",
+		"name":"pericardialcavity epith",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1054"],
+		"domainData":{"domainId":"21", "domainColour":["255","25","51","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"32",
+		"name":"visceral organ",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"33",
+		"name":"alimentary system",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"34",
+		"name":"gut",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"35",
+		"name":"foregut",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"36",
+		"name":"pharynx",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"37",
+		"name":"epithelium",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"38",
+		"name":"lumen",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"39",
+		"name":"mesenchyme",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"40",
+		"name":"trunk mesenchyme",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"41",
+		"name":"paraxial mesenchyme",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"42",
+		"name":"somite",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1087"],
+		"domainData":{"domainId":"22", "domainColour":["76","255","76","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"43",
+		"name":"ectoderm",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":[""],
+		"domainData":{"domainSelected":"false"}
+	},
+	{
+		"nodeId":"44",
+		"name":"surface ectoderm",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1068"],
+		"domainData":{"domainId":"4", "domainColour":["178","204","229","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"45",
+		"name":"ganglion",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1265"],
+		"domainData":{"domainId":"6", "domainColour":["0","127","127","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"46",
+		"name":"gutepithelium",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1363"],
+		"domainData":{"domainId":"7", "domainColour":["0","204","127","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"47",
+		"name":"gutlumen",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1363"],
+		"domainData":{"domainId":"8", "domainColour":["51","127","76","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"48",
+		"name":"heartcavity",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1317"],
+		"domainData":{"domainId":"9", "domainColour":["178","229","102","255"], "domainSelected":"false"}
+	},
+	{
+		"nodeId":"49",
+		"name":"heartchamber",
+		"nodeState":{"open":"true", "selected":"false"},
+		"extId":["EMAP:1317"],
+		"domainData":{"domainId":"10", "domainColour":["229","229","255","255"], "domainSelected":"false"}
+	}
+]
