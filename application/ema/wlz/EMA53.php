@@ -69,6 +69,7 @@
       
       <script type="text/javascript" src="../../../javascript/tiledImageModel.js"></script>
       <script type="text/javascript" src="../../../javascript/tiledImageView.js"></script>
+      <script type="text/javascript" src="../../../javascript/tiledImageQuery.js"></script>
       <script type="text/javascript" src="../../../javascript/emapIIPViewer.js"></script>    
       
       <script type="text/javascript" src="../../../javascript/tools/draggableWindow.js"></script>

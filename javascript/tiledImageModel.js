@@ -50,6 +50,7 @@ emouseatlas.emap.tiledImageModel = function() {
    // modules
    //---------------------------------------------------------
    var view = emouseatlas.emap.tiledImageView;
+   var query = emouseatlas.emap.tiledImageQuery;
    var util = emouseatlas.emap.utilities;
    var busyIndicator = emouseatlas.emap.busyIndicator;
 
@@ -167,11 +168,6 @@ emouseatlas.emap.tiledImageModel = function() {
    var expressionSection = {};
 
    var currentSection = {}; // this must be an object, not an array
-
-   var currentQuerySectionName;
-   var querySectionNames = [];
-   var querySection = {}; // this must be an object, not an array
-   var query = [];
 
    var keySectionArr = [];
 
@@ -784,6 +780,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	    printPaths();
 	 }
 	 initView();
+	 initQuery();
       }
    };
 
@@ -1481,6 +1478,12 @@ emouseatlas.emap.tiledImageModel = function() {
    }
 
    //---------------------------------------------------------
+   var initQuery = function () {
+      emouseatlas.emap.tiledImageQuery.initialise(emouseatlas.emap.tiledImageModel,
+                                                  emouseatlas.emap.tiledImageView);
+   }
+
+   //---------------------------------------------------------
    /**
     *   Informs registered observers of a change to the model.
     */
@@ -1896,233 +1899,6 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getDataSubType = function () {
       return dataSubType;
-   };
-
-//=====================================================================================
-   // called from emap draw initialise and also if saving drawing on a different section
-   //---------------------------------------------------------
-   var addSectionToQuery = function () {
-      var len = querySectionNames.length;
-      currentQuerySectionName = 'section_' + len;
-      //console.log("addSectionToQuery %s",currentQuerySectionName);
-      querySectionNames.push(currentQuerySectionName);
-      resetModelChanges();
-      modelChanges.addQuerySection = true;
-      notify("addSectionToQuery");
-      return false;
-   };
-
-   // called following mouse up whilst drawing
-   // causes emapDraw to save drawing on current section to the query
-   //---------------------------------------------------------
-   var saveDrawingOnSection = function () {
-      //console.log("saveDrawingOnSection menu item");
-      resetModelChanges();
-      modelChanges.saveQuerySection = true;
-      notify("saveDrawingOnSection");
-      return false;
-   };
-
-   //---------------------------------------------------------
-   var getIndexOfQuerySectionName = function (name) {
-
-      var indx = -1;
-      var len = querySectionNames.length;
-      var i;
-
-      if(len <= 0) {
-         return -1;
-      }
-      for(i=0; i<len; i++) {
-         if(querySectionNames[i] === name) {
-	    indx = i;
-	    break;
-	 }
-      }
-
-      return indx;
-   };
-
-   //---------------------------------------------------------
-   var getQuerySectionName = function () {
-      return currentQuerySectionName;
-   };
-
-   //---------------------------------------------------------
-   var getAllQuerySectionNames = function () {
-      return querySectionNames;
-   };
-
-   //---------------------------------------------------------
-   var getQuerySectionData = function (name) {
-
-      var len = query.length;
-      var i;
-      var section;
-
-      if(name === undefined || name === "") {
-         return undefined;
-      }
-
-      if(len === 0) {
-         return undefined;
-      }
-
-      for(i=0; i<len; i++) {
-         section = query[i];
-         if(section.name === name) {
-	    section.drg = trimQuerySectionDrg(section.drg);
-            return section;
-         }
-      }
-
-      return undefined;
-   };
-
-   //---------------------------------------------------------
-   // We only want from after the last 'clear' node in the drawing
-   //---------------------------------------------------------
-   var trimQuerySectionDrg = function (drg) {
-
-      var ret;
-      var len;
-      var node;
-      var lastClear = -1;
-      var i;
-
-      if(drg === undefined || drg === null) {
-         //console.log("trimQuerySectionDrg drg undefined");
-         return undefined;
-      }
-
-      len = drg.length;
-
-      if(len <= 0) {
-         //console.log("trimQuerySectionDrg len <= 0");
-         return undefined;
-      }
-
-      for(i=len-1; i>-1; i--) {
-         node = drg[i];
-	 if(node.a == 8) {
-            lastClear = i;
-            break;
-	 }
-      }
-      //console.log("trimQuerySectionDrg lastClear %d",lastClear);
-      if(lastClear > 0) {
-         ret = drg.splice(i+1);
-      } else {
-         ret = drg;
-      }
-
-      return ret;
-   };
-
-   //---------------------------------------------------------
-   //  Called on mouse up after doing some drawing.
-   //---------------------------------------------------------
-   var setQuerySectionData = function (drg) {
-
-      //console.log("setQuerySectionData ",drg);
-
-      var len;
-      var isSameSection;
-      var querySection;
-      var i;
-
-      //currentSection = getCurrentSection();
-      len = query.length;
-      //console.log("setQuerySectionData len %d",len);
-
-      // it's a new query
-      if(len <= 0) {
-         //console.log("new query");
-         addSectionToQuery();
-	 query.push({
-	    name:currentQuerySectionName,
-	    section:currentSection,
-	    drg:drg
-	 });
-         //console.log(query[0]);
-	 return false;
-      }
-
-      // are we editing an existing section?
-      isSameSection = false;
-      for(i=0; i<len; i++) {
-         //console.log("setQuerySectionData  i = %d, name = %s",i,query[i].name);
-	 querySection = query[i].section;
-	 if(emouseatlas.emap.utilities.isSameSection(currentSection, querySection)){
-	    //console.log("same section");
-	    isSameSection = true;
-            //console.log("before: ",query[i].drg);
-	    query[i].drg = drg;
-            //console.log("after: ",query[i].drg);
-	    return false;
-	 }
-      }
-
-      // no: we need to add a new section to the query
-      if(!isSameSection) {
-         addSectionToQuery();
-         //console.log("currentSectionName);
-         //console.log("adding new section data");
-         //console.log("before: ",query);
-	 query.push({
-	    name:currentQuerySectionName,
-	    section:currentSection,
-	    drg:drg
-	 });
-         //console.log("after: ",query);
-      }
-
-     return false;
-   };
-
-   //---------------------------------------------------------
-   //  Called when sectionSelector item is clicked
-   //---------------------------------------------------------
-   var selectQuerySection = function (indx) {
-
-      //console.log("selectQuerySection %d",indx);
-
-      var section;
-      if(query[indx] === undefined) {
-         return null;
-      }
-      currentQuerySectionName = query[indx].name;
-      //console.log("selectQuerySection indx %d %s",indx,currentQuerySectionName);
-      section = query[indx].section;
-      setSection(
-         section.fxp.x,
-         section.fxp.y,
-         section.fxp.z,
-         section.pit,
-         section.yaw,
-         section.rol,
-         section.dst
-      );
-
-      resetModelChanges();
-      modelChanges.changeQuerySection = true;
-      notify("selectQuerySection");
-   };
-
-   //---------------------------------------------------------
-   var getQuerySectionAtIndex = function (indx) {
-
-      //console.log("getQuerySectionAtIndex %d",indx);
-
-      var section;
-      if(query[indx] === undefined) {
-         return undefined;
-      }
-      currentQuerySectionName = query[indx].name;
-      //console.log("selectQuerySection indx %d %s",indx,currentQuerySectionName);
-      section = query[indx].section;
-
-      return section;
    };
 
 //=====================================================================================
@@ -2939,15 +2715,6 @@ emouseatlas.emap.tiledImageModel = function() {
       getLayerData: getLayerData,
       getDataSubType: getDataSubType,
 
-      addSectionToQuery: addSectionToQuery,
-      saveDrawingOnSection: saveDrawingOnSection,
-      getQuerySectionData: getQuerySectionData,
-      setQuerySectionData: setQuerySectionData,
-      getQuerySectionName: getQuerySectionName,
-      getAllQuerySectionNames: getAllQuerySectionNames,
-      selectQuerySection: selectQuerySection,
-      //isSameSection: isSameSection,
-
       getIndexData: getIndexData,
       getFullImgDims: getFullImgDims,
       setBoundingBox: setBoundingBox,
@@ -2971,7 +2738,6 @@ emouseatlas.emap.tiledImageModel = function() {
       getViewerTargetId: getViewerTargetId,
       getThreeDInfo: getThreeDInfo,
       getCurrentSection: getCurrentSection,
-      getQuerySectionAtIndex: getQuerySectionAtIndex,
       getDistance: getDistance, // for convenience when you don't need all the 3D stuff
       setDistance: setDistance,
       modifyDistance: modifyDistance,

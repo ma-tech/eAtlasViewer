@@ -40,11 +40,15 @@ var tiledImageSectionChooser = new Class ({
    initialize: function(params) {
 
       //console.log("enter tiledImageSectionChooser.initialize: ",params);
-      this.model = params.model;
-      this.view = params.view;
+      //this.model = params.model;
+      //this.view = params.view;
+      this.model = emouseatlas.emap.tiledImageModel;
+      this.view = emouseatlas.emap.tiledImageView;
+      this.query = emouseatlas.emap.tiledImageQuery;
 
       this.model.register(this);
       this.view.register(this);
+      this.query.register(this);
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 
@@ -134,7 +138,8 @@ var tiledImageSectionChooser = new Class ({
       // containers for the sections indicators
       //----------------------------------------
 
-      var sectionNames = this.model.getAllQuerySectionNames();
+      var sectionNames = this.query.getAllQuerySectionNames();
+      //console.log("section names ",sectionNames);
       var numSections = sectionNames.length;;
 
       //this.height = this.baseHeight + (numSections + 1*1) * this.heightOfOneSection;
@@ -372,7 +377,7 @@ var tiledImageSectionChooser = new Class ({
          return;
       }
 
-      var sectionNames = this.model.getAllQuerySectionNames();
+      var sectionNames = this.query.getAllQuerySectionNames();
       var numSections = sectionNames.length;
       var i;
 
@@ -405,7 +410,7 @@ var tiledImageSectionChooser = new Class ({
       var curSection;
       var querySection;
       var sectionDiv;
-      var sectionNames = this.model.getAllQuerySectionNames();
+      var sectionNames = this.query.getAllQuerySectionNames();
       var name;
       var numSections = sectionNames.length;
       var i;
@@ -419,12 +424,12 @@ var tiledImageSectionChooser = new Class ({
 	 if(target.id.indexOf(name) !== -1) {
 	    //console.log("select %s",name);
 	    sectionDiv.className = 'sectionDiv selected';
-            querySection = this.model.getQuerySectionAtIndex(i);
+            querySection = this.query.getQuerySectionAtIndex(i);
             //console.log("doSectionClicked: querySection ",querySection);
             if(emouseatlas.emap.utilities.isSameSection(curSection, querySection)) {
                //console.log("chose same section");
             }
-	    this.model.selectQuerySection(i);
+	    this.query.selectQuerySection(i);
 	 } else {
 	    //console.log("deselect %s",name);
 	    sectionDiv.className = 'sectionDiv';
@@ -450,7 +455,7 @@ var tiledImageSectionChooser = new Class ({
 
       var names = [];
       var name;
-      var sectionNames = this.model.getAllQuerySectionNames();
+      var sectionNames = this.query.getAllQuerySectionNames();
       var numSections = sectionNames.length;
       var checkbox;
       var i;
@@ -460,7 +465,7 @@ var tiledImageSectionChooser = new Class ({
 	 checkbox = $(name + '_sectionCheckbox');
          //console.log("checkbox: %s is checked %s",name,checkbox.checked);
 	 if(checkbox.checked) {
-	    console.log("query with %s",name);
+	    //console.log("query with %s",name);
 	    this.querySectionNames[this.querySectionNames.length] = name;
 	    names[names.length] = name;
 	 } else {
@@ -474,13 +479,6 @@ var tiledImageSectionChooser = new Class ({
 
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {
-
-      if(modelChanges.addQuerySection === true) {
-         //console.log("addQuerySection");
-         this.createElements();
-	 var buttonDiv = $('queryButtonDiv');
-	 buttonDiv.style.visibility = "visible";
-      }
 
    }, // modelUpdate
 
@@ -509,6 +507,18 @@ var tiledImageSectionChooser = new Class ({
 	}
       }
    }, // viewUpdate
+
+   //---------------------------------------------------------------
+   queryUpdate: function(queryChanges) {
+
+      if(queryChanges.addQuerySection === true) {
+         //console.log("addQuerySection");
+         this.createElements();
+	 var buttonDiv = $('queryButtonDiv');
+	 buttonDiv.style.visibility = "visible";
+      }
+   }, // queryUpdate
+
 
    // called from query section chooser
    //--------------------------------------------------------------
@@ -555,7 +565,7 @@ var tiledImageSectionChooser = new Class ({
       }
 
       name = names.shift();
-	 drawingData = this.model.getQuerySectionData(name);
+	 drawingData = this.query.getQuerySectionData(name);
 	 //console.log("drawingData ",drawingData);
 	 section = drawingData.section;
 
@@ -594,7 +604,7 @@ var tiledImageSectionChooser = new Class ({
    //---------------------------------------------------------
    getTransformedBoundingBoxCallback: function (response, name, querySectionNamesStr) {
 
-      console.log("getTransformedBoundingBoxCallback querySectionNamesStr ",querySectionNamesStr);
+      //console.log("getTransformedBoundingBoxCallback querySectionNamesStr ",querySectionNamesStr);
       var stringifiedOrigins;
       var querySectionNamesArr = [];
       var values;
@@ -691,7 +701,7 @@ var tiledImageSectionChooser = new Class ({
       queryStr += queryStrHeader;
       for(i=0; i<len; i++) {
          name = this.querySectionNames[i];
-	 drawingData = this.model.getQuerySectionData(name);
+	 drawingData = this.query.getQuerySectionData(name);
 	 //console.log("drawingData ",drawingData);
 	 stringifiedDrawing = emouseatlas.emap.utilities.stringifyDrawing(drawingData.drg);
 	 //console.log("stringifiedDrawing ",stringifiedDrawing);

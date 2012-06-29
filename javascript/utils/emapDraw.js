@@ -29,6 +29,7 @@ emouseatlas.emap.EmapDraw = function() {
    // private members
    var view;
    var model;
+   var query;
    var drawingCanvas;
    var drawingContext;
    var scale;
@@ -269,7 +270,7 @@ emouseatlas.emap.EmapDraw = function() {
 	      }
            } else {
               drawing.push(addNode());
-              printDrawingNodes(drawing, "drawing after addNode");
+              //printDrawingNodes(drawing, "drawing after addNode");
            }
         } else {
 	   if(mouseIsDown) { // only for pencil
@@ -440,6 +441,8 @@ emouseatlas.emap.EmapDraw = function() {
       view.register(this);
       model = params.model;
       model.register(this);
+      query = emouseatlas.emap.tiledImageQuery;
+      query.register(this);
       curDrawMode = true;
       curDrawAction = 0;
       scale = view.getScale().cur;
@@ -565,37 +568,6 @@ emouseatlas.emap.EmapDraw = function() {
 	 paintDrawing();
       }
 
-      //......................
-      if(changes.saveQuerySection) {
-         //console.log("model saveQuerySection");
-	 copy = copyDrawing(drawing);
-	 model.setQuerySectionData(copy);
-      }
-
-      //.........................
-      // Section change due to user selection
-      //......................
-      if(changes.changeQuerySection) {
-         //console.log("model changeQuerySection");
-	 querySectionChanged = true;
-	 names = model.getAllQuerySectionNames();
-	 curName = model.getQuerySectionName();
-         //console.log("changes.changeQuerySection current name %s", curName);
-	 len = names.length;
-	 i;
-	 for(i=0; i<len; i++) {
-            //console.log("name %s", names[i]);
-	    if(names[i] === curName) {
-	       break;
-	    }
-	 }
-	 data = model.getQuerySectionData(names[i]);
-	 copy = copyDrawing(data.drg);
-	 drawing = copy;
-	 //console.log(copy);
-	 querySectionChanged = true;
-      }
-
       //.........................
       // If section has changed due to user selection
       // we need to re-size the canvas
@@ -682,9 +654,8 @@ emouseatlas.emap.EmapDraw = function() {
 
 	 mouseIsDown = false;
 	 recordDrawingAction();
-	 //var drg = getDrawing();
-	 //console.log(drg);
-	 model.saveDrawingOnSection();
+	 //console.log(drawing);
+	 query.saveDrawingOnSection();
       }
 
       //......................
@@ -729,6 +700,42 @@ emouseatlas.emap.EmapDraw = function() {
    };
 
    //---------------------------------------------------------
+   var queryUpdate = function (changes) {
+
+      //......................
+      if(changes.saveQuerySection) {
+         //console.log("model saveQuerySection");
+	 copy = copyDrawing(drawing);
+         //console.log("query saveQuerySection copy ",copy);
+	 query.setQuerySectionData(copy);
+      }
+
+      //.........................
+      // Section change due to user selection
+      //......................
+      if(changes.changeQuerySection) {
+         //console.log("model changeQuerySection");
+	 querySectionChanged = true;
+	 names = query.getAllQuerySectionNames();
+	 curName = query.getQuerySectionName();
+         //console.log("changes.changeQuerySection current name %s", curName);
+	 len = names.length;
+	 i;
+	 for(i=0; i<len; i++) {
+            //console.log("name %s", names[i]);
+	    if(names[i] === curName) {
+	       break;
+	    }
+	 }
+	 data = query.getQuerySectionData(names[i]);
+	 copy = copyDrawing(data.drg);
+	 drawing = copy;
+	 //console.log(copy);
+	 querySectionChanged = true;
+      }
+   };
+
+   //---------------------------------------------------------
    // utility methods
    //---------------------------------------------------------
 
@@ -743,13 +750,13 @@ emouseatlas.emap.EmapDraw = function() {
       var numSections;
       var i;
 
-      sectionNames = model.getAllQuerySectionNames();
-      selectedQuerySectionName = model.getQuerySectionName();
+      sectionNames = query.getAllQuerySectionNames();
+      selectedQuerySectionName = query.getQuerySectionName();
       numSections = sectionNames.length;
 
       for(i=0; i<numSections; i++) {
          name = sectionNames[i];
-         querySection = model.getQuerySectionAtIndex(i);
+         querySection = query.getQuerySectionAtIndex(i);
          //console.log("isExistingQuerySection: querySection ",querySection);
          if(emouseatlas.emap.utilities.isSameSection(testSection, querySection)) {
             if(name === selectedQuerySectionName) {
@@ -866,6 +873,7 @@ emouseatlas.emap.EmapDraw = function() {
       initialise: initialise,
       viewUpdate: viewUpdate,
       modelUpdate: modelUpdate,
+      queryUpdate: queryUpdate,
       setDrawOrErase: setDrawOrErase,
       setPenSize: setPenSize,
       clearDrawingCanvas: clearDrawingCanvas,

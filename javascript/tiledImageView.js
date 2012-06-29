@@ -3106,6 +3106,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 new tiledImageSectionChooser({
 	    model:model,
 	    view:view,
+	    query:emouseatlas.emap.tiledImageModel,
 	    params:{targetId:toolData.sectionChooser.targetId,
 	            title:'section chooser',
 	            drag:toolData.sectionChooser.draggable,
