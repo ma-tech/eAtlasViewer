@@ -36,7 +36,7 @@
          },
          {
             "id":"5",
-            "name":["Image Label"],
+            "name":["Image Labels"],
             "action":"emouseatlas.emap.tiledImageView.enableImgLabels()",
             "checkbox":"true",
             "checked":"true",
@@ -81,41 +81,18 @@
          },
          {
             "id":"11",
-            "spacer":"true"
+            "name":["Query Mode"],
+            "action":"emouseatlas.emap.tiledImageView.setModeNum(5)",
+	    "radio": "true",
+            "radioGroup": "mode",
+            "enabled":"true"
          },
          {
             "id":"12",
-            "name":["Query External Data"],
-            "enabled":"true"
-         },
-         {
-            "id":"13",
-            "name":["By Anatomy"],
-            "enabled":"true"
-         },
-         {
-            "id":"14",
-            "name":["Emage (gene expression)"],
-            "action":"emouseatlas.emap.tiledImageView.setModeNum(5,0)",
-            "enabled":"true"
-         },
-         {
-            "id":"15",
-            "name":["MGI-GXD (gene expression)"],
-            "action":"emouseatlas.emap.tiledImageView.setModeNum(5,1)",
-            "enabled":"true"
-         },
-         {
-            "id":"16",
-            "name":["By Spatial Region"],
-            "enabled":"false"
-         },
-         {
-            "id":"17",
             "spacer":"true"
          },
          {
-            "id":"18",
+            "id":"13",
             "name":["Cancel"],
             "action":"emouseatlas.emap.tiledImageView.cancelContextMenu()",
             "enabled":"true"

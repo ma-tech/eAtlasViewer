@@ -53,36 +53,14 @@
          },
          {
             "id":"11",
-            "spacer":""
+            "children": []
          },
          {
             "id":"12",
-            "children":[
-               {
-                  "id":"13",
-                  "children":[
-                     {
-                        "id":"14",
-                        "children":[]
-                     },
-                     {
-                        "id":"15",
-                        "children":[]
-                     }
-                  ]
-               },
-               {
-                  "id":"16",
-                  "children":[]
-               }
-            ]
+            "spacer":""
          },
          {
-            "id":"17",
-            "spacer": ""
-         },
-         {
-            "id":"18",
+            "id":"13",
             "children":[]
          }
       ]

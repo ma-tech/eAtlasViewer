@@ -1,9 +1,9 @@
 {
    "webServer": "aberlour.hgu.mrc.ac.uk",
    "iipServerPath": "/fcgi-bin/newiipsrv.fcgi",
-   "metadataRoot": "/eAtlasViewer_dev2/application/ema/anatomy/EMA28/",
+   "metadataRoot": "/eAtlasViewer_dev/application/ema/anatomy/EMA28/",
    "toolsMetadataFilename": "./tiledImageToolParams_sections.jso",
-   "interfaceImageDir": "/eAtlasViewer_dev2/images/",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
    "dataType": "wlz",
    "transverseView": {"pitch": "0", "yaw": "0", "roll": "180"},
    "sagittalView": {"pitch": "90", "yaw": "90", "roll": "120"},
@@ -31,8 +31,8 @@
          "opacity":"1.0",
          "current":"",
          "visible":"true",
-         "treeStructureFile": "/eAtlasViewer_dev2/application/ema/anatomy/EMA28/tree/treeStructure.jso",
-         "treeDataFile": "/eAtlasViewer_dev2/application/ema/anatomy/EMA28/tree/treeData.jso"
+         "treeStructureFile": "/eAtlasViewer_dev/application/ema/anatomy/EMA28/tree/treeStructure.jso",
+         "treeDataFile": "/eAtlasViewer_dev/application/ema/anatomy/EMA28/tree/treeData.jso"
       }
    ],
    "initialState": {
@@ -45,8 +45,8 @@
    },
    "pixelResolution": {"x":"4", "y":"4", "z":"7", "units":["\u03BC\u006D", "\u006D\u006D"]},
    "wlzToStackOffset": "0",
-   "menuStructureFile": "/eAtlasViewer_dev2/application/ema/anatomy/menu/menuStructure_sections.jso",
-   "menuContentFile": "/eAtlasViewer_dev2/application/ema/anatomy/menu/menuContent_sections.jso",
+   "menuStructureFile": "/eAtlasViewer_dev/application/ema/anatomy/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/ema/anatomy/menu/menuContent.jso",
    "wlzMode": "zeta",
    "busyIndicatorSrc": "busyIndicator.gif",
    "sectionOrderReversed": "true",

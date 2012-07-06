@@ -1,0 +1,65 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+#fontSize {
+	height: 50px;
+}
+
+#queryTermBkg {
+   width: 100%;
+   height: 100%;
+   padding: 0px;
+   margin: 0px;
+   background: #eaeaea
+}
+
+/* --------------------------- */
+.termDiv {
+   position: absolute;
+   left: 1px;
+   padding: 0 2px;
+   margin: 0px;
+   color: #000;
+   height: 20px;
+   border: solid 1px #aaa;
+   border: none;
+   background: #eaeaea;
+}
+.termDiv.selected {
+   color: #fff;
+   background: #aaf;
+}
+
+.termTextContainer {
+   float: left;
+   padding: 0px;
+   margin: 0px;
+}
+
+.termTextDiv {
+   position: relative;
+   top: 4px;
+   height: 20px;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   font-size: 9px;
+}

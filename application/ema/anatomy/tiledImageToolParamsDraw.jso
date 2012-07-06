@@ -1,19 +1,16 @@
 {
    "toBeUsed": [
       "locator",
-      "selector",
+      "distance",
+      "pitchYaw",
+      "rotation",
       "fixedPoint",
       "query",
       "querySection",
-      "queryTerm",
       "help",
       "scale",
       "refresh",
-      "layer",
-      "properties",
       "equivalentSection",
-      "combinedDistance",
-      "tree",
       "measure",
       "draw"
    ],
@@ -41,7 +38,7 @@
    "layer": {
       "width":"130",
       "x":"5",
-      "y":"65",
+      "y":"285",
       "draggable":"false",
       "isHorizontal":"true",
       "thinTopEdge":"false",
@@ -67,21 +64,11 @@
       "thinTopEdge":"false",
       "targetId":"emapIIPViewerDiv"
    },
-   "queryTerm": {
-      "width":"150",
-      "height":"140",
-      "x":"10",
-      "y":"320",
-      "draggable":"true",
-      "isHorizontal":"true",
-      "thinTopEdge":"false",
-      "targetId":"emapIIPViewerDiv"
-   },
    "scale": {
       "width":"130",
       "height":"20",
       "x":"5",
-      "y":"130",
+      "y":"310",
       "draggable":"false",
       "isHorizontal":"true",
       "targetId":"toolContainerDiv"
@@ -98,54 +85,25 @@
       "width":"134",
       "height":"20",
       "x":"2",
-      "y":"30",
+      "y":"275",
       "draggable":"false",
       "borders":"false",
-      "targetId":"toolContainerDiv"
-   },
-   "nextPaintedSection": {
-      "width":"86",
-      "height":"23",
-      "x":"24",
-      "y":"330",
-      "draggable":"false",
-      "transparent":"false",
-      "borders":"true",
-      "targetId":"toolContainerDiv"
-   },
-   "combinedDistance": {
-      "width":"130",
-      "height":"42",
-      "x":"5",
-      "y":"165",
-      "draggable":"false",
-      "transparent":"false",
-      "borders":"true",
-      "isHorizontal":"true",
       "targetId":"toolContainerDiv"
    },
    "distance": {
       "width":"130",
       "height":"20",
       "x":"5",
-      "y":"165",
+      "y":"345",
       "draggable":"false",
       "isHorizontal":"false",
-      "targetId":"toolContainerDiv"
-   },
-   "selector": {
-      "maxdim":"100",
-      "x":"25",
-      "y":"222",
-      "draggable":"false",
-      "toBottom":"false",
       "targetId":"toolContainerDiv"
    },
    "locator": {
       "width":"130",
       "height":"130",
-      "x":"21",
-      "y":"352",
+      "x":"3",
+      "y":"380",
       "draggable":"false",
       "targetId":"toolContainerDiv"
    },
@@ -168,14 +126,12 @@
       "targetId":"emapIIPViewerDiv"
    },
    "tree": {
-      "width":"240",
-      "height":"660",
+      "width":"300",
+      "height":"600",
       "x":"8",
-      "y":"50",
-      "draggable":"false",
+      "y":"60",
+      "draggable":"true",
       "thinTopEdge":"false",
-      "toRight":"true",
-      "lockToImg":"true",
       "targetId":"projectDiv"
    },
    "measure": {
