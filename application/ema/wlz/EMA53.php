@@ -26,7 +26,9 @@
       
       <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/layer.css" />
       <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/layerProperties.css" />
-      <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/sectionChooser.css" />
+      <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/query.css" />
+      <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/querySection.css" />
+      <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/queryTerm.css" />
       <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/draggableWindow.css" />
       <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/pitchYaw.css" />
       <link rel="stylesheet" type="text/css" media="all" href="../../../css/tools/rotation.css" />
@@ -79,7 +81,9 @@
       <script type="text/javascript" src="../../../javascript/tools/tiledImageSelectorTool.js"></script>
       <script type="text/javascript" src="../../../javascript/tools/tiledImageDistanceTool.js"></script>
       <script type="text/javascript" src="../../../javascript/tools/tiledImageLayerTool.js"></script>
-      <script type="text/javascript" src="../../../javascript/tools/tiledImageSectionChooser.js"></script>
+      <script type="text/javascript" src="../../../javascript/tools/queryTool.js"></script>
+      <script type="text/javascript" src="../../../javascript/tools/querySectionTool.js"></script>
+      <script type="text/javascript" src="../../../javascript/tools/queryTermTool.js"></script>
       <script type="text/javascript" src="../../../javascript/tools/tiledImagePropertiesTool.js"></script>
       <script type="text/javascript" src="../../../javascript/tools/tiledImageFixedPointTool.js"></script>
       <script type="text/javascript" src="../../../javascript/tools/tiledImagePitchYawTool.js"></script>

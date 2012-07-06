@@ -147,7 +147,9 @@ emouseatlas.emap.EmapDraw = function() {
      //---------------------------------------------------------
      var clearDrawingCanvas = function(from) {
        //console.log("clearDrawingCanvas from %s",from);
-       drawingContext.clearRect(0,0,drawingCanvas.width,drawingCanvas.height);
+       if(drawingContext) {
+          drawingContext.clearRect(0,0,drawingCanvas.width,drawingCanvas.height);
+       }
      };
 
      //---------------------------------------------------------
@@ -160,7 +162,9 @@ emouseatlas.emap.EmapDraw = function() {
   
      //---------------------------------------------------------
      var setLineWidth =  function(w) {
-        drawingContext.lineWidth = w;
+       if(drawingContext) {
+          drawingContext.lineWidth = w;
+       }
      };
   
      //---------------------------------------------------------
@@ -185,21 +189,27 @@ emouseatlas.emap.EmapDraw = function() {
   
      //---------------------------------------------------------
      var setStrokeStyle = function(col) {
-        drawingContext.strokeStyle = col;
-      };
+	if(drawingContext) {
+	   drawingContext.strokeStyle = col;
+	}
+     };
   
      //---------------------------------------------------------
      var setFillStyle = function(col) {
-        drawingContext.fillStyle = col;
+	if(drawingContext) {
+           drawingContext.fillStyle = col;
+        }
      };
   
      //---------------------------------------------------------
      var setGlobalCompositeOperation = function() {
         //console.log("setGlobalCompositeOperation curDrawMode ",curDrawMode);
-        if(curDrawMode) {
-           drawingContext.globalCompositeOperation = drawCompOp;
-        } else {
-           drawingContext.globalCompositeOperation = eraseCompOp;
+        if(drawingContext) {
+           if(curDrawMode) {
+              drawingContext.globalCompositeOperation = drawCompOp;
+           } else {
+              drawingContext.globalCompositeOperation = eraseCompOp;
+           }
         }
      };
   

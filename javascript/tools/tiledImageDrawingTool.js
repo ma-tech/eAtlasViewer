@@ -49,9 +49,11 @@ var tiledImageDrawingTool = new Class ({
       //console.log("enter tiledImageDrawingTool.initialize: ",params);
       this.model = params.model;
       this.view = params.view;
+      this.query = params.query;
 
       this.model.register(this);
       this.view.register(this);
+      this.query.register(this);
 
       this.emapDraw = undefined;
 
@@ -346,16 +348,19 @@ var tiledImageDrawingTool = new Class ({
    //---------------------------------------------------------------
    viewUpdate: function(viewChanges, from) {
 
-      var currentLayer = this.view.getCurrentLayer();
+      var mode;
+      var currentLayer;
+
+      currentLayer = this.view.getCurrentLayer();
 
       if(viewChanges.initial === true) {
 	 this.window.setVisible(false);
       }
 
       if(viewChanges.mode === true) {
-         var mode = this.view.getMode();
-	 if(mode.name === "querySpatial") {
-	    this.initDrawMode();
+	 mode = this.view.getMode();
+         if(mode.name === "query" && this.query.getQueryType() === "spatial") {
+	    this.window.setVisible(true);
 	 } else {
 	    this.window.setVisible(false);
 	 }
@@ -370,6 +375,19 @@ var tiledImageDrawingTool = new Class ({
 	}
       }
    }, // viewUpdate
+
+   //---------------------------------------------------------------
+   queryUpdate: function(queryChanges) {
+
+      if(queryChanges.spatialSelected === true) {
+	 this.initDrawMode();
+      }
+
+      if(queryChanges.anatomySelected === true) {
+	 this.window.setVisible(false);
+      }
+
+   }, // queryUpdate
 
    //---------------------------------------------------------------
    initDrawMode: function() {

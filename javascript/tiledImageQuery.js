@@ -49,9 +49,9 @@ emouseatlas.emap.tiledImageQuery = function() {
    //---------------------------------------------------------
    // modules
    //---------------------------------------------------------
+   var util = emouseatlas.emap.utilities;
    var model = emouseatlas.emap.tiledImageModel;
    var view = emouseatlas.emap.tiledImageView;
-   var util = emouseatlas.emap.utilities;
 
    //---------------------------------------------------------
    // private members
@@ -60,17 +60,31 @@ emouseatlas.emap.tiledImageQuery = function() {
    //......................
 
    var currentQuerySectionName;
+   var currentQueryTermName;
    var querySectionNames = [];
+   var queryTermData = [];
    var querySection = {}; // this must be an object, not an array
-   var query = [];
+   var queryTerm = {}; // this must be an object, not an array
+   var spatialQuery = [];
+   var termQuery = [];
+   var queryTypes = [];
+   var queryType;
+   var dbToQuery = {};
+   var NONE = 0;
+   var ANATOMY = 1;
+   var SPATIAL = 2;
    //......................
    var registry = [];
    var queryChanges = { 
       initial: false,
       initialState: false,
       addQuerySection: false,
+      addQueryTerm: false,
       saveQuerySection: false,
-      changeQuerySection: false // for spatial query when section has been seleceted from dialogue
+      changeQuerySection: false, // spatial query section seleceted from dialogue
+      changeQueryTerm: false, // spatial query section seleceted from dialogue
+      spatialSelected: false,
+      anatomySelected: false
    };
 
    //---------------------------------------------------------
@@ -87,7 +101,187 @@ emouseatlas.emap.tiledImageQuery = function() {
    //---------------------------------------------------------
    //   public methods
    //---------------------------------------------------------
+   var initialise = function () {
 
+      model.register(emouseatlas.emap.tiledImageQuery);
+      view.register(emouseatlas.emap.tiledImageQuery);
+
+      queryTypes = ["none", "anatomy", "spatial"];
+      queryType = NONE;
+
+   };
+
+   //---------------------------------------------------------
+   var getQueryType = function () {
+      return queryTypes[queryType];
+   };
+
+   //---------------------------------------------------------
+   var modelUpdate = function (modelChanges) {
+   };
+
+   //---------------------------------------------------------
+   var viewUpdate = function (viewChanges) {
+   };
+
+   //---------------------------------------------------------
+   var setDbToQuery = function (name, yes) {
+
+      //console.log("setDbToQuery: %s %s",name,yes);
+
+      if(dbToQuery[name] === undefined) {
+         dbToQuery[name] = {db:name, include:yes};
+      } else {
+         dbToQuery[name].include = yes;
+      }
+
+      getDbToQuery();
+
+      return false;
+   };
+
+   //---------------------------------------------------------
+   var getDbToQuery = function () {
+
+      //console.log("getDbToQuery:");
+
+      var key;
+      var obj;
+      var val;
+
+      var dbs = [];
+
+      for (key in dbToQuery) {
+         if (dbToQuery.hasOwnProperty(key)) {
+	    obj = dbToQuery[key]; 
+	    val = obj.include;
+            //console.log("%s, %s",key,val);
+	    if(val) {
+	       dbs[dbs.length] = key;
+	    }
+         }
+      }
+
+      //console.log(dbs)
+      return dbs;
+   };
+
+   //---------------------------------------------------------
+   var typeChanged = function (type) {
+      //console.log("query: type changed %s",type);
+      resetQueryChanges();
+      if(type === 'spatial') {
+         queryChanges.spatialSelected = true;
+	 queryType = SPATIAL;
+      } else if(type === 'anatomy') {
+         queryChanges.anatomySelected = true;
+	 queryType = ANATOMY;
+         queryChanges.addQueryTerm = true;
+         notify("addTermToQuery");
+      }
+      notify("typeChanged");
+      return false;
+   };
+
+   //================ anatomy query ==============================================
+   //---------------------------------------------------------
+   //  write something here
+   //---------------------------------------------------------
+   var addTermToQuery = function () {
+      var len = queryTermNames.length;
+      currentQueryTermName = 'Term_' + len;
+      //console.log("addTermToQuery %s",currentQueryTermName);
+      queryTermNames.push(currentQueryTermName);
+      resetQueryChanges();
+      queryChanges.addQueryTerm = true;
+      notify("addTermToQuery");
+      return false;
+   };
+
+   //---------------------------------------------------------
+   var getIndexOfQueryTermName = function (name) {
+
+      var indx = -1;
+      var len = queryTermNames.length;
+      var i;
+
+      if(len <= 0) {
+         return -1;
+      }
+      for(i=0; i<len; i++) {
+         if(queryTermNames[i] === name) {
+	    indx = i;
+	    break;
+	 }
+      }
+
+      return indx;
+   };
+
+   //---------------------------------------------------------
+   var getQueryTermName = function () {
+      return currentQueryTermName;
+   };
+
+   //---------------------------------------------------------
+   var getAllQueryTermNames = function () {
+      return queryTermNames;
+   };
+
+   //---------------------------------------------------------
+   var getQueryTermData = function () {
+      return queryTermData;
+   };
+
+   //---------------------------------------------------------
+   var setQueryTermData = function (termData) {
+      //console.log("setQueryTermData ");
+      queryTermData = termData;
+      queryChanges.addQueryTerm = true;
+      notify("setQueryTermData");
+   };
+
+   //---------------------------------------------------------
+   //  Called when termSelector item is clicked
+   //---------------------------------------------------------
+   var selectQueryTerm = function (indx) {
+
+      //console.log("selectQueryTerm %d",indx);
+
+      var term;
+      if(query[indx] === undefined) {
+         return null;
+      }
+      currentQueryTermName = query[indx].name;
+      //console.log("selectQueryTerm indx %d %s",indx,currentQueryTermName);
+      term = query[indx].term;
+      model.setTerm(
+      );
+
+      resetQueryChanges();
+      queryChanges.changeQueryTerm = true;
+      notify("selectQueryTerm");
+   };
+
+   //---------------------------------------------------------
+   var getQueryTermAtIndex = function (indx) {
+
+      //console.log("getQueryTermAtIndex %d",indx);
+
+      var term;
+      if(query[indx] === undefined) {
+         return undefined;
+      }
+      currentQueryTermName = query[indx].name;
+      //console.log("selectQueryTerm indx %d %s",indx,currentQueryTermName);
+      term = query[indx].term;
+
+      return term;
+   };
+
+
+   //================ spatial query ==============================================
+   //---------------------------------------------------------
    // called from emap draw initialise and also if saving drawing on a different section
    //---------------------------------------------------------
    var addSectionToQuery = function () {
@@ -147,7 +341,7 @@ emouseatlas.emap.tiledImageQuery = function() {
 
       //console.log("enter getQuerySectionData");
 
-      var len = query.length;
+      var len = spatialQuery.length;
       var i;
       var section;
 
@@ -160,7 +354,7 @@ emouseatlas.emap.tiledImageQuery = function() {
       }
 
       for(i=0; i<len; i++) {
-         section = query[i];
+         section = spatialQuery[i];
          if(section.name === name) {
 	    section.drg = trimQuerySectionDrg(section.drg);
             return section;
@@ -224,14 +418,14 @@ emouseatlas.emap.tiledImageQuery = function() {
       var i;
 
       currentSection = model.getCurrentSection();
-      len = query.length;
+      len = spatialQuery.length;
       //console.log("setQuerySectionData len %d",len);
 
       // it's a new query
       if(len <= 0) {
          //console.log("new query");
          addSectionToQuery();
-	 query.push({
+	 spatialQuery.push({
 	    name:currentQuerySectionName,
 	    section:currentSection,
 	    drg:drg
@@ -244,12 +438,12 @@ emouseatlas.emap.tiledImageQuery = function() {
       isSameSection = false;
       for(i=0; i<len; i++) {
          //console.log("setQuerySectionData  i = %d, name = %s",i,query[i].name);
-	 querySection = query[i].section;
+	 querySection = spatialQuery[i].section;
 	 if(emouseatlas.emap.utilities.isSameSection(currentSection, querySection)){
 	    //console.log("same section");
 	    isSameSection = true;
             //console.log("before: ",query[i].drg);
-	    query[i].drg = drg;
+	    spatialQuery[i].drg = drg;
             //console.log("after: ",query[i].drg);
 	    return false;
 	 }
@@ -261,7 +455,7 @@ emouseatlas.emap.tiledImageQuery = function() {
          //console.log("currentSectionName);
          //console.log("adding new section data");
          //console.log("before: ",query);
-	 query.push({
+	 spatialQuery.push({
 	    name:currentQuerySectionName,
 	    section:currentSection,
 	    drg:drg
@@ -280,12 +474,12 @@ emouseatlas.emap.tiledImageQuery = function() {
       //console.log("selectQuerySection %d",indx);
 
       var section;
-      if(query[indx] === undefined) {
+      if(spatialQuery[indx] === undefined) {
          return null;
       }
-      currentQuerySectionName = query[indx].name;
+      currentQuerySectionName = spatialQuery[indx].name;
       //console.log("selectQuerySection indx %d %s",indx,currentQuerySectionName);
-      section = query[indx].section;
+      section = spatialQuery[indx].section;
       model.setSection(
          section.fxp.x,
          section.fxp.y,
@@ -307,12 +501,12 @@ emouseatlas.emap.tiledImageQuery = function() {
       //console.log("getQuerySectionAtIndex %d",indx);
 
       var section;
-      if(query[indx] === undefined) {
+      if(spatialQuery[indx] === undefined) {
          return undefined;
       }
-      currentQuerySectionName = query[indx].name;
+      currentQuerySectionName = spatialQuery[indx].name;
       //console.log("selectQuerySection indx %d %s",indx,currentQuerySectionName);
-      section = query[indx].section;
+      section = spatialQuery[indx].section;
 
       return section;
    };
@@ -353,8 +547,12 @@ emouseatlas.emap.tiledImageQuery = function() {
       queryChanges.initial =  false;
       queryChanges.initialState =  false;
       queryChanges.addQuerySection =  false;
+      queryChanges.addQueryTerm =  false;
       queryChanges.saveQuerySection =  false;
       queryChanges.changeQuerySection =  false;
+      queryChanges.changeQueryTerm =  false;
+      queryChanges.spatialSelected =  false;
+      queryChanges.anatomySelected =  false;
    };
 
    //---------------------------------------------------------
@@ -362,15 +560,28 @@ emouseatlas.emap.tiledImageQuery = function() {
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
+      initialise: initialise,
       register: register,
+      modelUpdate: modelUpdate,
+      viewUpdate: viewUpdate,
+      setDbToQuery: setDbToQuery,
       addSectionToQuery: addSectionToQuery,
+      addTermToQuery: addTermToQuery,
       saveDrawingOnSection: saveDrawingOnSection,
       getQuerySectionData: getQuerySectionData,
       setQuerySectionData: setQuerySectionData,
       getQuerySectionName: getQuerySectionName,
+      getQuerySectionAtIndex: getQuerySectionAtIndex,
       getAllQuerySectionNames: getAllQuerySectionNames,
+      getQueryTermName: getQueryTermName,
+      getQueryTermData: getQueryTermData,
+      setQueryTermData: setQueryTermData,
       selectQuerySection: selectQuerySection,
-      getQuerySectionAtIndex: getQuerySectionAtIndex
+      //getAllQueryTermNames: getAllQueryTermNames,
+      //selectQueryTerm: selectQueryTerm,
+      //getQueryTermAtIndex: getQueryTermAtIndex,
+      getQueryType: getQueryType,
+      typeChanged: typeChanged
    };
 
 }(); // end of module tiledImageQuerY

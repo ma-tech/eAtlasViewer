@@ -139,7 +139,7 @@ var combinedDistanceTool = new Class ({
       //var sliderLength = (this.isHorizontal) ? this.width - 2 : this.height - 2;
 
       var mdst = this.model.getDistance();
-      console.log("distance tool: dst = ",mdst);
+      //console.log("distance tool: dst = ",mdst);
       //----------------------------------------
       // the slider for distance
       //----------------------------------------

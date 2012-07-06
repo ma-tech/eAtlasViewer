@@ -1198,7 +1198,43 @@ if(!emouseatlas.emap.utilities) {
            }
         }
         return opstr+"END:;";
-     }
+     },
+
+      //---------------------------------------------------------
+      /**
+       *  Tests if an object has any non-inherited properties
+       *  i.e. is not empty
+       */
+      //-----------------------------------------------------
+      isEmpty: function(obj) {	
+	 return Object.keys(obj).length === 0;
+      },
+
+      //---------------------------------------------------------
+      /**
+       *  Reverses the order that an object is iterated with 'for X in Obj'
+       */
+      //-----------------------------------------------------
+      reverseObject: function(obj) {	
+
+         var newObj = {};
+	 var key;
+	 var elmnt;
+
+	 if(emouseatlas.emap.utilities.isEmpty(obj)) {
+	    return obj;
+	 }
+
+	 for(key in obj) {
+	    if(!obj.hasOwnProperty(key)) {
+	       console.log("skipping key %",key);
+	       continue;
+	    }
+	    elmnt = obj[key];
+	    newObj[key] = elmnt;
+	 }
+	 return newObj;
+      }
   
 
    }; // emouseatlas.emap.utilities

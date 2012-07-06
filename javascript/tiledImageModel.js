@@ -1474,7 +1474,7 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    var initView = function () {
-      emouseatlas.emap.tiledImageView.initialise(emouseatlas.emap.tiledImageModel);
+      emouseatlas.emap.tiledImageView.initialise(emouseatlas.emap.tiledImageModel, emouseatlas.emap.tiledImageQuery);
    }
 
    //---------------------------------------------------------

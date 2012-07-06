@@ -5,7 +5,8 @@
       "pitchYaw",
       "rotation",
       "fixedPoint",
-      "sectionChooser",
+      "query",
+      "querySection",
       "help",
       "scale",
       "refresh",
@@ -43,10 +44,21 @@
       "thinTopEdge":"false",
       "targetId":"toolContainerDiv"
    },
-   "sectionChooser": {
-      "width":"130",
+   "query": {
+      "width":"150",
+      "height":"130",
       "x":"10",
       "y":"120",
+      "draggable":"true",
+      "isHorizontal":"true",
+      "thinTopEdge":"false",
+      "targetId":"emapIIPViewerDiv"
+   },
+   "querySection": {
+      "width":"150",
+      "height":"140",
+      "x":"10",
+      "y":"320",
       "draggable":"true",
       "isHorizontal":"true",
       "thinTopEdge":"false",
