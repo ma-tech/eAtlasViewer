@@ -144,7 +144,7 @@
                <img id="infoFrameIconImg" src="../../../images/info-26.png"></img>
             </div>
             <div id="wlzIIPViewerTitle">
-               3D Model (EMA:53): TS17(10.5 dpc)
+	       3D Model (EMA:28): TS15(9.5 dpc) 
             </div>
          </div>
 
