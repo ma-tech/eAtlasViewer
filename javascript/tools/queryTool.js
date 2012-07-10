@@ -195,8 +195,7 @@ var queryTool = new Class ({
 
       dbTextDiv_emage = new Element('div', {
          'id': 'dbTextDiv_emage',
-         'class': 'dbTextDiv',
-	 'checked': true
+         'class': 'dbTextDiv'
       });
       dbTextDiv_emage.set('text', 'EMAGE');
 
@@ -207,7 +206,7 @@ var queryTool = new Class ({
 
       this.dbChkbx_emage = new Element('input', {
           "type": "checkbox",
-          "checked": false,
+          "checked": true,
           "id": "dbChkbx_emage",
           "name": "dbChkbx_emage",
           "class": "dbChkbx",
@@ -857,29 +856,175 @@ var queryTool = new Class ({
    },
    */
 
-
    //---------------------------------------------------------------
-   // If query button is clicked the combined query from all sections
-   // is sent to database
+   // doQuery
    //---------------------------------------------------------------
    doQueryButtonClicked: function(e) {
+
+      //console.log("do query");
+      var target;
+      var queryState;
 
       if (!e) {
 	 var e = window.event;
       }
-      var target = emouseatlas.emap.utilities.getTarget(e);
+      target = emouseatlas.emap.utilities.getTarget(e);
       //console.log("doQueryButtonClicked: %s",target.id);
       if(target.id.indexOf("QueryButton") === -1) {
 	 //console.log("doQueryButtonClicked returning: event not from query button ",target.id);
 	 return;
       }
 
+      queryState = this.getQueryState();
+
+      if(!queryState["emage"] && !queryState["mgi"]) {
+         alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
+      }
+
+      if(!queryState["anatomy"] && !queryState["spatial"]) {
+         alert("You have not specifiied the type of query you want.\nPlease select 'Anatomy' or 'Spatial'.");
+      }
+
+      if(queryState["anatomy"]) {
+         this.doAnatomyQuery(queryState);
+      }
+
+      if(queryState["spatial"]) {
+         this.doSpatialQuery(queryState);
+      }
+
+   },
+
+   //---------------------------------------------------------------
+   // Gets the state of the query checkboxes and radio buttons
+   //---------------------------------------------------------------
+   getQueryState: function() {
+
+      var dbToQuery;
+      var queryType;
+      var emage_cb;
+      var mgi_cb;
+      var anatomy_rb;
+      var spatial_rb;
+      var state = {};
+      
+      emage_cb = $("dbChkbx_emage");
+      mgi_cb = $("dbChkbx_mgi");
+      anatomy_rb = $("queryTypeRadio_anatomy");
+      spatial_rb = $("queryTypeRadio_spatial");
+
+      state = {"emage":false, "mgi":false, "anatomy":false, "spatial":false}
+
+      if(emage_cb.checked) {
+         state["emage"] = true;
+      }
+      if(mgi_cb.checked) {
+         state["mgi"] = true;
+      }
+      if(anatomy_rb.checked) {
+         state["anatomy"] = true;
+         state["spatial"] = false;
+      }
+      if(spatial_rb.checked) {
+         state["anatomy"] = false;
+         state["spatial"] = true;
+      }
+
+      //console.log("query: ",state);
+
+      return state;
+
+   },
+
+   //---------------------------------------------------------------
+   // Anatomy query
+   //---------------------------------------------------------------
+   doAnatomyQuery: function(state) {
+
+      var termData;
+      var reverseData;
+      var len;
+      var key;
+      var term;
+      var name;
+      var id;
+      var idnum;
+      var url;
+      var first;
+
+      termData = this.query.getQueryTermData();
+      reverseData = emouseatlas.emap.utilities.reverseObject(termData);
+
+      if(state["emage"]) {
+         url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	 first = true;
+
+         for(key in reverseData) {
+   
+            if(!reverseData.hasOwnProperty(key)) {
+               continue;
+            }
+   
+            term = reverseData[key];
+            name = reverseData[key].name;
+            id = term.fbId[0];
+            //console.log("term ",term);
+            //console.log("term  %s, %s",name,id);
+   
+            if(!first) {
+               url += ',';
+	    }
+            url += id;
+            //console.log(url);
+
+	    first = false;
+         }
+         url += '&exactmatchstructures=true&includestructuresynonyms=true';
+         //console.log(url);
+         this.view.getQueryResults(url);
+      }
+      
+      // we are only able to use 1 term for an MGI query
+      // so we use the first one.
+      if(state["mgi"]) {
+         url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
+
+         for(key in reverseData) {
+   
+            if(!reverseData.hasOwnProperty(key)) {
+               continue;
+            }
+   
+            term = reverseData[key];
+            name = reverseData[key].name;
+            id = term.fbId[0];
+	    idnum = id.substring(5);
+            //console.log("term ",term);
+            console.log("term  %s, %s, %s",name,id,idnum);
+   
+            url += idnum;
+	    break;
+         }
+         url += '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+         console.log(url);
+         this.view.getQueryResults(url);
+      }
+   },
+
+   //---------------------------------------------------------------
+   // Spatial query
+   //---------------------------------------------------------------
+   doSpatialQuery: function(state) {
+
       var names = [];
       var name;
-      var sectionNames = this.query.getAllQuerySectionNames();
-      var numSections = sectionNames.length;
+      var sectionNames;
+      var numSections;
       var checkbox;
       var i;
+
+      sectionNames = this.query.getAllQuerySectionNames();
+      numSections = sectionNames.length;
 
       for(i=0; i<numSections; i++) {
          name = sectionNames[i];
@@ -1122,7 +1267,7 @@ var queryTool = new Class ({
       //console.log("iipUrl ",iipUrl);
       this.dummyInputDrawing.value = queryStr;
       //console.log(queryStr);
-      //this.dummyForm.submit();
+      this.dummyForm.submit();
 
       return false;
    },

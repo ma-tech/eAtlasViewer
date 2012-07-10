@@ -1319,7 +1319,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 viewChanges.dblClick = true;
 	 if(addQueryTerm) {
 	    if(mode === "query" && query.getQueryType() === "anatomy") {
-	       console.log("getDataAtMouseCallback addQueryTerm ",addQueryTerm);
+	       //console.log("getDataAtMouseCallback addQueryTerm ",addQueryTerm);
 	    }
 	 }
 	 if(mode === "query" && query.getQueryType() === "anatomy") {

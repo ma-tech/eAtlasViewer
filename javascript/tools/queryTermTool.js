@@ -104,6 +104,10 @@ var queryTermTool = new Class ({
    //---------------------------------------------------------
    createElements: function(termData) {
 
+      var container;
+      var leftedge;
+      var rightedge;
+      var handle;
       var win;
       var topEdge;
       var reverseData;
@@ -114,7 +118,7 @@ var queryTermTool = new Class ({
       var klass;
       var top;
       var wid;
-      var txtwid;
+      //var txtwid;
       var termDiv;
       var termTextDiv;
       var termTextContainer;
@@ -123,7 +127,27 @@ var queryTermTool = new Class ({
       var termTrashContainer;
       var trashIcon;
 
-      var win = $(this.shortName + '-win');
+      //------------------------------------
+      // give the term tool a maximum height
+      //------------------------------------
+      container = $(this.shortName + '-container');
+      container.setStyles({
+	 'max-height': '304px'
+      });
+      leftedge = $(this.shortName + '-leftedge');
+      leftedge.setStyles({
+	 'max-height': '302px'
+      });
+      rightedge = $(this.shortName + '-rightedge');
+      rightedge.setStyles({
+	 'max-height': '302px'
+      });
+      handle = $(this.shortName + '-handle');
+      handle.setStyles({
+	 'max-height': '312px'
+      });
+
+      win = $(this.shortName + '-win');
       // make sure existing elements are removed.
       // or they will appear multiple times
       emouseatlas.emap.utilities.removeChildNodes(win);
@@ -163,7 +187,8 @@ var queryTermTool = new Class ({
       // background div
       //----------------------------------------
       bkgDiv = new Element('div', {
-         'id': 'queryTermBkg'
+         'id': 'queryTermBkg',
+	 'max-height': '300px'
       });
 
       //----------------------------------------
@@ -188,7 +213,7 @@ var queryTermTool = new Class ({
 
          top = total*20;
 	 wid = this.width;
-	 txtwid = this.width - 30;
+	 //txtwid = this.width - 30;
 
 	 termDiv = new Element('div', {
 	    'id': name + '_termDiv',
@@ -209,13 +234,18 @@ var queryTermTool = new Class ({
 	 });
 
 	 termTextDiv.set('text', term.name);
-	 termTextDiv.setStyle('width',txtwid+'px');
+	 //termTextDiv.setStyle('width',txtwid+'px');
 
 	 //----------------------------------------
 	 // add them to the tool
 	 //----------------------------------------
 
+	 /*
 	 termDiv.inject(bkgDiv, 'inside');
+	 termTextDiv.inject(termTextContainer, 'inside');
+	 termTextContainer.inject(termDiv, 'inside');
+	 */
+	 termDiv.inject(win, 'inside');
 	 termTextDiv.inject(termTextContainer, 'inside');
 	 termTextContainer.inject(termDiv, 'inside');
 
@@ -227,7 +257,16 @@ var queryTermTool = new Class ({
 
       } // for
 
-      bkgDiv.inject(win, 'inside');
+      //bkgDiv.inject(win, 'inside');
+
+      //----------------------------------------
+      if(total > 9) {
+         win.setStyles({
+            'overflow': 'auto',
+   	 'max-height': '300px'
+         });
+      }
+      //win.style.background="background-color=#eaeaea";
 
       //----------------------------------------
       this.height = this.baseHeight + total * this.heightOfOneTerm;
