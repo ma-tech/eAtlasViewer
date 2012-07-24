@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Untitled Document</title>
+</head>
+
+<body>
+<h1>Demonstrator of 3D section views through X-ray microCT images of Zebra fish</h1>
+<p>The purpose of these demonstrator links is to show what the IIP3D server and client-side technology could provide for the presentation of X-ray microCT zebrafish atlas models to users. The data is from the PennState <a href="http://zfatlas.psu.edu/microct.php">Zebrafish Atlas</a> group headed by Prof Keith Cheng. The image data was provided by Xuying Xin.</p>
+<p>The demonstrator interfaces are all based on the novel IIP3D server technology developed at the MRC Human Genetics Unit. IIP3D can handle very large image volumes (tested up to 140GB) and has a number of options for multi-layer viewing of both grey/colour image layers and graphical overlays such as anatomy or regions of gene-expression. IIP3D is being used widely in the eMouseAtlas project (<a href="http://www.emouseatlas.org/">www.emouseatlas.org</a>) and there is a publication in press (<a href="http://www.biomedcentral.com/1471-2105/13/122/abstract">Husz et al, BMC Bioinformatics (2012)</a>) see also the <a href="http://www.emouseatlas.org/emap/analysis_tools_resources/software/wlziip.html">IIP3D</a> pages on the emouseatlas website.</p>
+<h3>Demonstrator 1 - Juvenile zebrafish, 10mm</h3>
+<p>Reconstruction from the dataset &quot;2011-10-sam29-33-10mmJuvenile-wt-pta-transverse&quot;. The tiff images were converted to wlz, extraneous material in the image stripped off (scale bar etc), thresholded and converted to unsigned BYTE. The sections were then reconstructed to a single memory mapped volume on the IIP3D server machine. Total volume about 7GB. The views below are for the full 3D volume which can be re-sectioned at any angle through the volume and for convenience the original sections series &quot;2011-10-sam29-33-10mmJuvenile-wt-pta-sagittal&quot; and &quot;2011-10-sam29-33-10mmJuvenile-wt-pta-coronal&quot;.The original section series can not be re-sectioned but it is possible to re-create these sections by careful setting of the sectioning paramenters in the 3D volume. The transverse pixel size was estimated from the scalebar to be 1.23 microns. Section thickness was assumed to be equal to this which results in an estimate of about 8.1mm for the fish length. No0-isotropic dimensions could be entered if necessary.</p>
+<table width="90%" border="4" align="center">
+  <tr>
+    <td valign="top"><p><img src="pictures/Juvenile_10mm_3D.jpg" width="323" height="235" alt="Juvenile 10mm 3D zebrafish image" /></p>
+    <p>Full 3D volume with controls to adjust the section views and magnification.</p></td>
+    <td valign="top"><p><a href="http://www.emouseatlas.org/eAtlasViewer_ema/application/nimr/sid1418.php"><img src="pictures/HREM_1.jpg" alt="High Resolution Episcopic Microscopy image of 14.5 dpc mouse embryo" width="272" height="214" /></a></p>
+      <p>Views of the generated section series in sagittal and coronal orientations. Note these views can be generated on the fly by selecting the appropriate parameters in the 3D volume.</p></td>
+  </tr>
+</table>
+<h3>&nbsp;</h3>
+<p>&nbsp;</p>
+<p></p>
+</body>
+</html>

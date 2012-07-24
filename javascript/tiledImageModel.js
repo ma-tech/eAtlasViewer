@@ -400,19 +400,25 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       if(typeof(json.transverseView) !== 'undefined') {
-         transverseView = {pitch:parseInt(json.transverseView.pitch),
-                           yaw:parseInt(json.transverseView.yaw),
-                           roll:parseInt(json.transverseView.roll)};
+         transverseView = {
+	              label:json.transverseView.label,
+	              pitch:parseInt(json.transverseView.pitch),
+                      yaw:parseInt(json.transverseView.yaw),
+                      roll:parseInt(json.transverseView.roll) };
       }
       if(typeof(json.sagittalView) !== 'undefined') {
-         sagittalView = {pitch:parseInt(json.sagittalView.pitch),
-                           yaw:parseInt(json.sagittalView.yaw),
-                           roll:parseInt(json.sagittalView.roll)};
+         sagittalView = {
+	            label:json.sagittalView.label,
+	            pitch:parseInt(json.sagittalView.pitch),
+                    yaw:parseInt(json.sagittalView.yaw),
+                    roll:parseInt(json.sagittalView.roll) };
       }
       if(typeof(json.coronalView) !== 'undefined') {
-         coronalView = {pitch:parseInt(json.coronalView.pitch),
-                           yaw:parseInt(json.coronalView.yaw),
-                           roll:parseInt(json.coronalView.roll)};
+         coronalView = {  
+	           label:json.coronalView.label,
+	           pitch:parseInt(json.coronalView.pitch),
+                   yaw:parseInt(json.coronalView.yaw),
+                   roll:parseInt(json.coronalView.roll) };
       }
 
       if(typeof(json.expressionLevelKey) !== 'undefined') {
@@ -2060,6 +2066,21 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   var getViewLabels = function () {
+      var trans = (transverseView.label) ? transverseView.label : "Trans";
+      var sagit = (sagittalView.label) ? sagittalView.label : "Sagit";
+      var coron = (coronalView.label) ? coronalView.label : "Front";
+
+      var ret = ({
+             transverse: trans,
+             sagittal: sagit,
+             coronal: coron });
+
+      //console.log("getViewLabels ",ret);
+      return ret;
+   };
+
+   //---------------------------------------------------------
    // When the fixed point is changed, the distance value must be set to 0.
    // If it is set back to the default fixed point, the actual distance will change
    // and the image must be updated.
@@ -2745,6 +2766,7 @@ emouseatlas.emap.tiledImageModel = function() {
       setOrientation: setOrientation,
       modifyOrientation: modifyOrientation,
       getViewAngles: getViewAngles,
+      getViewLabels: getViewLabels,
       getScaleMaxMin: getScaleMaxMin,
       getRegionOfInterest: getRegionOfInterest,
       getMaxIIPResolution: getMaxIIPResolution,

@@ -1105,25 +1105,39 @@ if(!emouseatlas.emap.utilities) {
        */
        isSameSection : function (section1, section2) {
 
+          if(section1 === undefined ||
+	        section1 === null ||
+	        section2 === undefined ||
+	        section2 === null) {
+	     console.log("section undefined");
+	     return false;
+	  }
+
           if(section1.mod !== section2.mod) {
+	     console.log("section mod %s  %s",section1.mod,section2.mod);
 	     return false;
 	  }
           if(section1.fxp.x !== section2.fxp.x ||
 	     section1.fxp.y !== section2.fxp.y ||
 	     section1.fxp.z !== section2.fxp.z) {
 
+	     //console.log("section fxp");
 	     return false;
 	  }
           if(section1.dst !== section2.dst) {
+	     //console.log("section dst");
 	     return false;
 	  }
           if(section1.pit !== section2.pit) {
+	     //console.log("section pit");
 	     return false;
 	  }
           if(section1.yaw !== section2.yaw) {
+	     //console.log("section yaw");
 	     return false;
 	  }
           if(section1.rol !== section2.rol) {
+	     //console.log("section rol");
 	     return false;
 	  }
 

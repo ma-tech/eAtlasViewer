@@ -51,7 +51,7 @@
    "busyIndicatorSrc": "busyIndicator.gif",
    "sectionOrderReversed": "true",
    "infoDetails": {
-      "jso":"../../../../../emap/ema/json/modelSelector/modelInfo.jso",
+      "jso":"/eAtlasViewer_dev/application/ema/modelInfo.jso",
       "id":"EMA:28",
       "assocIndx":"ts15"
    },

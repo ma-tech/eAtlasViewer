@@ -286,10 +286,14 @@ var querySectionTool = new Class ({
       var curSection;
       var querySection;
       var sectionDiv;
-      var sectionNames = this.query.getAllQuerySectionNames();
+      var sectionNames;
       var name;
-      var numSections = sectionNames.length;
+      var numSections;
       var i;
+
+      sectionNames = this.query.getAllQuerySectionNames();
+      //console.log(sectionNames);
+      numSections = sectionNames.length;
 
       curSection = this.model.getCurrentSection();
 
@@ -303,7 +307,7 @@ var querySectionTool = new Class ({
             querySection = this.query.getQuerySectionAtIndex(i);
             //console.log("doSectionClicked: querySection ",querySection);
             if(emouseatlas.emap.utilities.isSameSection(curSection, querySection)) {
-               //console.log("chose same section");
+               console.log("chose same section");
             }
 	    this.query.selectQuerySection(i);
 	 } else {
@@ -350,17 +354,26 @@ var querySectionTool = new Class ({
       if(queryChanges.addQuerySection === true) {
          //console.log("addQuerySection");
          this.createElements();
-	 //var buttonDiv = $('queryButtonDiv');
-	 //buttonDiv.style.visibility = "visible";
       }
 
       if(queryChanges.spatialSelected === true) {
+         //console.log("spatialSelected");
 	 this.window.setVisible(true);
       }
 
       if(queryChanges.anatomySelected === true) {
+         //console.log("anatomySelected");
 	 this.window.setVisible(false);
       }
+
+      if(queryChanges.spatialImport === true) {
+         //console.log("spatialImport");
+	 this.window.setVisible(true);
+         this.createElements();
+	 //var name = this.query.getQuerySectionName();
+	 //console.log("query section %s",name);
+      }
+
    }, // queryUpdate
 
 

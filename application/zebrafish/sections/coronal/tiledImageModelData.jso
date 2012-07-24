@@ -1,0 +1,26 @@
+{
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_demo/application/zebrafish/sections/coronal/",
+   "stackMetadataFilename": "stack.jso",
+   "interfaceImageDir": "/eAtlasViewer_demo/images/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "dataType": "pyrTiff_origNames",
+   "layerNames": [
+      "histology"
+   ],
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerData": [
+      {
+         "imageDir": "/export/fast0/eAtlasViewer/data/zebrafish/sections/coronal/pyramidalTiffs/",
+         "selectorName":"zsel.jpg.256.pyr.tif",
+	 "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"0.125", "distance":"600"},
+   "pixelResolution": {"x":"1.25", "y":"1.25", "z":"", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_demo/application/zebrafish/sections/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_demo/application/zebrafish/sections/menu/menuContent.jso",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "tileframe": {"enabled": "true"}
+}

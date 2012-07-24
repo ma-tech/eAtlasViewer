@@ -379,7 +379,8 @@ var tiledImageDrawingTool = new Class ({
    //---------------------------------------------------------------
    queryUpdate: function(queryChanges) {
 
-      if(queryChanges.spatialSelected === true) {
+      if(queryChanges.spatialSelected === true ||
+            queryChanges.spatialImport === true) {
 	 this.initDrawMode();
       }
 
@@ -397,8 +398,10 @@ var tiledImageDrawingTool = new Class ({
          model: this.model,
 	 view: this.view
       }
-      this.emapDraw = new emouseatlas.emap.EmapDraw();
-      this.emapDraw.initialise(params);
+      if(this.emapDraw === undefined) {
+	 this.emapDraw = new emouseatlas.emap.EmapDraw();
+	 this.emapDraw.initialise(params);
+      }
    }, // initDrawMode
 
    //---------------------------------------------------------------

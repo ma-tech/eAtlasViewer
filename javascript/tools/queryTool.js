@@ -120,6 +120,8 @@ var queryTool = new Class ({
       this.setQueryToolVisible(false);
       //this.setToolTip(this.toolTipText);
 
+      this.EXPORT = false;
+
    }, // initialize
 
    //---------------------------------------------------------------
@@ -326,7 +328,7 @@ var queryTool = new Class ({
           "checked": false,
           "id": "queryTypeRadio_anatomy",
           "name": "queryType",
-          "class": "queryTypeRadio",
+          "class": "queryTypeRadio"
       });
       //----------------------------------------
       // the container for second query type
@@ -357,7 +359,7 @@ var queryTool = new Class ({
           "checked": false,
           "id": "queryTypeRadio_spatial",
           "name": "queryType",
-          "class": "queryTypeRadio",
+          "class": "queryTypeRadio"
       });
 
       //----------------------------------------
@@ -406,7 +408,7 @@ var queryTool = new Class ({
 
       //============================================================
       //----------------------------------------
-      // the container for the buttons
+      // the container for the query & cancel buttons
       //----------------------------------------
       buttonContainerBkg = new Element('div', {
 	 'id': 'queryToolButtonContainerBkg'
@@ -453,7 +455,100 @@ var queryTool = new Class ({
       //----------------------------------------
       emouseatlas.emap.utilities.addButtonStyle('queryToolQueryButton');
       emouseatlas.emap.utilities.addButtonStyle('queryToolCancelButton');
+      //============================================================
+      //----------------------------------------
+      // the container for the export & import buttons
+      //----------------------------------------
+      buttonContainerBkg2 = new Element('div', {
+	 'id': 'queryToolButtonContainerBkg2'
+      });
 
+      buttonContainer2 = new Element('div', {
+	 'id': 'queryToolButtonContainer2'
+      });
+
+      this.exportButton = new Element('div', {
+         'id': 'queryToolExportButton',
+	 'class': 'queryToolButton'
+      });
+      this.exportButton.appendText('Export');
+
+      this.importButton = new Element('div', {
+         'id': 'queryToolImportButton',
+	 'class': 'queryToolButton'
+      });
+      this.importButton.appendText('Import');
+
+      //----------------------------------------
+      // add them to the tool
+      //----------------------------------------
+      this.exportButton.inject(buttonContainer2, 'inside');
+      this.importButton.inject(buttonContainer2, 'inside');
+
+      buttonContainer2.inject(buttonContainerBkg2, 'inside');
+      buttonContainerBkg2.inject(win, 'inside');
+
+      //----------------------------------------
+      // event handlers
+      //----------------------------------------
+      this.exportButton.addEvent('click',function() {
+	 this.doExportQuery();
+      }.bind(this));
+
+      this.importButton.addEvent('click',function(e) {
+	 this.getImportFile(e);
+      }.bind(this));
+
+
+      //----------------------------------------
+      // add button style (after buttons added to win)
+      //----------------------------------------
+      emouseatlas.emap.utilities.addButtonStyle('queryToolExportButton');
+      emouseatlas.emap.utilities.addButtonStyle('queryToolImportButton');
+
+      //============================================================
+      //----------------------------------------
+      // The dummy file input for importing a query
+      //----------------------------------------
+
+      var queryImportFile = new Element('input', {
+         'id': 'queryImportFile',
+         'name': 'queryImportFile',
+	 'type': 'file'
+      });
+
+      queryImportFile.inject(win, 'inside');
+
+      //----------------------------------------
+      // event handler
+      //----------------------------------------
+      queryImportFile.addEvent('change',function() {
+	 this.doImport();
+      }.bind(this));
+
+      //============================================================
+      //----------------------------------------
+      // add a dummy form for exporting a query
+      //----------------------------------------
+
+      this.queryExportForm = new Element('form', {
+         'id': 'queryExportForm',
+         'name': 'queryExportForm',
+	 'method': 'post',
+	 'action': '/eatlasviewerwebapp/ExportQuery'
+      });
+
+      this.dummyQueryExport = new Element('input', {
+         'id': 'dummyQueryExport',
+         'name': 'dummyQueryExport',
+	 'type': 'hidden',
+	 'value': ''
+      });
+
+      this.dummyQueryExport.inject(this.queryExportForm, 'inside');
+      this.queryExportForm.inject(win, 'inside');
+
+      //============================================================
       //----------------------------------------
       // add a dummy form for transferring drawing
       //----------------------------------------
@@ -530,7 +625,6 @@ var queryTool = new Class ({
       this.dummyInputEmbryo.inject(this.dummyForm, 'inside');
       this.dummyInputDetect.inject(this.dummyForm, 'inside');
       this.dummyForm.inject(win, 'inside');
-
 
    }, // createElements
 
@@ -633,7 +727,6 @@ var queryTool = new Class ({
 
       if(viewChanges.queryTool) {
 	 emapId = this.getEmapId();
-	 url;
 	 //console.log("mode sub type = ",type);
 	 if(type === 0) {
             url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
@@ -821,41 +914,6 @@ var queryTool = new Class ({
       console.log("..................");
    },
 
-/*
-   //---------------------------------------------------------------
-   getEmapId: function () {
-
-      var key;
-      var layer;
-      var treeData;
-      var resultNode;
-      var EmapIdArr;
-      var EmapId;
-      var compObjIndxArr;
-
-      compObjIndxArr = this.view.getCompObjIndxArr();
-
-      key = compObjIndxArr[1];
-      layer = emouseatlas.emap.tiledImageView.getCurrentLayer();
-      treeData = emouseatlas.emap.tiledImageModel.getTreeData(layer);
-      resultNode = this.iterativeDeepeningDepthFirstSearch(treeData[0], key);
-
-      //console.log("resultNode ",resultNode);
-
-      if(resultNode === undefined) {
-	 alert("Sorry, I couldn't find an EMAP number for domain %s",key);
-         return undefined;
-      } else {
-         EmapIdArr = resultNode.property.fbId;
-      }
-
-      EmapId = EmapIdArr[0];
-
-      //console.log("getEmapId %s",EmapId);
-      return EmapId;
-   },
-   */
-
    //---------------------------------------------------------------
    // doQuery
    //---------------------------------------------------------------
@@ -1000,13 +1058,13 @@ var queryTool = new Class ({
             id = term.fbId[0];
 	    idnum = id.substring(5);
             //console.log("term ",term);
-            console.log("term  %s, %s, %s",name,id,idnum);
+            //console.log("term  %s, %s, %s",name,id,idnum);
    
             url += idnum;
 	    break;
          }
          url += '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
-         console.log(url);
+         //console.log(url);
          this.view.getQueryResults(url);
       }
    },
@@ -1016,28 +1074,9 @@ var queryTool = new Class ({
    //---------------------------------------------------------------
    doSpatialQuery: function(state) {
 
-      var names = [];
-      var name;
-      var sectionNames;
-      var numSections;
-      var checkbox;
-      var i;
+      var names;
 
-      sectionNames = this.query.getAllQuerySectionNames();
-      numSections = sectionNames.length;
-
-      for(i=0; i<numSections; i++) {
-         name = sectionNames[i];
-	 checkbox = $(name + '_sectionCheckbox');
-         //console.log("checkbox: %s is checked %s",name,checkbox.checked);
-	 if(checkbox.checked) {
-	    //console.log("query with %s",name);
-	    this.querySectionNames[this.querySectionNames.length] = name;
-	    names[names.length] = name;
-	 } else {
-	    //console.log("omit %s",name);
-	 }
-      }
+      names = this.getQuerySectionNames();
 
       // this is called recursively for all the query sections
       this.getTransformedBoundingBoxes(names);
@@ -1172,10 +1211,11 @@ var queryTool = new Class ({
    //---------------------------------------------------------
    sendQuery: function () {
 
-      var len = this.querySectionNames.length;
+      var sectionNames;
+      var len;
       var queryArr = [];
       var queryStr = "";
-      var queryStrHeader = "WLZ_DRAW_DOMAIN:1;";
+      var queryStrHeader;
       var iipUrl = "";
       var name;
       var drawingData;
@@ -1184,14 +1224,21 @@ var queryTool = new Class ({
       var origin;
       var originStr;
       var section;
-      var i;
-  
-      var webServer = this.model.getWebServer();
-      var iipServer = this.model.getIIPServer();
-      var currentLayer = this.view.getCurrentLayer();
-      var layerData = this.model.getLayerData();
+      var webServer;
+      var iipServer;
+      var currentLayer;
+      var layerDat;
       var layer;
+      var i;
       
+      sectionNames = this.getQuerySectionNames();
+      len = sectionNames.length;
+      webServer = this.model.getWebServer();
+      iipServer = this.model.getIIPServer();
+      currentLayer = this.view.getCurrentLayer();
+      layerData = this.model.getLayerData();
+      queryStrHeader = "WLZ_DRAW_DOMAIN:1;";
+
       //console.log("sendQuery: querySections ",querySections);
       if(webServer === undefined || iipServer === undefined) {
          //console.log("webServer or iipServer undefined");
@@ -1223,7 +1270,7 @@ var queryTool = new Class ({
       }
       queryStr += queryStrHeader;
       for(i=0; i<len; i++) {
-         name = this.querySectionNames[i];
+         name = sectionNames[i];
 	 drawingData = this.query.getQuerySectionData(name);
 	 //console.log("drawingData ",drawingData);
 	 stringifiedDrawing = emouseatlas.emap.utilities.stringifyDrawing(drawingData.drg);
@@ -1267,11 +1314,19 @@ var queryTool = new Class ({
       //console.log("iipUrl ",iipUrl);
       this.dummyInputDrawing.value = queryStr;
       //console.log(queryStr);
-      this.dummyForm.submit();
+      this.dummyQueryExport.value = queryStr;
+
+      // If you do a form.submit, the servlet has to re-draw the page, the call is from the web-page.
+      // If you call the servlet via ajax (XMLHttpRequest.send(urlParams)) the current page stays visible
+      // because you made the call from javascript.
+      if(this.EXPORT) {
+         this.queryExportForm.submit();
+      } else {
+         this.dummyForm.submit();
+      }
 
       return false;
    },
-
 
    //---------------------------------------------------------------
    setQueryToolVisible: function(viz) {
@@ -1284,6 +1339,187 @@ var queryTool = new Class ({
       this.setQueryToolVisible(false);
       var modes = this.view.getModes();
       this.view.setMode(modes.move.name);
+   },
+
+   //---------------------------------------------------------------
+   doExportQuery: function() {
+
+      this.EXPORT = true;
+      this.doSpatialQuery();
+
+   },
+
+   //---------------------------------------------------------------
+   doImport: function() {
+
+      //console.log("doImport: ");
+
+      var ip;
+      var fileList;
+      var reader;
+
+      ip = $('queryImportFile');
+      fileList = ip.files;
+      //console.log("files: ",fileList);
+
+      reader = new FileReader();
+      //----------------------------------------
+      // event handlers for reader
+      //----------------------------------------
+      reader.onerror = function(e) {
+	 this.doReaderError(e);
+      }.bind(this);
+
+      reader.onload = function(e) {
+	 this.doReaderLoad(e);
+      }.bind(this);
+
+      reader.onloadend = function(e) {
+	 this.doReaderLoadEnd(e);
+      }.bind(this);
+
+      reader.readAsText(fileList[0]);
+
+   },
+
+   //---------------------------------------------------------------
+   doReaderError: function(e) {
+      //console.log("doReaderError:");
+
+      if (!e) {
+	 var e = window.event;
+      }
+   },
+
+   //---------------------------------------------------------------
+   doReaderLoad: function(e) {
+      //console.log("doReaderLoad:");
+
+      if (!e) {
+	 var e = window.event;
+      }
+   },
+
+   // only import spatial query at the moment
+   //---------------------------------------------------------------
+   doReaderLoadEnd: function(e) {
+
+      //console.log("doReaderLoadEnd:");
+
+      var txt;
+      var json;
+      var drgArr = [];
+      var drg = {};
+      var secArr = [];
+      var section;
+      var strokes = [];
+      var stroke = [];
+      var action;
+      var mode;
+      var points = [];
+      var pstart = {};
+      var pstop = {};
+      var penrad;
+      var xarr = [];
+      var yarr = [];
+      var numcoords;
+      var len;
+      
+      if (!e) {
+	 var e = window.event;
+      }
+
+      txt = e.target.result;
+      //console.log(txt);
+
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+	 json = JSON.parse(txt);
+      } else {
+	 json = emouseatlas.JSON.parse(txt);
+      }
+      if(!json) {
+	 //console.log("initModelCallback returning: json null");
+	 return false;
+      }
+      //console.log("json ",json);
+
+      secArr = json.secArr;
+      len = secArr.length;
+      section = secArr[0];
+
+      strokes = section.drawing;
+      stroke = strokes[0]
+
+      xarr = stroke.coords.x;
+      yarr = stroke.coords.y;
+      numcoords = xarr.length;
+
+      pstart = {x:xarr[0], y:yarr[0]};
+      pstop = {x:xarr[numcoords-1], y:yarr[numcoords-1]};
+      points[0] = pstart;
+      points[1] = pstop;
+
+
+      drg.a = (stroke.tool.toLowerCase() === "pen") ? 0 : 1;
+      drg.m = (stroke.mode.toLowerCase() === "draw") ? true : false;
+      drg.p = points;
+      drg.w = parseInt(stroke.rad);
+      drg.x = xarr;
+      drg.y = yarr;
+
+      drgArr[0] = drg;
+
+      //console.log("drg ",drg);
+
+      secNames = ["section_0"];
+
+      section = {dst:0, fxp:[199,165,273], pit:0, rol:180, yaw:0, mod:'zeta'};
+
+      this.queryTypeRadio_spatial.set('checked', true);
+      this.query.importQuerySection(section, drgArr);
+   },
+
+   //---------------------------------------------------------------
+   getImportFile: function(e) {
+
+      //console.log("getImportFile:");
+
+      var ip = $('queryImportFile');
+
+      if (ip) {  
+         ip.click();  
+      }  
+
+      e.preventDefault(); // prevent navigation to "#"
+
+   },
+
+   //---------------------------------------------------------------
+   // Only use the sections which are checked
+   //---------------------------------------------------------------
+   getQuerySectionNames: function() {
+
+      var sectionNames;
+      var numSections;
+      var names = [];
+      var name;
+      var i;
+
+      sectionNames = this.query.getAllQuerySectionNames();
+      numSections = sectionNames.length;
+
+      for(i=0; i<numSections; i++) {
+         name = sectionNames[i];
+	 checkbox = $(name + '_sectionCheckbox');
+         //console.log("checkbox: %s is checked %s",name,checkbox.checked);
+	 if(checkbox.checked) {
+	    //console.log("query with %s",name);
+	    names[names.length] = name;
+	    //console.log("omit %s",name);
+	 }
+      }
+      //console.log("names ",names);
+      return names;
    },
 
    //--------------------------------------------------------------

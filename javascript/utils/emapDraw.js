@@ -163,6 +163,7 @@ emouseatlas.emap.EmapDraw = function() {
      //---------------------------------------------------------
      var setLineWidth =  function(w) {
        if(drawingContext) {
+          //console.log("setLineWidth %d",w);
           drawingContext.lineWidth = w;
        }
      };
@@ -329,6 +330,7 @@ emouseatlas.emap.EmapDraw = function() {
        drawingNode.w = w; //width
        drawingNode.x = pathx;
        drawingNode.y = pathy;
+       //console.log(drawingNode);
        return drawingNode;
      };
   	
@@ -357,7 +359,6 @@ emouseatlas.emap.EmapDraw = function() {
        }
        drawing.push(undoNodes.pop());
        //printDrawingNodes(drawing, "drawing after redo");
-       //console.log(getDrawing());
        paintDrawing();
      };
 
@@ -390,7 +391,6 @@ emouseatlas.emap.EmapDraw = function() {
        var n;
 
        len = drawing.length;
-       //console.log(getDrawing());
        for(i = 0; i < len; i++) {
           drawingNode = drawing[i];
 	  //console.log("painting ----- action %s, mode %s",drawingNode.a, drawingNode.m);
@@ -742,6 +742,25 @@ emouseatlas.emap.EmapDraw = function() {
 	 drawing = copy;
 	 //console.log(copy);
 	 querySectionChanged = true;
+	 paintDrawing();
+      }
+
+      //.........................
+      // import spatial query
+      //......................
+      if(changes.spatialImport) {
+         //console.log("model spatialImport");
+	 //querySectionChanged = true;
+	 names = query.getAllQuerySectionNames();
+	 curName = query.getQuerySectionName();
+         //console.log("changes.changeQuerySection current name %s", curName);
+	 data = query.getQuerySectionData(names[0]);
+         //console.log(data);
+	 copy = copyDrawing(data.drg);
+	 drawing = copy;
+         //console.log("drawing =======> ",drawing);
+	 querySectionChanged = true;
+	 paintDrawing();
       }
    };
 

@@ -1,0 +1,29 @@
+[
+   {
+      "target": "mif-tree-name",
+      "content": [
+         {
+            "id":"0",
+            "name":["query EMAGE"],
+            "action":"emouseatlas.emap.contextMenuActions.doTreeEmageQuery()",
+            "enabled":"true"
+         },
+         {
+            "id":"1",
+            "name":["query GXDB"],
+            "action":"emouseatlas.emap.contextMenuActions.doTreeGxdbQuery()",
+            "enabled":"true"
+         },
+         {
+            "id":"2",
+            "spacer":"true"
+         },
+         {
+            "id":"3",
+            "name":["cancel"],
+            "action":"emouseatlas.emap.contextMenuActions.doContextMenuCancel()",
+            "enabled":"true"
+         }
+      ]
+   }
+]

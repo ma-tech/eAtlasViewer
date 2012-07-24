@@ -31,7 +31,7 @@
    "busyIndicatorSrc": "busyIndicator.gif",
    "sectionOrderReversed": "false",
    "infoDetails": {
-      "jso":"./modelInfo.jso",
+      "jso":"/eAtlasViewer_dev/application/ema/modelInfo.jso",
       "id":"EMA:53",
       "assocIndx":"ts17"
    },

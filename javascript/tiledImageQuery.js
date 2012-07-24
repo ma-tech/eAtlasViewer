@@ -84,7 +84,8 @@ emouseatlas.emap.tiledImageQuery = function() {
       changeQuerySection: false, // spatial query section seleceted from dialogue
       changeQueryTerm: false, // spatial query section seleceted from dialogue
       spatialSelected: false,
-      anatomySelected: false
+      anatomySelected: false,
+      spatialImport: false
    };
 
    //---------------------------------------------------------
@@ -468,6 +469,7 @@ emouseatlas.emap.tiledImageQuery = function() {
 
    //---------------------------------------------------------
    //  Called when sectionSelector item is clicked
+   //  or when a query is imported
    //---------------------------------------------------------
    var selectQuerySection = function (indx) {
 
@@ -512,6 +514,36 @@ emouseatlas.emap.tiledImageQuery = function() {
    };
 
    //---------------------------------------------------------
+   var importQuerySection = function (section, drg) {
+
+      //console.log("importQuerySection ",drg);
+
+      //typeChanged('spatial');
+
+      spatialQuery = [];
+      querySectionNames = [];
+      currentQuerySectionName = 'section_0';
+      querySectionNames.push('section_0');
+
+      selectQuerySection(0); // import first section just now
+
+      resetQueryChanges();
+      spatialQuery.push({
+         name:'section_0',
+         section:section,
+         drg:drg
+      });
+
+
+      queryType = SPATIAL;
+      //queryChanges.spatialSelected = true;
+      queryChanges.spatialImport = true;
+      notify("importQuerySection");
+
+      return false;
+   };
+
+   //---------------------------------------------------------
    /**
     *   Informs registered observers of a change to the query.
     */
@@ -535,7 +567,14 @@ emouseatlas.emap.tiledImageQuery = function() {
    var printQueryChanges = function() {
       if(queryChanges.initial) console.log("queryChanges.initial ",queryChanges.initial);
       if(queryChanges.initialState) console.log("queryChanges.initialState ",queryChanges.initialState);
-      if(queryChanges.layerNames) console.log("queryChanges.layerNames ",queryChanges.layerNames);
+      if(queryChanges.addQuerySection) console.log("queryChanges.addQuerySection ",queryChanges.addQuerySection);
+      if(queryChanges.addQueryTerm) console.log("queryChanges.addQueryTerm ",queryChanges.addQueryTerm);
+      if(queryChanges.saveQuerySection) console.log("queryChanges.saveQuerySection ",queryChanges.saveQuerySection);
+      if(queryChanges.changeQuerySection) console.log("queryChanges.changeQuerySection ",queryChanges.changeQuerySection);
+      if(queryChanges.changeQueryTerm) console.log("queryChanges.changeQueryTerm ",queryChanges.changeQueryTerm);
+      if(queryChanges.spatialSelected) console.log("queryChanges.spatialSelected ",queryChanges.spatialSelected);
+      if(queryChanges.anatomySelected) console.log("queryChanges.anatomySelected ",queryChanges.anatomySelected);
+      if(queryChanges.spatialImport) console.log("queryChanges.spatialImport ",queryChanges.spatialImport);
       console.log("++++++++++++++++++++++++++++++++++++++++++++");
    };
 
@@ -553,6 +592,7 @@ emouseatlas.emap.tiledImageQuery = function() {
       queryChanges.changeQueryTerm =  false;
       queryChanges.spatialSelected =  false;
       queryChanges.anatomySelected =  false;
+      queryChanges.spatialImport =  false;
    };
 
    //---------------------------------------------------------
@@ -581,6 +621,7 @@ emouseatlas.emap.tiledImageQuery = function() {
       //selectQueryTerm: selectQueryTerm,
       //getQueryTermAtIndex: getQueryTermAtIndex,
       getQueryType: getQueryType,
+      importQuerySection: importQuerySection,
       typeChanged: typeChanged
    };
 

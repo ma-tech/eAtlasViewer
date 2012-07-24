@@ -354,6 +354,8 @@ var tiledImageRotationTool = new Class ({
       //----------------------------------------
       // the container for orthogonal buttons
       //----------------------------------------
+      var labels = this.model.getViewLabels();
+
       this.orthogonalContainer = new Element( 'div', {
 	 'id': 'orthogonalContainer'
       });
@@ -365,7 +367,8 @@ var tiledImageRotationTool = new Class ({
          'id': 'transverseButtonText',
 	 'class': 'orthogonalButtonText'
       });
-      this.transverseDivText.appendText('Trans');
+      //this.transverseDivText.appendText('Trans');
+      this.transverseDivText.appendText(labels.transverse);
       
       this.sagittalDiv = new Element( 'div', {
 	 'id': 'sagittalButtonDiv',
@@ -375,7 +378,8 @@ var tiledImageRotationTool = new Class ({
          'id': 'sagittalButtonText',
 	 'class': 'orthogonalButtonText'
       });
-      this.sagittalDivText.appendText('Sagit');
+      //this.sagittalDivText.appendText('Sagit');
+      this.sagittalDivText.appendText(labels.sagittal);
 
       this.coronalDiv = new Element( 'div', {
 	 'id': 'coronalButtonDiv',
@@ -386,7 +390,8 @@ var tiledImageRotationTool = new Class ({
 	 'class': 'orthogonalButtonText'
       });
       //this.coronalDivText.appendText('Coron');
-      this.coronalDivText.appendText('Front');
+      //this.coronalDivText.appendText('Front');
+      this.coronalDivText.appendText(labels.coronal);
 
       this.orthogonalContainer.inject(win, 'inside');
       this.transverseDivText.inject(this.transverseDiv, 'inside');

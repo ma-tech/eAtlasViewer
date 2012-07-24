@@ -2761,7 +2761,9 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       // initialise tiledImageQuery
-      query.initialise();
+      if(query) {
+         query.initialise();
+      }
 
    }; // completeInitialisation
 
@@ -2959,7 +2961,9 @@ emouseatlas.emap.tiledImageView = function() {
       model = tiledImageModel;
       model.register(emouseatlas.emap.tiledImageView);
       query = tiledImageQuery;
-      query.register(emouseatlas.emap.tiledImageView);
+      if(query) {
+         query.register(emouseatlas.emap.tiledImageView);
+      }
        
       completeInitialisation();
       //window.open("http://www.hgu.mrc.ac.uk","test","");
@@ -3335,6 +3339,7 @@ emouseatlas.emap.tiledImageView = function() {
          emouseatlas.emap.tprPointClick.initialize();
       }
 
+      if(query) {
       if(typeof(tools.query) !== 'undefined') {
 	 new queryTool({
 	    model:model,
@@ -3382,6 +3387,7 @@ emouseatlas.emap.tiledImageView = function() {
 		    x:toolData.queryTerm.x,
 		    y:toolData.queryTerm.y}
 	 });
+      }
       }
 
       //console.log("exit constructComponents");
@@ -4376,7 +4382,7 @@ emouseatlas.emap.tiledImageView = function() {
       setMode(newmode);
    };
    //---------------------------------------------------------
-   var setMode = function (newmode, type) {
+   var setMode = function (newmode) {
       //console.log("setMode current mode %s, newmode %s",mode.name,newmode);
       var div;
       var targetId = model.getViewerTargetId();
