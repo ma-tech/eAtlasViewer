@@ -1,0 +1,69 @@
+{
+   "imageTitleTooltip": {
+      "project": "sid",
+      "logo": "/eAtlasViewer_dev/images/title-zebrafish-atlas.png",
+      "text": [
+         "X-ray CT 3D image of a juvenile zebrafish",
+         "provided by Xuying Xin and Keith Cheng.",
+         "Click title link for original data"
+      ]
+   },
+   "webServer": "aberlour.hgu.mrc.ac.uk",
+   "iipServerPath": "/fcgi-bin/demoiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_dev/application/zebrafish/zebrafish/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "interfaceImageDir": "/eAtlasViewer_dev/images/",
+   "dataType": "wlz",
+   "transverseView": {
+          "label": "Trans",
+          "pitch": "0",
+          "yaw": "0",
+          "roll": "0"
+   },
+   "sagittalView": {
+          "label": "Sagit",
+          "pitch": "90",
+          "yaw": "180",
+          "roll": "180"
+   },
+   "coronalView": {
+          "label": "Coron",
+          "pitch": "90",
+          "yaw": "90",
+          "roll": "180"
+   },
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerNames": [
+      "grey"
+   ],
+   "layerData": [
+      {
+         "imageDir": "/export/fast0/eAtlasViewer/data/zebrafish/",
+         "imageName":"zebrafish_mm.wlz",
+         "type":"greyLevel",
+         "opacity":"1.0",
+         "current":"",
+         "visible":"true"
+      }
+   ],
+   "initialState": {
+         "scale":"0.0625",
+	 "distance":"0",
+	 "pitch":"90",
+	 "yaw":"90",
+	 "roll":"180"
+   },
+   "pixelResolution": {
+        "x":"1.12345679",
+	"y":"1.12345679",
+	"z":"1.12345679",
+	"units":["\u03BC\u006D", "\u006D\u006D"]
+   },
+   "menuStructureFile": "/eAtlasViewer_dev/application/zebrafish/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_dev/application/zebrafish/menu/menuContent.jso",
+   "wlzMode": "zeta",
+   "hasAnatomySections":"false",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "sectionOrderReversed": "false",
+   "tileframe": {"enabled": "true"}
+}

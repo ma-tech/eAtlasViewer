@@ -1,0 +1,31 @@
+{
+   "webServer": "testwww.emouseatlas.org",
+   "iipServerPath": "/fcgi-bin/emaiipsrv.fcgi",
+   "metadataRoot": "/eAtlasViewer_ema/application/ema/sections/EMA28/",
+   "stackMetadataFilename": "stack.jso",
+   "interfaceImageDir": "/eAtlasViewer_ema/images/",
+   "toolsMetadataFilename": "../tiledImageToolParams.jso",
+   "dataType": "pyrTiff_origNames",
+   "layerNames": [
+      "histology"
+   ],
+   "viewerTargetId": "emapIIPViewerDiv",
+   "layerData": [
+      {
+         "imageDir": "/export/data0/eAtlasViewer/data/ema/sections/EMA28/pyramidalTiffs/",
+         "selectorName":"zsel.jpg.256.pyr.tif",
+	 "visible":"true"
+      }
+   ],
+   "initialState": {"scale":"0.25", "distance":"113"},
+   "pixelResolution": {"x":"0.68", "y":"0.68", "z":"", "units":["\u03BC\u006D", "\u006D\u006D"]},
+   "menuStructureFile": "/eAtlasViewer_ema/application/ema/sections/menu/menuStructure.jso",
+   "menuContentFile": "/eAtlasViewer_ema/application/ema/sections/menu/menuContent.jso",
+   "busyIndicatorSrc": "busyIndicator.gif",
+   "infoDetails": {
+      "jso":"../../../../../emap/ema/json/modelSelector/modelInfo.jso",
+      "id":"EMA:28",
+      "assocIndx":"ts15"
+   },
+   "tileframe": {"enabled": "true"}
+}
