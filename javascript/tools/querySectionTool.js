@@ -104,6 +104,8 @@ var querySectionTool = new Class ({
    //---------------------------------------------------------
    createElements: function() {
 
+      //console.log("querySectionTool createElements");
+
       var win = $(this.shortName + '-win');
       // make sure existing elements are removed.
       // or they will appear multiple times
@@ -116,8 +118,8 @@ var querySectionTool = new Class ({
          'class': 'sliderTextContainer_spacer5'
       });
 
-      var topEdge = $(this.shortName + '-topedge');
-      this.spacer.inject(topEdge, 'inside');
+      this.topEdge = $(this.shortName + '-topedge');
+      this.spacer.inject(this.topEdge, 'inside');
 
       this.sliderTextContainer = new Element('div', {
          'class': 'sliderTextContainer'
@@ -126,17 +128,18 @@ var querySectionTool = new Class ({
       this.sliderTextDiv = new Element('div', {
          'class': 'sliderTextDiv'
       });
+      emouseatlas.emap.utilities.removeChildNodes(this.sliderTextDiv);
       this.sliderTextDiv.set('text', 'Query Sections');
 
       this.sliderTextDiv.inject(this.sliderTextContainer, 'inside');
-      this.sliderTextContainer.inject(topEdge, 'inside');
+      this.sliderTextContainer.inject(this.topEdge, 'inside');
 
       //----------------------------------------
       // containers for the sections indicators
       //----------------------------------------
 
       var sectionNames = this.query.getAllQuerySectionNames();
-      //console.log("section names ",sectionNames);
+      //console.log("query section names ",sectionNames);
       var numSections = sectionNames.length;;
 
       //this.height = this.baseHeight + (numSections + 1*1) * this.heightOfOneSection;
@@ -307,7 +310,7 @@ var querySectionTool = new Class ({
             querySection = this.query.getQuerySectionAtIndex(i);
             //console.log("doSectionClicked: querySection ",querySection);
             if(emouseatlas.emap.utilities.isSameSection(curSection, querySection)) {
-               console.log("chose same section");
+               //console.log("chose same section");
             }
 	    this.query.selectQuerySection(i);
 	 } else {
@@ -353,6 +356,7 @@ var querySectionTool = new Class ({
 
       if(queryChanges.addQuerySection === true) {
          //console.log("addQuerySection");
+	 this.window.setVisible(true);
          this.createElements();
       }
 

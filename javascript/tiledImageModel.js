@@ -123,7 +123,7 @@ emouseatlas.emap.tiledImageModel = function() {
       setSection: false,     // for expression sections etc
       addQuerySection: false,
       saveQuerySection: false,
-      changeQuerySection: false, // for spatial query when section has been seleceted from dialogue
+      changeQuerySection: false, // for spatial query when section has been selected from dialogue
       sectionChanged: false   // if dst or angle has been changed
    };
    var image = {};
@@ -161,6 +161,8 @@ emouseatlas.emap.tiledImageModel = function() {
    var tableMenuContentUrl;
    var treeMenuStructureUrl;
    var treeMenuContentUrl;
+   //......................
+   var queryDataUrl;
 
    var greyImg;
    var expressionImg;
@@ -264,11 +266,11 @@ emouseatlas.emap.tiledImageModel = function() {
 
       var wlzToStackOffsetStr = (json.wlzToStackOffset === undefined) ? "0" : json.wlzToStackOffset;
       wlzToStackOffset = parseInt(wlzToStackOffsetStr);
-     // console.log("wlzToStackOffset %s", wlzToStackOffset);
+     //console.log("wlzToStackOffset %s", wlzToStackOffset);
 
       var equivSectionOffsetStr = (json.equivSectionOffset === undefined) ? "0" : json.equivSectionOffset;
       equivSectionOffset = parseInt(equivSectionOffsetStr);
-     // console.log("equivSectionOffset %s", equivSectionOffset);
+     //console.log("equivSectionOffset %s", equivSectionOffset);
 
 
       arrayStartsFrom0 = (json.arrayStartsFrom0 === undefined) ? 'true' : json.arrayStartsFrom0;
@@ -283,6 +285,7 @@ emouseatlas.emap.tiledImageModel = function() {
       var numlayers = layerNames.length;
 
       var jsonLayerData = json.layerData;
+      var modelInfo;
       var opacity;
       var filter;
       var layerType;
@@ -295,6 +298,10 @@ emouseatlas.emap.tiledImageModel = function() {
       //console.log("initModelCallback jsonLayerData ",jsonLayerData);
 
       for(var i=0; i<numlayers; i++) {
+
+         if(jsonLayerData[i].modelInfo !== undefined) {
+	    modelInfo = jsonLayerData[i].modelInfo;
+	 }
 
          if(jsonLayerData[i].current !== undefined) {
 	    initialCurrentLayer = layerNames[i];
@@ -337,6 +344,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 if(layerData[layerNames[i]] === undefined) {
 	    layerData[layerNames[i]] = {
 	       layerName:layerNames[i],
+	       modelInfo:modelInfo,
 	       imageDir:jsonLayerData[i].imageDir,
 	       imageName:jsonLayerData[i].imageName,
 	       lowResData:lowRes,
@@ -399,6 +407,11 @@ emouseatlas.emap.tiledImageModel = function() {
          treeMenuContentUrl = webServer + treeMenuContentFile;
       }
 
+      if(typeof(json.queryDataFile) !== 'undefined') {
+         var queryDataFile = json.queryDataFile;
+         queryDataUrl = webServer + queryDataFile;
+      }
+
       if(typeof(json.transverseView) !== 'undefined') {
          transverseView = {
 	              label:json.transverseView.label,
@@ -428,8 +441,21 @@ emouseatlas.emap.tiledImageModel = function() {
       if(json.initialState !== undefined) {
          var state = json.initialState;
 	 //console.log("initial state ",json.initialState);
+	 // scale can be a string (initial scale) or an object (min, initial, max)
 	 if(state.scale) {
-	    initialState.scale = parseFloat(state.scale);
+	    //console.log("typeof state.scale is ",typeof state.scale);
+	    if (typeof state.scale === 'object') {
+	       initialState.scale = parseFloat(state.scale.init);
+	       // set the max and min scale if given
+	       if(state.scale.min) {
+		  scale.min = parseFloat(state.scale.min);
+	       }
+	       if(state.scale.max) {
+		  scale.max = parseFloat(state.scale.max);
+	       }
+	    } else {
+	       initialState.scale = parseFloat(state.scale);
+	    }
 	 }
 	 // if it has expression sections, use its first section as initial section
 	 if (expressionSectionName !== undefined &&
@@ -890,8 +916,15 @@ emouseatlas.emap.tiledImageModel = function() {
 
       // If *.wlz, get metadata from IIP server
       //isWlz = true;
-      scale.max = 4;
-      scale.min = 0.25;
+
+      // we might have read in and set min and max scale values from json config file.
+      // if not, set them here
+      if (typeof scale.max === 'undefined') {
+	 scale.max = 4;
+      }
+      if (typeof scale.min === 'undefined') {
+	 scale.max = 0.25;
+      }
 
       ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
       if (isEurexpress) {
@@ -1485,8 +1518,9 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    var initQuery = function () {
-      emouseatlas.emap.tiledImageQuery.initialise(emouseatlas.emap.tiledImageModel,
-                                                  emouseatlas.emap.tiledImageView);
+      if(emouseatlas.emap.tiledImageQuery) {
+	 emouseatlas.emap.tiledImageQuery.initialise(emouseatlas.emap.tiledImageModel, emouseatlas.emap.tiledImageView);
+      }
    }
 
    //---------------------------------------------------------
@@ -2222,13 +2256,6 @@ emouseatlas.emap.tiledImageModel = function() {
       setCurrentSection("setSectionCallback");
       resetModelChanges();
       modelChanges.setSection = true;
-      /*
-      modelChanges.fxp = true;
-      modelChanges.dst = true;
-      modelChanges.distanceRange = true;
-      modelChanges.rotation = true;
-      modelChanges.locator = true;
-      */
       notify("setSectionCallback");
    };
 
@@ -2703,6 +2730,13 @@ emouseatlas.emap.tiledImageModel = function() {
       });
    };
 
+   //---------------------------------------------------------
+   // Get the queryData url.
+   var getQueryDataUrl = function () {
+      return queryDataUrl;
+   };
+
+   //---------------------------------------------------------
    var getExpressionSection=function() {
      return expressionSection;
    };
@@ -2788,6 +2822,7 @@ emouseatlas.emap.tiledImageModel = function() {
       setTree: setTree,
       getMenuData: getMenuData,
       getTreeData: getTreeData,
+      getQueryDataUrl: getQueryDataUrl,
       getKeySectionArr: getKeySectionArr
    };
 

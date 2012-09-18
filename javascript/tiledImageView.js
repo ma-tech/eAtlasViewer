@@ -3467,7 +3467,7 @@ emouseatlas.emap.tiledImageView = function() {
          handleImageSizeChange('modelUpdate.locator');
          updateWlzLocator("locator");
          if (model.isWlzData()) { 
-            if (initialised && !isSameImagePosition()) {
+            if (initialised && !isSameImagePosition() && !query.isImporting()) {
                setTimeout("emouseatlas.emap.tiledImageView.requestImages('modelUpdate fxp')", 10);
             }
          }

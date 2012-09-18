@@ -345,7 +345,7 @@ emouseatlas.emap.EmapDraw = function() {
        }
        undoNodes.push(drawing.pop());
        //printDrawingNodes(drawing, "drawing after undo");
-       paintDrawing();
+       paintDrawing("removeLastNode");
      };
   	
      //---------------------------------------------------------
@@ -359,7 +359,7 @@ emouseatlas.emap.EmapDraw = function() {
        }
        drawing.push(undoNodes.pop());
        //printDrawingNodes(drawing, "drawing after redo");
-       paintDrawing();
+       paintDrawing("addLastRemoveNode");
      };
 
      //-----------------------------------------------------
@@ -377,9 +377,9 @@ emouseatlas.emap.EmapDraw = function() {
      };
   
      //-----------------------------------------------------
-     var paintDrawing = function() {	
+     var paintDrawing = function(from) {	
 
-       //console.log("enter paintDrawing");
+       //console.log("enter paintDrawing from %s",from);
        //printDrawingNodes(drawing, "paintDrawing");
 
        clearDrawingCanvas("paintDrawing");
@@ -409,7 +409,7 @@ emouseatlas.emap.EmapDraw = function() {
           }
        }
        setSelectedSettings();
-       //console.log("exit paintDrawing");
+       //console.log("exit paintDrawing from %s",from);
      };
   
      //-----------------------------------------------------
@@ -575,7 +575,7 @@ emouseatlas.emap.EmapDraw = function() {
          addCanvas("changes.viewport");
          setDrawMode(curDrawMode);
 	 clearDrawing("changes.viewport && !querySectionChanged");
-	 paintDrawing();
+	 paintDrawing("modelUpdate dst && !querySectionChanged");
       }
 
       //.........................
@@ -589,7 +589,7 @@ emouseatlas.emap.EmapDraw = function() {
 	 view.popDrawingCanvas();
          addCanvas("changes.viewport");
          setDrawMode(curDrawMode);
-	 paintDrawing();
+	 paintDrawing("modelUpdate setSection");
 	 querySectionChanged = false;
       }
 
@@ -605,12 +605,35 @@ emouseatlas.emap.EmapDraw = function() {
          addCanvas("changes.viewport");
          setDrawMode(curDrawMode);
          curSection = model.getCurrentSection();
-         if(isSelectedQuerySection(curSection)) {
+         if(isSelectedQuerySection(curSection) || query.isImporting()) {
             //console.log("IT'S A QUERY SECTION");
          } else {
-	    clearDrawing("changes.viewport && !querySectionChanged");
+	    if(!query.isImporting()) {
+	       clearDrawing("changes.viewport && !querySectionChanged");
+               //console.log("CLEARING DRG cos SECTION CHANGED");
+	    } else {
+               //console.log("NOT CLEARING DRG cos IMPORTING QUERY");
+	    }
          }
-	 paintDrawing();
+
+	 if(query.isImporting()) {
+	    //querySectionChanged = true;
+	    names = query.getAllQuerySectionNames();
+	    curName = query.getQuerySectionName();
+	    len = names.length;
+	    for(i=0; i<len; i++) {
+	       //console.log("name %s", names[i]);
+	       if(names[i] === curName) {
+		  break;
+	       }
+	    }
+	    data = query.getQuerySectionData(names[i]);
+	    copy = copyDrawing(data.drg);
+	    drawing = copy;
+	    //query.setImporting(false);
+	 }
+
+	 paintDrawing("modelUpdate sectionChanged");
 	 querySectionChanged = false;
       }
 
@@ -677,7 +700,7 @@ emouseatlas.emap.EmapDraw = function() {
 	 view.popDrawingCanvas();
          addCanvas("changes.scale || changes.mode");
          setDrawMode(curDrawMode);
-	 paintDrawing();
+	 paintDrawing("viewUpdate scale");
       }
 
       //......................
@@ -704,13 +727,22 @@ emouseatlas.emap.EmapDraw = function() {
 	 view.popDrawingCanvas();
          addCanvas("changes.viewport");
          setDrawMode(curDrawMode);
-	 paintDrawing();
+	 paintDrawing("viewUpdate viewport && !querySectionChanged");
       }
 
    };
 
    //---------------------------------------------------------
    var queryUpdate = function (changes) {
+
+      var env;
+      var copy;
+      var names;
+      var curName;
+      var curSection;
+      var data;
+      var len;
+      var i;
 
       //......................
       if(changes.saveQuerySection) {
@@ -730,7 +762,6 @@ emouseatlas.emap.EmapDraw = function() {
 	 curName = query.getQuerySectionName();
          //console.log("changes.changeQuerySection current name %s", curName);
 	 len = names.length;
-	 i;
 	 for(i=0; i<len; i++) {
             //console.log("name %s", names[i]);
 	    if(names[i] === curName) {
@@ -741,27 +772,10 @@ emouseatlas.emap.EmapDraw = function() {
 	 copy = copyDrawing(data.drg);
 	 drawing = copy;
 	 //console.log(copy);
-	 querySectionChanged = true;
-	 paintDrawing();
+	 //querySectionChanged = true;
+	 paintDrawing("queryUpdate changeQuerySection");
       }
 
-      //.........................
-      // import spatial query
-      //......................
-      if(changes.spatialImport) {
-         //console.log("model spatialImport");
-	 //querySectionChanged = true;
-	 names = query.getAllQuerySectionNames();
-	 curName = query.getQuerySectionName();
-         //console.log("changes.changeQuerySection current name %s", curName);
-	 data = query.getQuerySectionData(names[0]);
-         //console.log(data);
-	 copy = copyDrawing(data.drg);
-	 drawing = copy;
-         //console.log("drawing =======> ",drawing);
-	 querySectionChanged = true;
-	 paintDrawing();
-      }
    };
 
    //---------------------------------------------------------
@@ -779,6 +793,7 @@ emouseatlas.emap.EmapDraw = function() {
       var numSections;
       var i;
 
+      //console.log("isSelectedQuerySection: testSection ",testSection);
       sectionNames = query.getAllQuerySectionNames();
       selectedQuerySectionName = query.getQuerySectionName();
       numSections = sectionNames.length;
@@ -786,14 +801,17 @@ emouseatlas.emap.EmapDraw = function() {
       for(i=0; i<numSections; i++) {
          name = sectionNames[i];
          querySection = query.getQuerySectionAtIndex(i);
-         //console.log("isExistingQuerySection: querySection ",querySection);
+         //console.log("isSelectedQuerySection: querySection ",querySection);
          if(emouseatlas.emap.utilities.isSameSection(testSection, querySection)) {
             if(name === selectedQuerySectionName) {
+               //console.log("query section %s is the selected one",name);
                return true;
             } else {
-               //console.log("query section exists but isn't the selected one");
+               //console.log("query section %s exists but isn't the selected one",name);
             }
-         }
+         } else {
+            //console.log("query section %s returned false from 'isSameSection'",name);
+	 }
       }
 
       return false;

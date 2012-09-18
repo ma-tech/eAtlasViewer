@@ -112,6 +112,7 @@ var queryTool = new Class ({
       this.termData = [];
 
       this.createElements();
+      this.initDummyForm();
 
       this.querySectionNames = [];
       this.transformedOrigins = {};
@@ -557,7 +558,7 @@ var queryTool = new Class ({
          'id': 'spatialQueryForm',
          'name': 'spatialQueryForm',
 	 'method': 'post',
-	 'action': 'http://aberlour.hgu.mrc.ac.uk/emagewebapp/pages/emage_spatial_query_result.jsf'
+	 'action': 'http://cudhub.hgu.mrc.ac.uk/emagenbwebapp/pages/emage_spatial_query_result.jsf'
       });
 
       this.dummyInputView = new Element('input', {
@@ -584,22 +585,19 @@ var queryTool = new Class ({
       this.dummyInputStage = new Element('input', {
          'id': 'spatialQueryStage',
          'name': 'spatialQueryStage',
-	 'type': 'hidden',
-	 'value': '17'
+	 'type': 'hidden'
       });
 
       this.dummyInputFromStage = new Element('input', {
          'id': 'spatialQueryFromStage',
          'name': 'spatialQueryFromStage',
-	 'type': 'hidden',
-	 'value': '17'
+	 'type': 'hidden'
       });
 
       this.dummyInputToStage = new Element('input', {
          'id': 'spatialQueryToStage',
          'name': 'spatialQueryToStage',
-	 'type': 'hidden',
-	 'value': '17'
+	 'type': 'hidden'
       });
 
       this.dummyInputDetect = new Element('input', {
@@ -612,8 +610,7 @@ var queryTool = new Class ({
       this.dummyInputEmbryo = new Element('input', {
          'id': 'spatialQueryEmbryo',
          'name': 'spatialQueryEmbryo',
-	 'type': 'hidden',
-	 'value': 'EMA49'
+	 'type': 'hidden'
       });
 
       this.dummyInputView.inject(this.dummyForm, 'inside');
@@ -627,6 +624,38 @@ var queryTool = new Class ({
       this.dummyForm.inject(win, 'inside');
 
    }, // createElements
+
+   //---------------------------------------------------------------
+   initDummyForm: function () {
+
+      var currentLayer;
+      var layerData;
+      var layer;
+      var modelInfo;
+      
+      currentLayer = this.view.getCurrentLayer();
+      layerData = this.model.getLayerData();
+      layer = layerData[currentLayer];
+      if(layer === undefined || layer === null) {
+         //console.log("layer undefined");
+         return false;
+      }
+      //console.log("layer ",layer);
+
+      modelInfo = layer.modelInfo;
+      if(modelInfo === undefined) {
+         //console.log("modelInfo undefined");
+         return false;
+      }
+
+      //console.log("modelInfo ",modelInfo);
+
+      this.dummyInputStage.set('value', modelInfo.stage);
+      this.dummyInputFromStage.set('value', modelInfo.stage);
+      this.dummyInputToStage.set('value', modelInfo.stage);
+      this.dummyInputEmbryo.set('value', modelInfo.dbName);
+
+   }, // initDummyForm
 
    //---------------------------------------------------------------
    doChkbx: function (e) {
@@ -1291,6 +1320,8 @@ var queryTool = new Class ({
 	    section.rol +
 	    ":" +
 	    section.dst +
+	    ":" +
+	    name +
 	    ";" +
 	    stringifiedDrawing;
 
@@ -1408,12 +1439,15 @@ var queryTool = new Class ({
 
       var txt;
       var json;
+      var view = {};
       var drgArr = [];
       var drg = {};
+      var numsections;
       var secArr = [];
       var section;
+      var numstrokes;
       var strokes = [];
-      var stroke = [];
+      var stroke = {};
       var action;
       var mode;
       var points = [];
@@ -1424,6 +1458,8 @@ var queryTool = new Class ({
       var yarr = [];
       var numcoords;
       var len;
+      var i;
+      var j;
       
       if (!e) {
 	 var e = window.event;
@@ -1443,40 +1479,65 @@ var queryTool = new Class ({
       }
       //console.log("json ",json);
 
+      view_mode = json.mod;
+
       secArr = json.secArr;
-      len = secArr.length;
+      numsections = secArr.length;
+
+      // nickb just look at the first section at the moment
       section = secArr[0];
 
+      view = {};
+      view.dst = parseInt(section.view.dst);
+      view.fxp = [parseInt(section.view.fxp[0]), parseInt(section.view.fxp[1]), parseInt(section.view.fxp[2])];
+      view.pit = parseInt(section.view.pit);
+      view.yaw = parseInt(section.view.yaw);
+      view.rol = parseInt(section.view.rol);
+      view.mod = view_mode;
+
+      //console.log("view ",view);
+
       strokes = section.drawing;
-      stroke = strokes[0]
+      numstrokes = strokes.length;
 
-      xarr = stroke.coords.x;
-      yarr = stroke.coords.y;
-      numcoords = xarr.length;
+      for(i=0; i<numstrokes; i++) {
 
-      pstart = {x:xarr[0], y:yarr[0]};
-      pstop = {x:xarr[numcoords-1], y:yarr[numcoords-1]};
-      points[0] = pstart;
-      points[1] = pstop;
+	 // deal with each stroke
+	 stroke = strokes[i]
+         //console.log("stroke %d",i,stroke);
+
+	 xarr = stroke.coords.x;
+	 yarr = stroke.coords.y;
+	 numcoords = xarr.length;
+
+	 pstart = {x:xarr[0], y:yarr[0]};
+	 pstop = {x:xarr[numcoords-1], y:yarr[numcoords-1]};
+	 points[0] = pstart;
+	 points[1] = pstop;
 
 
-      drg.a = (stroke.tool.toLowerCase() === "pen") ? 0 : 1;
-      drg.m = (stroke.mode.toLowerCase() === "draw") ? true : false;
-      drg.p = points;
-      drg.w = parseInt(stroke.rad);
-      drg.x = xarr;
-      drg.y = yarr;
+         drg = {};
+	 drg.a = (stroke.tool.toLowerCase() === "pen") ? 0 : 1;
+	 drg.m = (stroke.mode.toLowerCase() === "draw") ? true : false;
+	 drg.p = points;
+	 drg.w = parseInt(stroke.rad);
+	 drg.x = xarr;
+	 drg.y = yarr;
 
-      drgArr[0] = drg;
-
-      //console.log("drg ",drg);
+         drgArr[i] = drg;
+      }
 
       secNames = ["section_0"];
 
-      section = {dst:0, fxp:[199,165,273], pit:0, rol:180, yaw:0, mod:'zeta'};
+      len = drgArr.length;
+      //console.log("drg length",len);
+      for(i=0; i<len; i++) {
+	 check = drgArr[i];
+         //console.log("check drg %d",i,check);
+      }
 
       this.queryTypeRadio_spatial.set('checked', true);
-      this.query.importQuerySection(section, drgArr);
+      this.query.importQuerySection(view, drgArr);
    },
 
    //---------------------------------------------------------------

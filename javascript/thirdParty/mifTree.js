@@ -688,7 +688,7 @@ Mif.Tree.Draw = {
 			'<span class="',node.cls,(node.state.selected ? ' mif-tree-node-selected' : ''),'" uid="',node.UID,'">',
 				'<span class="mif-tree-gadjet mif-tree-gadjet-',node.getGadjetType(),'" uid="',node.UID,'">',Mif.Tree.Draw.zeroSpace,'</span>',
 				'<span class="mif-tree-icon" uid="',node.UID,'">','</span>',
-					'<span style="text-align:center"> ',checkbox,colorPic, '</span>',
+				'<span style="text-align:center"> ',checkbox,colorPic, '</span>',
 				'<span id="',node.id,'" class="mif-tree-name" uid="',node.UID,'">',node.name, '<a onclick="javaScript:tree.center(',node.center,')"> center </a>',
 				'</span>',
 			'</span>',

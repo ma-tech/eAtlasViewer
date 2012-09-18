@@ -1,0 +1,23 @@
+{
+   "stageData": {
+      ts7: [{iipName:"EMA:7", dbName:"default"}],
+      ts8: [{iipName:"EMA:8", dbName:"default"}],
+      ts9: [{iipName:"EMA:9", dbName:"default"}],
+      ts10: [{iipName:"EMA:10", dbName:"default"}],
+      ts11: [{iipName:"EMA:17", dbName:"default"}],
+      ts12: [{iipName:"EMA:21", dbName:"default"}],
+      ts13: [{iipName:"EMA:24", dbName:"default"}],
+      ts14: [{iipName:"EMA:27", dbName:"default"}],
+      ts15: [{iipName:"EMA:36", dbName:"default"}],
+      ts16: [{iipName:"EMA:47", dbName:"default"}],
+      ts17: [{iipName:"EMA:53", dbName:"default"}],
+      ts18: [{iipName:"EMA:64", dbName:"default"}],
+      ts19: [{iipName:"EMA:75", dbName:"default"}],
+      ts20: [{iipName:"EMA:76", dbName:"default"}]
+   },
+   "queryTypes": [
+      "none",
+      "anatomy",
+      "spatial"
+   ]
+}

@@ -65,6 +65,7 @@ emouseatlas.emap.tiledImageQuery = function() {
    var queryTermData = [];
    var querySection = {}; // this must be an object, not an array
    var queryTerm = {}; // this must be an object, not an array
+   var stageData = {}; // this must be an object, not an array
    var spatialQuery = [];
    var termQuery = [];
    var queryTypes = [];
@@ -73,6 +74,7 @@ emouseatlas.emap.tiledImageQuery = function() {
    var NONE = 0;
    var ANATOMY = 1;
    var SPATIAL = 2;
+   var importing = false;
    //......................
    var registry = [];
    var queryChanges = { 
@@ -109,7 +111,6 @@ emouseatlas.emap.tiledImageQuery = function() {
 
       queryTypes = ["none", "anatomy", "spatial"];
       queryType = NONE;
-
    };
 
    //---------------------------------------------------------
@@ -493,7 +494,12 @@ emouseatlas.emap.tiledImageQuery = function() {
       );
 
       resetQueryChanges();
-      queryChanges.changeQuerySection = true;
+      if(importing) {
+         queryChanges.spatialImport = true;
+         queryChanges.addQuerySection = true;
+      } else {
+         queryChanges.changeQuerySection = true;
+      }
       notify("selectQuerySection");
    };
 
@@ -516,31 +522,50 @@ emouseatlas.emap.tiledImageQuery = function() {
    //---------------------------------------------------------
    var importQuerySection = function (section, drg) {
 
-      //console.log("importQuerySection ",drg);
+      //console.log("importQuerySection section ",section);
+      //console.log("importQuerySection drg ",drg);
+
+      var len;
 
       //typeChanged('spatial');
+      queryType = SPATIAL;
+      importing = true;
 
       spatialQuery = [];
       querySectionNames = [];
-      currentQuerySectionName = 'section_0';
-      querySectionNames.push('section_0');
 
-      selectQuerySection(0); // import first section just now
+      model.setSection(
+            section.fxp[0],
+            section.fxp[1],
+            section.fxp[2],
+            section.pit,
+            section.yaw,
+            section.rol,
+            section.dst);
 
-      resetQueryChanges();
+      len = querySectionNames.length;
+      currentQuerySectionName = section.name;
+      querySectionNames.push(currentQuerySectionName);
       spatialQuery.push({
-         name:'section_0',
+         name:currentQuerySectionName,
          section:section,
          drg:drg
       });
-
-
-      queryType = SPATIAL;
-      //queryChanges.spatialSelected = true;
+      resetQueryChanges();
       queryChanges.spatialImport = true;
       notify("importQuerySection");
 
       return false;
+   };
+
+   //---------------------------------------------------------
+   var isImporting = function () {
+      return importing;
+   };
+
+   //---------------------------------------------------------
+   var setImporting = function (bool) {
+      importing = bool;
    };
 
    //---------------------------------------------------------
@@ -622,6 +647,8 @@ emouseatlas.emap.tiledImageQuery = function() {
       //getQueryTermAtIndex: getQueryTermAtIndex,
       getQueryType: getQueryType,
       importQuerySection: importQuerySection,
+      isImporting: isImporting,
+      setImporting: setImporting,
       typeChanged: typeChanged
    };
 
