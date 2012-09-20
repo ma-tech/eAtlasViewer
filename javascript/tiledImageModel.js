@@ -441,21 +441,25 @@ emouseatlas.emap.tiledImageModel = function() {
       if(json.initialState !== undefined) {
          var state = json.initialState;
 	 //console.log("initial state ",json.initialState);
-	 // scale can be a string (initial scale) or an object (min, initial, max)
-	 if(state.scale) {
-	    //console.log("typeof state.scale is ",typeof state.scale);
-	    if (typeof state.scale === 'object') {
-	       initialState.scale = parseFloat(state.scale.init);
-	       // set the max and min scale if given
-	       if(state.scale.min) {
-		  scale.min = parseFloat(state.scale.min);
-	       }
-	       if(state.scale.max) {
-		  scale.max = parseFloat(state.scale.max);
-	       }
-	    } else {
-	       initialState.scale = parseFloat(state.scale);
-	    }
+         // scale can be a string (initial scale) or an object (min, initial, max)
+         if(state.scale) {
+            //console.log("typeof state.scale is ",typeof state.scale);
+            //console.log(state.scale);
+            if (typeof state.scale === 'object') {
+               initialState.scale = parseFloat(state.scale.init);
+               // set the max and min scale if given
+               if(state.scale.min) {
+                  scale.min = parseFloat(state.scale.min);
+               }
+               if(state.scale.max) {
+                  scale.max = parseFloat(state.scale.max);
+               }
+            } else {
+               initialState.scale = parseFloat(state.scale);
+               scale.max = undefined;
+               scale.min = undefined;
+            }
+            //console.log("initialState.scale = "+initialState.scale);
 	 }
 	 // if it has expression sections, use its first section as initial section
 	 if (expressionSectionName !== undefined &&
@@ -923,7 +927,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 scale.max = 4;
       }
       if (typeof scale.min === 'undefined') {
-	 scale.max = 0.25;
+	 scale.min = 0.25;
       }
 
       ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
