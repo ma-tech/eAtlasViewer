@@ -18,8 +18,17 @@
 	 "visible":"true"
       }
    ],
-   "initialState": {"scale":"0.03125", "distance":"10", "mode":"pointClick"},
-   "pixelResolution": {"x":"0.68", "y":"0.68", "z":"1", "units":["\u03BC\u006D","\u006D\u006D"]},
+   "initialState": {
+      "scale":{"min":"0.015625","init":"0.03125","max":"1.0"},
+      "distance":"10",
+      "mode":"pointClick"
+   },
+   "pixelResolution": {
+      "x":"0.68",
+      "y":"0.68",
+      "z":"1",
+      "units":["\u03BC\u006D","\u006D\u006D"]
+   },
    "menuStructureFile": "/eAtlasViewer_dev/application/kaufman/menu/menuStructure.jso",
    "menuContentFile": "/eAtlasViewer_dev/application/kaufman/menu/menuContent.jso",
    "tableMenuStructureFile": "/eAtlasViewer_dev/application/kaufman/menu/tableMenuStructure.jso",                                                                                     

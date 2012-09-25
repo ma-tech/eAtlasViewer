@@ -1,16 +1,92 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<meta charset="UTF-8"/>
 
 <?php
-   $query = $_SERVER["QUERY_STRING"];
-   $paramArray = array();
-   parse_str($query, $paramArray);
+   # from http://php.net/manual/en/function.parse-str.php 
+   # contributed by: Evan K 30-Jul-2007 12:43
+   # gets round the need to include [] for each array entry in the url
+   function proper_parse_str($str) {
+     # result array
+     $arr = array();
+   
+     # split on outer delimiter
+     $pairs = explode('&', $str);
+   
+     # loop through each pair
+     foreach ($pairs as $i) {
+       # split into name and value
+       list($name,$value) = explode('=', $i, 2);
+      
+       # if name already exists
+       if( isset($arr[$name]) ) {
+         # stick multiple values into an array
+         if( is_array($arr[$name]) ) {
+           $arr[$name][] = $value;
+         }
+         else {
+           $arr[$name] = array($arr[$name], $value);
+         }
+       }
+       # otherwise, simply stick it in a scalar
+       else {
+         $arr[$name] = $value;
+       }
+     }
+   
+     # return result array
+     return $arr;
+   }
+
+   $query = proper_parse_str($_SERVER['QUERY_STRING']);
+
+/*
+   $components = $query["components"];
+   $subplate = $query["subplate"];
+   $editor = isset($query["editor"]);
+
+   #var_dump($query);
+   #var_dump($components);
+   #var_dump($editor);
+
+   #echo ("2nd component is  {$components[1]}");
+   echo ("subplate is  $subplate");
+   echo (", editor is  -->$editor<--");
+*/
+if(empty($_GET)) {
+   echo "No GET variables";
+} else {
+   $urlParams = $_GET;
+}
+   print_r($query); 
+
 ?>
 
 <script type="text/javascript">
    function doOnload() {
+
+      /*
+      components = <?php echo json_encode($components); ?>;
+      subplate = <?php echo $subplate; ?>;
+      editor = <?php echo $editor; ?>;
+
       jso = {"modelDataUrl":"/eAtlasViewer_dev/application/kaufman/plate33b/tiledImageModelData.jso",
-             "editor":"<?php echo isset($paramArray["editor"]) ?>"
-	     };
+             "editor":"<?php echo isset($paramArray["editor"]) ?>",
+             "subplate":"<?php echo $query["subplate"] ?>",
+             "components":components
+      };
+      jso = {"modelDataUrl":"/eAtlasViewer_dev/application/kaufman/plate33b/tiledImageModelData.jso",
+             "editor":editor,
+             "subplate":subplate,
+             "components":components
+      };
+      jso = {"modelDataUrl":"/eAtlasViewer_dev/application/kaufman/plate33b/tiledImageModelData.jso"};
+      */
+      jso = {"modelDataUrl":"/eAtlasViewer_dev/application/kaufman/plate33b/tiledImageModelData.jso",
+             "editor":"<?php echo isset($query["editor"]) ?>",
+             "subplate":"<?php echo $query["subplate"] ?>",
+             "compArr":<?php echo json_encode($query["comp"]); ?>
+      };
+
       emouseatlas.emap.tiledImageModel.initialise(jso);
    }
 </script>
@@ -140,7 +216,7 @@
             </div>
             -->
 	    <div id="wlzIIPViewerTitle">
-               Plate 33b (14.5 days p.c. Theiler stages 22-23) from 'The Atlas of Mouse Development' by Matt Kaufman
+               Plate 33b (14.5 dpc) TS 22-23 from Kaufman Atlas
             </div>
 	 </div>
 

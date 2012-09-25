@@ -343,32 +343,47 @@ var tiledImageSelectorTool = new Class ({
    modelUpdate: function(modelChanges) {
 
       //console.log("enter Selector modelUpdate:",modelChanges);
+      var distance = this.model.getDistance();
+      var cur = distance.cur;
+      var cur2 = (this.model.isArrayStartsFrom0()) ? cur : cur - 1;
+      var cur3 = cur2 + this.wlzToStackOffset;
+      var fullDepth = this.model.getFullDepth();
+      var sliceOffset = cur3 / fullDepth;
+      var layerNames = this.model.getLayerNames();
+      var fullname = this.model.getFullImgFilename(layerNames[0]); // in future we will be able to select the appropriate layer
+      var name = emouseatlas.emap.utilities.getFilenameFromPath(fullname);
+      var indx = name.indexOf('.');
+      var shortname = name.substring(0, indx);
+      var pointClickImg = this.model.getPointClickImg();
+      var fbText;
+      var cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
 
       if(modelChanges.dst) {
          //console.log("this.model.isArrayStartsFrom0 ",this.model.isArrayStartsFrom0());
-	 var distance = this.model.getDistance();
-	 var cur = distance.cur;
-	 var cur2 = (this.model.isArrayStartsFrom0()) ? cur : cur - 1;
-	 var cur3 = cur2 + this.wlzToStackOffset;
+	 distance = this.model.getDistance();
+	 cur = distance.cur;
+	 cur2 = (this.model.isArrayStartsFrom0()) ? cur : cur - 1;
+	 cur3 = cur2 + this.wlzToStackOffset;
 	 //console.log("distance.cur %d, this.wlzToStackOffset %d",cur,this.wlzToStackOffset)
 	    
-	 var fullDepth = this.model.getFullDepth();
+	 fullDepth = this.model.getFullDepth();
 	 //console.log("Selector.modelUpdate modelChanges.dst: cur2 %d, fullDepth %d",cur2, fullDepth);
-	 var sliceOffset = cur3 / fullDepth;
+	 sliceOffset = cur3 / fullDepth;
 	 this.setSliceOffset(sliceOffset);
 
 	 if(this.useFilename) {
-	    var layerNames = this.model.getLayerNames();
-            var fullname = this.model.getFullImgFilename(layerNames[0]); // in future we will be able to select the appropriate layer
-            var name = emouseatlas.emap.utilities.getFilenameFromPath(fullname);
-            var indx = name.indexOf('.');
-            var shortname = name.substring(0, indx);
+	    layerNames = this.model.getLayerNames();
+            fullname = this.model.getFullImgFilename(layerNames[0]); // in future we will be able to select the appropriate layer
+            name = emouseatlas.emap.utilities.getFilenameFromPath(fullname);
+            indx = name.indexOf('.');
+            shortname = name.substring(0, indx);
 	    this.feedbackText.set('text', shortname);
 	 } else if(this.kaufman) {
-	    var pointClickImg = this.model.getPointClickImg();
-	    this.feedbackText.set('text', 'image ' + pointClickImg);
+	    pointClickImg = this.model.getPointClickImg();
+	    fbText = this.getFeedbackText(pointClickImg);
+	    this.feedbackText.innerHTML=(fbText);
 	 } else {
-	    var cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
+	    cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
 	    this.feedbackText.set('text', "section: "+ (cur3).toString());
 	 }
       }
@@ -380,33 +395,59 @@ var tiledImageSelectorTool = new Class ({
    viewUpdate: function(viewChanges) {
 
       //console.log("enter Selector viewUpdate:",viewChanges);
+      var distance;
+      var cur;
+      var zsel;
+      var layerNames;
+      var fullname;
+      var name;
+      var indx;
+      var shortname;
+      var pointClickImg;
+      var fbText;
+      var cur3;
+      var scaleFactor;
+      var tl;
+      var br;
+      var cur2;
+      //var sliceOffset;
+      var cur3;
+      var fullDepth;
+      var sliceOffset;
+      var totHeight;
+      var feedbackWidth;
+      var feedbackHeight;
+      var imageContainerLeftOffset;
+      var imageOffset;
+      var viz;
 
       if(viewChanges.initial || viewChanges.locator) {
-	 var distance = this.model.getDistance();
-	 var cur = distance.cur;
-	 var zsel = this.model.getZSelectorInfo();
+	 distance = this.model.getDistance();
+	 cur = distance.cur;
+	 zsel = this.model.getZSelectorInfo();
 
          this.setSelectorImage();
 
 	 if(this.useFilename) {
-	    var layerNames = this.model.getLayerNames();
-            var fullname = this.model.getFullImgFilename(layerNames[0]); // in future we will be able to select the appropriate layer
-            var name = emouseatlas.emap.utilities.getFilenameFromPath(fullname);
-            var indx = name.indexOf('.');
-            var shortname = name.substring(0, indx);
+	    layerNames = this.model.getLayerNames();
+            fullname = this.model.getFullImgFilename(layerNames[0]); // in future we will be able to select the appropriate layer
+            name = emouseatlas.emap.utilities.getFilenameFromPath(fullname);
+            indx = name.indexOf('.');
+            shortname = name.substring(0, indx);
 	    this.feedbackText.set('text', shortname);
 	 } else if(this.kaufman) {
-	    var pointClickImg = this.model.getPointClickImg();
-	    this.feedbackText.set('text', 'image ' + pointClickImg);
+	    pointClickImg = this.model.getPointClickImg();
+	    fbText = this.getFeedbackText(pointClickImg);
+	    this.feedbackText.innerHTML=(fbText);
 	 } else {
-	    var cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
+	    cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
 	    this.feedbackText.set('text', "section: "+ (cur3).toString());
 	 }
 
 	 this.window.setVisible(true);
 
 	 // make sure the zsel image fits the max dimension specified
-	 var scaleFactor = (zsel.width > zsel.height) ? this.maxDim / zsel.width : this.maxDim / zsel.height;
+	 scaleFactor = (zsel.width > zsel.height) ? this.maxDim / zsel.width : this.maxDim / zsel.height;
 	 if (scaleFactor > 1) {
 	    scaleFactor = 1; 
 	 }
@@ -416,8 +457,8 @@ var tiledImageSelectorTool = new Class ({
 	 //console.log("scaleFactor %f, scaledSelectorWidth %f, scaledSelectorHeight %f",scaleFactor,this.scaledSelectorWidth,this.scaledSelectorHeight);
 
 	 // if the selector image has borders we must allow for them
-	 var tl = 0;
-	 var br = 0;
+	 tl = 0;
+	 br = 0;
 	 if (zsel.border_tl !== undefined) {
 	    tl = scaleFactor * zsel.border_tl;
 	 }
@@ -464,15 +505,14 @@ var tiledImageSelectorTool = new Class ({
 	 this.image.style.width = this.scaledSelectorWidth + 'px';
 	 this.image.style.height = this.scaledSelectorHeight + 'px';
 
-	 var cur2 = (this.model.isArrayStartsFrom0()) ? distance.cur : distance.cur - 1;
-	 //var sliceOffset = cur2 / (distance.max - distance.min);
-	 var cur3 = cur2 + this.wlzToStackOffset;
-	 var fullDepth = this.model.getFullDepth();
-	 var sliceOffset = cur3 / fullDepth;
+	 cur2 = (this.model.isArrayStartsFrom0()) ? distance.cur : distance.cur - 1;
+	 cur3 = cur2 + this.wlzToStackOffset;
+	 fullDepth = this.model.getFullDepth();
+	 sliceOffset = cur3 / fullDepth;
 	 this.setSliceOffset(sliceOffset);
 
 	 this.totWidth = (this.dragWidth > this.scaledSelectorWidth) ? this.dragWidth : this.scaledSelectorWidth;
-	 var totHeight = (this.dragHeight > this.scaledSelectorHeight) ? this.dragHeight : this.scaledSelectorHeight;
+	 totHeight = (this.dragHeight > this.scaledSelectorHeight) ? this.dragHeight : this.scaledSelectorHeight;
 	 if (this.leftDragOffset < 0) {
 	    this.totWidth = this.scaledSelectorWidth - this.leftDragOffset * 2;
 	 }
@@ -480,21 +520,21 @@ var tiledImageSelectorTool = new Class ({
 	    totHeight = this.scaledSelectorHeight - this.topDragOffset * 2;
 	 }
 
-	 var feedbackWidth = $('selector-feedbackContainer').getWidth();
-	 var feedbackHeight = $('selector-feedbackContainer').getHeight();
+	 feedbackWidth = $('selector-feedbackContainer').getWidth();
+	 feedbackHeight = $('selector-feedbackContainer').getHeight();
 
 	 this.totWidth = (this.totWidth < feedbackWidth) ? feedbackWidth : this.totWidth;
 	 //console.log("feedbackWidth %s, this.totWidth %s",feedbackWidth,this.totWidth);
 
 	 this.window.setDimensions(this.totWidth, totHeight + feedbackHeight + 4);
 
-	 var imageContainerLeftOffset = Math.floor((this.totWidth - this.scaledSelectorWidth) / 2);
+	 imageContainerLeftOffset = Math.floor((this.totWidth - this.scaledSelectorWidth) / 2);
 	 //console.log("imageContainerLeftOffset %s",imageContainerLeftOffset);
 	 this.imageContainer.style.left = imageContainerLeftOffset + 'px';
 
 	 this.feedback.style.top = totHeight + 2 + 'px';
 
-	 var imageOffset = $('selector-imageContainer').style.left;
+	 imageOffset = $('selector-imageContainer').style.left;
 	 //console.log("imageOffset = ", imageOffset);
 
       } // initial
@@ -502,7 +542,7 @@ var tiledImageSelectorTool = new Class ({
       //console.log("exit Selector viewUpdate:");
 
       if(viewChanges.toolbox === true) {
-	var viz = this.view.toolboxVisible();
+	viz = this.view.toolboxVisible();
 	if(viz === true) {
 	   this.window.setVisible(true);
         } else if(viz === false) {
@@ -511,6 +551,24 @@ var tiledImageSelectorTool = new Class ({
       }
 
    }, // viewUpdate
+
+   //--------------------------------------------------------------
+   getFeedbackText: function (text) {
+
+      var len;
+      var frontBit;
+      var lastBit;
+      var spantex;
+      var ihtml;
+
+      len = text.length;
+      frontBit = text.substring(0,len-1);
+      lastBit = text.substring(len-1);
+      spantex = '<span style="font-weight:bold;color:#cc00cc;"> ' + lastBit + '</span>'
+      ihtml = frontBit + ': ' + spantex;
+
+      return ihtml;
+   },
 
    //--------------------------------------------------------------
    setToolTip: function (text) {

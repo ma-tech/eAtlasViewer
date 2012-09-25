@@ -140,7 +140,7 @@
             </div>
             -->
 	    <div id="wlzIIPViewerTitle">
-               Plate 35k (15.5 days p.c. Theiler stage 24) from 'The Atlas of Mouse Development' by Matt Kaufman
+               Plate 35k (15.5 dpc) TS 24 from Kaufman Atlas
             </div>
 	 </div>
 

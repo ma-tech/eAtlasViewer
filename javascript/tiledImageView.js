@@ -55,6 +55,7 @@ emouseatlas.emap.tiledImageView = function() {
 
    // private members
 
+   var _debug = false;
    var that = this;
    var registry = []; // allows the view to notify observers of changes to layer, viewport size etc.
    var viewChanges = { 
@@ -673,7 +674,8 @@ emouseatlas.emap.tiledImageView = function() {
    */
    var getTileSrc = function(layerName, k, highQual) {
 
-      var _debug = false;
+      var deb = _debug;
+
       //var layerData = model.getLayerData();
       var layer = layerData[layerName];
       if(typeof(layer) === 'undefined') {
@@ -771,7 +773,8 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    var getTiles = function(sx,ex,sy,ey) {
 
-      var _debug = false;
+      var deb = _debug;
+
       var layer;
       var tileFrameContainer;
       var tileFrame;
@@ -842,13 +845,12 @@ emouseatlas.emap.tiledImageView = function() {
 	      }
 	    }
 
-      _debug = false;
             if(_debug) {
 	       console.log("getTiles: counter = %d",counter);
 	       console.log("tileCollection ",tileCollection);
 	    }
 	    counter = 0;
-      _debug = false;
+      _debug = deb;
 	 } 
       } // for 
 
@@ -1876,24 +1878,32 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    // event handlers
    //---------------------------------------------------------
-   var setViewportSize = function() {
+   var setViewportSize = function(from) {
 
-      //console.log("enter setViewportSize");
+      if(_debug) console.log("enter setViewportSize from %s",from);
       var targetId = model.getViewerTargetId();
+      // if the viewer div exists
       if(document.getElementById(targetId)) {
 	 var VP = document.getElementById(targetId);
 	 var VpDims = emouseatlas.emap.utilities.getViewportDims(VP);
 	 viewport.width = VpDims.width;
 	 viewport.height = VpDims.height;
+      } else {
+         if(_debug) console.log("%s doesn't exist yet",targetId);
       }
 
       if ((image.width !== null && typeof(image.width) !== 'undefined') && (image.height !== null && typeof(image.height) !== 'undefined')) {
-	 setWinMinScale();
+         if(_debug) console.log("image width & height OK");
+	 setWinMinScale("setViewportSize");
 	 handleScaleChange("setViewportSize");
+      } else {
+         if(_debug) console.log("image width & height not established yet");
+         if(_debug) console.log("exiting setViewportSize from %s",from);
+	 return false;
       }
       viewChanges.viewport = true;
       notify("setViewportSize");
-      //console.log("exit setViewportSize");
+      if(_debug) console.log("exit setViewportSize from %s",from);
    };
 
    //---------------------------------------------------------
@@ -2377,63 +2387,119 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   var setIIPMinScale = function() {
+   // Scale must be a power of 2 for the IIP server/viewer
+   //---------------------------------------------------------
+   var setIIPMinScale = function(from) {
+      if(_debug) console.log("enter view.setIIPMinScale from %s",from);
+
       if(model.isWlzData()) {
-         scale.iipmin = 0.0625; // yes completely arbitrary!
+         if(scale.min) {
+	    scale.iipmin = Math.pow(2,Math.floor(Math.log(scale.min) / Math.log(2)));
+	 } else {
+            scale.iipmin = 0.0625; // = 1/16   yes completely arbitrary!
+	 }
       } else {
 	 var maxiipres = model.getMaxIIPResolution();
 	 scale.iipmin = Math.pow(2,-maxiipres);
       }
 
+      if(_debug) console.log("exit view.setIIPMinScale from %s  %d",from,scale.iipmin);
    };
 
    //---------------------------------------------------------
-   var setWinMinScale = function () {
-      //console.log("enter view.setWinMinScale");
+   // This is the minimum scale (as a power of 2) that will allow image to fit within window
+   //---------------------------------------------------------
+   var setWinMinScale = function (from) {
+      if(_debug) console.log("enter view.setWinMinScale from %s",from);
       fullImage = model.getFullImgDims();
 
       var xmin = viewport.width / fullImage.width;
       var ymin = viewport.height / fullImage.height;
       var min = (xmin < ymin) ? xmin : ymin;
 
-      // Get minimum scale (as a power of 2) that will allow image to fit within window
+      scale.winmin = Math.pow(2,Math.floor(Math.log(min) / Math.log(2)));
+
+      /*
       if (model.isWlzData()) {
 	 scale.winmin = Math.pow(2,Math.floor(Math.log(min) / Math.log(2)));
 	 //scale.initial = parseFloat(scale.winmin);
       } else {
+	 //   1/256   <-- where did this come from?
 	 scale.winmin = 0.00390625;
-	 //scale.initial = parseFloat(Math.pow(2,Math.floor(Math.log(min) / Math.log(2))));
       }
+      */
 
-      //console.log("exit view.setWinMinScale ",scale.winmin);
+      if(_debug) console.log("exit view.setWinMinScale from %s %d",from,scale.winmin);
    };
 
    //---------------------------------------------------------
-   var setMinScale = function() {
-      //console.log("enter view.setMinScale");
+   // Now we know winmin scale and iipmin scale, make a sensible choice.
+   // We don't want the minimum scale to be such that we can't show the whole image,
+   // and we want to have 1:1 as the largest possible scale.min
+   //---------------------------------------------------------
+   var setMinScale = function(from) {
+
+      var deb = _debug;
+      //_debug = true;
+
+      if(_debug) console.log("enter view.setMinScale from %s",from);
       scale.min = (scale.iipmin < scale.winmin) ? scale.iipmin : scale.winmin;
       scale.min = (scale.min < 1) ? scale.min : 1;
-      constrainScale();
-      //console.log("exit view.setMinScale");
+      if(_debug) console.log("scale.min set to ",scale.min);
+      constrainScale("setMinScale ",scale.min);
+      if(_debug) console.log("exit view.setMinScale from %s",from);
+
+      _debug = deb;
    };
 
    //---------------------------------------------------------
-   var constrainScale = function() {
-      //console.log("enter view.constrainScale");
+   // We have to make sure the current scale setting is valid
+   //---------------------------------------------------------
+   var constrainScale = function(from) {
+
+      var deb = _debug;
+      //_debug = true;
+
+      if(_debug) console.log("enter view.constrainScale from %s",from);
+
+      var currentVal;
+
       if (scale.cur === null || typeof(scale.cur) === 'undefined' || scale.cur === 0) {
 	 scale.cur = scale.initial;
       }
+
+      currentVal = scale.cur;
+      if(_debug) console.log("currentVal ",currentVal);
+
       if (scale.cur < scale.min) {
 	 scale.cur = scale.min;
       }
-      handleScaleChange("constrainScale");
-      //console.log("exit view.constrainScale");
+
+      if (scale.cur > scale.max) {
+	 scale.cur = scale.max;
+      }
+      if(_debug) console.log("scale.cur ",scale.cur);
+
+      // if it has changed ...
+      if(scale.cur != currentVal) {
+         if(_debug) console.log("constrainScale from %s, current scale has changed to %d",from, scale.cur);
+         handleScaleChange("constrainScale");
+      } else {
+         if(_debug) console.log("constrainScale from %s, current scale hasn't changed",from);
+      }
+
+      if(_debug) console.log("exit view.constrainScale from %s",from);
+
+      _debug = deb;
    };
 
    //---------------------------------------------------------
    var setInitialScale = function() {
 
-      //console.log("enter view.setInitialScale");
+      var deb = _debug;
+      //_debug = true;
+
+      if(_debug) console.log("enter view.setInitialScale");
       fullImage = model.getFullImgDims();
 
       var mscl = model.getScaleMaxMin();
@@ -2441,12 +2507,13 @@ emouseatlas.emap.tiledImageView = function() {
       scale.min = mscl.min;
 
       var initialState = model.getInitialState();
-      //console.log("view.setInitialScale ",initialState);
+      if(_debug) console.log("initialState ",initialState);
       if(initialState.scale !== undefined) {
 	 scale.initial = initialState.scale;
       } else {
 	 scale.initial = 1;
       }
+      if(_debug) console.log("scale.initial ",scale.initial);
 
       scale.iipmin = 0;
       scale.winmin = 0;
@@ -2454,20 +2521,23 @@ emouseatlas.emap.tiledImageView = function() {
       scale.old = 0;
 
       if (typeof(fullImage.width) !== 'undefined' && typeof(fullImage.height) !== 'undefined') {
-         setIIPMinScale();
-	 setWinMinScale();
-	 setMinScale();
-	 //constrainScale();
+         setIIPMinScale("setInitialScale");
+	 setWinMinScale("setInitialScale");
+	 setMinScale("setInitialScale");
 	 scale.old = scale.cur;
+      } else {
+         if(_debug) console.log("setInitialScale: img w & h not established");
       }
 
-      //console.log("exit view.setInitialScale ",scale);
+      if(_debug) console.log("exit view.setInitialScale ",scale);
+
+      _debug = deb;
    };
 
    //---------------------------------------------------------
    var handleScaleChange = function(from) {
 
-     //console.log("enter handleScaleChange: from %s",from);
+     if(_debug) console.log("enter handleScaleChange: from %s",from);
      //console.log("window inner dims: W %d, H %d",window.innerWidth, window.innerHeight);
 
       fullImage = model.getFullImgDims();
@@ -2522,7 +2592,7 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.scale = true;
       notify("handleScaleChange ");
 
-      //console.log("exit handleScaleChange:");
+      if(_debug) console.log("exit handleScaleChange:");
    };
 
    //---------------------------------------------------------
@@ -2724,8 +2794,11 @@ emouseatlas.emap.tiledImageView = function() {
       document.body.style.overflow = 'visible';
       document.documentElement.style.overflow = "visible"; /*maze: ie bug fix, some versions of ie have scroll property in <html> instead of <body>*/
 
+      var deb = _debug;
+      //_debug = true;
+
       util.addEvent(window, 'resize', setViewportSize, false);
-      setViewportSize();
+      setViewportSize("completeInitialisation");
 
       var targetId = model.getViewerTargetId();
       //console.log("completeInitialisation targetId <%s>",targetId);
@@ -2764,6 +2837,8 @@ emouseatlas.emap.tiledImageView = function() {
       if(query) {
          query.initialise();
       }
+
+      _debug = deb;
 
    }; // completeInitialisation
 
@@ -3649,7 +3724,7 @@ emouseatlas.emap.tiledImageView = function() {
       setTileFramePosition("updateWlzRotation");
 
       // this is needed to make sure drawing canvas is re-sized
-      setViewportSize();
+      setViewportSize("updateWlzRotation");
    };
 
    // only does this once slider has stopped
@@ -3854,6 +3929,11 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    var setScale = function (val) {
 
+      var deb = _debug;
+      //_debug = true;
+
+      if(_debug) console.log("enter view.setScale %d",val);
+
       scale.old = scale.cur;
 
       if (val < scale.iipmin) {
@@ -3865,11 +3945,15 @@ emouseatlas.emap.tiledImageView = function() {
       var val2 = Math.pow(2,Math.round(Math.log(val) / Math.log(2)));
       //console.log("view.setScale val2 %d",val);
       if (val2 === scale.cur) {
+         if(_debug) console.log("view.setScale no change");
 	 return false;
       }
       scale.cur = val2;
       //console.log("view.setScale scale.cur %d",scale.cur);
       handleScaleChange("setScale");
+
+      if(_debug) console.log("exit view.setScale %d",val);
+      _debug = deb;
    };
 
    //---------------------------------------------------------
@@ -4187,7 +4271,7 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.maximise = true;
       //notify("maximiseImage");
 
-      setViewportSize();
+      setViewportSize("maximiseImage");
 
       return false;
    };
@@ -4413,7 +4497,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    }
 
          }
-         setViewportSize();
+         setViewportSize("setMode");
       }
 
       setImageCursor(mode.cursor);

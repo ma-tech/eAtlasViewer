@@ -140,7 +140,7 @@
             </div>
             -->
 	    <div id="wlzIIPViewerTitle">
-               Plate 34b (14.5 days p.c. Theiler stages 22-23) from 'The Atlas of Mouse Development' by Matt Kaufman
+               Plate 34b (14.5 dpc) TS 22-23 from Kaufman Atlas
             </div>
 	 </div>
 

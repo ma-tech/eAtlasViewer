@@ -90,7 +90,8 @@ emouseatlas.emap.tiledImageModel = function() {
    var expressionLevelKey;
    var assayPath;
    var assayID;
-   var urlSpecifiedSection;
+   //var urlSpecifiedSection;
+   var urlSpecified = {};
    var tileframe;
    var imgtitle;
    //......................
@@ -443,8 +444,8 @@ emouseatlas.emap.tiledImageModel = function() {
 	 //console.log("initial state ",json.initialState);
          // scale can be a string (initial scale) or an object (min, initial, max)
          if(state.scale) {
-            //console.log("typeof state.scale is ",typeof state.scale);
-            //console.log(state.scale);
+	    if(_debug) console.log("model is reading scale from json file");
+            if(_debug) console.log("typeof state.scale is %s ",typeof state.scale, state.scale);
             if (typeof state.scale === 'object') {
                initialState.scale = parseFloat(state.scale.init);
                // set the max and min scale if given
@@ -459,7 +460,7 @@ emouseatlas.emap.tiledImageModel = function() {
                scale.max = undefined;
                scale.min = undefined;
             }
-            //console.log("initialState.scale = "+initialState.scale);
+            if(_debug) console.log("initialState.scale %d, scale.min %d, scale.max %d",initialState.scale,scale.min,scale.max);
 	 }
 	 // if it has expression sections, use its first section as initial section
 	 if (expressionSectionName !== undefined &&
@@ -472,8 +473,8 @@ emouseatlas.emap.tiledImageModel = function() {
             // if section has been specified in url params, this overrides
             // initialState.distance read from tiledImageModelData.jso.
             // If neither have been specified, use dst.min
-            if(urlSpecifiedSection) {
-               initialState.distance = parseFloat(urlSpecifiedSection);
+            if(urlSpecified.section) {
+               initialState.distance = parseFloat(urlSpecified.section);
             } else if(state.distance) {
                initialState.distance = parseFloat(state.distance);
             } else {
@@ -637,8 +638,7 @@ emouseatlas.emap.tiledImageModel = function() {
       var dataType = json.dataType;
       if(dataType.toLowerCase() === "singlepyrtiff") {
          isSinglePyrTiff = true;
-	 if (_debug)
-	   console.log("isSinglePyrTiff true");
+	 if(_debug) console.log("isSinglePyrTiff true");
       }
 
       viewerTargetId = json.viewerTargetId;
@@ -1057,8 +1057,8 @@ emouseatlas.emap.tiledImageModel = function() {
 	 startSection = parseInt(json.startSection); // the first section with an image
       } else {
 	///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
-	if (urlSpecifiedSection !== 'undefined')
-	  startSection = urlSpecifiedSection;
+	if (urlSpecified.section !== 'undefined')
+	  startSection = urlSpecified.section;
 	else
 	  ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
 	 startSection = 0;
@@ -1782,11 +1782,11 @@ emouseatlas.emap.tiledImageModel = function() {
       // if urlSpecifiedSection is defined in url string it will override initialState.distance from tiledImageModelData.jso.
       if(params.urlSpecifiedSection !== undefined) {
          if(params.urlSpecifiedSection.length === 0) {
-            urlSpecifiedSection = undefined;
+            urlSpecified.section = undefined;
          } else {
             // we must convert the string to an integer or sections 09, 08 won't load ???
-            urlSpecifiedSection = 1 * params.urlSpecifiedSection;
-            //console.log("urlSpecifiedSection ",urlSpecifiedSection);
+            urlSpecified.section = 1 * params.urlSpecifiedSection;
+            //console.log("urlSpecified.section ",urlSpecified.section);
          }
       }
 
@@ -1798,10 +1798,26 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(typeof(params.editor) !== 'undefined') {
          //console.log("model: params.editor -->%s<--",params.editor);
-	 if(params.editor === '1') {
-	    EDITOR = true;
-	 }
+	 //if(params.editor === '1') {
+	  //  EDITOR = true;
+	 //}
+         if(_debug) console.log("model: params.editor -->%s<--",params.editor);
+	 urlSpecified.editor = params.editor;
       }
+
+      if(typeof(params.subplate) !== 'undefined') {
+         if(_debug) console.log("model: params.subplate -->%s<--",params.subplate);
+	 urlSpecified.subplate = params.subplate;
+      }
+
+      if(typeof(params.compArr) !== 'undefined') {
+         if(_debug) console.log("model: params.compArr -->%s<--",params.compArr);
+	 urlSpecified.compArr = params.compArr;
+      }
+
+      _debug = true;
+      if(_debug) console.log("urlSpecified ",urlSpecified);
+      _debug = false;
 
       initModel(params.modelDataUrl);
 
