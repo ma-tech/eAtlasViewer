@@ -204,6 +204,9 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var initModelCallback = function(response) {
 
+      var deb = _debug;
+      //_debug = true;
+
       if(_debug) {
          console.log("enter initModelCallback");
       }
@@ -294,8 +297,8 @@ emouseatlas.emap.tiledImageModel = function() {
       var locatadata;
       var selectaName;
       var stackDepthStr;
-      var treeStructureFile; // the full path to the json file from the web root.
-      var treeDataFile; // the full path to the json file from the web root.
+      var treeStructureURL; // the full path to the json file from the web root.
+      var treeDataURL; // the full path to the json file from the web root.
       //console.log("initModelCallback jsonLayerData ",jsonLayerData);
 
       for(var i=0; i<numlayers; i++) {
@@ -328,9 +331,11 @@ emouseatlas.emap.tiledImageModel = function() {
 	    fullDepth = parseInt(stackDepthStr);
 	 }
 
-	 if(jsonLayerData[i].treeStructureFile !== undefined) {
-	    treeStructureFile = jsonLayerData[i].treeStructureFile;
-	    treeDataFile = jsonLayerData[i].treeDataFile;
+	 if(jsonLayerData[i].treeStructureURL !== undefined) {
+	    treeStructureURL = jsonLayerData[i].treeStructureURL;
+            treeStructureURL = emouseatlas.emap.utilities.constructURL(webServer, treeStructureURL);
+	    treeDataURL = jsonLayerData[i].treeDataURL;
+            treeDataURL = emouseatlas.emap.utilities.constructURL(webServer, treeDataURL);
 	    numberOfTrees++;
 	    //console.log("numberOfTrees ",numberOfTrees);
 	 }
@@ -356,8 +361,8 @@ emouseatlas.emap.tiledImageModel = function() {
 	       type:jsonLayerData[i].type,
 	       initialFilter:filter,
 	       initialOpacity:opacity,
-	       treeStructure:treeStructureFile,
-	       treeData:treeDataFile
+	       treeStructure:treeStructureURL,
+	       treeData:treeDataURL
 	    };
 	    //console.log("initModelCallback tree ",tree);
 	 }
@@ -380,32 +385,33 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(typeof(json.menuStructureFile) !== 'undefined') {
          var menuStructureFile = json.menuStructureFile;
-         menuStructureUrl = webServer + menuStructureFile;
+	 //console.log("menuStructureFile %s",menuStructureFile);
+         menuStructureUrl = emouseatlas.emap.utilities.constructURL(webServer, menuStructureFile);
       }
 
       if(typeof(json.menuContentFile) !== 'undefined') {
          var menuContentFile = json.menuContentFile;
-         menuContentUrl = webServer + menuContentFile;
+         menuContentUrl = emouseatlas.emap.utilities.constructURL(webServer, menuContentFile);
       }
 
       if(typeof(json.tableMenuStructureFile) !== 'undefined') {
          var tableMenuStructureFile = json.tableMenuStructureFile;
-         tableMenuStructureUrl = webServer + tableMenuStructureFile;
+         tableMenuStructureUrl = emouseatlas.emap.utilities.constructURL(webServer, tableMenuStructureFile);
       }
 
       if(typeof(json.tableMenuContentFile) !== 'undefined') {
          var tableMenuContentFile = json.tableMenuContentFile;
-         tableMenuContentUrl = webServer + tableMenuContentFile;
+         tableMenuContentUrl = emouseatlas.emap.utilities.constructURL(webServer, tableMenuContentFile);
       }
 
       if(typeof(json.treeMenuStructureFile) !== 'undefined') {
          var treeMenuStructureFile = json.treeMenuStructureFile;
-         treeMenuStructureUrl = webServer + treeMenuStructureFile;
+         treeMenuStructureUrl = emouseatlas.emap.utilities.constructURL(webServer, treeMenuStructureFile);
       }
 
       if(typeof(json.treeMenuContentFile) !== 'undefined') {
          var treeMenuContentFile = json.treeMenuContentFile;
-         treeMenuContentUrl = webServer + treeMenuContentFile;
+         treeMenuContentUrl = emouseatlas.emap.utilities.constructURL(webServer, treeMenuContentFile);
       }
 
       if(typeof(json.queryDataFile) !== 'undefined') {
@@ -570,6 +576,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if(_debug) {
          console.log("exit initModelCallback");
       }
+      _debug = deb;
 
    }; // initModelCallback
 
@@ -726,7 +733,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var loadTreeStructure = function(layerName) {
 
       var layer = layerData[layerName];
-      var url = webServer + layer.treeStructure;
+      var url = layer.treeStructure;
 
       var ajaxParams = {
          url:url,
@@ -771,7 +778,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var loadTreeData = function(layerName) {
 
       var layer = layerData[layerName];
-      var url = webServer + layer.treeData;
+      var url = layer.treeData;
 
       var ajaxParams = {
          url:url,
@@ -2491,20 +2498,32 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    var getToolsMetadataUrl = function () {
-      return webServer + metadataRoot + toolsMetadataFilename;
+
+      var ret;
+      var name;
+
+      name = metadataRoot + toolsMetadataFilename;
+      //console.log("name %s",name);
+
+      ret = emouseatlas.emap.utilities.constructURL(webServer, name);
+
+      return ret;
    };
 
    //---------------------------------------------------------
    var getStackMetadataUrl = function () {
-     var ret;
-     ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
-     if (isEurexpress) {
-       ret = metadataRoot + "linksToFullSizeImages_original/"+ getAssayPath() + stackMetadataFilename;
-     } else {
-       ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
-       ret = webServer + metadataRoot + stackMetadataFilename;
-     }
-      return ret;
+
+      var ret;
+      var name;
+
+      ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
+      if (isEurexpress) {
+         ret = metadataRoot + "linksToFullSizeImages_original/"+ getAssayPath() + stackMetadataFilename;
+      } else {
+         ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
+         name = metadataRoot + stackMetadataFilename;
+         ret = emouseatlas.emap.utilities.constructURL(webServer, name);
+      }
    };
 
    //---------------------------------------------------------

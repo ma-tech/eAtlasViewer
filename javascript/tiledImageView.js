@@ -4002,6 +4002,8 @@ emouseatlas.emap.tiledImageView = function() {
    var setOpacity = function(params) {
 
       var val = params.value;
+      var fromSlider = params.fromSlider;
+
       // limit the range to sensible values
       val = (val < 0.0) ? 0.0 : val;
       val = (val > 1.0) ? 1.0 : val;
@@ -4009,8 +4011,10 @@ emouseatlas.emap.tiledImageView = function() {
       layerOpacity[currentLayer].opacity = val;
       setTileFrameOpacity(val);
 
-      viewChanges.opacity = true;
-      notify("setOpacity");
+      if(fromSlider) {
+         viewChanges.opacity = true;
+         notify("setOpacity");
+      }
    };
 
    //---------------------------------------------------------
@@ -4027,6 +4031,8 @@ emouseatlas.emap.tiledImageView = function() {
 
       var type = params.type;
       var val = params.value;
+      var fromSlider = params.fromSlider;
+
       // limit the range to sensible values
       val = (val < 0) ? 0 : val;
       val = (val > 255) ? 255 : val;
@@ -4041,9 +4047,12 @@ emouseatlas.emap.tiledImageView = function() {
       layerFilter[currentLayer].filter.blue = val;
       }
 
-      viewChanges.filter = true;
       setTimeout("emouseatlas.emap.tiledImageView.requestImages('setFilter')", 10);
-      notify("setFilter");
+
+      if(fromSlider) {
+         viewChanges.filter = true;
+         notify("setFilter");
+      }
    };
 
    //---------------------------------------------------------

@@ -49,6 +49,7 @@ emouseatlas.emap.viewerInfo = function () {
    //---------------------------------------------------------
    //   private methods
    //---------------------------------------------------------
+   var _debug;
    var targetId;
    var target;
    var view;
@@ -63,6 +64,8 @@ emouseatlas.emap.viewerInfo = function () {
    var ajax;
    var ajaxParams;
    var utils;
+   var prnt;
+   var lmntArr;
 
    //---------------------------------------------------------
    // event handlers
@@ -73,6 +76,8 @@ emouseatlas.emap.viewerInfo = function () {
    //---------------------------------------------------------
 
    var initialise = function (params) {
+
+      _debug = false;
       targetId = params.targetId;
       target = document.getElementById(params.targetId);
       infoDetails = params.details;
@@ -105,6 +110,8 @@ emouseatlas.emap.viewerInfo = function () {
 	 };
 	 ajax.loadResponse(ajaxParams);
       }
+
+      lmntArr = [];
 
    };
 
@@ -223,6 +230,7 @@ emouseatlas.emap.viewerInfo = function () {
          rowData = doc.createElement('td');
          rowData.className = "rowData";
          row.appendChild(rowData);
+	 /*
          anchor = utils.textContainsLink(txt);
          if(anchor !== undefined) {
             addDataWithLink(doc, rowData, txt, anchor);
@@ -230,12 +238,133 @@ emouseatlas.emap.viewerInfo = function () {
             rowDataText = doc.createTextNode(txt);
             rowData.appendChild(rowDataText);
          }
+	 */
+         addRowData(txt, rowData);
       }
 
       mainContainer.appendChild(infoTable);
 
       infoGeneratedOK = true;
    };
+
+   //---------------------------------------------------------
+   var addRowData = function (htmlString, trgt) {
+
+      var deb = _debug;
+
+      if(_debug) console.log("enter addRowData ",trgt);
+      var parser;
+
+      prnt = trgt;
+      lmntArr = [];
+      lmntArr[0] = trgt;
+
+      HTMLParser(htmlString, {
+         start: function(tag, attrs, unary) {doStart(tag, attrs, unary)},
+         end: function(tag) {doEnd(tag, trgt)},
+         chars: function(text) {doChars(text)},
+         comment: function(text) {doComment(text)}
+      });
+
+      if(_debug) console.log("exit addRowData");
+      _debug = deb;
+   };
+
+   //---------------------------------------------------------
+   var doStart = function (tag, attrs, unary) {
+
+      if(_debug) {
+         console.log("enter doStart: tag ",tag);
+         console.log("enter doStart: attrs ",attrs);
+         console.log("enter doStartunary ",unary);
+      }
+
+      var lmnt;
+      var attr;
+      var len;
+      var i;
+      
+      len = attrs.length;
+
+      lmnt = document.createElement(tag);
+      i = 0;
+      for (i=0; i<len; i++) {
+         attr = attrs[i];
+         if(_debug) console.log(attr);
+         lmnt.setAttribute(attr.name, attr.value);
+      }
+
+      if(!unary) {
+         lmntArr.push(lmnt);
+         //console.log("lmntArr ",lmntArr);
+         prnt.appendChild(lmnt);
+         prnt = lmnt;
+      } else {
+         //console.log("unary tag ",tag);
+         prnt = lmntArr[lmntArr.length - 1];
+         lmntArr.push(lmnt);
+         //console.log("prnt ",prnt);
+         prnt.appendChild(lmnt);
+      }
+
+      if(_debug) console.log("exit doStart ",lmnt);
+   }; // doStart
+
+   //---------------------------------------------------------
+   var doEnd = function (tag, trgt) {
+
+      var deb = _debug;
+      //_debug = true;
+
+      if(_debug) {
+         console.log("enter doEnd ",tag);
+         console.log("prnt ",prnt);
+         console.log("lmntArr ",lmntArr);
+      }
+
+      lmntArr.length -= 1;
+
+      //console.log("lmntArr.length now ",lmntArr.length);
+      if(lmntArr.length > 1) {
+         prnt = lmntArr.pop();
+      } else {
+         //console.log("can't pop ",lmntArr);
+         prnt = trgt;
+      }
+      //console.log("prnt ",prnt);
+
+      if(_debug) console.log("exit doEnd %s ",tag,prnt);
+
+      _debug = deb;
+       _debug = false;
+   };
+
+   //---------------------------------------------------------
+   var doChars = function (text) {
+
+      if(_debug) {
+         console.log("enter doChars: %s",text);
+         console.log("enter doChars: prnt ",prnt);
+      }
+
+      var txtNode;
+      
+      if(typeof prnt === 'undefined') {
+         return false;
+      }
+
+      txtNode = document.createTextNode(text);
+      prnt.appendChild(txtNode);
+
+      if(_debug) console.log("exit doChars ",prnt);
+   };
+
+
+   //---------------------------------------------------------
+   var doComment = function (text) {
+      if(_debug) console.log("enter doComment ",text);
+   };
+
 
    //---------------------------------------------------------------
    // adds the row data with link

@@ -345,6 +345,7 @@ var tiledImagePropertiesTool = new Class ({
 
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {
+
       if(modelChanges.initial === true) {
       }
    }, // modelUpdate
@@ -355,8 +356,27 @@ var tiledImagePropertiesTool = new Class ({
 
       //console.log("enter tiledImagePropertiesTool viewUpdate:",viewChanges);
 
+      var state;
+      var props;
+      var opacity;
+      var red;
+      var green;
+      var blue;
+
       if(viewChanges.initial === true) {
          this.setPropertiesVisible(false);
+         state = this.model.getInitialState();
+         if(state.props) {
+            props = state.props;
+            opacity = parseFloat(props.opacity);
+            red = parseInt(props.red);
+            green = parseInt(props.green);
+            blue = parseInt(props.blue);
+            this.view.setOpacity({value:opacity.toFixed(2), fromSlider:false});
+            this.view.setFilter({value:red, type:'red', fromSlider:false});
+            this.view.setFilter({value:green, type:'green', fromSlider:false});
+            this.view.setFilter({value:blue, type:'blue', fromSlider:false});
+         }
          this.setToCurrentLayer();
       }
 

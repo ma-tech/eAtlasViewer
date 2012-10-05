@@ -956,59 +956,6 @@ if(!emouseatlas.emap.utilities) {
       },
 
       //---------------------------------------------------------------
-      // returns the html anchor text including tags.
-      //---------------------------------------------------------------
-      textContainsLink: function (txt) {
-         var pattern = /<a..*\/a>/;
-         var matched = pattern.exec(txt);
-   
-         if(matched !== undefined && matched !== null && matched.length > 0) {
-            return matched[0];
-         } else {
-            return undefined;
-         }
-      },
-   
-      //---------------------------------------------------------------
-      // returns an object containing pre-anchor string, link text, post-anchor string
-      //---------------------------------------------------------------
-      getLinkInfo: function (txt, anchor) {
-         var anchorStart = txt.indexOf(anchor);
-         var len = anchor.length;
-         var anchorStop = anchorStart + anchor.length;
-         var linkInfo = [];
-   
-         linkInfo[0] = txt.substring(0, anchorStart); 
-         linkInfo[1] = this.getLinkText(anchor);
-         linkInfo[2] = txt.substring(anchorStop); 
-   
-         return linkInfo;
-      },
-   
-      //---------------------------------------------------------------
-      // returns the link text of an html anchor string
-      //---------------------------------------------------------------
-      getLinkText: function (anchor) {
-         var pattern = />..*</;
-         var matched = pattern.exec(anchor);
-   
-         var match = matched[0].substring(1);
-         match = match.substring(0, match.length-1);
-   
-         return match;
-      },
-   
-      //---------------------------------------------------------------
-      // returns the href part of an anchor.
-      //---------------------------------------------------------------
-      getLinkHref: function (anchor) {
-         var pattern = /'..*'/;
-         var matched = pattern.exec(anchor);
-         var url = matched[0].substring(1,matched[0].length-1);
-         return url;
-      },
-   
-      //---------------------------------------------------------------
       // returns the url param for a given key
       // assumes urlParam of the form
       // key1=param1&key2=param2
@@ -1045,6 +992,32 @@ if(!emouseatlas.emap.utilities) {
          //console.log("param for %s = %s",key,param);
 
          return param;
+      },
+
+      //---------------------------------------------------------------
+      // returns a url which is 
+      // relative if 'name' doesn't start with '/'
+      // otherwise it has 'http://web_server_name' prepended
+      //---------------------------------------------------------------
+      constructURL: function (webServer, name) {
+      
+         var ret;
+         var usingAbsolute = false;
+         
+         if(webServer === undefined || webServer === null || webServer === "") {
+            return undefined;
+         }
+         if(name === undefined || name === null || name === "") {
+            return undefined;
+         }
+         
+         if(name.charAt(0) === '/') {
+            usingAbsolute = true;
+         }
+         
+         ret = usingAbsolute ? webServer + name : name;
+         
+         return ret;
       },
 
       //---------------------------------------------------------
