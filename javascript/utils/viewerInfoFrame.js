@@ -139,22 +139,48 @@ emouseatlas.emap.viewerInfo = function () {
    
    //---------------------------------------------------------------
    var generateInfoPage = function () {
-      var closeDiv = mydocument.getElementById("modelInfoFrameCloseDiv");
+
+      var closeDiv;
       var mainContainer;
+      var iframe;
+      var doc;
+      var iframeContainer;
+      var bdy;
+      var info;
+      var labels;
+      var rows;
+      var klass;
+      var nrows;
+      var row;
+      var txt;
+      var indx;
+      var i;
+      var j;
+      var head;
+      var header;
+      var headerText;
+      var rowHeader;
+      var rowHeaderText;
+      var rowData;
+      var tBody; // required for IE8 or the table is invisible
+      var infoTable;
+
+      closeDiv = mydocument.getElementById("modelInfoFrameCloseDiv");
+      mainContainer;
       mainContainer = mydocument.getElementById("modelInfoMainContainer");
       if(mainContainer === undefined || mainContainer === null) {
          return false;
       }
-      var iframe = myparent.document.getElementById("wlzIIPViewerInfoIFrame");
-      var doc = iframe.contentDocument;
-      var iframeContainer = myparent.document.getElementById("wlzIIPViewerInfoIFrameContainer");
+      iframe = myparent.document.getElementById("wlzIIPViewerInfoIFrame");
+      doc = iframe.contentDocument;
+      iframeContainer = myparent.document.getElementById("wlzIIPViewerInfoIFrameContainer");
       iframe.className = "hullaballoo";
 
       if(mainContainer) {
 	 utils.removeChildNodes(mainContainer);
       } else {
          // it's probably IE8
-         var bdy = doc.childNodes[0].childNodes[1];
+         bdy = doc.childNodes[0].childNodes[1];
          bdy.className = "iframe";
 	 mainContainer = new Element('div', {
 	        "id" : "modelInfoMainContainer",
@@ -169,39 +195,20 @@ emouseatlas.emap.viewerInfo = function () {
 	 mainContainer.injectInside(bdy);
       }
 
-      var info = modelInfo[infoDetails.assocIndx];
+      info = modelInfo[infoDetails.assocIndx];
       if(info === undefined || info.length === 0) {
          return false;
       }
-      var labels = modelInfo.labels;
-      var rows = modelInfo.rows;
+      labels = modelInfo.labels;
+      rows = modelInfo.rows;
 
-      var klass = "";
-      var nrows = rows.length;
+      klass = "";
+      nrows = rows.length;
 
       iframe.className = "wlzIIPViewerIFrame modelInfo";
       iframeContainer.className = "wlzIIPViewerIFrameContainer modelInfo";
 
-      var row;
-      var txt;
-      var indx;
-      var i;
-      var j;
-
-      var head;
-      var header;
-      var headerText;
-
-      var rowHeader;
-      var rowHeaderText;
-      var rowData;
-      var rowDataText;
-      var anchor;
-      var linkText;
-
-      var tBody; // required for IE8 or the table is invisible
-
-      var infoTable = doc.createElement('table');
+      infoTable = doc.createElement('table');
       infoTable.id = "modelInfoTable";
       infoTable.cellSpacing = "2";
       infoTable.cellPadding = "2";
@@ -230,15 +237,6 @@ emouseatlas.emap.viewerInfo = function () {
          rowData = doc.createElement('td');
          rowData.className = "rowData";
          row.appendChild(rowData);
-	 /*
-         anchor = utils.textContainsLink(txt);
-         if(anchor !== undefined) {
-            addDataWithLink(doc, rowData, txt, anchor);
-         } else {
-            rowDataText = doc.createTextNode(txt);
-            rowData.appendChild(rowDataText);
-         }
-	 */
          addRowData(txt, rowData);
       }
 
@@ -251,9 +249,9 @@ emouseatlas.emap.viewerInfo = function () {
    var addRowData = function (htmlString, trgt) {
 
       var deb = _debug;
+      var parser;
 
       if(_debug) console.log("enter addRowData ",trgt);
-      var parser;
 
       prnt = trgt;
       lmntArr = [];
@@ -363,33 +361,6 @@ emouseatlas.emap.viewerInfo = function () {
    //---------------------------------------------------------
    var doComment = function (text) {
       if(_debug) console.log("enter doComment ",text);
-   };
-
-
-   //---------------------------------------------------------------
-   // adds the row data with link
-   //---------------------------------------------------------------
-   var addDataWithLink = function (doc, rowData, txt, anchor) {
-      var linkInfo = utils.getLinkInfo(txt,anchor);
-      var normalText;
-      var anchorTag;
-      var linkText;
-      var href = utils.getLinkHref(anchor);
-
-      normalText = doc.createTextNode(linkInfo[0]);
-      rowData.appendChild(normalText);
-
-      anchorTag = doc.createElement('a');
-      anchorTag.name = 'link';
-      anchorTag.href = href;
-      anchorTag.target = '_blank';
-      rowData.appendChild(anchorTag);
-
-      linkText = doc.createTextNode(linkInfo[1]);
-      anchorTag.appendChild(linkText);
-
-      normalText = doc.createTextNode(linkInfo[2]);
-      rowData.appendChild(normalText);
    };
 
    //---------------------------------------------------------------
