@@ -296,13 +296,13 @@ var tiledImagePropertiesTool = new Class ({
 
       var val = this.getFilterValueFromStep(step);
       if(type === "redFilter") {
-         this.view.setFilter({value:val, type:'red'});
+         this.view.setFilter({value:val, type:'red', fromSlider:'true'});
       }
       if(type === "greenFilter") {
-         this.view.setFilter({value:val, type:'green'});
+         this.view.setFilter({value:val, type:'green', fromSlider:'true'});
       }
       if(type === "blueFilter") {
-         this.view.setFilter({value:val, type:'blue'});
+         this.view.setFilter({value:val, type:'blue', fromSlider:'true'});
       }
 
    }, // doStepChanged

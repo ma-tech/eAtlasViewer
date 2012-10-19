@@ -53,10 +53,12 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------
    // private members
    //---------------------------------------------------------
+   var _debug;
    var editorUtils;
    var subplateMarkerDetails;
    var pointClickImgData;
    var subplateImgNames = [];
+   var noSubplates = false;;
    var currentImg;
    var previousImg = undefined;
    var markerContainerId;
@@ -86,17 +88,20 @@ emouseatlas.emap.pointClick = function() {
 
    var initialize = function () {
 
-      //console.log("enter pointClick.initialize");
+      _debug = false;
+
+      //if(_debug) console.log("enter pointClick.initialize");
 
       model.register(this);
       view.register(this);
 
       pointClickImgData = model.getPointClickImgData();
-      //console.log("pointClickImgData ",pointClickImgData);
+      //if(_debug) console.log("pointClickImgData ",pointClickImgData);
 
       createElements();
       getPlateData();
       if(model.isEditor()) {
+         if(_debug) console.log("isEditor ");
          doShowMarkerText();
 	 var chk = $('pointClickShowTxtChkbx');
 	 chk.set('checked', true);
@@ -134,15 +139,16 @@ emouseatlas.emap.pointClick = function() {
       */
 
       var plate = pointClickImgData.plate;
+      var subplate = pointClickImgData.subplate;
       var url = '/kaufmanwebapp/GetPlateDataSQL';
       var ajaxParams = {
          url:url,
          method:"POST",
-	 urlParams:"plate="+plate,
+	 urlParams:"plate=" + plate + "&subplate=" + subplate,
          callback:getPlateDataCallback,
          async:true
       }
-      //console.log(ajaxParams);
+      //if(_debug) console.log(ajaxParams);
       var ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 
@@ -151,7 +157,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var getPlateDataCallback = function (response, urlParams) {
 
-      //console.log("getPlateDataCallback: \n" + urlParams);
+      //if(_debug) console.log("getPlateDataCallback: \n" + urlParams);
       var json;
       var subplateNames;
       var subplate;
@@ -163,10 +169,10 @@ emouseatlas.emap.pointClick = function() {
       //----------------
       response = emouseatlas.emap.utilities.trimString(response);
       if(response === null || response === undefined || response === "") {
-         //console.log("getPlateDataCallback returning: response null");
+         //if(_debug) console.log("getPlateDataCallback returning: response null");
          return false;
       } else {
-         //console.log(response);
+         //if(_debug) console.log(response);
       }
       
       if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
@@ -175,14 +181,15 @@ emouseatlas.emap.pointClick = function() {
          json = emouseatlas.JSON.parse(response);
       }
       if(!json) {
-         //console.log("getPlateDataCallback returning: json null");
+         //if(_debug) console.log("getPlateDataCallback returning: json null");
          return false;
       }
-      //console.log("getPlateDataCallback json ",json);
+      //if(_debug) console.log("getPlateDataCallback json ",json);
 
       subplateNames = storeSubplateNames(json);
-      //console.log(subplateNames," ",subplateImgNames);
+      //if(_debug) console.log(subplateNames," ",subplateImgNames);
       subplateData = getSubplateData(json, pointClickImgData.subplate);
+      //if(_debug) console.log("subplateData ", subplateData);
       storeSubplateKeys(subplateData);
       storeSubplateDetails(subplateData);
       setMarkerTable();
@@ -201,7 +208,7 @@ emouseatlas.emap.pointClick = function() {
       */
 
       var plate = pointClickImgData.plate;
-      //console.log("updatePlateData plate ",plate);
+      //if(_debug) console.log("updatePlateData plate ",plate);
       var url = '/kaufmanwebapp/GetPlateDataSQL';
       var ajaxParams = {
          url:url,
@@ -210,7 +217,7 @@ emouseatlas.emap.pointClick = function() {
          callback:updatePlateDataCallback,
          async:true
       }
-      //console.log(ajaxParams);
+      //if(_debug) console.log(ajaxParams);
       var ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 
@@ -219,7 +226,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var updatePlateDataCallback = function (response, urlParams) {
 
-      //console.log("updatePlateDataCallback: \n" + urlParams);
+      //if(_debug) console.log("updatePlateDataCallback: \n" + urlParams);
       var json;
       var subplateNames;
       var subplate;
@@ -240,10 +247,10 @@ emouseatlas.emap.pointClick = function() {
       //----------------
       response = emouseatlas.emap.utilities.trimString(response);
       if(response === null || response === undefined || response === "") {
-         //console.log("updatePlateDataCallback returning: response null");
+         //if(_debug) console.log("updatePlateDataCallback returning: response null");
          return false;
       } else {
-         //console.log(response);
+         //if(_debug) console.log(response);
       }
       
       if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
@@ -252,31 +259,31 @@ emouseatlas.emap.pointClick = function() {
          json = emouseatlas.JSON.parse(response);
       }
       if(!json) {
-         //console.log("updatePlateDataCallback returning: json null");
+         //if(_debug) console.log("updatePlateDataCallback returning: json null");
          return false;
       }
-      //console.log("updatePlateDataCallback json ",json);
+      //if(_debug) console.log("updatePlateDataCallback json ",json);
 
       subplateData = getSubplateData(json, pointClickImgData.subplate);
-      //console.log("subplateData ",subplateData);
+      //if(_debug) console.log("subplateData ",subplateData);
       len = selectedRowKeys.length;
       len2 = subplateData.length;
 
       for(i=0; i<len; i++) {
          key = selectedRowKeys[i];
-         //console.log("key ",key);
+         //if(_debug) console.log("key ",key);
          for(j=0; j<len2; j++) {
 	    newSubplateDets = subplateData[j];
 	    newLocs = newSubplateDets.locations;
 	    len3 = newLocs.length;
 	    for(k=0; k<len3; k++) {
 	       newLocn = newLocs[k];
-	       //console.log("newLocn ",newLocn);
+	       //if(_debug) console.log("newLocn ",newLocn);
 	       if(newLocn.term.name == key) {
-	          //console.log("%s, %s, %s, %s, %s,%s,%s",newSubplateDets.name, newLocn.id,newLocn.term.name,newLocn.term.description,newLocn.x,newLocn.y,newLocn.z);
+	          //if(_debug) console.log("%s, %s, %s, %s, %s,%s,%s",newSubplateDets.name, newLocn.id,newLocn.term.name,newLocn.term.description,newLocn.x,newLocn.y,newLocn.z);
 		  oldLocn = getMarkerByLocId(newLocn.id);
-		  //console.log("locn to change ",oldLocn);
-		  //console.log("newLocn ",newLocn);
+		  //if(_debug) console.log("locn to change ",oldLocn);
+		  //if(_debug) console.log("newLocn ",newLocn);
 		  oldLocn.x = newLocn.x;
 		  oldLocn.y = newLocn.y;
 		  oldLocn.z = newLocn.z;
@@ -317,7 +324,7 @@ emouseatlas.emap.pointClick = function() {
 	    locdet = locdetArr[j];
 	    locid = locdet.loc_id;
 	    if(locid === testid) {
-	       //console.log("found location ",locid);
+	       //if(_debug) console.log("found location ",locid);
 	       ret = locdet;
 	       break;
 	    }
@@ -368,12 +375,16 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var getSubplateData = function (plateData, subplate) {
 
-      //console.log("getImageDataForPlate: plateData %s, subplate %s ",plateData,subplate);
+      //if(_debug) console.log("getSubplateData: plateData ",plateData);
+      //if(_debug) console.log("getSubplateData: subplate ",subplate);
+
       if(plateData === undefined || plateData === null) {
          return undefined;
       }
       if(subplate === undefined || subplate === null || subplate === "") {
-         return undefined;
+         noSubplates = true;
+      } else {
+         noSubplates = false;
       }
 
       var len;
@@ -385,7 +396,8 @@ emouseatlas.emap.pointClick = function() {
       len = plateData.length;
       for(i=0; i<len; i++) {
          plate = plateData[i];
-	 if(plate.subplate === subplate) {
+         //if(_debug) console.log("getSubplateData: plate ",plate);
+	 if(noSubplates || plate.subplate === subplate) {
 	    foundPlate = true;
 	    break;
          }
@@ -484,6 +496,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var storeSubplateKeys = function (subplateData) {
 
+      var tempArr = [];
       var imageData;
       var locations;
       var locn;
@@ -496,24 +509,21 @@ emouseatlas.emap.pointClick = function() {
 
       for(i=0; i<len; i++) {
          imageData = subplateData[i];
-         //console.log(imageData);
+         //if(_debug) console.log(imageData);
 	 locations = imageData.locations;
 	 len2 = locations.length;
          for(j=0; j<len2; j++) {
 	    locn = locations[j];
 	    term = locn.term;
-	    subplateKeys[subplateKeys.length] = term.name;
+	    tempArr[tempArr.length] = term.name;
 	 }
       }
-      //console.log("subplateKeys ",subplateKeys);
+      //if(_debug) console.log("tempArr ",tempArr);
       // this function doesn't change the original so you need to assign it.
-      subplateKeys = utils.removeDuplicatesFromArray(subplateKeys);
+      subplateKeys = [];
+      subplateKeys = utils.filterDuplicatesFromArray(tempArr);
+      //if(_debug) console.log("subplateKeys ",subplateKeys);
       // sort the keys numerically (they are strings)
-      subplateKeys.sort(function(A,B) {
-	       return(parseInt(A)-parseInt(B));
-            });
-
-      //console.log("subplateKeys ",subplateKeys);
 
    }; // storeSubplateKeys
 
@@ -551,7 +561,7 @@ emouseatlas.emap.pointClick = function() {
       len = keys.length;
       len2 = subplateData.length;
 
-      //console.log(subplateMarkerDetails);
+      //if(_debug) console.log(subplateMarkerDetails);
 
       // for each key on the subplate
       // keys are unique per subplate and common to all the images on a subplate
@@ -587,7 +597,7 @@ emouseatlas.emap.pointClick = function() {
 	    }
 	 }
       }
-     //console.log(subplateMarkerDetails);
+     //if(_debug) console.log(subplateMarkerDetails);
    }; // storeSubplateDetails
 
    //---------------------------------------------------------------
@@ -599,13 +609,13 @@ emouseatlas.emap.pointClick = function() {
       var i;
 
       markerDetails = subplateMarkerDetails[key];
-      console.log("getLocationsForKey: markerDetails ",markerDetails);
+      //if(_debug) console.log("getLocationsForKey: markerDetails ",markerDetails);
       len = markerDetails.locdets.length;
       for(i=0; i<len; i++) {
          locations[locations.length] = markerDetails.locdets[i];
       } // for
 
-      //console.log("getLocationsForKey %s, ",key,locations);
+      //if(_debug) console.log("getLocationsForKey %s, ",key,locations);
       return locations;
    }; // getLocationsForKey
 
@@ -623,7 +633,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var makeMarkerFlag = function (term, num) {
 
-      //console.log("makeMarkerFlag ",term,num);
+      //if(_debug) console.log("enter makeMarkerFlag ",term,num);
       var container = $(markerContainerId);
       var name = term.name;
       var map;
@@ -675,13 +685,14 @@ emouseatlas.emap.pointClick = function() {
       utils.addEvent(mapArea, 'mouseout', doMouseOutMarker, false);
       utils.addEvent(mapArea, 'mouseup', doMouseUpMarker, false);
 
+      //if(_debug) console.log("exit makeMarkerFlag ",term,num);
       return markerImgDiv;
    };
 
    //---------------------------------------------------------------
    var makeMarkerSmallLabel = function (term) {
 
-      //console.log("makeMarkerSmallLabel ",term);
+      //if(_debug) console.log("makeMarkerSmallLabel ",term);
       var container = $(markerContainerId);
       var name = term.name;
       var descr = term.description;
@@ -767,7 +778,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var makeMarkerBigLabel = function (term) {
 
-      //console.log("makeMarkerBigLabel ",term);
+      //if(_debug) console.log("makeMarkerBigLabel ",term);
       //---------------------------------------------------------
       // the Container
       //---------------------------------------------------------
@@ -962,6 +973,7 @@ emouseatlas.emap.pointClick = function() {
       var flag;
       var i;
 
+      if(_debug) console.log("enter setMarkerSrc");
       if(key === undefined || key === null || key === "") {
          return false;
       }
@@ -969,13 +981,14 @@ emouseatlas.emap.pointClick = function() {
       markerNode = subplateMarkerDetails[key];
       flagDivs = markerNode.flags;
       len = flagDivs.length;
-      //console.log(markerNode);
+      //if(_debug) console.log(markerNode);
       src = (src === undefined) ? srcClosest : src;
       for(i=0; i<len; i++) {
          flagDiv = flagDivs[i];
 	 flag = flagDiv.firstChild;
          flag.set('src', src);
       }
+      if(_debug) console.log("exit setMarkerSrc");
    };
 
    //---------------------------------------------------------------
@@ -1170,7 +1183,7 @@ emouseatlas.emap.pointClick = function() {
    var doMouseOutTableRow = function (e) {
 
       var target = emouseatlas.emap.utilities.getTarget(e);
-      //console.log("doMouseOutTableRow target %s",target.id);
+      //if(_debug) console.log("doMouseOutTableRow target %s",target.id);
       var prnt = target.parentNode;
       var gprnt = prnt.parentNode;
       var row = undefined;
@@ -1199,7 +1212,7 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          child = children[i];
          gchild = child.firstChild;
-         //console.log("grandchild ", gchild.get('text'), gchild.className);
+         //if(_debug) console.log("grandchild ", gchild.get('text'), gchild.className);
          if(gchild.className === "pointClickEntryId") {
             key = gchild.get('text');
          }
@@ -1257,6 +1270,7 @@ emouseatlas.emap.pointClick = function() {
       var y;
       var newX;
       var newY;
+      var tmpArr = [];
 
       if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
@@ -1269,7 +1283,7 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          child = children[i];
          gchild = child.firstChild;
-         //console.log("grandchild ", gchild.get('text'), gchild.className);
+         //if(_debug) console.log("grandchild ", gchild.get('text'), gchild.className);
          if(gchild.className === "pointClickEntryId") {
             key = gchild.get('text');
          }
@@ -1280,7 +1294,7 @@ emouseatlas.emap.pointClick = function() {
             desc = gchild.get('text');
          }
       }
-      //console.log("key %s, ref %s, desc %s", key,ref,desc);
+      //if(_debug) console.log("key %s, ref %s, desc %s", key,ref,desc);
 
       len = selectedRowKeys.length;
       for(i=0; i<len; i++) {
@@ -1308,7 +1322,8 @@ emouseatlas.emap.pointClick = function() {
 	 positionMarker(key);
 	 // add the key for this marker to the list of selected markers
 	 selectedRowKeys[selectedRowKeys.length] = key;
-	 selectedRowKeys = utils.removeDuplicatesFromArray(selectedRowKeys);
+	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	 selectedRowKeys = utils.duplicateArray(tmpArr);
       } else {
 	 // general users want multiple selections in the table
 	 setMarkerSrc(key, srcSelected);
@@ -1316,7 +1331,8 @@ emouseatlas.emap.pointClick = function() {
 	 positionMarker(key);
 	 // add the key for this marker to the list of selected markers
 	 selectedRowKeys[selectedRowKeys.length] = key;
-	 selectedRowKeys = utils.removeDuplicatesFromArray(selectedRowKeys);
+	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	 selectedRowKeys = utils.duplicateArray(tmpArr);
       }
 
    }; // doMouseUpTableRow
@@ -1394,7 +1410,7 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          row = rowArr[i];
          if(row.hasClass('selected')) {
-	    //console.log(row);
+	    //if(_debug) console.log(row);
 	    found = true;
 	    break;
 	 }
@@ -1403,12 +1419,12 @@ emouseatlas.emap.pointClick = function() {
       if(found) {
          ret = {img:currentImg};
          children = row.childNodes;
-	 //console.log(children);
+	 //if(_debug) console.log(children);
 	 len = children.length;
 	 for(i=0; i<len; i++) {
 	    child = children[i];
 	    gchild = child.firstChild;
-	    //console.log(gchild);
+	    //if(_debug) console.log(gchild);
 	    if(gchild.className === "pointClickEntryId") {
 	       ret.key = gchild.get('text');
 	    }
@@ -1421,7 +1437,7 @@ emouseatlas.emap.pointClick = function() {
 	 }
       }
 
-      //console.log("returning ",ret);
+      //if(_debug) console.log("returning ",ret);
       return ret;
 
    }; //getSelectedTableItem
@@ -1445,7 +1461,7 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          row = rowArr[i];
          if(row.hasClass('over')) {
-	    //console.log(row);
+	    //if(_debug) console.log(row);
 	    found = true;
 	    break;
 	 }
@@ -1454,12 +1470,12 @@ emouseatlas.emap.pointClick = function() {
       if(found) {
          ret = {img:currentImg};
          children = row.childNodes;
-	 //console.log(children);
+	 //if(_debug) console.log(children);
 	 len = children.length;
 	 for(i=0; i<len; i++) {
 	    child = children[i];
 	    gchild = child.firstChild;
-	    //console.log(gchild);
+	    //if(_debug) console.log(gchild);
 	    if(gchild.className === "pointClickEntryId") {
 	       ret.key = gchild.get('text');
 	    }
@@ -1470,9 +1486,9 @@ emouseatlas.emap.pointClick = function() {
 	       ret.desc = gchild.get('text');
 	    }
 	 }
-	 //console.log("returning ",ret);
+	 //if(_debug) console.log("returning ",ret);
       } else {
-	 //console.log("no selected item");
+	 //if(_debug) console.log("no selected item");
       }
 
       return ret;
@@ -1498,7 +1514,7 @@ emouseatlas.emap.pointClick = function() {
 	 indx = indx + 1*1;
 	 rkey = row.id.substring(indx);
          if(rkey == key) { 
-            //console.log("got row with key %s",rkey,row);
+            //if(_debug) console.log("got row with key %s",rkey,row);
             break;
          }
       }
@@ -1646,17 +1662,17 @@ emouseatlas.emap.pointClick = function() {
       keys = getSubplateKeys();
       len = keys.length;
 
-      //console.log("currentImg ",currentImg);
+      //if(_debug) console.log("currentImg ",currentImg);
       for(i=0; i<len; i++) {
          key = keys[i];
          markerNode = subplateMarkerDetails[key];
-         //console.log("markerNode ",markerNode);
+         //if(_debug) console.log("markerNode ",markerNode);
 	 locations = markerNode.locdets;
 	 len2 = locations.length;
 	 for(j=0; j<len2; j++) {
 	    locn = locations[j];
 	    if(locn.img != currentImg) {
-	       //console.log("different image %d, %d",i,j);
+	       //if(_debug) console.log("different image %d, %d",i,j);
 	       continue;
 	    }
 	    if(locn.x === "0" && locn.y === "0" && locn.z === "0") {
@@ -1678,14 +1694,23 @@ emouseatlas.emap.pointClick = function() {
       }
 
       // sort the markers by closest
+      var deb = _debug;
+      _debug = true;
+      if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tmpArr);
+      _debug = deb;
+
       tmpArr.sort(function(A,B) {
 	       return(A.dist-B.dist);
             });
       for(i=0; i<maxCloseMarkersToShow; i++) {
-         tempMarkerKeys[tempMarkerKeys.length] = tmpArr[i].key;
+	 if(tmpArr[i]) {
+            tempMarkerKeys[tempMarkerKeys.length] = tmpArr[i].key;
+	 }
       }
-      tempMarkerKeys = utils.removeDuplicatesFromArray(tempMarkerKeys);
-      //console.log("findClosestMarkers: tempMarkerKeys ",tempMarkerKeys);
+      tmpArr = [];
+      tmpArr = utils.filterDuplicatesFromArray(tempMarkerKeys);
+      tempMarkerKeys = utils.duplicateArray(tmpArr);
+      //if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tempMarkerKeys);
    }; // findClosestMarkersToPoint
 
    //---------------------------------------------------------------
@@ -1698,7 +1723,7 @@ emouseatlas.emap.pointClick = function() {
       var len = imarkerArr.length;
 
       if(imarkerArr === undefined || imarkerArr.length <= 0) {
-        //console.log("there are no markers");
+        //if(_debug) console.log("there are no markers");
          return false;
       }
 
@@ -1709,7 +1734,7 @@ emouseatlas.emap.pointClick = function() {
 
       for (i=0; i<len; i++) {
          marker = imarkerArr[i];
-	 console.log("marker %s: %d,%d",marker.key,marker.x,marker.y);
+	 if(_debug) console.log("marker %s: %d,%d",marker.key,marker.x,marker.y);
       }
    };
 
@@ -1951,7 +1976,7 @@ emouseatlas.emap.pointClick = function() {
 
       var chkbx = $('pointClickShowClosestChkbx');
       var wasChecked = chkbx.checked;
-      //console.log("doAllowClosestMarkers wasChecked %s",wasChecked);
+      //if(_debug) console.log("doAllowClosestMarkers wasChecked %s",wasChecked);
 
       if(wasChecked) {
          ALLOW_CLOSEST_MARKERS = false;
@@ -2082,6 +2107,9 @@ emouseatlas.emap.pointClick = function() {
       var i;
       var j;
       var row;
+      var tmpArr = [];
+
+      if(_debug) console.log("enter showAllMarkers");
 
       selectedRowKeys = [];
       tempMarkerKeys = [];
@@ -2089,7 +2117,7 @@ emouseatlas.emap.pointClick = function() {
       keys = getSubplateKeys();
       len = keys.length;
 
-      //console.log("currentImg ",currentImg);
+      //if(_debug) console.log("currentImg ",currentImg);
       for(i=0; i<len; i++) {
          key = keys[i];
 	 row = getRowWithKey(key);
@@ -2100,7 +2128,7 @@ emouseatlas.emap.pointClick = function() {
 	 for(j=0; j<len2; j++) {
 	    locn = locations[j];
 	    if(locn.img != currentImg) {
-	       //console.log("different image %d, %d",i,j);
+	       //if(_debug) console.log("different image %d, %d",i,j);
 	       //continue;
 	    }
 	    if(locn.x === "0" && locn.y === "0" && locn.z === "0") {
@@ -2113,8 +2141,11 @@ emouseatlas.emap.pointClick = function() {
 	    positionMarker(key);
 	 }
       }
-      selectedRowKeys = utils.removeDuplicatesFromArray(selectedRowKeys);
-      //console.log("selectedRowKeys after removing duplicates ",selectedRowKeys);
+      tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+      selectedRowKeys = utils.duplicateArray(tmpArr);
+      //if(_debug) console.log("selectedRowKeys after removing duplicates ",selectedRowKeys);
+
+      if(_debug) console.log("exit showAllMarkers");
    }; // showAllMarkers
    
    //---------------------------------------------------------------
@@ -2155,13 +2186,13 @@ emouseatlas.emap.pointClick = function() {
       if(key === undefined || key === null || key === "") {
          return false;
       }
-      //console.log("displayMarker currentImg %s, key %s",currentImg,key);
+      //if(_debug) console.log("displayMarker currentImg %s, key %s",currentImg,key);
 
       markerNode = subplateMarkerDetails[key];
       locdets = markerNode.locdets;
       flags = markerNode.flags;
       len = locdets.length;
-      //console.log("displayMarker markerNode ",markerNode);
+      //if(_debug) console.log("displayMarker markerNode ",markerNode);
 
       for(i=0; i<len; i++) {
 	 subplate = locdets[i].img;
@@ -2268,6 +2299,8 @@ emouseatlas.emap.pointClick = function() {
       var newX;
       var newY;
 
+      if(_debug) console.log("enter positionMarker");
+
       if(key === undefined || key === null || key === "") {
          return false;
       }
@@ -2276,28 +2309,29 @@ emouseatlas.emap.pointClick = function() {
       locations = markerNode.locdets;
       flags = markerNode.flags;
       len = locations.length;
-      //console.log("locations ",locations);
+      //if(_debug) console.log("locations ",locations);
       for(i=0; i<len; i++) {
          locn = locations[i];
 	 subplate = locations[i].img;
 	 if(subplate != currentImg) {
-	    //console.log("%s, %s",subplate,currentImg);
+	    //if(_debug) console.log("%s, %s",subplate,currentImg);
 	 }
 	 x = locn.x;
 	 y = locn.y;
-         //console.log("%d,%d",x,y);
+         //if(_debug) console.log("%d,%d",x,y);
          newX = x * scale + imgOfs.x;
          newY = y * scale + imgOfs.y;
 	 markerNode.flags[i].setStyles({
 	    'left': newX,
 	    'top': newY
          });
-         //console.log("positionMarker %s location %d %d,%d ",key,i,x,y);
-	 //console.log("positionMarker %s, SHOW_MARKER_TXT %s",key,SHOW_MARKER_TXT);
+         //if(_debug) console.log("positionMarker %s location %d %d,%d ",key,i,x,y);
+	 //if(_debug) console.log("positionMarker %s, SHOW_MARKER_TXT %s",key,SHOW_MARKER_TXT);
          if(SHOW_MARKER_TXT) {
             positionMarkerTxt(key);
 	 }
       }
+      if(_debug) console.log("exit positionMarker");
    };
    
    //---------------------------------------------------------------
@@ -2443,9 +2477,9 @@ emouseatlas.emap.pointClick = function() {
       tempMarkerKeys = [];
 
       len = selectedRowKeys.length;
-      //console.log("hideAllMarkers selectedRowKeys ",selectedRowKeys);
+      //if(_debug) console.log("hideAllMarkers selectedRowKeys ",selectedRowKeys);
 
-      //console.log("currentImg ",currentImg);
+      //if(_debug) console.log("currentImg ",currentImg);
       for(i=0; i<len; i++) {
          key = selectedRowKeys[i];
          markerNode = subplateMarkerDetails[key];
@@ -2459,7 +2493,7 @@ emouseatlas.emap.pointClick = function() {
 	    hideMarker(key);
 	    hideMarkerLabel(key, false);
 	    //toBeRemoved[toBeRemoved.length] = key;
-	    //console.log("to be removed ",toBeRemoved);
+	    //if(_debug) console.log("to be removed ",toBeRemoved);
 	 }
       }
    };
@@ -2542,7 +2576,7 @@ emouseatlas.emap.pointClick = function() {
          dst = model.getDistance();   
 	 previousImg = currentImg;
          currentImg = pointClickImgData.sectionMap[dst.cur];
-	 //console.log(currentImg);
+	 //if(_debug) console.log(currentImg);
 	 showSelectedMarkers();
       }
 
@@ -2551,7 +2585,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var viewUpdate = function (viewChanges, from) {
 
-      //console.log("viewUpdate");
+      //if(_debug) console.log("viewUpdate");
       if(viewChanges.initial === true) {
 	 //window.setVisible(false);
          var dst = model.getDistance();   
@@ -2583,7 +2617,7 @@ emouseatlas.emap.pointClick = function() {
       //...................................
       if(viewChanges.mouseOut) {
 	 var mode = view.getMode();
-	 //console.log("viewUpdate: mouseOut ");
+	 //if(_debug) console.log("viewUpdate: mouseOut ");
 	 if(mode.name === 'pointClick') {
 	 }
       }
@@ -2646,6 +2680,9 @@ emouseatlas.emap.pointClick = function() {
 
       point = view.getPointClickPoint();
       selected = getSelectedTableItem();
+      if(_debug) console.log("addMarkerLocation point ",point);
+      if(_debug) console.log("addMarkerLocation selected ",selected);
+
       if(!selected) {
          return false;
       }
@@ -2685,12 +2722,12 @@ emouseatlas.emap.pointClick = function() {
       var j;
 
       len = selectedRowKeys.length;
-      //console.log("getSelectedMarkerLocations selectedRowKeys ",selectedRowKeys);
+      //if(_debug) console.log("getSelectedMarkerLocations selectedRowKeys ",selectedRowKeys);
 
       for(i=0; i<len; i++) {
          key = selectedRowKeys[i];
          node = subplateMarkerDetails[key];
-	 //console.log("getSelectedMarkerLocations node ",node);
+	 //if(_debug) console.log("getSelectedMarkerLocations node ",node);
 	 locdets = node.locdets;
 	 len2 = locdets.length;
 	 for(j=0; j<len2; j++) {
@@ -2755,7 +2792,7 @@ emouseatlas.emap.pointClick = function() {
       if(!jsonStr) {
          return false;
       }
-      //console.log("doSaveSelectedMarkers: stringified locs: %s",jsonStr);
+      //if(_debug) console.log("doSaveSelectedMarkers: stringified locs: %s",jsonStr);
 
       /*
          You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
@@ -2771,7 +2808,7 @@ emouseatlas.emap.pointClick = function() {
 	 callback:doSaveSelectedMarkersCallback,
          async:true
       }
-      //console.log(ajaxParams);
+      //if(_debug) console.log(ajaxParams);
       ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 
@@ -2826,7 +2863,7 @@ emouseatlas.emap.pointClick = function() {
       if(!jsonStr) {
          return false;
       }
-      //console.log("doResetSelectedMarkers: stringified locs: %s",jsonStr);
+      //if(_debug) console.log("doResetSelectedMarkers: stringified locs: %s",jsonStr);
 
       /*
          You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
@@ -2842,7 +2879,7 @@ emouseatlas.emap.pointClick = function() {
 	 callback:doResetSelectedMarkersCallback,
          async:true
       }
-      //console.log(ajaxParams);
+      //if(_debug) console.log(ajaxParams);
       ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 

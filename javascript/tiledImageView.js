@@ -3033,6 +3033,7 @@ emouseatlas.emap.tiledImageView = function() {
 
    var initialise = function (tiledImageModel, tiledImageQuery) {
 
+      if(_debug) console.log("View: initialise");
       model = tiledImageModel;
       model.register(emouseatlas.emap.tiledImageView);
       query = tiledImageQuery;
@@ -3040,7 +3041,9 @@ emouseatlas.emap.tiledImageView = function() {
          query.register(emouseatlas.emap.tiledImageView);
       }
        
+      if(_debug) console.log("View: completeInitialisation");
       completeInitialisation();
+      if(_debug) console.log("View: done");
       //window.open("http://www.hgu.mrc.ac.uk","test","");
    };
 
@@ -3797,7 +3800,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 return false;
      }
 
-     var _debug = false;
+     //var _debug = false;
 
      //console.log("enter view.requestImages called by %s",caller);
       //console.log("sampleRate %d, image %s",resolutionData.sampleRate,resolutionData.imageName);
@@ -4033,6 +4036,8 @@ emouseatlas.emap.tiledImageView = function() {
       var val = params.value;
       var fromSlider = params.fromSlider;
 
+      //console.log(params);
+
       // limit the range to sensible values
       val = (val < 0) ? 0 : val;
       val = (val > 255) ? 255 : val;
@@ -4050,6 +4055,7 @@ emouseatlas.emap.tiledImageView = function() {
       setTimeout("emouseatlas.emap.tiledImageView.requestImages('setFilter')", 10);
 
       if(fromSlider) {
+	 //console.log("filter slider changed to ",val);
          viewChanges.filter = true;
          notify("setFilter");
       }

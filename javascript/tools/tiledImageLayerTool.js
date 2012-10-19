@@ -435,7 +435,8 @@ var tiledImageLayerTool = new Class ({
 	 var red = (filter.red === 0) ? '00' : filter.red.toString(16);
 	 var green = (filter.green === 0) ? '00' : filter.green.toString(16);
 	 var blue = (filter.blue === 0) ? '00' : filter.blue.toString(16);
-	 var bgrnd = "none repeat scroll 0 0 #" + red + green + blue;
+	 //var bgrnd = "none repeat scroll 0 0 #" + red + green + blue;
+	 var bgrnd = "#" + red + green + blue;
 	 //console.log("bgrnd %d",bgrnd);
 	 $(currentLayer + '_propertiesIndicator').setStyles({'background':bgrnd});
       }

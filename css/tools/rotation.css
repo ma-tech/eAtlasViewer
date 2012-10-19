@@ -150,8 +150,8 @@
 }
 
 .arrowsDiv {
-   position: relative;
-   top: -9px;
+   position: absolute;
+   top: 0px;
    border: none;
    padding: 0px;
    margin: 0px;
@@ -192,6 +192,7 @@
 }
 
 #pitchArrowsDiv {
+   height: 10px;
 }
 /* --------------------------- */
 #yawControlsDiv {
@@ -203,6 +204,7 @@
 }
 
 #yawArrowsDiv {
+   height: 10px;
 }
 /* --------------------------- */
 #rollControlsDiv {
@@ -214,4 +216,5 @@
 }
 
 #rollArrowsDiv {
+   height: 10px;
 }

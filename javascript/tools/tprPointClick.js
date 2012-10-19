@@ -523,6 +523,7 @@ emouseatlas.emap.tprPointClick = function() {
       var len;
       var len2;
       var i,j;
+      var tmpArr = [];
 
       len = imageData.length;
       //console.log("imageData.length ",len);
@@ -543,7 +544,8 @@ emouseatlas.emap.tprPointClick = function() {
       }
       //console.log("imageKeys ",imageKeys);
       // this function doesn't change the original so you need to assign it.
-      imageKeys = utils.removeDuplicatesFromArray(imageKeys);
+      tmpArr = utils.filterDuplicatesFromArray(imageKeys);
+      imageKeys = utils.duplicateArray(tmpArr);
       // sort the keys numerically (they are strings)
       imageKeys.sort(function(A,B) {
 	       return(parseInt(A)-parseInt(B));
@@ -1309,6 +1311,7 @@ emouseatlas.emap.tprPointClick = function() {
       var y;
       var newX;
       var newY;
+      var tmpArr = [];
 
       if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
@@ -1360,7 +1363,8 @@ emouseatlas.emap.tprPointClick = function() {
 	 positionMarker('doMouseUpTableRow', key);
 	 // add the key for this marker to the list of selected markers
 	 selectedRowKeys[selectedRowKeys.length] = key;
-	 selectedRowKeys = utils.removeDuplicatesFromArray(selectedRowKeys);
+         tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+         selectedRowKeys = utils.duplicateArray(tmpArr);
       } else {
 	 // general users want multiple selections in the table
          if(isWlz) {
@@ -1375,7 +1379,8 @@ emouseatlas.emap.tprPointClick = function() {
 	 positionMarker(key);
 	 // add the key for this marker to the list of selected markers
 	 selectedRowKeys[selectedRowKeys.length] = key;
-	 selectedRowKeys = utils.removeDuplicatesFromArray(selectedRowKeys);
+         tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+         selectedRowKeys = utils.duplicateArray(tmpArr);
       }
 
    }; // doMouseUpTableRow
@@ -1751,7 +1756,9 @@ emouseatlas.emap.tprPointClick = function() {
       for(i=0; i<maxCloseMarkersToShow; i++) {
          tempMarkerKeys[tempMarkerKeys.length] = tmpArr[i].key;
       }
-      tempMarkerKeys = utils.removeDuplicatesFromArray(tempMarkerKeys);
+      tmpArr = [];
+      tmpArr = utils.FilterDuplicatesFromArray(tempMarkerKeys);
+      tempMarkerKeys = utils.duplicateArray(tmpArr);
       //console.log("findClosestMarkers: tempMarkerKeys ",tempMarkerKeys);
    }; // findClosestMarkersToPoint
 
@@ -2163,6 +2170,7 @@ emouseatlas.emap.tprPointClick = function() {
       var i;
       var j;
       var row;
+      var tmpArr = [];
 
       selectedRowKeys = [];
       tempMarkerKeys = [];
@@ -2201,7 +2209,8 @@ emouseatlas.emap.tprPointClick = function() {
 	    positionMarker('showAllMarkers', key);
 	 }
       }
-      selectedRowKeys = utils.removeDuplicatesFromArray(selectedRowKeys);
+      tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+      selectedRowKeys = utils.duplicateArray(tmpArr);
       //console.log("selectedRowKeys after removing duplicates ",selectedRowKeys);
    }; // showAllMarkers
    

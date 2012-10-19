@@ -832,6 +832,7 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getMetadata = function() {
 
+      //_debug = true;
       if(_debug) {
          console.log("enter getMetadata");
       }
@@ -839,11 +840,14 @@ emouseatlas.emap.tiledImageModel = function() {
       if(isWlz) {
          getWlzMetadata();
 	 if(_debug) {
-	    console.log("exit getMetadata");
+	    console.log("exit getMetadata, isWlz");
 	 }
 	 return false;
       } else if(isSinglePyrTiff) {
 	 get2DMetadata();
+	 if(_debug) {
+	    console.log("exit getMetadata, isSinglePyrTiff");
+	 }
 	 return false;
       } else {
 	 var layer = layerData[layerNames[0]];
@@ -854,6 +858,7 @@ emouseatlas.emap.tiledImageModel = function() {
   	     fullDataPath = metadataRoot + "linksToFullSizeImages_original/"+assayPath + stackMetadataFilename;
          } else if(isSinglePyrTiff) {
             fullDataPath = layer.imageDir + layer.imageName;
+	    console.log("getMetadata: fullDataPath %s",fullDataPath);
          } else {
          ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress dat
             fullDataPath = layer.imageDir + assayPath + stackMetadataFilename;
@@ -916,6 +921,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	    return false;
 	 }
       }
+      //_debug = false;
    };
 
    //---------------------------------------------------------
@@ -974,23 +980,25 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getStackMetadata = function() {
 
-      if(_debug) {
-         console.log("enter getStackMetadata");
-      }
+      var url;
+      var ajaxParams;
+      var ajax;
 
-      var url = getStackMetadataUrl();
-      var ajaxParams = {
+      if(_debug) console.log("enter getStackMetadata");
+
+      url = getStackMetadataUrl();
+      if(_debug) console.log("url ",url);
+
+      ajaxParams = {
          url:url,
          method:"POST",
          callback: getStackMetadataCallback_1,
          async:true
       }
-      var ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 
-      if(_debug) {
-         console.log("exit getStackMetadata");
-      }
+      if(_debug) console.log("exit getStackMetadata");
    }; // getStackMetadata
 
    //---------------------------------------------------------
@@ -1387,6 +1395,7 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getObjectsCallback = function (response, objs, callback) {
 
+      //_debug = true;
       if(_debug) {
          console.log("enter getObjectsCallback ",objs,response);
       }
@@ -1496,6 +1505,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if(_debug) {
          console.log("exit getObjectsCallback ",vals);
       }
+      //_debug = false;
 
    }; // getObjectsCallback
 
@@ -1805,9 +1815,9 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(typeof(params.editor) !== 'undefined') {
          //console.log("model: params.editor -->%s<--",params.editor);
-	 //if(params.editor === '1') {
-	  //  EDITOR = true;
-	 //}
+	 if(params.editor === '1') {
+	    EDITOR = true;
+	 }
          if(_debug) console.log("model: params.editor -->%s<--",params.editor);
 	 urlSpecified.editor = params.editor;
       }
@@ -1822,9 +1832,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 urlSpecified.compArr = params.compArr;
       }
 
-      _debug = true;
       if(_debug) console.log("urlSpecified ",urlSpecified);
-      _debug = false;
 
       initModel(params.modelDataUrl);
 
@@ -2524,6 +2532,8 @@ emouseatlas.emap.tiledImageModel = function() {
          name = metadataRoot + stackMetadataFilename;
          ret = emouseatlas.emap.utilities.constructURL(webServer, name);
       }
+
+      return ret;
    };
 
    //---------------------------------------------------------
@@ -2598,7 +2608,6 @@ emouseatlas.emap.tiledImageModel = function() {
 
       var ret = undefined;
       var TreeJSON = {};
-      TreeJSON.json = [];
       var layer;
       var name;
       var structure;
@@ -2606,6 +2615,11 @@ emouseatlas.emap.tiledImageModel = function() {
       var treeNode;
       var numLayers = layerNames.length;
       var i;
+
+      TreeJSON.json = [];
+
+      var deb = _debug;
+      if(_debug) console.log("model: getTreeData layerName %s",layerName);
 
       layer = layerData[layerName];
       structure = layer.treeStructure;
@@ -2650,12 +2664,16 @@ emouseatlas.emap.tiledImageModel = function() {
    var getFirstTreeLayer = function () {
 
       var layer;
-      var numLayers = layerNames.length;
+      var numLayers;
       var found = false;
       var i;
 
+      numLayers = layerNames.length;
+      if(_debug) console.log("getFirstTreeLayer: layerNames ",layerNames);
+
       for(i=0; i<numLayers; i++) {
          layer = layerData[layerNames[i]];
+         if(_debug) console.log("getFirstTreeLayer: layer ",layer);
 	 if(layer.treeStructure === undefined || layer.treeData === undefined) {
 	    continue;
 	 } else {

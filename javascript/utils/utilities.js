@@ -582,6 +582,7 @@ if(!emouseatlas.emap.utilities) {
       //---------------------------------------------------------
       /**
        *   Recursively removes duplicates from an array.
+       *   Note: Sometimes gets stuck, better to use 'filterDuplicatesFromArray'
        *   @param orig the original array of things.
        *   @return the array with no duplicates.
        */
@@ -616,6 +617,46 @@ if(!emouseatlas.emap.utilities) {
 	    }
 	 }
 	 return depleted;
+      },
+
+      //---------------------------------------------------------
+      /**
+       *   filters duplicates from an array.
+       *   using array.filter (ECMAScript 5th Edition)
+       *   Does not mutate original array.
+       *   @param orig the original array of things.
+       *   @return an array with no duplicates.
+       */
+      filterDuplicatesFromArray: function (origArray) {
+         
+	 var filtered = [];
+
+         filtered = origArray.filter(function(elem, pos) {
+	     return origArray.indexOf(elem) == pos;
+	 })
+
+	 return filtered;
+      },
+
+      //---------------------------------------------------------
+      /**
+       *   duplicates an array.
+       *   @param orig the original array of things.
+       *   @return duplicate array.
+       */
+      duplicateArray: function (origArr) {
+         
+	 var dupArr = [];
+	 var len;
+	 var i;
+
+         len = origArr.length;
+
+	 for (i=0; i < len; i++) {
+	    dupArr[i] = origArr[i];
+	 }
+
+	 return dupArr;
       },
 
       //---------------------------------------------------------

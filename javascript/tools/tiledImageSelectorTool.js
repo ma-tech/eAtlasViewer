@@ -343,20 +343,19 @@ var tiledImageSelectorTool = new Class ({
    modelUpdate: function(modelChanges) {
 
       //console.log("enter Selector modelUpdate:",modelChanges);
-      var distance = this.model.getDistance();
-      var cur = distance.cur;
-      var cur2 = (this.model.isArrayStartsFrom0()) ? cur : cur - 1;
-      var cur3 = cur2 + this.wlzToStackOffset;
-      var fullDepth = this.model.getFullDepth();
-      var sliceOffset = cur3 / fullDepth;
-      var layerNames = this.model.getLayerNames();
-      var fullname = this.model.getFullImgFilename(layerNames[0]); // in future we will be able to select the appropriate layer
-      var name = emouseatlas.emap.utilities.getFilenameFromPath(fullname);
-      var indx = name.indexOf('.');
-      var shortname = name.substring(0, indx);
-      var pointClickImg = this.model.getPointClickImg();
+      var distance;
+      var cur;
+      var cur2;
+      var cur3;
+      var fullDepth;
+      var sliceOffset;
+      var layerNames;
+      var fullname;
+      var name;
+      var indx;
+      var shortname;
+      var pointClickImg;
       var fbText;
-      var cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
 
       if(modelChanges.dst) {
          //console.log("this.model.isArrayStartsFrom0 ",this.model.isArrayStartsFrom0());
