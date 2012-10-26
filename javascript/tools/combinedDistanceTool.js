@@ -102,7 +102,8 @@ var combinedDistanceTool = new Class ({
       this.createElements_forSectionTool();
       this.createElements_forKeySectionTool();
 
-      this.keySectionArr = undefined;
+      this.keySections = undefined;
+      this.keySectionNames = undefined;
 
       this.model.register(this);
       this.view.register(this);
@@ -124,7 +125,7 @@ var combinedDistanceTool = new Class ({
       });
       this.dstArrowsDiv = new Element( 'div', {
 	 'id': 'dstArrowsDiv',
-	 'class': 'arrowsDiv',
+	 'class': 'combinedDist',
 	 'styles': {
 	    'left' : this.width - 30
 	 }
@@ -165,7 +166,6 @@ var combinedDistanceTool = new Class ({
       this.sliderTextDiv = new Element('div', {
          'class': 'sliderTextDiv'
       });
-      this.sliderTextDiv.set('text', 'section: -');
 
       this.sliderTextDiv.inject(this.sliderTextContainer, 'inside');
       this.sliderTextContainer.inject(topEdge, 'inside');
@@ -358,39 +358,29 @@ var combinedDistanceTool = new Class ({
    //---------------------------------------------------------------
    modelUpdate: function (modelChanges) {
 
+      var mdst;
+      var step;
+
       if(modelChanges.initial) {
          //console.log("dst: modelUpdate.initial");
-	 var mdst = this.model.getDistance();
-	 var step = parseInt(mdst.cur);
-	 //this.slider.setUserChange(false);
+	 mdst = this.model.getDistance();
+	 step = parseInt(mdst.cur);
 	 this.slider.setPosition(step);
-	 this.sliderTextDiv.set('text', 'section: ' + step);
-	 //this.slider.setUserChange(true);
       }
 
       if(modelChanges.locator) {
 	 this.updateSlider("modelUpdate");
       }
 
-/*
-      if(modelChanges.dst) {
-         console.log("Dst.modelUpdate: modelChanges.dst");
-	 var mdst = this.model.getDistance();
-	 this.sliderTextDiv.set('text', 'dst: ' + mdst.cur);
-      }
-*/
-
-      if(modelChanges.distanceRange ||
-         modelChanges.setSection) {
-
+      if(modelChanges.distanceRange || modelChanges.setSection) {
          //console.log("Dst.modelUpdate: modelChanges.distanceRange || modelChanges.setSection");
-	 var mdst = this.model.getDistance();
-	 var step = parseInt(mdst.cur);
+	 mdst = this.model.getDistance();
+	 step = parseInt(mdst.cur);
+	 this.slider.setUserChange(false);
 	 this.slider.setNewRange({max:mdst.max, min:mdst.min});
-	 //this.slider.setUserChange(false);
 	 this.slider.setStep(step);
-	 this.sliderTextDiv.set('text', 'section: ' + step);
-	 //this.slider.setUserChange(true);
+	 this.updateSlider();
+	 this.slider.setUserChange(true);
       }
 
    },
@@ -506,16 +496,16 @@ var combinedDistanceTool = new Class ({
    doFirstKeySection: function () {
 
       //console.log("doFirstKeySection:");
-      if(this.keySectionArr === undefined) {
-         this.keySectionArr = this.model.getKeySectionArr();
+      if(this.keySections === undefined) {
+         this.keySections = this.model.getKeySections();
       }
 
-      if(this.keySectionArr === null || this.keySectionArr === undefined || this.keySectionArr.length <= 0) {
+      if(this.keySections === null || this.keySections === undefined || this.keySections.length <= 0) {
          return false;
       }
 
       //dist = this.model.getDistance();
-      this.model.setDistance(this.keySectionArr[0]);
+      this.model.setDistance(this.keySections[0]);
    },
 
    //---------------------------------------------------------------
@@ -523,17 +513,17 @@ var combinedDistanceTool = new Class ({
 
       var len;
       //console.log("doLastKeySection:");
-      if(this.keySectionArr === undefined) {
-         this.keySectionArr = this.model.getKeySectionArr();
+      if(this.keySections === undefined) {
+         this.keySections = this.model.getKeySections();
       }
-      //console.log(this.keySectionArr);
+      //console.log(this.keySections);
 
-      if(this.keySectionArr === null || this.keySectionArr === undefined || this.keySectionArr.length <= 0) {
+      if(this.keySections === null || this.keySections === undefined || this.keySections.length <= 0) {
          return false;
       }
 
-      len = this.keySectionArr.length;
-      this.model.setDistance(this.keySectionArr[len-1]);
+      len = this.keySections.length;
+      this.model.setDistance(this.keySections[len-1]);
    },
 
    //---------------------------------------------------------------
@@ -544,22 +534,22 @@ var combinedDistanceTool = new Class ({
       var i;
 
       //console.log("doPrevKeySection:");
-      if(this.keySectionArr === undefined) {
-         this.keySectionArr = this.model.getKeySectionArr();
+      if(this.keySections === undefined) {
+         this.keySections = this.model.getKeySections();
       }
 
-      if(this.keySectionArr === null || this.keySectionArr === undefined || this.keySectionArr.length <= 0) {
+      if(this.keySections === null || this.keySections === undefined || this.keySections.length <= 0) {
          return false;
       }
 
-      //console.log(this.keySectionArr);
+      //console.log(this.keySections);
 
-      len = this.keySectionArr.length - 1;
+      len = this.keySections.length - 1;
       dist = this.model.getDistance();
       //console.log("dist %d",dist.cur);
 
       for(i=len; i>-1; i--) {
-         val = this.keySectionArr[i];
+         val = this.keySections[i];
 	 //console.log("val %d",val);
          if(val < dist.cur) {
 	    this.model.setDistance(val);
@@ -577,19 +567,17 @@ var combinedDistanceTool = new Class ({
       var i;
 
       //console.log("doNextKeySection:");
-      if(this.keySectionArr === undefined) {
-         this.keySectionArr = this.model.getKeySectionArr();
+      if(this.keySections === undefined) {
+         this.keySections = this.model.getKeySections();
       }
 
-      //console.log(this.keySectionArr.reverse());
-
-      len = this.keySectionArr.length;
+      len = this.keySections.length;
       dist = this.model.getDistance();
       //console.log("dist %d",dist.cur);
 
       for(i=0; i<len; i++) {
 	 //console.log("val %d",val);
-         val = this.keySectionArr[i];
+         val = this.keySections[i];
          if(val > dist.cur) {
 	    this.model.setDistance(val);
 	    return;
@@ -602,15 +590,29 @@ var combinedDistanceTool = new Class ({
    updateSlider: function(from) {
 
       //console.log("dst: updateSlider from %s",from);
+      var mdst;
+      var indx;
+      var txt;
+
+      mdst = this.model.getDistance();
+      indx = mdst.cur - 1;
+      if(this.keySectionNames === undefined) {
+         this.keySectionNames = this.model.getKeySectionNames();
+      }
+      if(typeof(this.keySectionNames[indx]) === 'undefined' || this.keySectionNames[indx]=== "") {
+         if(this.keySections === undefined) {
+            this.keySections = this.model.getKeySections();
+         }
+         txt = 'section: ' + this.keySections[indx];
+      } else {
+         txt = this.keySectionNames[indx];
+      }
 
       if(from === 'dstTool' || from === 'modelUpdate') {
-	 //console.log("dst: updateSlider %s",from);
-	 var mdst = this.model.getDistance();
-	 this.slider.setUserChange(false);
 	 this.slider.setStep(mdst.cur);
-	 this.sliderTextDiv.set('text', 'section: ' + mdst.cur);
-	 this.slider.setUserChange(true);
       }
+
+      this.sliderTextDiv.set('text', txt);
    },
 
    //---------------------------------------------------------------

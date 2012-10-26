@@ -172,7 +172,10 @@ emouseatlas.emap.tiledImageModel = function() {
 
    var currentSection = {}; // this must be an object, not an array
 
-   var keySectionArr = [];
+   var keySections = [];
+   var keySectionNames = [];
+
+   var scalebarLen;
 
    var EDITOR = false;
 
@@ -568,8 +571,14 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       if(json.keySections !== undefined) {
-         keySectionArr = json.keySections;
+         keySections = json.keySections;
       }
+
+      if(json.keySectionNames !== undefined) {
+         keySectionNames = json.keySectionNames;
+      }
+
+      scalebarLen = (typeof(json.scalebarLen) === 'undefined') ? 100 : json.scalebarLen; 
 
       getMetadata();
 
@@ -1454,7 +1463,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	       break;
 	    case "Wlz-distance-range":
 	       dstRange = vals[i].split(" ");
-	       if(keySectionArr && keySectionArr.length > 0) {
+	       if(keySections && keySections.length > 0) {
 	          threeDInfo.dst.min = 1;
 	          threeDInfo.dst.max = Math.round(dstRange[1] - dstRange[0] + 1*1);
 	       } else {
@@ -2794,15 +2803,24 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
-   var getExpressionSection=function() {
+   var getExpressionSection = function() {
      return expressionSection;
    };
-   var getExpressionSectionName=function() {
+   var getExpressionSectionName = function() {
      return expressionSectionName;
    };
 
-   var getKeySectionArr = function () {
-     return keySectionArr;
+   var getKeySections = function () {
+     return keySections;
+   };
+
+   var getKeySectionNames = function () {
+     return keySectionNames;
+   };
+
+   //---------------------------------------------------------
+   var getScalebarLen = function() {
+     return scalebarLen;
    };
 
    //---------------------------------------------------------
@@ -2880,7 +2898,9 @@ emouseatlas.emap.tiledImageModel = function() {
       getMenuData: getMenuData,
       getTreeData: getTreeData,
       getQueryDataUrl: getQueryDataUrl,
-      getKeySectionArr: getKeySectionArr
+      getKeySections: getKeySections,
+      getKeySectionNames: getKeySectionNames,
+      getScalebarLen: getScalebarLen
    };
 
 }(); // end of module tiledImageModel

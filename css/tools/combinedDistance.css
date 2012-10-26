@@ -28,6 +28,19 @@
    padding:0px;
 }
 
+.combinedDist {
+   position: absolute;
+   top: 1px;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   width: 30px;
+   height: 18px;
+   border: solid 1px #f00;
+   border: none;
+}
+
 #keySectionButtonContainer {
    position: relative;
    top: 0px;

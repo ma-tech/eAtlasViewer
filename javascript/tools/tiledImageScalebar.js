@@ -141,14 +141,21 @@ var tiledImageScalebar = new Class ({
    //---------------------------------------------------------------
    viewUpdate: function (viewChanges) {
 
+         var scale;
+         var pixres;
+	 var scalebarLen;
+	 var numpix;
+	 var txt;
+	 
       if(viewChanges.initial === true || viewChanges.scale === true) {
-         var scale = this.view.getScale();
-         var pixres = this.model.getPixelResolution();
-	 var numpix = 100 / pixres.x;
+         scale = this.view.getScale();
+         pixres = this.model.getPixelResolution();
+         scalebarLen = this.model.getScalebarLen();
+	 numpix = scalebarLen / pixres.x;
          $("scalebarDiv").setStyle("width",numpix + "px");
 	 this.width = numpix + 20;
          this.window.setDimensions(this.width, this.height);
-	 var txt = 100 / scale.cur;
+	 txt = scalebarLen / scale.cur;
          this.scalebarTextDiv.set('text', txt + this.mu);
       }
    },
