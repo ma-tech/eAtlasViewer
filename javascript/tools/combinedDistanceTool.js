@@ -125,7 +125,7 @@ var combinedDistanceTool = new Class ({
       });
       this.dstArrowsDiv = new Element( 'div', {
 	 'id': 'dstArrowsDiv',
-	 'class': 'combinedDist',
+	 'class': 'combinedDstArrows',
 	 'styles': {
 	    'left' : this.width - 30
 	 }

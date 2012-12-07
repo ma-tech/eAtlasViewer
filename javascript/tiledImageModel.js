@@ -78,6 +78,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var dataImgPaths;
    var viewerTargetId;
    var initialState = {};
+   var x3dInfo = {};
    var pointClickImgData = {};
    var pixelResolution = {x:1, y:1, z:1, units:["\u03BC\u006D", "\u006D\u006D"]}; // default values
    var layerNames = []; // read in with initModelCallback()
@@ -115,7 +116,6 @@ emouseatlas.emap.tiledImageModel = function() {
       initial: false,
       initialState: false,
       layerNames: false,
-      rotation: false,
       locator: false,
       dst: false,
       distanceRange: false,
@@ -138,7 +138,8 @@ emouseatlas.emap.tiledImageModel = function() {
       height: 0,
       border_tl: 0,
       border_br: 0,
-      orientation: "horizontal"
+      orientation: "horizontal",
+      imgRange:[]
    }
 
    var threeDInfo = {
@@ -208,8 +209,41 @@ emouseatlas.emap.tiledImageModel = function() {
    var initModelCallback = function(response) {
 
       var deb = _debug;
-      //_debug = true;
+      var numlayers;
+      var json;
+      var dataType;
+      var wlzToStackOffsetStr;
+      var equivSectionOffsetStr;
+      var numlayers;
 
+      var jsonLayerData;
+      var modelInfo;
+      var opacity;
+      var filter;
+      var layerType;
+      var lowRes;
+      var locatadata;
+      var selectaName;
+      var stackDepthStr;
+      var treeStructureURL; // the full path to the json file from the web root.
+      var treeDataURL; // the full path to the json file from the web root.
+      var menuStructureFile;
+      var menuContentFile;
+      var tableMenuStructureFile;
+      var tableMenuContentFile;
+      var treeMenuStructureFile;
+      var treeMenuContentFile;
+      var queryDataFile;
+      var state;
+      var x3d;
+      var kd;
+      var pixres;
+      var zselInfo;
+
+      var i;
+
+      //console.log("enter initModelCallback: response ",response);
+      //_debug = true;
       if(_debug) {
          console.log("enter initModelCallback");
       }
@@ -222,7 +256,6 @@ emouseatlas.emap.tiledImageModel = function() {
 	 return false;
       }
 
-      var json;
       if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
          json = JSON.parse(response);
       } else {
@@ -245,7 +278,7 @@ emouseatlas.emap.tiledImageModel = function() {
       }
       stackMetadataFilename = (json.stackMetadataFilename === undefined || json.stackMetadataFilename === "") ? "" : json.stackMetadataFilename;
 
-      var dataType = json.dataType;
+      dataType = json.dataType;
       //console.log("initModelCallback: dataType %s",dataType);
       if(dataType.toLowerCase() === "wlz") {
          isWlz = true;
@@ -271,11 +304,11 @@ emouseatlas.emap.tiledImageModel = function() {
       dataSubType = (json.dataSubType === undefined) ? undefined : json.dataSubType;
       //console.log("dataSubType %s", dataSubType);
 
-      var wlzToStackOffsetStr = (json.wlzToStackOffset === undefined) ? "0" : json.wlzToStackOffset;
+      wlzToStackOffsetStr = (json.wlzToStackOffset === undefined) ? "0" : json.wlzToStackOffset;
       wlzToStackOffset = parseInt(wlzToStackOffsetStr);
      //console.log("wlzToStackOffset %s", wlzToStackOffset);
 
-      var equivSectionOffsetStr = (json.equivSectionOffset === undefined) ? "0" : json.equivSectionOffset;
+      equivSectionOffsetStr = (json.equivSectionOffset === undefined) ? "0" : json.equivSectionOffset;
       equivSectionOffset = parseInt(equivSectionOffsetStr);
      //console.log("equivSectionOffset %s", equivSectionOffset);
 
@@ -289,22 +322,13 @@ emouseatlas.emap.tiledImageModel = function() {
       viewerTargetId = json.viewerTargetId;
 
       layerNames = json.layerNames;
-      var numlayers = layerNames.length;
+      //console.log("layer names ",layerNames);
+      numlayers = layerNames.length;
 
-      var jsonLayerData = json.layerData;
-      var modelInfo;
-      var opacity;
-      var filter;
-      var layerType;
-      var lowRes;
-      var locatadata;
-      var selectaName;
-      var stackDepthStr;
-      var treeStructureURL; // the full path to the json file from the web root.
-      var treeDataURL; // the full path to the json file from the web root.
+      jsonLayerData = json.layerData;
       //console.log("initModelCallback jsonLayerData ",jsonLayerData);
 
-      for(var i=0; i<numlayers; i++) {
+      for(i=0; i<numlayers; i++) {
 
          if(jsonLayerData[i].modelInfo !== undefined) {
 	    modelInfo = jsonLayerData[i].modelInfo;
@@ -387,38 +411,38 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       if(typeof(json.menuStructureFile) !== 'undefined') {
-         var menuStructureFile = json.menuStructureFile;
+         menuStructureFile = json.menuStructureFile;
 	 //console.log("menuStructureFile %s",menuStructureFile);
          menuStructureUrl = emouseatlas.emap.utilities.constructURL(webServer, menuStructureFile);
       }
 
       if(typeof(json.menuContentFile) !== 'undefined') {
-         var menuContentFile = json.menuContentFile;
+         menuContentFile = json.menuContentFile;
          menuContentUrl = emouseatlas.emap.utilities.constructURL(webServer, menuContentFile);
       }
 
       if(typeof(json.tableMenuStructureFile) !== 'undefined') {
-         var tableMenuStructureFile = json.tableMenuStructureFile;
+         tableMenuStructureFile = json.tableMenuStructureFile;
          tableMenuStructureUrl = emouseatlas.emap.utilities.constructURL(webServer, tableMenuStructureFile);
       }
 
       if(typeof(json.tableMenuContentFile) !== 'undefined') {
-         var tableMenuContentFile = json.tableMenuContentFile;
+         tableMenuContentFile = json.tableMenuContentFile;
          tableMenuContentUrl = emouseatlas.emap.utilities.constructURL(webServer, tableMenuContentFile);
       }
 
       if(typeof(json.treeMenuStructureFile) !== 'undefined') {
-         var treeMenuStructureFile = json.treeMenuStructureFile;
+         treeMenuStructureFile = json.treeMenuStructureFile;
          treeMenuStructureUrl = emouseatlas.emap.utilities.constructURL(webServer, treeMenuStructureFile);
       }
 
       if(typeof(json.treeMenuContentFile) !== 'undefined') {
-         var treeMenuContentFile = json.treeMenuContentFile;
+         treeMenuContentFile = json.treeMenuContentFile;
          treeMenuContentUrl = emouseatlas.emap.utilities.constructURL(webServer, treeMenuContentFile);
       }
 
       if(typeof(json.queryDataFile) !== 'undefined') {
-         var queryDataFile = json.queryDataFile;
+         queryDataFile = json.queryDataFile;
          queryDataUrl = webServer + queryDataFile;
       }
 
@@ -449,8 +473,100 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       if(json.initialState !== undefined) {
-         var state = json.initialState;
-	 //console.log("initial state ",json.initialState);
+         state = json.initialState;
+	 //console.log("initial state ",state);
+	 getInitialStateFromJson(state);
+      }
+
+      if(json.x3d !== undefined) {
+         x3d = json.x3d;
+	 //console.log("x3d ",x3d);
+	 getX3dFromJson(x3d);
+      }
+
+      if(json.pointClickImgData !== undefined) {
+         kd = json.pointClickImgData;
+         if(kd.plate) {
+            pointClickImgData.plate = kd.plate;
+         }
+         if(kd.subplate) {
+            pointClickImgData.subplate = kd.subplate;
+         }
+         if(kd.sectionMap) {
+            pointClickImgData.sectionMap = kd.sectionMap;
+         }
+         if(kd.image) {
+            pointClickImgData.image = kd.image;
+         }
+      }
+
+      if(json.pixelResolution !== undefined) {
+         pixres = json.pixelResolution;
+	 if(pixres.x) {
+	    pixelResolution.x = parseFloat(pixres.x);
+	 }
+	 if(pixres.y) {
+	    pixelResolution.y = parseFloat(pixres.y);
+	 }
+	 if(pixres.z) {
+	    pixelResolution.z = parseFloat(pixres.z);
+	 }
+	 if(pixres.units) {
+	    pixelResolution.units = pixres.units;
+	 }
+      }
+      //console.log(pixelResolution);
+
+      if(json.wlzMode !== undefined) {
+	 threeDInfo.wlzMode = json.wlzMode;
+	 //console.log("initModelCallback: wlzMode %s",threeDInfo.wlzMode);
+      }
+
+      sectionOrderReversed = (typeof(json.sectionOrderReversed) === 'undefined') ? false : json.sectionOrderReversed; 
+      sectionOrderReversed = (sectionOrderReversed === 'true' || sectionOrderReversed === true) ? true : false;
+
+      if(json.busyIndicatorSrc !== undefined) {
+	 busyIndicatorSrc = json.busyIndicatorSrc;
+      }
+
+      if(json.infoDetails !== undefined) {
+	 infoDetails = json.infoDetails;
+      }
+
+      tileframe = json.tileframe;
+      imgtitle = json.imgtitle;
+
+      if(json.zselInfo !== undefined) {
+	 zselInfo = json.zselInfo;
+	 zsel.width = zselInfo.zselwidth;
+	 zsel.height = zselInfo.zselheight;
+	 zsel.border_tl = zselInfo.zseldragborderlefttop;
+	 zsel.border_br = zselInfo.zseldragborderrightbottom;
+	 zsel.orientation = zselInfo.zsliceorientation;
+      }
+
+      if(json.keySections !== undefined) {
+         keySections = json.keySections;
+      }
+
+      if(json.keySectionNames !== undefined) {
+         keySectionNames = json.keySectionNames;
+      }
+
+      scalebarLen = (typeof(json.scalebarLen) === 'undefined') ? 100 : json.scalebarLen; 
+
+      getMetadata();
+
+      if(_debug) {
+         console.log("exit initModelCallback");
+      }
+      _debug = deb;
+
+   }; // initModelCallback
+
+   //---------------------------------------------------------
+   var getInitialStateFromJson = function(state) {
+
          // scale can be a string (initial scale) or an object (min, initial, max)
          if(state.scale) {
 	    if(_debug) console.log("model is reading scale from json file");
@@ -507,87 +623,156 @@ emouseatlas.emap.tiledImageModel = function() {
 	   initialState.fxp = state.fixedPoint;
 	   //console.log("initialState.fxp ",initialState.fxp);
 	 }
+
+	 //console.log("initialState ",initialState);
+
+   }; // getInitialStateFromJson
+
+   //---------------------------------------------------------
+   var getX3dFromJson = function(x3d) {
+      
+      var vp;
+      var num;
+      var i;
+
+      if(x3d.url) {
+         x3dInfo.url = x3d.url;
+      } else {
+         x3dInfo.url = undefined; 
       }
 
-      if(json.pointClickImgData !== undefined) {
-         var kd = json.pointClickImgData;
-         if(kd.plate) {
-            pointClickImgData.plate = kd.plate;
-         }
-         if(kd.subplate) {
-            pointClickImgData.subplate = kd.subplate;
-         }
-         if(kd.sectionMap) {
-            pointClickImgData.sectionMap = kd.sectionMap;
-         }
-         if(kd.image) {
-            pointClickImgData.image = kd.image;
-         }
+      if(x3d.fxpTrans) {
+         x3dInfo.fxpTrans = {};
+	 x3dInfo.fxpTrans.x = parseInt(x3d.fxpTrans.x);
+	 x3dInfo.fxpTrans.y = parseInt(x3d.fxpTrans.y);
+	 x3dInfo.fxpTrans.z = parseInt(x3d.fxpTrans.z);
+      } else {
+         x3dInfo.fxpTrans = undefined; 
       }
 
-      if(json.pixelResolution !== undefined) {
-         var pixres = json.pixelResolution;
-	 if(pixres.x) {
-	    pixelResolution.x = parseFloat(pixres.x);
+      if(x3d.initTrans) {
+         x3dInfo.initTrans = {};
+	 x3dInfo.initTrans.x = parseInt(x3d.initTrans.x);
+	 x3dInfo.initTrans.y = parseInt(x3d.initTrans.y);
+	 x3dInfo.initTrans.z = parseInt(x3d.initTrans.z);
+      } else {
+         x3dInfo.initTrans = {x:0, y:0, z:0}; 
+      }
+
+      x3dInfo.disc = {};
+      if(x3d.disc) {
+         if(x3d.disc.height) {
+	    x3dInfo.disc.height = parseInt(x3d.disc.height);
+	 } else {
+	    x3dInfo.disc.height = Number(1);
 	 }
-	 if(pixres.y) {
-	    pixelResolution.y = parseFloat(pixres.y);
+	 //..........
+         if(x3d.disc.radius) {
+	    x3dInfo.disc.radius = parseFloat(x3d.disc.radius);
+	 } else {
+	    x3dInfo.disc.radius = Number(200.0);
 	 }
-	 if(pixres.z) {
-	    pixelResolution.z = parseFloat(pixres.z);
+	 //..........
+         if(x3d.disc.rot) {
+	    x3dInfo.disc.rot = {xsi:parseInt(x3d.disc.rot.xsi), eta:parseInt(x3d.disc.rot.eta), zeta:parseInt(x3d.disc.rot.zeta), rad:parseFloat(x3d.disc.rot.rad)};
+	 } else {
+	    x3dInfo.disc.rot = {xsi:Number(0), eta:Number(0), zeta:Number(0), rad:Number(1.570795)};
 	 }
-	 if(pixres.units) {
-	    pixelResolution.units = pixres.units;
+	 //..........
+         if(x3d.disc.trans) {
+	    x3dInfo.disc.trans = {x:parseInt(x3d.disc.trans.x), y:parseInt(x3d.disc.trans.y), z:parseInt(x3d.disc.trans.z)};
+	 } else {
+	    x3dInfo.disc.trans = {x:Number(0), y:Number(0), z:Number(0)};
 	 }
-      }
-      //console.log(pixelResolution);
-
-      if(json.wlzMode !== undefined) {
-	 threeDInfo.wlzMode = json.wlzMode;
-	 //console.log("initModelCallback: wlzMode %s",threeDInfo.wlzMode);
-      }
-
-      sectionOrderReversed = (typeof(json.sectionOrderReversed) === 'undefined') ? false : json.sectionOrderReversed; 
-      sectionOrderReversed = (sectionOrderReversed === 'true' || sectionOrderReversed === true) ? true : false;
-
-      if(json.busyIndicatorSrc !== undefined) {
-	 busyIndicatorSrc = json.busyIndicatorSrc;
-      }
-
-      if(json.infoDetails !== undefined) {
-	 infoDetails = json.infoDetails;
-      }
-
-      tileframe = json.tileframe;
-      imgtitle = json.imgtitle;
-
-      if(json.zselInfo !== undefined) {
-	 var zselInfo = json.zselInfo;
-	 zsel.width = zselInfo.zselwidth;
-	 zsel.height = zselInfo.zselheight;
-	 zsel.border_tl = zselInfo.zseldragborderlefttop;
-	 zsel.border_br = zselInfo.zseldragborderrightbottom;
-	 zsel.orientation = zselInfo.zsliceorientation;
+	 //..........
+         if(x3d.disc.colour) {
+	    x3dInfo.disc.colour = {r:parseFloat(x3d.disc.colour.r), g:parseFloat(x3d.disc.colour.g), b:parseFloat(x3d.disc.colour.b)};
+	 } else {
+	    x3dInfo.disc.colour = {r:Number(0.2), g:Number(0.5), b:Number(0.3)};
+	 }
+	 //..........
+         if(x3d.disc.transparency) {
+	    x3dInfo.disc.transparency = parseFloat(x3d.disc.transparency);
+	 } else {
+	    x3dInfo.disc.transparency = Number(0.5);
+	 }
+      } else {
+	 x3dInfo.disc.height = Number(1);
+	 x3dInfo.disc.radius = Number(200.0);
+	 x3dInfo.disc.rot = {xsi:Number(1), eta:Number(0), zeta:Number(0), rad:Number(1.570795)},
+	 x3dInfo.disc.trans = {x:Number(0), y:Number(0), z:Number(0)},
+	 x3dInfo.disc.colour = {r:Number(0.2), g:Number(0.5), b:Number(0.3)},
+	 x3dInfo.disc.transparency = Number(0.5)
       }
 
-      if(json.keySections !== undefined) {
-         keySections = json.keySections;
+      x3dInfo.style = {};
+      if(x3d.style) {
+	 x3dInfo.style.x = parseInt(x3d.style.x) + "px";
+	 x3dInfo.style.y = parseInt(x3d.style.y) + "px";
+	 x3dInfo.style.width = parseInt(x3d.style.width) + "px";
+	 x3dInfo.style.height = parseInt(x3d.style.height) + "px";
+	 x3dInfo.style.float = x3d.style.float;
+	 x3dInfo.style.border = x3d.style.border;
+      } else {
+	 x3dInfo.style.x = "0px";
+	 x3dInfo.style.y = "0px";
+	 x3dInfo.style.width = "150px";
+	 x3dInfo.style.height = "150px";
+	 x3dInfo.style.float = "left";
+	 x3dInfo.style.border = "none";
       }
 
-      if(json.keySectionNames !== undefined) {
-         keySectionNames = json.keySectionNames;
+      x3dInfo.viewpoints = [];
+      if(x3d.viewpoints) {
+	 num = x3d.viewpoints.length;
+	 for(i=0; i<num; i++) {
+            x3dInfo.viewpoints[i] = {};
+	    if(x3d.viewpoints[i].description) {
+               x3dInfo.viewpoints[i].description = x3d.viewpoints[i].description;
+	    } else {
+               x3dInfo.viewpoints[i].description = "Default View";
+	    }
+	    //..........
+	    if(x3d.viewpoints[i].fov) {
+               x3dInfo.viewpoints[i].fov = parseFloat(x3d.viewpoints[i].fov);
+	    } else {
+               x3dInfo.viewpoints[i].fov = Number(0.35);
+	    }
+	    //..........
+	    if(x3d.viewpoints[i].trans) {
+               x3dInfo.viewpoints[i].trans = {x:parseInt(x3d.viewpoints[i].trans.x), y:parseInt(x3d.viewpoints[i].trans.y), z:parseInt(x3d.viewpoints[i].trans.z)};
+	    } else {
+	       x3dInfo.viewpoints[i].trans = {x:Number(0), y:Number(0), z:Number(0)};
+	    }
+	    //..........
+	    if(x3d.viewpoints[i].orient) {
+	       x3dInfo.viewpoints[i].orient = {
+	            xsi:parseInt(x3d.viewpoints[i].orient.xsi),
+		    eta:parseInt(x3d.viewpoints[i].orient.eta),
+		    zeta:parseInt(x3d.viewpoints[i].orient.zeta),
+		    rad:parseFloat(x3d.viewpoints[i].orient.rad)
+               };
+	    } else {
+               x3dInfo.viewpoints[i].orient = {xsi:Number(0), eta:Number(0), zeta:Number(1), rad:Number(0.0)};
+	    }
+	    //..........
+	 }
+      } else {
+         x3dInfo.viewpoints[0] = {
+	    description: "Default View",
+	    fov: Number(0.35),
+	    orient: {xsi:Number(0), eta:Number(0), zeta:Number(1), rad:Number(0.0)}
+	 };
       }
 
-      scalebarLen = (typeof(json.scalebarLen) === 'undefined') ? 100 : json.scalebarLen; 
-
-      getMetadata();
-
-      if(_debug) {
-         console.log("exit initModelCallback");
+      if(x3d.bgCol) {
+	 x3dInfo.bgCol = {r:parseFloat(x3d.bgCol.r), g:parseFloat(x3d.bgCol.g), b:parseFloat(x3d.bgCol.b)};
+      } else {
+	 x3dInfo.bgCol = {r:Number(0.99), g:Number(0.0), b:Number(0.0)};
       }
-      _debug = deb;
+      //console.log("x3dInfo: ",x3dInfo);
 
-   }; // initModelCallback
+   }; // getX3dFromJson
 
    //---------------------------------------------------------
    var initModel4Tiff = function(url) {
@@ -1013,6 +1198,25 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getStackMetadataCallback_1 = function(response) {
 
+      var json;
+      var meta_ver;
+      var startSection
+      var stopSection
+      var layer;
+      var assayPath;
+      var ajaxParams;
+      var ajax;
+      var entry;
+      var minval;
+      var maxval;
+      var zselName;
+      var zselOrient;
+      var zselW;
+      var zselH;
+      var tmp;
+      var num;
+      var i;
+
       if(_debug) {
          console.log("enter getStackMetadataCallback_1");
       }
@@ -1026,7 +1230,6 @@ emouseatlas.emap.tiledImageModel = function() {
 	 return false;
       }
 
-      var json;
       if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
          json = JSON.parse(response);
       } else {
@@ -1037,7 +1240,7 @@ emouseatlas.emap.tiledImageModel = function() {
       }
       //console.log("getStackMetadataCallback_1 json = ",json);
 
-      var meta_ver = "1.02"; //default
+      meta_ver = "1.02"; //default
       if (typeof(json.metadata_version) !== 'undefined') {
 	 if(meta_ver !== json.metadata_version) {
 	    alert("Could not load fullDataPath metadata");
@@ -1074,8 +1277,6 @@ emouseatlas.emap.tiledImageModel = function() {
 
       fullDepth = parseInt(json.fulldepth); // the number of sections in the stack
 
-      var startSection
-      var stopSection
 
       if (typeof(json.startSection) !== 'undefined') {
 	 startSection = parseInt(json.startSection); // the first section with an image
@@ -1099,7 +1300,7 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       if(startSection > stopSection) {
-         var tmp = startSection;
+         tmp = startSection;
 	 startSection = stopSection;
 	 stopSection = tmp;
       }
@@ -1107,14 +1308,14 @@ emouseatlas.emap.tiledImageModel = function() {
       dst.min = startSection;
       dst.max = stopSection;
 
-      var layer = layerData[layerNames[0]];
+      layer = layerData[layerNames[0]];
 
       if (typeof(json.zsimgsrc) !== 'undefined' &&
 	    (typeof(json.zselwidth) !== 'undefined' && json.zselwidth !== 0) &&
 	    (typeof(json.zselheight) !== 'undefined' && json.zselheight !== 0) &&
 	    (typeof(json.zsliceorientation) !== 'undefined' && json.zsliceorientation !== 0)) {
 
-	 var assayPath = getAssayPath();
+	 assayPath = getAssayPath();
 	 ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
 	   /* all zsel.jpg is the same image for all assays
 	      so save space, put only on at the top
@@ -1130,17 +1331,43 @@ emouseatlas.emap.tiledImageModel = function() {
 	 zsel.border_tl = json.zseldragborderlefttop;
 	 zsel.border_br = json.zseldragborderrightbottom;
 	 zsel.orientation = json.zsliceorientation;
-         //console.log("getStackMetadataCallback_1 zsel = ",zsel);
+
+	 // Some Kaufman Plates have multiple selector images (eg Plate03)
+	 // In this case we need to know which sections relate to which image.
+	 if(typeof(json.zselImgRange) === 'undefined') {
+	    zsel.imgRange = [{min:Number(startSection), max:Number(stopSection)}]
+            //console.log("getStackMetadataCallback_1 zsel.imgRange = ",zsel.imgRange);
+	 } else {
+	    num = json.zselImgRange.length;
+	    for(i=0; i<num; i++) {
+	       entry = json.zselImgRange[i];
+	       minval = Number(entry.min);
+	       maxval = Number(entry.max);
+	       zselName = entry.name;
+	       zselW = Number(entry.width);
+	       zselH = Number(entry.height);
+	       zselOrient = entry.orient;
+	       zsel.imgRange[zsel.imgRange.length] = {
+	                                               min:minval,
+						       max:maxval,
+						       name:zselName,
+						       width:zselW,
+						       height:zselH,
+						       orient:zselOrient
+						     };
+	    }
+	 }
+         //console.log("getStackMetadataCallback_1 zsel.imgRange = ",zsel.imgRange);
       }
 
       if (typeof(json.domain_mapping) !== 'undefined') {
-	 var ajaxParams = {
+	 ajaxParams = {
 	    url:json.domain_mapping,
 	    method:"POST",
 	    callback: function(response) {anatomyTerms = eval("("+response+")");},
 	    async:true
 	 }
-	 var ajax = new emouseatlas.emap.ajaxContentLoader();
+	 ajax = new emouseatlas.emap.ajaxContentLoader();
 	 ajax.loadResponse(ajaxParams);
       }
 
@@ -1578,7 +1805,6 @@ emouseatlas.emap.tiledImageModel = function() {
       if(modelChanges.initial) console.log("modelChanges.initial ",modelChanges.initial);
       if(modelChanges.initialState) console.log("modelChanges.initialState ",modelChanges.initialState);
       if(modelChanges.layerNames) console.log("modelChanges.layerNames ",modelChanges.layerNames);
-      if(modelChanges.rotation) console.log("modelChanges.rotation ",modelChanges.rotation);
       if(modelChanges.locator) console.log("modelChanges.locator ",modelChanges.locator);
       if(modelChanges.dst) console.log("modelChanges.dst ",modelChanges.dst);
       if(modelChanges.distanceRange) console.log("modelChanges.distanceRange ",modelChanges.distanceRange);
@@ -1600,7 +1826,6 @@ emouseatlas.emap.tiledImageModel = function() {
       modelChanges.initial =  false;
       modelChanges.initialState =  false;
       modelChanges.layerNames =  false;
-      modelChanges.rotation =  false;
       modelChanges.locator =  false;
       modelChanges.dst =  false;
       modelChanges.distanceRange =  false;
@@ -2093,15 +2318,15 @@ emouseatlas.emap.tiledImageModel = function() {
      var ret2 = setYawValue(newYaw);
      var ret3 = setRollValue(newRoll);
 
-     if (ret1 || ret2 || ret3)
-      getObjects(["Max-size", "Wlz-distance-range"],setOrientationCallback,true);
+     if (ret1 || ret2 || ret3) {
+        getObjects(["Max-size", "Wlz-distance-range"],setOrientationCallback,true);
+     }
    };
    //---------------------------------------------------------
    var setOrientationCallback = function () {
       //console.log("setOrientationCallback");
       setCurrentSection("setOrientationCallback");
       resetModelChanges();
-      //modelChanges.rotation = true;
       modelChanges.locator = true;
       modelChanges.distanceRange = true;
       modelChanges.sectionChanged = true;
@@ -2118,8 +2343,9 @@ emouseatlas.emap.tiledImageModel = function() {
      var ret2 = setYawValue(newYaw);
      var ret3 = setRollValue(newRoll);
 
-     if (ret1 || ret2 || ret3)
-       getObjects(["Max-size", "Wlz-distance-range"],modifyOrientationCallback,true);
+     if (ret1 || ret2 || ret3) {
+        getObjects(["Max-size", "Wlz-distance-range"],modifyOrientationCallback,true);
+     }
    };
 
    //---------------------------------------------------------
@@ -2474,6 +2700,12 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   var getX3dInfo = function() {
+      //console.log("model.getX3dInfo: ",X3dInfo);
+      return x3dInfo;;
+   };
+
+   //---------------------------------------------------------
    var setCurrentSection = function(from) {
 
       //console.log("setCurrentSection: %s",from);
@@ -2628,6 +2860,7 @@ emouseatlas.emap.tiledImageModel = function() {
       TreeJSON.json = [];
 
       var deb = _debug;
+      //_debug = true;
       if(_debug) console.log("model: getTreeData layerName %s",layerName);
 
       layer = layerData[layerName];
@@ -2650,6 +2883,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 ret = TreeJSON.json;
       }
 
+      _debug = deb;
       return ret;
    };
 
@@ -2867,6 +3101,7 @@ emouseatlas.emap.tiledImageModel = function() {
       hasLabels: hasLabels,
       getViewerTargetId: getViewerTargetId,
       getThreeDInfo: getThreeDInfo,
+      getX3dInfo: getX3dInfo,
       getCurrentSection: getCurrentSection,
       getDistance: getDistance, // for convenience when you don't need all the 3D stuff
       setDistance: setDistance,

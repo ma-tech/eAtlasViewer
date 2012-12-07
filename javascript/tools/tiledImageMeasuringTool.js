@@ -128,11 +128,11 @@ var tiledImageMeasuringTool = new Class ({
       var win = $(this.shortName + '-win');
 
       this.titleTextContainer = new Element('div', {
-         'class': 'sliderTextContainer'
+         'class': 'measuringTitleTextContainer'
       });
 
       this.titleTextDiv = new Element('div', {
-         'class': 'sliderTextDiv'
+         'class': 'measuringTitleTextDiv'
       });
       this.titleTextDiv.set('text', 'distance');
 

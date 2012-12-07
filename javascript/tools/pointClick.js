@@ -74,6 +74,7 @@ emouseatlas.emap.pointClick = function() {
    var allowClosestMarkers = true; // temporary, while hovering over marker
    var ALLOW_CLOSEST_MARKERS = true; // more permanent (from checkbox)
    var SHOW_MARKER_TXT = false;
+   var moving = false;
    var imgDir = "../../images/";
    var srcSelected = imgDir + "mapIconSelected.png";
    var srcClosest = imgDir + "mapIconClosest.png";
@@ -584,6 +585,7 @@ emouseatlas.emap.pointClick = function() {
 	          x = locn.x;
 	          y = locn.y;
 	          z = locn.z;
+		  //console.log("storeSubplateDetails: location %s x %s, y %s, z %s",term.name,x,y,z);
 	          smallLabel = makeMarkerSmallLabel(term);
 	          bigLabel = makeMarkerBigLabel(term);
 	          flag = makeMarkerFlag(term, flags.length);
@@ -1695,7 +1697,7 @@ emouseatlas.emap.pointClick = function() {
 
       // sort the markers by closest
       var deb = _debug;
-      _debug = true;
+      //_debug = true;
       if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tmpArr);
       _debug = deb;
 
@@ -2083,6 +2085,7 @@ emouseatlas.emap.pointClick = function() {
 	 for(j=0; j<len2; j++) {
 	    locn = locations[j];
 	    if(locn.img != currentImg) {
+	       //console.log("showSelectedMarkers: wrong image");
 	       continue;
 	    }
 	    setMarkerSrc(key, srcSelected);
@@ -2299,6 +2302,9 @@ emouseatlas.emap.pointClick = function() {
       var newX;
       var newY;
 
+      var deb = _debug;
+      //_debug = true;
+
       if(_debug) console.log("enter positionMarker");
 
       if(key === undefined || key === null || key === "") {
@@ -2309,7 +2315,7 @@ emouseatlas.emap.pointClick = function() {
       locations = markerNode.locdets;
       flags = markerNode.flags;
       len = locations.length;
-      //if(_debug) console.log("locations ",locations);
+      if(_debug) console.log("locations ",locations);
       for(i=0; i<len; i++) {
          locn = locations[i];
 	 subplate = locations[i].img;
@@ -2318,20 +2324,24 @@ emouseatlas.emap.pointClick = function() {
 	 }
 	 x = locn.x;
 	 y = locn.y;
-         //if(_debug) console.log("%d,%d",x,y);
+         if(_debug) console.log("key %s, x %d, y %d, scale %d",key,x,y,scale);
          newX = x * scale + imgOfs.x;
          newY = y * scale + imgOfs.y;
+         if(_debug) console.log("newX -->%d<--, newY -->%d<--",newX,newY);
 	 markerNode.flags[i].setStyles({
 	    'left': newX,
 	    'top': newY
          });
-         //if(_debug) console.log("positionMarker %s location %d %d,%d ",key,i,x,y);
+         if(_debug) /console.log("markerNode.flags[i] ",markerNode.flags[i]);
+         if(_debug) console.log("positionMarker %s location %d %d,%d ",key,i,x,y);
 	 //if(_debug) console.log("positionMarker %s, SHOW_MARKER_TXT %s",key,SHOW_MARKER_TXT);
          if(SHOW_MARKER_TXT) {
             positionMarkerTxt(key);
 	 }
       }
       if(_debug) console.log("exit positionMarker");
+
+      _debug = deb;
    };
    
    //---------------------------------------------------------------
@@ -2583,8 +2593,9 @@ emouseatlas.emap.pointClick = function() {
    }; // modelUpdate
 
    //---------------------------------------------------------------
-   var viewUpdate = function (viewChanges, from) {
+   var viewUpdate = function (viewChanges) {
 
+      //console.log("viewUpdate");
       //if(_debug) console.log("viewUpdate");
       if(viewChanges.initial === true) {
 	 //window.setVisible(false);
@@ -2611,7 +2622,16 @@ emouseatlas.emap.pointClick = function() {
 
       //...................................
       if(viewChanges.editorPointClick) {
+	 //console.log("viewChanges.editorPointClick ",viewChanges.editorPointClick);
 	 addMarkerLocation();
+      }
+
+      //...................................
+      if(viewChanges.movingPCPoint) {
+	 //console.log("viewChanges.movingPCPoint ",viewChanges.movingPCPoint);
+	 moving = true;
+	 addMarkerLocation();
+	 moving = false;
       }
 
       //...................................
@@ -2663,6 +2683,7 @@ emouseatlas.emap.pointClick = function() {
    
    //---------------------------------------------------------------
    // If there is an un-specified location, set it to the clicked point
+   // A location 0,0,0 implies 'unspecified'
    //---------------------------------------------------------------
    var addMarkerLocation = function () {
 
@@ -2695,7 +2716,7 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          locn = locations[i];
 	 if(locn.img == currentImg) {
-	    if(locn.x === '0' && locn.y === '0' && locn.z === '0') {
+	    if(moving || (locn.x === '0' && locn.y === '0' && locn.z === '0')) {
 	       x = Math.round(point.x / scale);
 	       y = Math.round(point.y / scale);
 	       locn.x = x.toString(10);
@@ -2778,6 +2799,13 @@ emouseatlas.emap.pointClick = function() {
       var jsonStr;
       var len;
       var i;
+
+      var OK = false;
+
+      OK = confirm("about to save the selected markers");
+      if(!OK) {
+         return false;
+      }
 
       locs = getSelectedMarkerLocations();
       if(locs === undefined || locs.length <= 0) {

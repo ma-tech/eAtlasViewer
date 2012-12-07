@@ -144,11 +144,11 @@ var tiledImageLocatorTool = new Class ({
       // this should fire whenever dst or rotation is changed
       //......................................................
       //console.log("tiledImageLocator modelUpdate:");
-      if(modelChanges.dst === true || modelChanges.rotation === true) {
+      if(modelChanges.sectionChanged === true) {
 	//console.log("tiledImageLocator.modelUpdate: dst | locator");
 	 this.setNavDims();
 	 this.window.setDimensions(this.navwidth + 4,this.navheight + 4);
-	 this.setLocatorImage('modelUpdate.dst or modelUpdate.rotation');
+	 this.setLocatorImage('modelUpdate.sectionChanged');
 	 this.isWlz = this.model.isWlzData();
          this.setLocatorZone();
       } // modelChanges.fullImgDims
@@ -359,6 +359,8 @@ var tiledImageLocatorTool = new Class ({
 	 this.zone.style.top = y + 'px';
       }
       //console.log("exit locator.setLocatorZone");
+
+      this.view.printViewerInfo();
 
    }, // setLocatorZone
 

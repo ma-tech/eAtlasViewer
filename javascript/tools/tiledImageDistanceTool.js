@@ -107,7 +107,7 @@ var tiledImageDistanceTool = new Class ({
       });
       this.dstArrowsDiv = new Element( 'div', {
 	 'id': 'dstArrowsDiv',
-	 'class': 'arrowsDiv',
+	 'class': 'distanceArrows',
 	 'styles': {
 	    'left' : this.width - 30
 	 }
@@ -316,14 +316,6 @@ var tiledImageDistanceTool = new Class ({
       if(modelChanges.locator) {
 	 this.updateSlider("modelUpdate");
       }
-
-/*
-      if(modelChanges.dst) {
-         console.log("Dst.modelUpdate: modelChanges.dst");
-	 var mdst = this.model.getDistance();
-	 this.sliderTextDiv.set('text', 'dst: ' + mdst.cur);
-      }
-*/
 
       if(modelChanges.distanceRange ||
          modelChanges.setSection) {

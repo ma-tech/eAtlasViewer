@@ -220,11 +220,8 @@ var tiledImagePitchYawTool = new Class ({
    modelUpdate: function(modelChanges, from) {
 
       //......................................................
-      // this should fire whenever dst or rotation is changed
-      //......................................................
       //console.log("tiledImagePitchYaw modelUpdate:");
       if(modelChanges.initialState ||
-         modelChanges.rotation ||
 	 modelChanges.locator ||
 	 modelChanges.setSection) {
 

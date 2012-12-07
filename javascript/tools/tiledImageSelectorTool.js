@@ -280,6 +280,56 @@ var tiledImageSelectorTool = new Class ({
    },
 
    //--------------------------------------------------------------
+   getSelectorName: function (zsel) {
+
+      //console.log("enter selector.getSelectorName:");
+
+      var layerData;
+      var layerNames;
+      var layer;
+      var selectorName;
+      var distance;
+      var cur;
+      var cur2;
+      var cur3;
+      var num;
+      var entry;
+      var min;
+      var max;
+      var i;
+
+      layerData = this.model.getLayerData();
+      layerNames = this.model.getLayerNames();
+      layer = layerData[layerNames[0]];  // in future we should be able to select which layer provides the selector Image
+
+      if(this.kaufman) {
+         num = zsel.imgRange.length;
+         //console.log("getting selector name for kaufman with %d ranges",num);
+         if(num > 1) {
+            distance = this.model.getDistance();
+            cur = distance.cur;
+            cur2 = (this.model.isArrayStartsFrom0()) ? cur : cur - 1;
+            cur3 = cur2 + this.wlzToStackOffset;
+            //console.log("d %d, imgRange ",cur3,zsel.imgRange);
+	    for(i=0; i<num; i++) {
+	       entry = zsel.imgRange[i];
+	       if(cur3 >= entry.min && cur3 <= entry.max) {
+	          //console.log("using %s",entry.name);
+		  selectorName = entry.name;
+		  break;
+	       }
+	    }
+         } else {
+            selectorName = layer.selectorName;
+         }
+      } else {
+         selectorName = layer.selectorName;
+      }
+
+      return selectorName;
+   },
+
+   //--------------------------------------------------------------
    getSelectorSrc: function (zsel) {
 
       //console.log("enter selector.getSelectorSrc:");
@@ -302,9 +352,10 @@ var tiledImageSelectorTool = new Class ({
 	 server = this.model.getIIPServer();
 	 layerData = this.model.getLayerData();
 	 layerNames = this.model.getLayerNames();
-	 layer = layerData[layerNames[0]];  // in future we will be able to select which layer provides the selector Image
+	 layer = layerData[layerNames[0]];  // in future we should be able to select which layer provides the selector Image
 	 dataPath =  layer.imageDir;
-	 selectorName = layer.selectorName;
+
+	 selectorName = this.getSelectorName(zsel);
 
 	 selectorSrc = server + '?fif=' + dataPath + selectorName
 	    + '&wid='
@@ -356,6 +407,9 @@ var tiledImageSelectorTool = new Class ({
       var shortname;
       var pointClickImg;
       var fbText;
+      var zsel;
+      var num;
+      var i;
 
       if(modelChanges.dst) {
          //console.log("this.model.isArrayStartsFrom0 ",this.model.isArrayStartsFrom0());
@@ -381,6 +435,7 @@ var tiledImageSelectorTool = new Class ({
 	    pointClickImg = this.model.getPointClickImg();
 	    fbText = this.getFeedbackText(pointClickImg);
 	    this.feedbackText.innerHTML=(fbText);
+            this.setSelectorImage();
 	 } else {
 	    cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
 	    this.feedbackText.set('text', "section: "+ (cur3).toString());
@@ -395,7 +450,7 @@ var tiledImageSelectorTool = new Class ({
 
       //console.log("enter Selector viewUpdate:",viewChanges);
       var distance;
-      var cur;
+      var dcur;
       var zsel;
       var layerNames;
       var fullname;
@@ -405,24 +460,11 @@ var tiledImageSelectorTool = new Class ({
       var pointClickImg;
       var fbText;
       var cur3;
-      var scaleFactor;
-      var tl;
-      var br;
-      var cur2;
-      //var sliceOffset;
-      var cur3;
-      var fullDepth;
-      var sliceOffset;
-      var totHeight;
-      var feedbackWidth;
-      var feedbackHeight;
-      var imageContainerLeftOffset;
-      var imageOffset;
       var viz;
 
       if(viewChanges.initial || viewChanges.locator) {
 	 distance = this.model.getDistance();
-	 cur = distance.cur;
+	 dcur = distance.cur;
 	 zsel = this.model.getZSelectorInfo();
 
          this.setSelectorImage();
@@ -439,102 +481,13 @@ var tiledImageSelectorTool = new Class ({
 	    fbText = this.getFeedbackText(pointClickImg);
 	    this.feedbackText.innerHTML=(fbText);
 	 } else {
-	    cur3 = (this.model.isPyrTiffData()) ? cur - 1 : cur;
+	    cur3 = (this.model.isPyrTiffData()) ? dcur - 1 : dcur;
 	    this.feedbackText.set('text', "section: "+ (cur3).toString());
 	 }
 
 	 this.window.setVisible(true);
 
-	 // make sure the zsel image fits the max dimension specified
-	 scaleFactor = (zsel.width > zsel.height) ? this.maxDim / zsel.width : this.maxDim / zsel.height;
-	 if (scaleFactor > 1) {
-	    scaleFactor = 1; 
-	 }
-
-	 this.scaledSelectorWidth = (scaleFactor * zsel.width);
-	 this.scaledSelectorHeight = (scaleFactor * zsel.height);
-	 //console.log("scaleFactor %f, scaledSelectorWidth %f, scaledSelectorHeight %f",scaleFactor,this.scaledSelectorWidth,this.scaledSelectorHeight);
-
-	 // if the selector image has borders we must allow for them
-	 tl = 0;
-	 br = 0;
-	 if (zsel.border_tl !== undefined) {
-	    tl = scaleFactor * zsel.border_tl;
-	 }
-	 if (zsel.border_br !== undefined) {
-	    br = scaleFactor * zsel.border_br;
-	 }
-
-	 // the actual usable image dimensions (not including borders).
-	 this.dragWidth = this.scaledSelectorWidth - (tl + br);
-	 this.dragHeight = this.scaledSelectorHeight - (tl + br)
-	 //console.log("dragWidth %f, tl %f, br %f",this.dragWidth,tl,br);
-
-	 // ----maze------- Offsets of drag constraint div relative to image
-	 this.topDragOffset = 0;
-	 this.leftDragOffset = 0;
-
-	 if (zsel.orientation == 'horizontal') {
-	    /*
-	    this.dragHeight = this.dragHeight - tl - br + this.cursorBarWidth;
-	    this.topDragOffset = tl - this.cursorBarWidth / 2;
-	    */
-	    this.cursorBarContainerHeight = 5;
-	    this.topDragOffset = tl - (this.cursorBarContainerHeight / 2);
-	    this.cursorBarContainer.style.width = this.scaledSelectorWidth + 'px';
-	    this.cursorBarContainer.style.height = this.cursorBarContainerHeight + 'px';
-	    this.cursorBar.style.left = '0px';
-	    this.cursorBar.style.top = (this.cursorBarContainerHeight / 2) + 'px';
-	    this.cursorBar.style.width = this.scaledSelectorWidth + 'px';
-	    this.cursorBar.style.height = this.cursorBarWidth + 'px';
-	 } else if (zsel.orientation == 'vertical') {
-	    this.cursorBarContainerWidth = 5;
-	    this.leftDragOffset = tl - (this.cursorBarContainerWidth / 2);
-	    this.cursorBarContainer.style.width = this.cursorBarContainerWidth + 'px';
-	    this.cursorBarContainer.style.height = this.scaledSelectorHeight + 'px';
-	    this.cursorBar.style.left = (this.cursorBarContainerWidth / 2) + 'px';
-	    this.cursorBar.style.top = '0px';
-	    this.cursorBar.style.width = this.cursorBarWidth + 'px';
-	    this.cursorBar.style.height = this.scaledSelectorHeight + 'px';
-	 }
-	 //console.log("leftDragOffset %f",this.leftDragOffset);
-
-	 this.imageContainer.style.width = this.scaledSelectorWidth + 'px';
-	 this.imageContainer.style.height = this.scaledSelectorHeight + 'px';
-	 this.image.style.width = this.scaledSelectorWidth + 'px';
-	 this.image.style.height = this.scaledSelectorHeight + 'px';
-
-	 cur2 = (this.model.isArrayStartsFrom0()) ? distance.cur : distance.cur - 1;
-	 cur3 = cur2 + this.wlzToStackOffset;
-	 fullDepth = this.model.getFullDepth();
-	 sliceOffset = cur3 / fullDepth;
-	 this.setSliceOffset(sliceOffset);
-
-	 this.totWidth = (this.dragWidth > this.scaledSelectorWidth) ? this.dragWidth : this.scaledSelectorWidth;
-	 totHeight = (this.dragHeight > this.scaledSelectorHeight) ? this.dragHeight : this.scaledSelectorHeight;
-	 if (this.leftDragOffset < 0) {
-	    this.totWidth = this.scaledSelectorWidth - this.leftDragOffset * 2;
-	 }
-	 if (this.topDragOffset < 0) {
-	    totHeight = this.scaledSelectorHeight - this.topDragOffset * 2;
-	 }
-
-	 feedbackWidth = $('selector-feedbackContainer').getWidth();
-	 feedbackHeight = $('selector-feedbackContainer').getHeight();
-
-	 this.totWidth = (this.totWidth < feedbackWidth) ? feedbackWidth : this.totWidth;
-	 //console.log("feedbackWidth %s, this.totWidth %s",feedbackWidth,this.totWidth);
-
-	 this.window.setDimensions(this.totWidth, totHeight + feedbackHeight + 4);
-
-	 imageContainerLeftOffset = Math.floor((this.totWidth - this.scaledSelectorWidth) / 2);
-	 //console.log("imageContainerLeftOffset %s",imageContainerLeftOffset);
-	 this.imageContainer.style.left = imageContainerLeftOffset + 'px';
-
-	 this.feedback.style.top = totHeight + 2 + 'px';
-
-	 imageOffset = $('selector-imageContainer').style.left;
-	 //console.log("imageOffset = ", imageOffset);
+	 this.fitSelectorImage(zsel, dcur);
 
       } // initial
 
@@ -550,6 +503,115 @@ var tiledImageSelectorTool = new Class ({
       }
 
    }, // viewUpdate
+
+   //---------------------------------------------------------------
+   fitSelectorImage: function(zsel, dcur) {
+
+      var scaleFactor;
+      var tl;
+      var br;
+      var cur2;
+      var cur3;
+      var sliceOffset;
+      var fullDepth;
+      var totHeight;
+      var feedbackWidth;
+      var feedbackHeight;
+      var imageContainerLeftOffset;
+      var imageOffset;
+
+      // make sure the zsel image fits the max dimension specified
+      scaleFactor = (zsel.width > zsel.height) ? this.maxDim / zsel.width : this.maxDim / zsel.height;
+      if (scaleFactor > 1) {
+	 scaleFactor = 1; 
+      }
+
+      this.scaledSelectorWidth = (scaleFactor * zsel.width);
+      this.scaledSelectorHeight = (scaleFactor * zsel.height);
+      //console.log("scaleFactor %f, scaledSelectorWidth %f, scaledSelectorHeight %f",scaleFactor,this.scaledSelectorWidth,this.scaledSelectorHeight);
+
+      // if the selector image has borders we must allow for them
+      tl = 0;
+      br = 0;
+      if (zsel.border_tl !== undefined) {
+	 tl = scaleFactor * zsel.border_tl;
+      }
+      if (zsel.border_br !== undefined) {
+	 br = scaleFactor * zsel.border_br;
+      }
+
+      // the actual usable image dimensions (not including borders).
+      this.dragWidth = this.scaledSelectorWidth - (tl + br);
+      this.dragHeight = this.scaledSelectorHeight - (tl + br)
+      //console.log("dragWidth %f, tl %f, br %f",this.dragWidth,tl,br);
+
+      // ----maze------- Offsets of drag constraint div relative to image
+      this.topDragOffset = 0;
+      this.leftDragOffset = 0;
+
+      if (zsel.orientation == 'horizontal') {
+	 /*
+	    this.dragHeight = this.dragHeight - tl - br + this.cursorBarWidth;
+	    this.topDragOffset = tl - this.cursorBarWidth / 2;
+	  */
+	 this.cursorBarContainerHeight = 5;
+	 this.topDragOffset = tl - (this.cursorBarContainerHeight / 2);
+	 this.cursorBarContainer.style.width = this.scaledSelectorWidth + 'px';
+	 this.cursorBarContainer.style.height = this.cursorBarContainerHeight + 'px';
+	 this.cursorBar.style.left = '0px';
+	 this.cursorBar.style.top = (this.cursorBarContainerHeight / 2) + 'px';
+	 this.cursorBar.style.width = this.scaledSelectorWidth + 'px';
+	 this.cursorBar.style.height = this.cursorBarWidth + 'px';
+      } else if (zsel.orientation == 'vertical') {
+	 this.cursorBarContainerWidth = 5;
+	 this.leftDragOffset = tl - (this.cursorBarContainerWidth / 2);
+	 this.cursorBarContainer.style.width = this.cursorBarContainerWidth + 'px';
+	 this.cursorBarContainer.style.height = this.scaledSelectorHeight + 'px';
+	 this.cursorBar.style.left = (this.cursorBarContainerWidth / 2) + 'px';
+	 this.cursorBar.style.top = '0px';
+	 this.cursorBar.style.width = this.cursorBarWidth + 'px';
+	 this.cursorBar.style.height = this.scaledSelectorHeight + 'px';
+      }
+      //console.log("leftDragOffset %f",this.leftDragOffset);
+
+      this.imageContainer.style.width = this.scaledSelectorWidth + 'px';
+      this.imageContainer.style.height = this.scaledSelectorHeight + 'px';
+      this.image.style.width = this.scaledSelectorWidth + 'px';
+      this.image.style.height = this.scaledSelectorHeight + 'px';
+
+      cur2 = (this.model.isArrayStartsFrom0()) ? dcur : dcur - 1;
+      cur3 = cur2 + this.wlzToStackOffset;
+      fullDepth = this.model.getFullDepth();
+      sliceOffset = cur3 / fullDepth;
+      this.setSliceOffset(sliceOffset);
+
+      this.totWidth = (this.dragWidth > this.scaledSelectorWidth) ? this.dragWidth : this.scaledSelectorWidth;
+      totHeight = (this.dragHeight > this.scaledSelectorHeight) ? this.dragHeight : this.scaledSelectorHeight;
+      if (this.leftDragOffset < 0) {
+	 this.totWidth = this.scaledSelectorWidth - this.leftDragOffset * 2;
+      }
+      if (this.topDragOffset < 0) {
+	 totHeight = this.scaledSelectorHeight - this.topDragOffset * 2;
+      }
+
+      feedbackWidth = $('selector-feedbackContainer').getWidth();
+      feedbackHeight = $('selector-feedbackContainer').getHeight();
+
+      this.totWidth = (this.totWidth < feedbackWidth) ? feedbackWidth : this.totWidth;
+      //console.log("feedbackWidth %s, feedbackHeight %s, this.totWidth %s",feedbackWidth,feedbackHeight,this.totWidth);
+
+      this.window.setDimensions(this.totWidth, totHeight + feedbackHeight + 4);
+
+      imageContainerLeftOffset = Math.floor((this.totWidth - this.scaledSelectorWidth) / 2);
+      //console.log("imageContainerLeftOffset %s",imageContainerLeftOffset);
+      this.imageContainer.style.left = imageContainerLeftOffset + 'px';
+
+      this.feedback.style.top = totHeight + 2 + 'px';
+
+      imageOffset = $('selector-imageContainer').style.left;
+      //console.log("imageOffset = ", imageOffset);
+
+   }, // fitSelectorImage
 
    //--------------------------------------------------------------
    getFeedbackText: function (text) {
