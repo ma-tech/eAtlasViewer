@@ -2332,7 +2332,7 @@ emouseatlas.emap.pointClick = function() {
 	    'left': newX,
 	    'top': newY
          });
-         if(_debug) /console.log("markerNode.flags[i] ",markerNode.flags[i]);
+         if(_debug) console.log("markerNode.flags[i] ",markerNode.flags[i]);
          if(_debug) console.log("positionMarker %s location %d %d,%d ",key,i,x,y);
 	 //if(_debug) console.log("positionMarker %s, SHOW_MARKER_TXT %s",key,SHOW_MARKER_TXT);
          if(SHOW_MARKER_TXT) {
