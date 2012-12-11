@@ -228,6 +228,8 @@ var tiledImage3DFeedback = new Class ({
       x3d.setAttribute('xmlns', 'http://www.web3d.org/specifications/x3d-namespace');
       x3d.setAttribute('showlog', 'false');
       x3d.setAttribute('showStat', 'false');
+      x3d.setAttribute('width', stylWidth);  // required for flash fallback case
+      x3d.setAttribute('height', stylHeight);  // required for flash fallback case
       x3d.setStyle('x', stylX);
       x3d.setStyle('y', stylY);
       x3d.setStyle('width', stylWidth);
