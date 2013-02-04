@@ -774,13 +774,13 @@ var queryTool = new Class ({
 
 	 mode = this.view.getMode();
 	 //console.log("mode ",mode);
-	 //if(mode.name === "query" && this.query.getQueryType() === "anatomy") {
+	 if(mode.name === "query" && this.query.getQueryType() === "anatomy") {
             selections = this.view.getSelections();
 	    indxArr = this.getIndexArrFromSelections(selections);
 	    //console.log("query indxArr ",indxArr);
 	    this.termData = this.getTermDataFromTree(indxArr);
 	    this.query.setQueryTermData(this.termData);
-	 //}
+	 }
       }
 
    }, // viewUpdate

@@ -916,24 +916,6 @@ if(!emouseatlas.emap.utilities) {
       },
 
       //---------------------------------------------------------
-      /**
-       *   Converts a hex colour value to RGB (0 - 255).
-       *   based on http://www.javascripter.net/faq/hextorgb.htm
-       */
-      hexToRGB: function(hexcol) {
-         
-	 //console.log("hexToRGB: hexcol %s",hexcol);
-
-	 var hexnum = (hexcol.charAt(0) === "#") ? hexcol.substring(1,7) : hexcol;
-
-	 var R = parseInt(hexnum.substring(0,2),16);
-	 var G = parseInt(hexnum.substring(2,4),16);
-	 var B = parseInt(hexnum.substring(4,6),16);
-
-	 return {r:R, g:G, b:B};
-      },
-
-      //---------------------------------------------------------
       //   Adds 'button' style to a div
       //---------------------------------------------------------
       addButtonStyle: function(buttonDivId) {
@@ -1262,8 +1244,80 @@ if(!emouseatlas.emap.utilities) {
 	    newObj[key] = elmnt;
 	 }
 	 return newObj;
-      }
+      },
   
+       // the following 2 functions are based on
+       // http://www.linuxtopia.org/online_books/javascript_guides/javascript_faq/rgbtohex.htm
+
+      //---------------------------------------------------------
+      /**
+       *  Returns a hex string given decimal value
+       */
+      //-----------------------------------------------------
+      toHex: function(N) {
+        var hex;
+        if (N == null) return "00";
+        N = parseInt(N);
+	if (N == 0 || isNaN(N)) return "00";
+        N = Math.max(0,N);
+	N = Math.min(N,255);
+	N = Math.round(N);
+        hex =  "0123456789ABCDEF".charAt((N-N%16)/16) + "0123456789ABCDEF".charAt(N%16);
+	return hex;
+       },
+
+      //---------------------------------------------------------
+      /**
+       *   Converts a hex colour value to RGB (0 - 255).
+       *   based on http://www.javascripter.net/faq/hextorgb.htm
+       */
+      hexToRGB: function(hexcol) {
+         
+	 //console.log("hexToRGB: hexcol %s",hexcol);
+
+	 var hexnum = (hexcol.charAt(0) === "#") ? hexcol.substring(1,7) : hexcol;
+
+	 var R = parseInt(hexnum.substring(0,2),16);
+	 var G = parseInt(hexnum.substring(2,4),16);
+	 var B = parseInt(hexnum.substring(4,6),16);
+
+	 return {r:R, g:G, b:B};
+      },
+
+      //---------------------------------------------------------
+      /**
+       *  Returns a hex colour string given RGB values
+       */
+      //-----------------------------------------------------
+      RGBtoHex: function(R,G,B) {
+         return emouseatlas.emap.utilities.toHex(R) +
+	        " " +
+	        emouseatlas.emap.utilities.toHex(G) +
+	        " " +
+		emouseatlas.emap.utilities.toHex(B);
+      },
+
+      //---------------------------------------------------------
+      /**
+       *  Returns true position of an element on a page, taking borders into account
+       *  Based on http://ckon.wordpress.com/2011/08/05/javascript-position-firefox/
+       */
+      //-----------------------------------------------------
+      getElementPosition: function (elmnt) {
+         var x = 0;
+         var y = 0;
+	 var z = elmnt;
+         var c;
+   
+         while(z && !isNaN(z.offsetLeft) && !isNaN(z.offsetTop)) {       
+            c = isNaN(window.globalStorage) ? 0 : window.getComputedStyle(z,null);
+            x += z.offsetLeft - z.scrollLeft + (c ? parseInt(c.getPropertyValue('border-left-width'),10) : 0);
+            y += z.offsetTop - z.scrollTop + (c ? parseInt(c.getPropertyValue('border-top-width'),10) : 0);
+            z = z.offsetParent;
+         }
+         return {x:elmnt.X = x,y:elmnt.Y = y};
+      }
 
    }; // emouseatlas.emap.utilities
+
 }

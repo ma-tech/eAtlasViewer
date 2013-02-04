@@ -42,7 +42,7 @@ var tiledImageTreeTool = new Class ({
 
    initialize: function(params) {
 
-      //console.log("enter tiledImageTreeTool.initialize: ",params);
+      //console.log("enter tiledImageTreeTool.initialize: ",params.params.layer);
       this.model = params.model;
       this.view = params.view;
 
@@ -106,85 +106,116 @@ var tiledImageTreeTool = new Class ({
       }.bind(this));
       */
 
+      this.createElements();
+
+      //this.createMenu();
+      //this.cpInit();
+      this.addPatchEvent();
+
+   }, // initialize
+
+   //---------------------------------------------------------------
+   createElements: function() {
+
       var win = $(this.shortName + '-win');
+      var topEdge;
+
+      var titleContainer;
+      var treeToolTitleText;
+      var treeControlContainer;
+      var selectAllButtonDiv;
+      var selectAllButtonText;
+      var clearAllButtonDiv;
+      var clearAllButtonText;
+
+      var systemChkbxDiv;
+      var systemChkbx;
+      var systemChkbxLabel;
 
       //----------------------------------------
       // container for treeTool title
       //----------------------------------------
-      this.titleContainer = new Element('div', {
+      titleContainer = new Element('div', {
          'id': 'treeToolTitleContainer'
       });
 
-      this.treeToolTitleText = new Element('div', {
+      treeToolTitleText = new Element('div', {
          'id': 'treeToolTitleText'
       });
-      this.treeToolTitleText.appendText(this.title);
+      treeToolTitleText.appendText(this.title);
 
-      var topEdge = $(this.shortName + '-topedge');
+      topEdge = $(this.shortName + '-topedge');
 
-      this.treeToolTitleText.inject(this.titleContainer, 'inside');
-      this.titleContainer.inject(topEdge, 'inside');
+      treeToolTitleText.inject(titleContainer, 'inside');
+      titleContainer.inject(topEdge, 'inside');
  
       //----------------------------------------
       // container for additional controls
       //----------------------------------------
-      this.treeControlContainer = new Element('div', {
+      treeControlContainer = new Element('div', {
          'id': 'treeControlContainer',
       });
-      this.treeControlContainer.inject(win, 'inside');
+      treeControlContainer.inject(win, 'inside');
 
       //----------------------------------------
       // Select All button
       //----------------------------------------
-      this.selectAllButtonDiv = new Element('div', {
+      selectAllButtonDiv = new Element('div', {
          'id': 'treeSelectAllButtonDiv',
 	 'class': 'treeButtonDiv'
       });
-      this.selectAllButtonDiv.inject(this.treeControlContainer, 'inside');
-      this.selectAllButtonText = new Element('div', {
+      selectAllButtonDiv.inject(treeControlContainer, 'inside');
+      selectAllButtonText = new Element('div', {
          'id': 'treeSelectAllButtonText',
 	 'class': 'treeButtonText'
       });
-      this.selectAllButtonText.inject(this.selectAllButtonDiv, 'inside');
-      this.selectAllButtonText.appendText('Select All');
+      selectAllButtonText.inject(selectAllButtonDiv, 'inside');
+      selectAllButtonText.appendText('Select All');
 
       emouseatlas.emap.utilities.addButtonStyle("treeSelectAllButtonDiv");
 
       //----------------------------------------
       // Clear All button
       //----------------------------------------
-      this.clearAllButtonDiv = new Element('div', {
+      clearAllButtonDiv = new Element('div', {
          'id': 'treeClearAllButtonDiv',
 	 'class': 'treeButtonDiv'
       });
-      this.clearAllButtonDiv.inject(this.treeControlContainer, 'inside');
-      this.clearAllButtonText = new Element('div', {
+      clearAllButtonDiv.inject(treeControlContainer, 'inside');
+      clearAllButtonText = new Element('div', {
          'id': 'treeClearAllButtonText',
 	 'class': 'treeButtonText'
       });
-      this.clearAllButtonText.inject(this.clearAllButtonDiv, 'inside');
-      this.clearAllButtonText.appendText('Clear All');
+      clearAllButtonText.inject(clearAllButtonDiv, 'inside');
+      clearAllButtonText.appendText('Clear All');
 
       emouseatlas.emap.utilities.addButtonStyle("treeClearAllButtonDiv");
 
       //----------------------------------------
-      // Reset button
+      // System checkbox
       //----------------------------------------
-      /*
-      this.resetButtonDiv = new Element('div', {
-         'id': 'resetButtonDiv',
-	 'class': 'treeButtonDiv'
-      });
-      this.resetButtonDiv.inject(this.treeControlContainer, 'inside');
-      this.resetButtonText = new Element('div', {
-         'id': 'resetButtonText',
-	 'class': 'treeButtonText'
-      });
-      this.resetButtonText.inject(this.resetButtonDiv, 'inside');
-      this.resetButtonText.appendText('Reset');
 
-      emouseatlas.emap.utilities.addButtonStyle("resetButtonDiv");
-      */
+      systemChkbxDiv = new Element('div', {
+	    'id': 'systemChkbxDiv',
+	    'class': 'systemChkbxDiv'
+	    });
+      systemChkbxLabel = new Element('label', {
+	    'id': 'systemChkbxLabel',
+	    'name': 'systemChkbxLabel',
+	    'class': 'systemChkbxLabel'
+	    });
+      systemChkbx = new Element('input', {
+	    'id': 'systemChkbx',
+	    'name': 'systemChkbx',
+	    'class': 'systemChkbx',
+	    'type': 'checkbox',
+	    'checked': false
+	    });
+
+      systemChkbxDiv.inject(treeControlContainer, 'inside');
+      systemChkbx.inject(systemChkbxDiv, 'inside');
+      systemChkbxLabel.inject(systemChkbxDiv, 'inside');
+      systemChkbxLabel.set('text', 'Systems');
 
       //----------------------------------------
       // container for the tree
@@ -217,25 +248,25 @@ var tiledImageTreeTool = new Class ({
       //----------------------------------------
       // add events for buttons
       //----------------------------------------
-      this.selectAllButtonDiv.addEvent('click', function(){
-         this.treeComponent.root.showAllDomains(true);
+      selectAllButtonDiv.addEvent('click', function(){
+         this.treeComponent.root.showAllDomains();
       }.bind(this));
 
-      this.clearAllButtonDiv.addEvent('click', function(){
-         this.treeComponent.root.showAllDomains(false);
+      clearAllButtonDiv.addEvent('click', function(){
+         //this.treeComponent.root.showAllDomains(false);
+         this.treeComponent.root.clearAll();
          this.view.setSelections("");
       }.bind(this));
 
-      /*
-      this.resetButtonDiv.addEvent('click', function(){
-         this.view.setSelections("");
+      systemChkbxDiv.addEvent('change', function(){
+         this.treeComponent.setShowSystems(systemChkbx.checked);
       }.bind(this));
 
       //this.createMenu();
-      */
-      this.cpInit();
+      //this.cpInit();
+      this.addPatchEvent();
 
-   }, // initialize
+   }, // createElements
 
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {
@@ -252,8 +283,18 @@ var tiledImageTreeTool = new Class ({
    // if the opacity has been changed, update the slider text
    viewUpdate: function(viewChanges, from) {
 
+      var currentLayer;
+      var dms;
+      var hght;
+      var treedms;
+      var treeContainer;
+      var tcTop;
+      var treeWrapper;
+      var id;
+      var rgba;
+
       //console.log("tiledImageTreeTool: ",viewChanges);
-      var currentLayer = this.view.getCurrentLayer();
+      currentLayer = this.view.getCurrentLayer();
 
       if(viewChanges.initial === true) {
 	 this.window.setVisible(true);
@@ -264,12 +305,6 @@ var tiledImageTreeTool = new Class ({
       }
 
       if(viewChanges.viewport === true) {
-         var dms;
-         var hght;
-         var treedms;
-         var treeContainer;
-         var tcTop;
-         var treeWrapper;
 
          dms = this.view.getViewportDims();
          hght = dms.height;
@@ -281,6 +316,14 @@ var tiledImageTreeTool = new Class ({
 
          this.window.setDimensions(treedms.w, hght);
          treeWrapper.setStyle('height', (hght-tcTop-2) + 'px');
+      }
+
+      if(viewChanges.colour === true) {
+	 id = this.view.getElementToColour();
+	 id = id.replace(/pic_/,'');
+	 rgba = this.view.getRGBA();
+	 this.treeComponent.root.changeImageElementColour(id, rgba);
+	 this.treeComponent.showSelected(id);
       }
 
    }, // viewUpdate
@@ -332,36 +375,35 @@ var tiledImageTreeTool = new Class ({
    },
 
    //---------------------------------------------------------------
-   //create a context menu
-   /*
-   createMenu: function () {
-      var context = new ContextMenu({
-	 targets: 'span.mif-tree-name', //menu only spans with given class
-	 menu: 'contextmenu',
-	 actions: {
-	    copy: function(element,ref) { //copy action changes the element's color to green and disables the menu
-	       element.setStyle('color','#090');
-	       ref.disable();
-	    }
-	 },
-	 offsets: { x:0, y:-10 }
-      });
+   // add events to the colour patches
+   addPatchEvent: function () {
+      var patchArr = [];
+      var patch;
+      var num;
+      var i;
+
+      patchArr = $$('.pick');
+      num = patchArr.length;
+      for(i=0; i<num; i++) {
+	 patch = patchArr[i];
+	 emouseatlas.emap.utilities.addEvent(patch, 'mouseup', function(e) {
+	    this.enableColChoose(e);
+	 }.bind(this), false);
+      }
    },
-   */
 
    //---------------------------------------------------------------
-   //initialise the colour picker
-   cpInit: function () {
-      var sphere = new UvumiSphere('.pick',{
-	 onChange:function(input,hex){
-	    var id = input.id;
-	    id = id.substr(id.indexOf('_')+1);
-	    $(input).setStyle('background-color',hex);
-	    var node = this.treeComponent.root.getNodeById(id);
-	    node.color = hex.hexToRgb(true);
-	    this.treeComponent.root.showSelected();
-	 }.bind(this)
-      });
+   // event handler for colour patches
+   enableColChoose: function (e) {
+
+      var evt;
+      var target;
+
+      evt = e || window.event;
+      target = emouseatlas.emap.utilities.getTarget(evt);
+      //console.log("enableColChoose: %s",target.id);
+
+      this.view.setElementToColour(target.id);
    },
 
    //---------------------------------------------------------------

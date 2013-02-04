@@ -84,6 +84,7 @@ emouseatlas.emap.tiledImageView = function() {
       addQueryTerm: false,
       visibility: false,
       opacity: false,
+      colour: false,
       filter: false,
       selections: false,
       wlzUpdated: false,
@@ -191,6 +192,8 @@ emouseatlas.emap.tiledImageView = function() {
 
    var draw = undefined;
    var imgLabel;
+   var colourChooser;
+   var elementIdToColour;
 
    //---------------------------------------------------------
    //   private methods
@@ -362,12 +365,15 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    var setInitialOpacity = function (layer) {
 
+      //console.log("setInitialOpacity for layer %s",layer);
+      //console.log("layerData for layer %s ",layer,layerData[layer]);
+
       if(typeof(layerOpacity[layer]) === 'undefined') {
 	 layerOpacity[layer] = {name:layer, opacity:layerData[layer].initialOpacity};
       } else {
 	 layerOpacity[layer].opacity = {opacity:layerData[layer].initialOpacity};
       }
-      //applyTileFrameOpacity(layer);
+      applyTileFrameOpacity(layer);
    };
 
    //---------------------------------------------------------
@@ -543,21 +549,25 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    var setTileFrameOpacity = function(val) {
 
+      //console.log("setTileFrameOpacity ",val);
+
       var tileFrameContainer;
       var containerId;
 
       containerId = currentLayer + "_tileFrameContainer";
       if(typeof(document.getElementById(containerId)) !== 'undefined' && document.getElementById(containerId) !== null) {
 	 tileFrameContainer = document.getElementById(containerId);
-	 tileFrameContainer.style.opacity = val;
+	 tileFrameContainer.style.opacity = parseFloat(val);
       }
-      layerOpacity[currentLayer].opacity = val;
+      layerOpacity[currentLayer].opacity = parseFloat(val);
    };
 
    //---------------------------------------------------------
    // apply opacity for specified layer
    //---------------------------------------------------------
    var applyTileFrameOpacity = function(layerName) {
+
+      //console.log("applyTileFrameOpacity %s",layerName);
 
       var tileFrameContainer;
       var containerId;
@@ -693,6 +703,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    //sel = getAllSelections(layerName);
 	 } else {
 	    sel = getSelections();
+	    //console.log("getTileSrc: sel  ",sel);
 	    // if no domains are selected we can either:
 	    // make the anatomy layer transparent or
 	    // don't get tiles for the anatomy layer
@@ -724,6 +735,8 @@ emouseatlas.emap.tiledImageView = function() {
 	  sel = sel+"&sel=4,0,255,0,255";
 	  sel = sel+"&sel=5,0,255,255,255";
 	}
+
+      //console.log("getTileSrc: sel ",sel);
 
       var src;
       var qlt = (highQual) ? model.getImgQuality().cur : 1;
@@ -1041,6 +1054,7 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.endDrawing) console.log("viewChanges.endDrawing ",viewChanges.endDrawing);
       if(viewChanges.visibility) console.log("viewChanges.visibility ",viewChanges.visibility);
       if(viewChanges.opacity) console.log("viewChanges.opacity ",viewChanges.opacity);
+      if(viewChanges.colour) console.log("viewChanges.colour ",viewChanges.colour);
       if(viewChanges.filter) console.log("viewChanges.filter ",viewChanges.filter);
       if(viewChanges.selections) console.log("viewChanges.selections ",viewChanges.selections);
       if(viewChanges.wlzUpdated) console.log("viewChanges.wlzUpdated ",viewChanges.wlzUpdated);
@@ -1083,6 +1097,7 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.endDrawing = false;
       viewChanges.visibility =  false;
       viewChanges.opacity =  false;
+      viewChanges.colour =  false;
       viewChanges.filter = false;
       viewChanges.selections = false;
       viewChanges.wlzUpdated =  false;
@@ -3057,6 +3072,7 @@ emouseatlas.emap.tiledImageView = function() {
 
       titleTooltipTextContainer = document.createElement('div');
       titleTooltipTextContainer.id = "titleTooltipTextContainer";
+      titleTooltipTextContainer.className = project;
       titleTooltipContainer.appendChild(titleTooltipTextContainer);
 
       len = titleTooltip.text.length;
@@ -3559,6 +3575,24 @@ emouseatlas.emap.tiledImageView = function() {
 		    height:toolData.threeDFeedback.height,
 		    x:toolData.threeDFeedback.x,
 		    y:toolData.threeDFeedback.y
+		   }
+	 });
+      }
+
+      if(typeof(tools.colChooser) !== 'undefined') {
+	 colourChooser = new colChooser({
+	    model:model,
+	    view:view,
+	    params:{
+	            targetId:toolData.colChooser.targetId,
+	            drag:toolData.colChooser.draggable,
+                    toRight:toolData.colChooser.toRight,
+	            borders:toolData.colChooser.borders,
+		    allowClose: toolData.colChooser.allowClose,
+	            width:toolData.colChooser.width,
+		    height:toolData.colChooser.height,
+		    x:toolData.colChooser.x,
+		    y:toolData.colChooser.y
 		   }
 	 });
       }
@@ -4153,6 +4187,8 @@ emouseatlas.emap.tiledImageView = function() {
    // Opacity must be between 0 and 1.0 with 1.0 being 'solid'.
    var setOpacity = function(params) {
 
+      //console.log("setOpacity params ",params);
+
       var val = params.value;
       var fromSlider = params.fromSlider;
 
@@ -4160,7 +4196,7 @@ emouseatlas.emap.tiledImageView = function() {
       val = (val < 0.0) ? 0.0 : val;
       val = (val > 1.0) ? 1.0 : val;
 
-      layerOpacity[currentLayer].opacity = val;
+      //layerOpacity[currentLayer].opacity = val;
       setTileFrameOpacity(val);
 
       if(fromSlider) {
@@ -4170,12 +4206,117 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   var getOpacity = function(layer) {
-      if(typeof(layerOpacity[layer]) === 'undefined') {
-         return 1.0;
-      } else {
-	 return layerOpacity[layer].opacity;
+   // Colour values are obtained from colChooser
+   var colourChange = function(from) {
+
+      var col;
+      var lmnt;
+
+      //console.log("colourChange from %s",from);
+      if(colourChooser) {
+         col = colourChooser.getRGBA();
       }
+
+      // this changes the colour of the patch in the tree
+      if(elementIdToColour) {
+         //console.log ("colourChange: to lmnt %s",elementIdToColour);
+         lmnt = $(elementIdToColour);
+	 lmnt.setStyles({
+	    background: 'rgba(' + col.red + ', ' + col.green + ', ' + col.blue + ', ' + col.alpha + ')'
+	 });
+         viewChanges.colour = true;
+         notify("colourChange");
+      }
+
+
+   };
+
+   //---------------------------------------------------------
+   // Specify which element is to use colChooser
+   var setElementToColour = function(id) {
+
+      var patch;
+      var bgc;
+      var rgba;
+      var arr = [];
+      var opacity;
+      var RGBA = {};
+
+      //console.log("setElementToColour: %s",id);
+
+      elementIdToColour = id;
+
+      patch = $(id);
+      if(patch) {
+         //console.log("view.setElementToColour: ",patch.getStyle('background-color'));
+         //console.log("view.setElementToColour: ",patch.getStyle('opacity'));
+         bgc = patch.getStyle('background-color');
+         //console.log("view.setElementToColour: bgc",bgc);
+         opacity = patch.getStyle('opacity');
+         //console.log("view.setElementToColour: opacity",opacity);
+
+	 if(bgc.indexOf("rgba") === 0) {
+	    //console.log("rgba version");
+	    //console.log("type of bgc = ",typeof(bgc));
+	    rgba = bgc.slice(5,-2);
+	    rgba = rgba.replace(/\s+/g, ''); // get rid of white space in the string
+	    arr = rgba.split(",");
+	    //console.log("sliced bgc = ",rgba);
+	    //console.log("arr = ",arr);
+
+	    RGBA = {r:arr[0], g:arr[1], b:arr[2], a:arr[3]};
+	 } else if(bgc.indexOf("#") === 0) {
+	    //console.log("hex version");
+	    RGBA = emouseatlas.emap.utilities.hexToRGB(bgc);
+	    RGBA.a = opacity;
+	 } else {
+	    //console.log("unknown version");
+	 }
+         //console.log("view.setElementToColour: RGBA",RGBA);
+      }
+
+      if(colourChooser) {
+	 colourChooser.showColChooser(true);
+	 colourChooser.setRGBA(RGBA);
+      }
+
+   };
+
+   //---------------------------------------------------------
+   // Get which element is to use colChooser
+   var getElementToColour = function() {
+
+      //console.log("getElementToColour: %s", elementIdToColour);
+      return elementIdToColour;
+   };
+
+   //---------------------------------------------------------
+   var getRGBA = function() {
+
+      var rgba = undefined;
+
+      if(colourChooser) {
+         rgba = colourChooser.getRGBA();
+      }
+      //console.log("getColour: ",rgba);
+      return rgba;
+   };
+
+   //---------------------------------------------------------
+   var getOpacity = function(layer) {
+
+      //console.log("view: getOpacity for layer %s",layer);
+      //console.log("layerOpacity ",layerOpacity);
+
+      var opac = undefined;
+      if(typeof(layerOpacity[layer]) === 'undefined') {
+         opac = 1.0;
+      } else {
+	 opac = layerOpacity[layer].opacity;
+      }
+      //console.log("getOpacity: %d",opac);
+
+      return parseFloat(opac);
    };
 
    //---------------------------------------------------------
@@ -4380,9 +4521,12 @@ emouseatlas.emap.tiledImageView = function() {
       var clearParams = {scale: false, distance: false, rotation: false, layer: layerNames[numLayers - 1]};
       clearTiles(clearParams);
       setTimeout("emouseatlas.emap.tiledImageView.requestImages('setSelections')", 10);
-      viewChanges.dblClick = false; // this is required to stop endless loop
-      viewChanges.selections = true;
-      notify("setSelections");
+      //console.log("**** %s ****",mode.name);
+      if(mode.name === "query") {
+         viewChanges.dblClick = false; // this is required to stop endless loop
+         viewChanges.selections = true;
+         notify("setSelections");
+      }
    };
 
    //---------------------------------------------------------
@@ -4744,6 +4888,10 @@ emouseatlas.emap.tiledImageView = function() {
       setScale: setScale,
       getOpacity: getOpacity,
       setOpacity: setOpacity,
+      colourChange: colourChange,
+      setElementToColour: setElementToColour,
+      getElementToColour: getElementToColour,
+      getRGBA: getRGBA,
       setFilter: setFilter,
       getFilter: getFilter,
       getPossibleFixedPoint: getPossibleFixedPoint,

@@ -28,7 +28,11 @@ All project-specific additions should be implemented here, instead of the main M
 @author: NM
  */
 
+
 Mif.Tree.implement({
+
+        sysArr: [],
+
 	/** 
 		Overridden version of the function to allow process checkbox action (processCheck)
 		and +/- node expansion (processExpand) 
@@ -41,7 +45,7 @@ Mif.Tree.implement({
 		};
 		if(this.mouse.target != 'gadjet') return;
 		this.mouse.node.toggle();
-		this.mouse.node.processExpand();
+		//this.mouse.node.processExpand();
 	},
 	
 	/** 
@@ -49,9 +53,18 @@ Mif.Tree.implement({
 		displays domains corresponding to selected nodes
 	*/
 	processCheck: function(nodeId, checked){
-		var node = this.root.getNodeById(nodeId.replace(/cb_/,''));
+		var node;
+
+		node = this.root.getNodeById(nodeId.replace(/cb_/,''));
 		node.state.checked = checked;
-		this.root.showSelected();
+		this.root.checkChildren(nodeId, checked);
+
+                if(this.showSystems) {
+		   this.addSystem(nodeId, checked);
+                }
+
+		this.showSelected(nodeId, checked);
+
 		return this;
 	},
 
@@ -63,9 +76,293 @@ Mif.Tree.implement({
            node.state.checked = !node.state.checked;
            if($(nodeId)) {
               $(nodeId).checked = node.state.checked;
-              this.root.showSelected();
+              this.root.showSelectedNodes();
            }
            return this;
+        },
+
+//----------------------------------------------------------------------------------
+   // farms out call depending upon this.showSystems flag
+   showSelected: function(nodeId) {
+
+      var node;
+      var checked;
+
+      if(this.showSystems) {
+         //console.log("showSelected: ",nodeId);
+         node = this.root.getNodeById(nodeId.replace(/cb_/,''));
+	 checked = node.state.checked;
+         this.root.showSelectedSystems(nodeId, checked);
+      } else {
+         this.root.showSelectedNodes();
+      }
+      return false;
+   },
+
+//----------------------------------------------------------------------------------
+   // adds a set of nodes to systemStack for display
+   addSystem: function(nodeId, checked) {
+
+      var nodes = [];
+      var children = [];
+      var idArr = [];
+      var col = [];
+      var bare_id;
+      var el;
+      var descendants;
+      var num;
+      var i;
+
+      if(!checked) {
+	 //console.log("not showing %s system",nodeId);
+	 this.removeSystem(nodeId);
+         return false;
+      }
+
+      bare_id = nodeId.replace(/cb_/,'');
+      el = this.root.getNodeById(bare_id);
+      //console.log("addSystem: ",el.id);
+      nodes.push(el);
+      if (el.hasChildren()){ 
+         children = el.getDescendants([]);
+         nodes.combine(children);
+      }
+
+      num = nodes.length;
+      //console.log("nodes is %d long",num);
+      for (i=0; i<num; i++) {
+         id = nodes[i].id;
+         idArr.push(id);
+         //console.log("%s, %s",item.id,item.name);
+         if ($("cb_" + id)){
+            $("cb_" + id).checked = checked;
+         }
+         nodes[i].state.checked = checked; 
+      }
+
+      this.sysArr.push({family:idArr, col:el.color, name:el.name});
+
+      //console.log("sysArr after adding ",this.sysArr);
+
+      return false;
+
+   },
+
+//----------------------------------------------------------------------------------
+   // removes a set of nodes from systemStack
+   removeSystem: function(nodeId) {
+
+      var tmpArr = [];
+      var removed;
+      var tmp;
+      var len;
+      var family = [];
+      var bare_id;
+      var i;
+
+      bare_id = nodeId.replace(/cb_/,'');
+
+      len = this.sysArr.length;
+      //console.log("removeSystem: %s from %d length array",bare_id,len);
+
+      while(this.sysArr.length > 0) {
+	 tmp = this.sysArr.pop();
+         //console.log("tmp.family: ",tmp.family);
+	 if(tmp.family[0] === bare_id) {
+	    removed = tmp;
+	 } else {
+	    tmpArr.push(tmp);
+	 }
+      }
+
+      //console.log("after remove: ",tmpArr);
+      //console.log("   removed: ",removed);
+      //console.log("-----------------------");
+
+      this.sysArr = [];
+      //console.log("   removeSystem: tmpArr: ",tmpArr);
+      while(tmpArr.length > 0) {
+	 this.sysArr.push(tmpArr.pop());
+      }
+
+      tmpArr = [];
+
+      //console.log("   removeSystem: returning: ",this.sysArr);
+
+      return this.sysArr;
+   },
+
+//----------------------------------------------------------------------------------
+   // gets the top level systems for the given node ids
+   filterKidsFromArr: function(el, indx, arr) {
+
+      var ret = [];
+      var test;
+      var id;
+      var arrCopy = [];
+      var childIds = [];
+      var len;
+      var i;
+
+      //console.log("calling filterKids: with %s, at %d in ", el,indx,arr);
+
+      len = arr.length;
+      if(len <= 0) return false;
+
+      for(i=0; i<len; i++) {
+         arrCopy[i] = arr[i]
+      }
+      arrCopy.splice(indx,1);
+
+      //console.log("arr ",arr);
+      //console.log("--------------------------");
+      //console.log("%s arrCopy ",el,arrCopy);
+
+      test = this.root.getNodeById(el);
+      if(test.hasChildren()) {
+         children = test.getDescendants([]);
+         len = children.length;
+         for(i=0; i<len; i++) {
+            childIds.push(children[i].id);
+         }
+         //console.log("children ",childIds);
+	 // see if any of the children of el appear in arr
+	 // and if they do include them in a list of elements to remove
+      } else {
+         //console.log("no children");
+	 return ret;
+      }
+
+      len = arr.length;
+      for(i=0; i<len; i++) {
+         id = arr[i];
+         if(childIds.indexOf(id) > -1) {
+	    ret.push(id);
+	 }
+      }
+
+      //console.log("returning ",ret);
+      return ret;
+   },
+
+//----------------------------------------------------------------------------------
+   // gets the top level systems for the given node ids
+   removeChildren: function(ids) {
+
+      var toRemove = [];
+      var reducedIds = [];
+      var id;
+      var len;
+      var len2;
+      var i,j,k;
+
+      id = ids[0];
+      //console.log("enter removeChildren: %s ",id,ids);
+
+      len = ids.length;
+      for(i=0; i<len; i++) {
+         toRemove = this.filterKidsFromArr(id, i, ids);
+         //console.log("to remove ",toRemove);
+
+	 len2 = toRemove.length;
+	 if(len2 > 0) {
+	    reducedIds = ids.filter(function(x) { return toRemove.indexOf(x) < 0 })
+	    break;
+	 }
+      }
+
+      if(reducedIds.length > 0) {
+         this.removeChildren(reducedIds);
+      }
+
+      //console.log("exit removeChildren: %s ",reducedIds);
+      return reducedIds;
+   },
+
+//----------------------------------------------------------------------------------
+   // gets the top level systems for the given node ids
+   findSystems: function() {
+
+      var selected = [];
+      var children = [];
+      var idArr = [];
+      var sysIds = [];
+      var selIds = [];
+      var reducedIds = [];
+      var removed;
+      var test;
+
+      var len;
+      var len2;
+      var i,j,k;
+
+      //Get all selected nodes
+      selected = this.root.getSelectedNodes([]);
+      if(selected === undefined || selected.length <= 0) {
+         return undefined;
+      }
+
+      len = selected.length;
+      for(i=0; i<len; i++) {
+      	 selIds.push(selected[i].id);
+      }
+      //console.log("findSystems ",selIds);
+
+      // now we have a list of selected ids, remove any children.
+      test = this.root.getNodeById(selIds[0]);
+      if(!test.hasChildren()) {
+         removed = selIds.shift();
+         //console.log("removing childless %s",removed);
+      }
+
+      reducedIds = this.removeChildren(selIds);
+      //console.log("findSystems *** ",reducedIds);
+
+      while(reducedIds.length > 0 && reducedIds.length > sysIds.length) {
+	 //console.log(reducedIds);
+	 if(reducedIds && reducedIds.length > 0) {
+            sysIds.push(reducedIds.shift());
+            reducedIds = this.removeChildren(reducedIds);
+	 }
+      }
+
+      if(reducedIds && reducedIds.length > 0) {
+         sysIds.push(reducedIds.shift());
+      }
+      //console.log("findSystems returning ",sysIds);
+
+      return sysIds;
+   },
+
+//----------------------------------------------------------------------------------
+	/** 
+		Sets a flag to control display of child colours
+	 */
+        setShowSystems: function(val){
+
+	   var sydIds = [];
+	   var len;
+	   var i;
+
+           this.showSystems = val;
+	   if(val) {
+	      sysIds = this.findSystems();
+	      if(sysIds === undefined) {
+	         return false;
+	      }
+	      len = sysIds.length;
+	      if(len > 0) {
+  	         //console.log("sysIds ",sysIds);
+  	         this.root.clearAll();
+  	         for(i=0; i<len; i++) {
+		    this.addSystem("cb_"+sysIds[i], true);
+  	         }
+	         this.showSelected("cb_"+sysIds[0], true);
+	      }
+	   } else {
+	      this.showSelected();
+	   }
+           return false;
         },
 
 	/** 
@@ -138,13 +435,27 @@ All project-specific additions should be implemented here, instead of the main M
 
 Mif.Tree.Draw.getHTML = function(node,html){
 		var prefix = node.tree.DOMidPrefix;
+	        // the alpha value required by css background: rgba(...) is from 0 to 1
+	        // the alpha value required by IIP3DViewer is from 0 to 255
+		var alf = parseFloat(node.color[3] / 255);
+		//console.log("alf ",alf);
+		//console.log("Mif.Tree.Draw.getHTML  domainId %s",node.domainId);
+		var bg = 'rgba(' + node.color[0] + ', ' + node.color[1] + ', ' + node.color[2] + ', ' + alf + ')';
 		if(node.state.checked !== undefined){
 			if (!node.hasCheckbox) node.state.checked=false;
 		    //DomainId should be "" for clickable nodes with defined children, 
 			// and it should be undefined (undeclared) for nodes with no domains associated (black nodes)
 			var isDisabled = "";
-			//if (node.domainId === undefined) isDisabled = "disabled";   
-			var colorPic = '<input class="pick" type="text" id="pic_'+ node.id + '"style="background-color:'+node.color.rgbToHex()+'" title="Click to change colour"' + isDisabled + '/>' ;
+			var titl = "Click to change colour";
+			if (node.domainId === undefined) {
+			   titl = "Click to change system colour";   
+			}
+			if(node.id === "0") { // the very top level
+			   isDisabled = "disabled";
+			   titl = "";   
+			   bg = 'rgba(255,255,255,255)';
+			}
+			var colorPic = '<input class="pick" type="text" id="pic_'+ node.id + '"style="background:'+ bg +'" title="' + titl + '"' + ' ' + isDisabled + '/>' ;
 			var checkbox='<input class="mif-tree-checkbox mif-tree-node-' + node.state.checked + '" type="checkbox" name="'+node.name + '" id="cb_'+ node.id + '" UID='+ node.id + '" style="vertical-align:middle;"' + isDisabled + '/>';
 		}else{
 			var checkbox = '';
@@ -185,6 +496,8 @@ Mif.Tree.Node.implement({
 		Called from Mif.Tree.implement.toggleClick
 		displays domains corresponding to selected nodes
 	*/
+
+	/*
 	processExpand: function(state){
 		if(this.state.open) {
 			this.children.each(function(node){
@@ -204,57 +517,211 @@ Mif.Tree.Node.implement({
 			}
 		});
 	},
+	*/
+
+      //---------------------------------------------------------
+      // checked refers to the state of the checkbox that has changed
+      //---------------------------------------------------------
+      showSelectedNodes: function () {
+
+         var values='';
+         var el;
+         var item;
+         var num;
+         var num2;
+         var i;
+         var j;
+         
+         //Get all selected nodes
+         var allChildren = [];
+         allChildren.combine(this.tree.root.getSelectedNodes([]));
+         num = allChildren.length;
+         for(i=0; i<num; i++) {
+            el = allChildren[i];
+            // we are only interested in selected (checked) elements.
+            if ($("cb_" + el.id)){
+               if($("cb_" + el.id).checked) {
+                  //console.log("%s is selected",el.id);
+                  if (el.domainId !== undefined && el.domainId != ""){
+                     values = values + "&sel=" + el.domainId + "," + el.color;
+                  }
+               } else {
+                  continue;
+               }
+            } else {
+               continue;
+            }
+	 }
+
+         this.tree.view.setSelections(values);
+         return true;
+      },
+
+      //---------------------------------------------------------
+      // checked refers to the state of the checkbox that has changed
+      //---------------------------------------------------------
+      //showSelectedSystems: function (systems, nodeId, checked) {
+      showSelectedSystems: function (nodeId, checked) {
+
+	 var system;
+	 var family;
+	 var col;
+	 var name;
+         var id;
+         var bare_id;
+	 var obj;
+         var values='';
+         var el;
+         var item;
+         var len;
+         var num;
+         var i;
+         var j;
+         
+         bare_id = nodeId.replace(/cb_/,'');
+
+	 len = this.tree.sysArr.length;
+	 for(i=0; i<len; i++) {
+	    system = this.tree.sysArr[i];
+            family = system.family
+            col = system.col
+            name = system.name
+	    
+	    num = family.length;
+
+            if(family[0] === bare_id && !checked) {
+	       //continue;
+	    }
+	    for(j=0; j<num; j++) {
+	       id = family[j];
+               obj = this.tree.root.getNodeById(id);
+               if(obj) {
+                  if (obj.domainId !== undefined && obj.domainId != ""){
+                     values = values + "&sel=" + obj.domainId + "," + col;
+                  }
+  	       }
+	    }
+            //console.log("systems values: ",values);
+	 }
+
+         this.tree.view.setSelections(values);
+
+         return true;
+      },
 
 	//---------------------------------------------------------
-	// Returns the list of checked nodes in the form of a url parameters
+	// Selects/Deselects all child nodes of a node
 	//---------------------------------------------------------
-	showSelected: function (nodeId) {
-	   //console.log("treeImplementHGU.showSelected for nodeId ",nodeId);
-		var transparency = 200; //default transparency level
-		var groupTransparency = 100; //default group transparency level
+	checkChildren: function (nodeId, checked) {
+
+	        var node;
+		var values='';
+		var el;
+		var allChildren = [];
+                var descendants;
+                var bare_id = nodeId.replace(/cb_/,'');
+		var item;
+		var num;
+		var i;
+
+                //console.log("checkChildren: nodeId %s, %s",nodeId,checked);
+                bare_id = nodeId.replace(/cb_/,'');
+                node = $(nodeId);
+                el = this.tree.root.getNodeById(bare_id);
+                //console.log("showChildren: ",el.id);
+                if (el.hasChildren()){ 
+                   descendants = el.getDescendants([]);
+		   num = descendants.length;
+		   for(i=0; i<num; i++) {
+		      item = descendants[i];
+		      //if(item.domainId !== undefined) {
+                         //console.log("%s, %s",item.id,item.name);
+                         if ($("cb_" + item.id)){
+                            $("cb_" + item.id).checked = checked;
+                         }
+                         item.state.checked = checked; 
+		      //}
+		   }
+                }
+
+		return false;
+	},
+
+	//---------------------------------------------------------
+	// Sets new colour for selected node, regardless of having a domain or not
+	//---------------------------------------------------------
+	changeImageElementColour: function (id, rgba) {
+
+            var allChildren = [];
+            var node;
+            var cols;
+            var alf;
+            
+            node = this.tree.root.getNodeById(id);
+	    if(node) {
+               allChildren.combine(this.tree.root.getDescendants([]));
+               allChildren.each(function(el){
+
+                  if(el.id === node.id) {
+   	          //change this element's colour
+                     // the alpha value required by css background: rgba(...) is from 0 to 1
+                     // the alpha value required by IIP3DViewer is from 0 to 255
+                     alf = parseInt(rgba.alpha * 255);
+                     cols = rgba.red + "," + rgba.green + "," + rgba.blue + "," + alf;
+                     node.color[0] = rgba.red;
+                     node.color[1] = rgba.green;
+                     node.color[2] = rgba.blue;
+                     node.color[3] = alf;
+                  }
+               });
+	    }
+            return false;
+	},
+
+	//---------------------------------------------------------
+	// Display all painted domains
+	//---------------------------------------------------------      
+	showAllDomains: function () {
 		var values='';
 		//Get all selected nodes
 		var allChildren = [];
-		allChildren.combine(this.tree.root.getSelectedNodes([]));		
+		allChildren.combine(this.tree.root.getSignificantNodes([]));
 		allChildren.each(function(el){
-			//If a current selected node has children - add them all in parent's colour
-			if (el.hasChildren()){ 
-				var descendants = el.getDescendants([]);
-				var color = el.color;
-				descendants.each(function(item){
-					if (item.domainId !== undefined && item.domainId != ""){
-						values = values + "&sel=" + item.domainId + "," + color + ","+ groupTransparency;
-					}
-				})
+			//values = values + "&sel=" + el.domainId + "," + el.color + ","+ transparency;
+			values = values + "&sel=" + el.domainId + "," + el.color;
+			if ($("cb_"+el.id)){
+			   $("cb_"+el.id).checked = true;
 			}
-			if (el.domainId !== undefined && el.domainId != ""){
-				values = values + "&sel=" + el.domainId + "," + el.color + ","+ transparency;
-			}
+			el.state.checked = true; 
 		});
+
 		//Compose and fire URL
 		this.tree.view.setSelections(values);
 		return true;
 	},
 
 	//---------------------------------------------------------
-	// Returns the list of all painted domains
+	// Clear all nodes (not just painted ones but their ancestors too)
 	//---------------------------------------------------------      
-	showAllDomains: function (state) {
-		var transparency = 200; //default transparency level
-		var values='';
-		//Get all selected nodes
-		var allChildren = [];
-		allChildren.combine(this.tree.root.getSignificantNodes([]));
-		allChildren.each(function(el){
-			values = values + "&sel=" + el.domainId + "," + el.color + ","+ transparency;
-			if ($("cb_"+el.id)){
-			   $("cb_"+el.id).checked = state;
-			}
-			el.state.checked = state; 
-		});
-		//Compose and fire URL
-		this.tree.view.setSelections(values);
-		return true;
+	clearAll: function () {
+
+            var values='';
+            //Get all selected nodes
+            var allChildren = [];
+            allChildren.combine(this.tree.root.getDescendants([]));
+            allChildren.each(function(el){
+               if ($("cb_"+el.id)){
+                  $("cb_"+el.id).checked = false;
+               }
+               el.state.checked = false; 
+            });
+
+            // also clear the 'systems' array
+            this.tree.sysArr = [];
+
+            //Compose and fire URL
+            this.tree.view.setSelections(values);
+            return true;
 	},
 
 	//---------------------------------------------------------

@@ -87,11 +87,6 @@ var DraggableWindow = new Class ({
       }
       //console.log("%s transparent %s",this.initiator.name, this.isTransparent);
 
-      this.borders = (params.borders === undefined) ? true : params.borders;
-      if(typeof(params.borders)  === "string") {
-          this.borders = (params.borders === "false") ? false : true;
-      }
-
       this.hasThinTopEdge = (params.thinTopEdge === undefined) ? false : params.thinTopEdge;
       if(typeof(params.thinTopEdge)  === "string") {
           this.hasThinTopEdge = (params.thinTopEdge === "true") ? true : false;

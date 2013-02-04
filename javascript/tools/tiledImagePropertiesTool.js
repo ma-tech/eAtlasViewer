@@ -356,39 +356,29 @@ var tiledImagePropertiesTool = new Class ({
 
       //console.log("enter tiledImagePropertiesTool viewUpdate:",viewChanges);
 
-      var state;
-      var props;
+      var currentLayer;
+      var currentLayerData;
       var opacity;
-      var red;
-      var green;
-      var blue;
+      var filter;
 
       if(viewChanges.initial === true) {
+         //console.log("viewChanges.initial ",viewChanges.initial);
          this.setPropertiesVisible(false);
-         state = this.model.getInitialState();
-         if(state.props) {
-            props = state.props;
-            opacity = parseFloat(props.opacity);
-            red = parseInt(props.red);
-            green = parseInt(props.green);
-            blue = parseInt(props.blue);
-            this.view.setOpacity({value:opacity.toFixed(2), fromSlider:false});
-            this.view.setFilter({value:red, type:'red', fromSlider:false});
-            this.view.setFilter({value:green, type:'green', fromSlider:false});
-            this.view.setFilter({value:blue, type:'blue', fromSlider:false});
-         }
          this.setToCurrentLayer();
       }
 
       //...................................
       if(viewChanges.opacity === true) {
+         //console.log("viewChanges.opacity ",viewChanges.opacity);
 	 var currentLayer = this.view.getCurrentLayer();
 	 if(typeof(this.layerNames) === 'undefined') {
 	    //console.log("tiledImagePropertiesTool viewUpdate: this.layerNames undefined");
 	    return false;
 	 }
 	 var opacity = this.view.getOpacity(currentLayer);
-	 this.opacityValueContainer.set('text', (Math.round(opacity * 100) / 100));
+         //console.log("viewChanges.opacity opacity ",opacity);
+	 //this.opacityValueContainer.set('text', (Math.round(opacity * 100) / 100));
+	 this.opacityValueContainer.set('text', opacity);
       }
 
       //...................................
@@ -420,10 +410,11 @@ var tiledImagePropertiesTool = new Class ({
 
    //--------------------------------------------------------------
    setToCurrentLayer: function () {
-      //console.log("properties.viewUpdate: currentLayer %s",currentLayer);
+      //console.log("setToCurrentLayer");
       var step;
       var currentLayer = this.view.getCurrentLayer();
       var opacity = this.view.getOpacity(currentLayer);
+      //console.log("setToCurrentLayer: opacity ",opacity);
       var filter = this.view.getFilter(currentLayer);
       this.titleTextDiv.set('text', currentLayer);
 

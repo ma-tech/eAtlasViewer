@@ -88,6 +88,9 @@ var SliderComponent = new Class ({
       this.offset = (params.offset === undefined) ? 0 : params.offset;
       var cursorColour = (params.cursorColour === undefined) ? "red" : params.cursorColour;
 
+      this.float = (params.float === undefined) ? 'none' : params.float;
+      //console.log("slider float ",this.float);
+
       var imagePath = this.model.getInterfaceImageDir();
 
       this.knob = new Element('div', {
@@ -98,6 +101,7 @@ var SliderComponent = new Class ({
 	 'id': this.type + '_sliderContainer',
 	 'class': this.mode
       });
+      this.sliderContainer.style.cssFloat = this.float;
 
       this.sliderBody = new Element('div', {
 	 'id': this.type + '_sliderBody',
@@ -156,7 +160,7 @@ var SliderComponent = new Class ({
     *   If snap true or false: event fires on mouse down (not on knob).
     */
    doStepChanged: function(step) {
-      //console.log("enter doStepChanged: step = %s",step);
+      //console.log("sliderComponent doStepChanged: step %s, userChange %s",step,this.userChange);
       if(this.userChange) {
 	 this.initiator.doStepChanged(step, this.type);
       }
@@ -169,16 +173,21 @@ var SliderComponent = new Class ({
     */
    doCompleted: function(step) {
       //console.log("%s slider: doCompleted, userChange %s",this.type,this.userChange);
-      //if(this.userChange) {
+      if(this.userChange) {
          //console.log("%s slider: doCompleted",this.type);
 	 this.initiator.doSliderCompleted(step, this.type);
-      //}
+      }
    },
 
    //---------------------------------------------------------------
    setStep: function(step) {
       //console.log("setSliderStep: step %s",step);
       this.slider.set(step);
+   },
+
+   //---------------------------------------------------------------
+   getStep: function() {
+      return this.slider.step;
    },
 
    //---------------------------------------------------------------

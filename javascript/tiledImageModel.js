@@ -80,6 +80,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var initialState = {};
    var x3dInfo = {};
    var pointClickImgData = {};
+   var undelineatedRGBA = {r:240, g:240, b:240, a:255};
    var pixelResolution = {x:1, y:1, z:1, units:["\u03BC\u006D", "\u006D\u006D"]}; // default values
    var layerNames = []; // read in with initModelCallback()
    var layerData = {}; // this must be an object, not an array
@@ -1522,6 +1523,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	    }
 	    initView();
 	 }
+
       }
 
       if(_debug) {
@@ -2800,6 +2802,7 @@ emouseatlas.emap.tiledImageModel = function() {
 
       var treeNodeWithData = {};
       var open;
+      var defArr = [undelineatedRGBA.r, undelineatedRGBA.g, undelineatedRGBA.b, undelineatedRGBA.a];
 
       var data = layerData[layerName].treeData;
       var nodeData = data[nodeId];
@@ -2810,8 +2813,8 @@ emouseatlas.emap.tiledImageModel = function() {
 	    var domainId = (typeof(domainData.domainId) === 'undefined') ? undefined : domainData.domainId;
 	    var domainColour = (typeof(domainData.domainColour) === 'undefined') ? undefined : domainData.domainColour;
 	    var domainSelected = (domainData.domainSelected === 'true' || domainData.domainSelected === true) ? true : false;
-	    // the undefined case should be undefined not [0,0,0]
 	    var rgb = (domainData.domainColour === undefined) ? [0,0,0] : [domainColour[0],domainColour[1],domainColour[2]];
+	    var rgba = (domainData.domainColour === undefined) ? defArr : [domainColour[0],domainColour[1],domainColour[2],domainColour[3]];
 	 }
 	 var nodeState = nodeData.nodeState;
 	 if(nodeState !== undefined) {
@@ -2819,7 +2822,8 @@ emouseatlas.emap.tiledImageModel = function() {
 	 }
 	 var extId = (typeof(nodeData.extId) === 'undefined') ? undefined : nodeData.extId;
 
-	 treeNodeWithData.property = {"name": nodeName, "color": rgb, 'fbId':extId, 'id':nodeId, 'domainId':domainId};
+	 //treeNodeWithData.property = {"name": nodeName, "color": rgb, 'fbId':extId, 'id':nodeId, 'domainId':domainId};
+	 treeNodeWithData.property = {"name": nodeName, "color": rgba, 'fbId':extId, 'id':nodeId, 'domainId':domainId};
 	 treeNodeWithData.state = {"open": open, "checked": domainSelected};
 	 treeNodeWithData.children = [];
 	 //console.log("getTreeNodeData: treeNodeWithData ",treeNodeWithData);
@@ -2885,6 +2889,11 @@ emouseatlas.emap.tiledImageModel = function() {
 
       _debug = deb;
       return ret;
+   };
+
+   //---------------------------------------------------------
+   var getUndelineatedRGBA = function () {
+      return undelineatedRGBA;
    };
 
    //---------------------------------------------------------
@@ -3135,6 +3144,7 @@ emouseatlas.emap.tiledImageModel = function() {
       getQueryDataUrl: getQueryDataUrl,
       getKeySections: getKeySections,
       getKeySectionNames: getKeySectionNames,
+      getUndelineatedRGBA: getUndelineatedRGBA,
       getScalebarLen: getScalebarLen
    };
 

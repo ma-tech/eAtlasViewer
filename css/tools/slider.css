@@ -87,8 +87,11 @@
    border: none;
    width: 3px;
    height: 12px;
-   background-image: url(../../images/redSliderCursor.png);
+   background-image: url(../../images/alphaSliderCursor.png);
    cursor: pointer;
+}
+.knob.red {
+   background-image: url(../../images/redSliderCursor.png);
 }
 .knob.green {
    background-image: url(../../images/greenSliderCursor.png);
