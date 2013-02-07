@@ -399,6 +399,8 @@ var tiledImageTreeTool = new Class ({
       var evt;
       var target;
 
+      //console.log("enableColChoose:");
+
       evt = e || window.event;
       target = emouseatlas.emap.utilities.getTarget(evt);
       //console.log("enableColChoose: %s",target.id);

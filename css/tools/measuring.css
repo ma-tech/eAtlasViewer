@@ -21,10 +21,10 @@
 /* style for tiledImageFixedPointTool */
 
 /* --------------------------- */
-.titleTextContainer {
+.measuringTitleTextContainer {
    position: relative;
    top: -1px;
-   width: 75px;
+   width: 50px;
    padding: 0px;
    margin: 0px;
    margin-left: auto;
@@ -33,7 +33,7 @@
    color: #000;
 }
 
-.titleTextDiv {
+.measuringTitleTextDiv {
    border: none;
    padding: 0px;
    margin: 0px;
