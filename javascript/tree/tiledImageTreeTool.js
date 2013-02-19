@@ -63,9 +63,11 @@ var tiledImageTreeTool = new Class ({
       this.width = parseInt(params.params.width);
       this.height = parseInt(params.params.height);
 
-      this.toRight = (params.toRight === undefined) ? "true" : this.toRight;
+      this.toRight = (params.params.toRight === undefined) ? "true" : params.params.toRight;
       this.toRight = (this.toRight === "false") ? false : true;
-      //console.log("tiledImageTreeTool toRight ",this.toRight);
+
+      this.systems = (params.params.systems === undefined) ? "true" : params.params.systems;
+      this.systems = (this.systems === "false") ? false : true;
 
       var imagePath = this.model.getInterfaceImageDir();
 
@@ -212,10 +214,12 @@ var tiledImageTreeTool = new Class ({
 	    'checked': false
 	    });
 
-      systemChkbxDiv.inject(treeControlContainer, 'inside');
-      systemChkbx.inject(systemChkbxDiv, 'inside');
-      systemChkbxLabel.inject(systemChkbxDiv, 'inside');
-      systemChkbxLabel.set('text', 'Systems');
+      if(this.systems) {
+         systemChkbxDiv.inject(treeControlContainer, 'inside');
+         systemChkbx.inject(systemChkbxDiv, 'inside');
+         systemChkbxLabel.inject(systemChkbxDiv, 'inside');
+         systemChkbxLabel.set('text', 'Systems');
+      }
 
       //----------------------------------------
       // container for the tree

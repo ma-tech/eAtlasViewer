@@ -1654,6 +1654,11 @@ emouseatlas.emap.pointClick = function() {
       var len;
       var len2;
 
+      _debug = false;
+
+      if(_debug) console.log("findClosestMarkersToPoint ",point);
+      //if(_debug) console.log("scale ",scale);
+
       if(point === undefined) {
          return;
       }
@@ -1674,7 +1679,7 @@ emouseatlas.emap.pointClick = function() {
 	 for(j=0; j<len2; j++) {
 	    locn = locations[j];
 	    if(locn.img != currentImg) {
-	       //if(_debug) console.log("different image %d, %d",i,j);
+	       if(_debug) console.log("different image %d, %d",i,j);
 	       continue;
 	    }
 	    if(locn.x === "0" && locn.y === "0" && locn.z === "0") {
@@ -1686,6 +1691,7 @@ emouseatlas.emap.pointClick = function() {
 	    diffX = (imx - ipx);
 	    diffY = (imy - ipy);
 	    dist = Math.sqrt(diffX * diffX + diffY * diffY);
+	    if(_debug) console.log("dist ",dist);
 	    dist = Math.round(dist);
 	    tmpArr[tmpArr.length] = {key:key, dist:dist};
 	 }
@@ -1698,7 +1704,7 @@ emouseatlas.emap.pointClick = function() {
       // sort the markers by closest
       var deb = _debug;
       //_debug = true;
-      if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tmpArr);
+      //if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tmpArr);
       _debug = deb;
 
       tmpArr.sort(function(A,B) {
@@ -1713,6 +1719,8 @@ emouseatlas.emap.pointClick = function() {
       tmpArr = utils.filterDuplicatesFromArray(tempMarkerKeys);
       tempMarkerKeys = utils.duplicateArray(tmpArr);
       //if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tempMarkerKeys);
+
+      _debug = false;
    }; // findClosestMarkersToPoint
 
    //---------------------------------------------------------------

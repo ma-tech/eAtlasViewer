@@ -1262,8 +1262,8 @@ emouseatlas.emap.tiledImageView = function() {
 	 } else if(mode === "pointClick") {
 	    //console.log("docX %d, docY %d",docX, docY);
 	    //console.log("pointClickPoint.x %d, pointClickPoint.y %d",pointClickPoint.x, pointClickPoint.y);
+	    pointClickPoint = getMousePositionInImage({x:docX, y:docY});
 	    if(pointClickEditor) {
-	       pointClickPoint = getMousePositionInImage({x:docX, y:docY});
 	       if(movingPCPoint) {
 	          viewChanges.movingPCPoint = true;
 	       } else {
@@ -3496,6 +3496,7 @@ emouseatlas.emap.tiledImageView = function() {
 	            width:toolData.tree.width,
 	            height:toolData.tree.height,
                     toRight:toolData.tree.toRight,
+                    systems:toolData.tree.systems,
 		    x:toolData.tree.x,
 		    y:toolData.tree.y,
 		    allowClose: false}
