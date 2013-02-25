@@ -1,0 +1,105 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for tiledImageSelectorTool */
+
+#selectorTitleTextSpacer {
+   float: left;
+   width: 18px;
+   height: 8px;
+   margin: 0px;
+   padding:0px;
+}
+
+#selector-incDiv {
+   position: relative;
+   float: left;
+   top: 7px;
+   left: 6px;
+   height: 10px;
+   width: 10px;
+}
+
+#selector-incImg {
+}
+
+#selector-decDiv {
+   position: relative;
+   float: left;
+   top: 7px;
+   left: 5px;
+   height: 10px;
+   width: 10px;
+}
+
+#selector-decImg {
+}
+
+#selector-controlDiv {
+   position: relative;
+   font-size: 11px;
+   height: 20px;
+   width: 84px;
+}
+
+#selector-label {
+   position: relative;
+   float:left;
+   top: 6px;
+   left: 2px;
+}
+
+#selector-dropDownDiv {
+   position: relative;
+   float:left;
+   top: 0px;
+   left: 4px;
+}
+
+#selector-dropDown {
+   position: relative;
+   top: 1px;
+   left: 0px;
+   width:37px;
+   height:20px;
+   font-size: 12px;
+   font-style: bold;
+   color: #303;
+}
+
+#selector-imageContainer {
+   position: absolute;
+}
+img.selector-image {
+}
+
+#selector-cursorBarContainer {
+   position: absolute;
+   width: 10px;
+   top: 0px;
+   cursor: move;
+}
+#selector-cursorBar {
+   position: absolute;
+   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+   opacity: 0.8;
+   background: #f0f;
+}
+

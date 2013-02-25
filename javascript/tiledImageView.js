@@ -1204,7 +1204,6 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       if (model.isWlzData() && !(mode === "query" && query.getQueryType() === "spatial")) {
-	 url;
 	 qlt = model.getImgQuality();
 	 obj = "&obj=Wlz-foreground-objects";
 	 if(indexName ||
@@ -1301,6 +1300,8 @@ emouseatlas.emap.tiledImageView = function() {
       // the first element should always be for index data.
       // the second element, if present will be for coord data.
       var respArr = response1.split("\n");
+
+      //console.log("getDataAtMouseCallback", respArr);
 
       var index = respArr[0].indexOf(":");
       if(index === -1) {
@@ -1485,6 +1486,9 @@ emouseatlas.emap.tiledImageView = function() {
    // When mouse pauses over 'indexed' data in the image, show a 'tooltip'
    //--------------------------------------------------------------
    var showImgLabel = function (evt) {
+
+      //console.log("showImgLabel imgLabels_enabled %s",imgLabels_enabled);
+
       if(emouseatlas.emap.imgLabel && imgLabels_enabled) {
          getDataAtMouse(evt, {
             addQueryTerm:false,
@@ -3563,6 +3567,23 @@ emouseatlas.emap.tiledImageView = function() {
 
       if(typeof(tools.tprPointClick) !== 'undefined') {
          emouseatlas.emap.tprPointClick.initialize();
+      }
+
+      if(typeof(tools.pointClickSelector) !== 'undefined') {
+	 new pointClickSelector({
+	    model:model,
+	    view:view,
+	    params:{targetId:toolData.pointClickSelector.targetId,
+	            drag:toolData.pointClickSelector.draggable,
+	            toBottom:toolData.pointClickSelector.toBottom,
+		    invert:toolData.pointClickSelector.invertArrows,
+		    useFilename:toolData.pointClickSelector.useFilename,
+	            maxdim:toolData.pointClickSelector.maxdim,
+	            width:toolData.pointClickSelector.width,
+		    height:toolData.pointClickSelector.height,
+		    x:toolData.pointClickSelector.x,
+		    y:toolData.pointClickSelector.y}
+	 });
       }
 
       if(typeof(tools.threeDFeedback) !== 'undefined') {

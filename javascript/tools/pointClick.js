@@ -900,6 +900,8 @@ emouseatlas.emap.pointClick = function() {
       prnt = target.parentNode;
       pKlass = prnt.className;
 
+      //console.log("doMouseOverLabelTableRow");
+
       if(target.hasClass('markerLabelTableCell')) {
          cell = target;
       } else if(prnt.hasClass('markerLabelTableCell')) {
@@ -2194,10 +2196,11 @@ emouseatlas.emap.pointClick = function() {
       var len;
       var i;
 
+      //console.log("displayMarker key %s",key);
       if(key === undefined || key === null || key === "") {
          return false;
       }
-      //if(_debug) console.log("displayMarker currentImg %s, key %s",currentImg,key);
+      //if(_debug) console.log("displayMarker key %s, currentImg",key,currentImg);
 
       markerNode = subplateMarkerDetails[key];
       locdets = markerNode.locdets;
@@ -2207,6 +2210,7 @@ emouseatlas.emap.pointClick = function() {
 
       for(i=0; i<len; i++) {
 	 subplate = locdets[i].img;
+         if(_debug) console.log("displayMarker subplate %s",subplate);
 	 if(subplate != currentImg) {
 	    flags[i].setStyles({
 	       'visibility': 'hidden'
@@ -2593,7 +2597,7 @@ emouseatlas.emap.pointClick = function() {
 	 hideAllMarkers();
          dst = model.getDistance();   
 	 previousImg = currentImg;
-         currentImg = pointClickImgData.sectionMap[dst.cur];
+         currentImg = pointClickImgData.subplate + pointClickImgData.sectionMap[dst.cur].label;
 	 //if(_debug) console.log(currentImg);
 	 showSelectedMarkers();
       }
@@ -2608,7 +2612,7 @@ emouseatlas.emap.pointClick = function() {
       if(viewChanges.initial === true) {
 	 //window.setVisible(false);
          var dst = model.getDistance();   
-	 currentImg = pointClickImgData.sectionMap[dst.cur];
+         currentImg = pointClickImgData.subplate + pointClickImgData.sectionMap[dst.cur].label;
 	 previousImg = currentImg;
       }
 
@@ -2620,6 +2624,7 @@ emouseatlas.emap.pointClick = function() {
 
       //...................................
       if(viewChanges.pointClick) {
+         //console.log("pointClick: viewChanges.pointClick %s",viewChanges.pointClick);
          if(!ALLOW_CLOSEST_MARKERS || !allowClosestMarkers) return false;
 	 var point = view.getPointClickPoint();
 	 hideTempMarkers(false);
