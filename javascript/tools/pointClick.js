@@ -58,7 +58,7 @@ emouseatlas.emap.pointClick = function() {
    var subplateMarkerDetails;
    var pointClickImgData;
    var subplateImgNames = [];
-   var noSubplates = false;;
+   var SINGLE_PLATE = false;
    var currentImg;
    var previousImg = undefined;
    var markerContainerId;
@@ -97,7 +97,7 @@ emouseatlas.emap.pointClick = function() {
       view.register(this);
 
       pointClickImgData = model.getPointClickImgData();
-      //if(_debug) console.log("pointClickImgData ",pointClickImgData);
+      if(_debug) console.log("pointClickImgData ",pointClickImgData);
 
       createElements();
       getPlateData();
@@ -139,10 +139,23 @@ emouseatlas.emap.pointClick = function() {
 	 and empty resultText (it is suffering from the 'different domain' problem).
       */
 
-      var plate = pointClickImgData.plate;
-      var subplate = pointClickImgData.subplate;
-      var url = '/kaufmanwebapp/GetPlateDataSQL';
-      var ajaxParams = {
+      var plate;
+      var subplate;
+      var url;
+      var ajaxParams;
+      var ajax;
+
+      plate = pointClickImgData.plate;
+      subplate = pointClickImgData.subplate;
+
+      if(plate === subplate) {
+         SINGLE_PLATE = true;
+      } else {
+         SINGLE_PLATE = false;
+      }
+
+      url = '/kaufmanwebapp/GetPlateDataSQL';
+      ajaxParams = {
          url:url,
          method:"POST",
 	 urlParams:"plate=" + plate + "&subplate=" + subplate,
@@ -150,7 +163,7 @@ emouseatlas.emap.pointClick = function() {
          async:true
       }
       //if(_debug) console.log(ajaxParams);
-      var ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 
    }; // getPlateData
@@ -185,7 +198,7 @@ emouseatlas.emap.pointClick = function() {
          //if(_debug) console.log("getPlateDataCallback returning: json null");
          return false;
       }
-      //if(_debug) console.log("getPlateDataCallback json ",json);
+      if(_debug) console.log("getPlateDataCallback json ",json);
 
       subplateNames = storeSubplateNames(json);
       //if(_debug) console.log(subplateNames," ",subplateImgNames);
@@ -376,29 +389,28 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var getSubplateData = function (plateData, subplate) {
 
-      //if(_debug) console.log("getSubplateData: plateData ",plateData);
-      //if(_debug) console.log("getSubplateData: subplate ",subplate);
-
-      if(plateData === undefined || plateData === null) {
-         return undefined;
-      }
-      if(subplate === undefined || subplate === null || subplate === "") {
-         noSubplates = true;
-      } else {
-         noSubplates = false;
-      }
-
       var len;
       var plate;
       var i;
       var name = "";
       var foundPlate = false;
 
+      if(_debug) console.log("getSubplateData: plateData ",plateData);
+      if(_debug) console.log("getSubplateData: subplate ",subplate);
+
+      if(plateData === null || plateData === undefined || plateData.length <= 0) {
+         return undefined;
+      }
+
+      if(SINGLE_PLATE) {
+         return plateData[0].images;
+      }
+
       len = plateData.length;
       for(i=0; i<len; i++) {
          plate = plateData[i];
          //if(_debug) console.log("getSubplateData: plate ",plate);
-	 if(noSubplates || plate.subplate === subplate) {
+	 if(plate.subplate === subplate) {
 	    foundPlate = true;
 	    break;
          }
@@ -1656,8 +1668,6 @@ emouseatlas.emap.pointClick = function() {
       var len;
       var len2;
 
-      _debug = false;
-
       if(_debug) console.log("findClosestMarkersToPoint ",point);
       //if(_debug) console.log("scale ",scale);
 
@@ -1704,11 +1714,6 @@ emouseatlas.emap.pointClick = function() {
       }
 
       // sort the markers by closest
-      var deb = _debug;
-      //_debug = true;
-      //if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tmpArr);
-      _debug = deb;
-
       tmpArr.sort(function(A,B) {
 	       return(A.dist-B.dist);
             });
@@ -1722,7 +1727,6 @@ emouseatlas.emap.pointClick = function() {
       tempMarkerKeys = utils.duplicateArray(tmpArr);
       //if(_debug) console.log("findClosestMarkers: tempMarkerKeys ",tempMarkerKeys);
 
-      _debug = false;
    }; // findClosestMarkersToPoint
 
    //---------------------------------------------------------------
@@ -2196,17 +2200,16 @@ emouseatlas.emap.pointClick = function() {
       var len;
       var i;
 
-      //console.log("displayMarker key %s",key);
       if(key === undefined || key === null || key === "") {
          return false;
       }
-      //if(_debug) console.log("displayMarker key %s, currentImg",key,currentImg);
+      if(_debug) console.log("displayMarker key %s, currentImg",key,currentImg);
 
       markerNode = subplateMarkerDetails[key];
       locdets = markerNode.locdets;
       flags = markerNode.flags;
       len = locdets.length;
-      //if(_debug) console.log("displayMarker markerNode ",markerNode);
+      if(_debug) console.log("displayMarker markerNode ",markerNode);
 
       for(i=0; i<len; i++) {
 	 subplate = locdets[i].img;
@@ -2314,9 +2317,6 @@ emouseatlas.emap.pointClick = function() {
       var newX;
       var newY;
 
-      var deb = _debug;
-      //_debug = true;
-
       if(_debug) console.log("enter positionMarker");
 
       if(key === undefined || key === null || key === "") {
@@ -2353,7 +2353,6 @@ emouseatlas.emap.pointClick = function() {
       }
       if(_debug) console.log("exit positionMarker");
 
-      _debug = deb;
    };
    
    //---------------------------------------------------------------

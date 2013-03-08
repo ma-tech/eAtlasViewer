@@ -1375,7 +1375,7 @@ emouseatlas.emap.tiledImageModel = function() {
       get2DMetadata();
 
       if(_debug) {
-         console.log("exit getStackMetadataCallback_1 %s");
+         console.log("exit getStackMetadataCallback_1");
       }
    }; // getStackMetadataCallback_1
 
@@ -2658,6 +2658,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 fullImgFilename = layer.imageDir + slice + imgFilename;
       } else if(isPyrTiff_origNames) {
 	 var indx = Math.round(dst.cur);
+	 //console.log("indx %d ",indx,dataImgPaths);
 	 imgFilename = dataImgPaths[indx];
 	 if(imgFilename === undefined) {
 	    fullImgFilename = undefined;
