@@ -33,9 +33,7 @@
 //---------------------------------------------------------
 
 //---------------------------------------------------------
-// tiledImageEquivalentSectionTool
 //---------------------------------------------------------
-//emouseatlas.emap.tiledImageEquivalentSectionTool = new Class ({
 var queryAnatomy = new Class ({
 
    that: this,
