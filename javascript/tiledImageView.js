@@ -1136,7 +1136,7 @@ emouseatlas.emap.tiledImageView = function() {
       //=================================================================================
       mode = getMode().name;
 
-      //console.log("getDataAtMouse mode = %s, mouseDownInImage %s",mode,mouseDownInImage);
+      //console.log("getDataAtMouse mode = %s, mouseDownInImage %s params ",mode,mouseDownInImage,params );
 
       measuringOrigin = false;
       measuringTarget = false;
@@ -1488,6 +1488,7 @@ emouseatlas.emap.tiledImageView = function() {
    var showImgLabel = function (evt) {
 
       //console.log("showImgLabel imgLabels_enabled %s",imgLabels_enabled);
+      //console.log("emouseatlas.emap.imgLabel ",emouseatlas.emap.imgLabel);
 
       if(emouseatlas.emap.imgLabel && imgLabels_enabled) {
          getDataAtMouse(evt, {
@@ -1534,6 +1535,8 @@ emouseatlas.emap.tiledImageView = function() {
       var len2;
       var i;
       var j;
+
+     // console.log("showImgLabel_cb  ",indexArr);
 
       layerNames = model.getLayerNames();
       layerData = model.getLayerData();
@@ -2279,7 +2282,7 @@ emouseatlas.emap.tiledImageView = function() {
 
    //---------------------------------------------------------
    var doMouseUp = function (e) {
-      console.log("View: doMouseUp");
+     // console.log("View: doMouseUp");
    };
 
    //---------------------------------------------------------

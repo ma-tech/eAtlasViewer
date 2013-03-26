@@ -165,6 +165,10 @@ var pointClickSelector = new Class ({
       });
       this.cursorBar.inject( this.cursorBarContainer , 'inside');
 
+      if(this.getSelectorSrc() === undefined) {
+         this.cursorBar.style.visibility = 'hidden';
+      }
+
       //------------------------------------
       var dragTarget = this.shortName + '-win';
       $(dragTarget).addEvent('mouseup', function(e) {
@@ -176,8 +180,7 @@ var pointClickSelector = new Class ({
 	 'id': 'selector-controlDiv'
       });
       this.controlDiv.inject( this.window.win , 'inside');
-      //this.controlDiv.style.top = parseInt(imgH + 10) + 'px';
-      this.controlDiv.style.top = imgH + 'px';
+      this.controlDiv.style.top = Number(imgH) + Number(2) + 'px';
 
       this.label = new Element( 'div', {
 	 'id': 'selector-label'
@@ -434,6 +437,10 @@ var pointClickSelector = new Class ({
       layerNames = this.model.getLayerNames();
       layer = layerData[layerNames[0]];  // in future we should be able to select which layer provides the selector Image
 
+      if(layer.selectorName === undefined || layer.selectorName === "") {
+         return undefined;
+      }
+
       if(this.kaufman) {
          num = this.zsel.imgRange.length;
          //console.log("getting selector name for kaufman with %d ranges",num);
@@ -483,6 +490,11 @@ var pointClickSelector = new Class ({
       dataPath =  layer.imageDir;
       
       selectorName = this.getSelectorName();
+
+      if(selectorName === undefined || selectorName === "") {
+         return undefined;
+      }
+
       
       selectorSrc = server + '?fif=' + dataPath + selectorName
          + '&wid='

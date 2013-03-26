@@ -499,7 +499,12 @@ emouseatlas.emap.tiledImageModel = function() {
          if(kd.image) {
             pointClickImgData.image = kd.image;
          }
+         if(kd.comps) {
+            pointClickImgData.comps = kd.comps;
+         }
       }
+
+      //console.log("pointClickImgData kd ",kd);
 
       if(json.pixelResolution !== undefined) {
          pixres = json.pixelResolution;
@@ -2049,6 +2054,7 @@ emouseatlas.emap.tiledImageModel = function() {
       }
       ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
 
+      // For kaufman point & click entry: start
       if(typeof(params.editor) !== 'undefined') {
          //console.log("model: params.editor -->%s<--",params.editor);
 	 if(params.editor === '1') {
@@ -2063,10 +2069,17 @@ emouseatlas.emap.tiledImageModel = function() {
 	 urlSpecified.subplate = params.subplate;
       }
 
-      if(typeof(params.compArr) !== 'undefined') {
-         if(_debug) console.log("model: params.compArr -->%s<--",params.compArr);
-	 urlSpecified.compArr = params.compArr;
+      if(typeof(params.image) !== 'undefined') {
+         if(_debug) console.log("model: params.image -->%s<--",params.image);
+	 urlSpecified.image = params.image;
       }
+
+      if(typeof(params.comps) !== 'undefined') {
+         if(_debug) console.log("model: params.comps -->%s<--",params.comps);
+	 urlSpecified.comps = params.comps;
+      }
+
+      // For kaufman point & click entry: end
 
       if(_debug) console.log("urlSpecified ",urlSpecified);
 
@@ -2205,6 +2218,11 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var isEditor = function () {
       return EDITOR;
+   };
+
+   //---------------------------------------------------------
+   var getUrlSpecifiedParams = function () {
+      return urlSpecified;
    };
 
    //---------------------------------------------------------
@@ -3088,6 +3106,7 @@ emouseatlas.emap.tiledImageModel = function() {
       getLayerNames: getLayerNames,
       getLayerData: getLayerData,
       getDataSubType: getDataSubType,
+      getUrlSpecifiedParams: getUrlSpecifiedParams,
 
       getIndexData: getIndexData,
       getFullImgDims: getFullImgDims,
