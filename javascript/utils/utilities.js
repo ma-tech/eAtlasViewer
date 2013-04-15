@@ -822,6 +822,21 @@ if(!emouseatlas.emap.utilities) {
 
       //---------------------------------------------------------
       /**
+       *   Sorts an array of values numerically.
+       *   Assumes sort in ascending order.
+       *   @return the result of the comparison.
+       */
+      sortArrayNumerically: function(arr) {
+
+         arr.sort(function(a, b) {
+	     return a - b;
+	     });
+
+	 return arr;
+      },
+
+      //---------------------------------------------------------
+      /**
        *   Helper function to sort an array of marker objects.
        *   The marker has x,y coords and can be sorted by x or by y.
        */

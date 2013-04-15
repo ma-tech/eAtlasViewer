@@ -746,7 +746,7 @@ var queryTool = new Class ({
 
       if(viewChanges.mode) {
 	 mode = this.view.getMode();
-	 //console.log("mode ",mode);
+	 //console.log("queryTool.viewUpdate: mode ",mode);
 	 if(mode.name === 'query') {
 	    this.setQueryToolVisible(true, type);
 	 } else {
@@ -1634,7 +1634,12 @@ var queryTool = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
-   }
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
+   }.bind(this)
 
 
 }); // Class queryTool

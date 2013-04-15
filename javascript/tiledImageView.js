@@ -2951,7 +2951,7 @@ emouseatlas.emap.tiledImageView = function() {
 
       // initialise tiledImageQuery
       if(query) {
-         query.initialise();
+         query.initialise(getName());
       }
 
       _debug = deb;
@@ -4209,6 +4209,12 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   var getName = function () {
+      //console.log(observer);
+      return 'tiledImageView';
+   };
+
+   //---------------------------------------------------------
    // Opacity must be between 0 and 1.0 with 1.0 being 'solid'.
    var setOpacity = function(params) {
 
@@ -4903,6 +4909,7 @@ emouseatlas.emap.tiledImageView = function() {
    return {
       initialise: initialise,
       register: register,
+      getName: getName,
       modelUpdate:modelUpdate,
       queryUpdate:queryUpdate,
       updateDst: updateDst,

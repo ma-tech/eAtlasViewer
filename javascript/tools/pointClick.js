@@ -188,7 +188,7 @@ emouseatlas.emap.pointClick = function() {
          return false;
       }
       if(_debug) console.log("getPlateInfoCallback json ",json);
-      console.log("getPlateInfoCallback json ",json);
+      //console.log("getPlateInfoCallback json ",json);
 
 
    }; // getPlateInfoCallback:
@@ -521,8 +521,12 @@ emouseatlas.emap.pointClick = function() {
       keys = getSubplateKeys();
       len = keys.length;
 
+      // make sure keys are in order of term identifier
+      keys = utils.sortArrayNumerically(keys);
+
       for(i=0; i<len; i++) {
          key = keys[i];
+	 //console.log("setMarkerTable key ", key);
          descr = subplateMarkerDetails[key].descr;
 	    // set up the table
 	    var row = new Element("tr", {

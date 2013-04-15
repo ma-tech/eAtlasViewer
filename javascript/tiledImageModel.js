@@ -977,6 +977,7 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var loadTreeData = function(layerName) {
 
+      //console.log("loadTreeData for layer %s",layerName);
       var layer = layerData[layerName];
       var url = layer.treeData;
 
@@ -1014,6 +1015,7 @@ emouseatlas.emap.tiledImageModel = function() {
       layer.treeData = json;
       numberOfTreesLoaded++;
 
+      //console.log("numberOfTrees %d, numberOfTreesLoaded %d",numberOfTrees,numberOfTreesLoaded);
       if(numberOfTreesLoaded === numberOfTrees) {
 	 modelChanges.initial = true;
 	 modelChanges.layerNames = true;
@@ -1023,7 +1025,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	    printPaths();
 	 }
 	 initView();
-	 initQuery();
+	 //initQuery();
       }
    };
 
@@ -1783,7 +1785,8 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var initQuery = function () {
       if(emouseatlas.emap.tiledImageQuery) {
-	 emouseatlas.emap.tiledImageQuery.initialise(emouseatlas.emap.tiledImageModel, emouseatlas.emap.tiledImageView);
+         //console.log("tiledImageModel calling emouseatlas.emap.tiledImageQuery.initialise");
+	 //emouseatlas.emap.tiledImageQuery.initialise(emouseatlas.emap.tiledImageModel, emouseatlas.emap.tiledImageView);
       }
    }
 
@@ -2187,7 +2190,7 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    var register = function (observer) {
-      //console.log("model: register observer ",observer);
+      //console.log("model: register observer ",observer.getName());
       registry.push(observer);
    };
 
@@ -2228,6 +2231,11 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getDataSubType = function () {
       return dataSubType;
+   };
+
+   //---------------------------------------------------------
+   var getName = function () {
+      return 'tiledImageModel';
    };
 
 //=====================================================================================
@@ -3095,6 +3103,7 @@ emouseatlas.emap.tiledImageModel = function() {
       initialiseTiff: initialiseTiff,
       modelReady: modelReady,
       register: register,
+      getName: getName,
       setSectionCallback:setSectionCallback,
       getWebServer: getWebServer,
       getMetadataRoot: getMetadataRoot,

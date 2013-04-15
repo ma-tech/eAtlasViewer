@@ -362,6 +362,7 @@ var queryTermTool = new Class ({
    viewUpdate: function(viewChanges, from) {
 
       var mode;
+      var type;
       var viz;
 
       if(viewChanges.initial === true) {
@@ -371,7 +372,10 @@ var queryTermTool = new Class ({
       if(viewChanges.mode === true) {
 
 	 mode = this.view.getMode();
-	 if(mode.name === "query" && this.query.getQueryType() === "anatomy") {
+	 type = this.query.getQueryType();
+
+	 //console.log("queryTerm viewUpdate: mode %s, type %s",mode,type);
+	 if(mode.name === "query" && type === "anatomy") {
 	    this.window.setVisible(true);
 	 } else {
 	    this.window.setVisible(false);
@@ -457,6 +461,11 @@ var queryTermTool = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
-   }
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
+   }.bind(this)
 
 }); // queryTermTool
