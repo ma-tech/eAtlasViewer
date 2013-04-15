@@ -104,9 +104,9 @@ emouseatlas.emap.pointClick = function() {
       getPlateInfo();
       if(model.isEditor()) {
          if(_debug) console.log("isEditor ");
-         doShowMarkerText();
 	 var chk = $('pointClickShowTxtChkbx');
 	 chk.set('checked', true);
+	 showAllMarkerTxt();
       }
 
       // testing at the moment
