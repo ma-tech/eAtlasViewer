@@ -327,13 +327,18 @@ var querySectionTool = new Class ({
    //---------------------------------------------------------------
    viewUpdate: function(viewChanges, from) {
 
+      var queryModes;
+
       if(viewChanges.initial === true) {
 	 this.window.setVisible(false);
       }
 
       if(viewChanges.mode === true) {
 	 var mode = this.view.getMode();
-	 if(mode.name === "querySpatial") {
+         //console.log("mode.name ",mode.name);
+	 queryModes = this.model.getQueryModes();
+         //console.log(queryModes);
+	 if(queryModes.spatial) {
 	    this.window.setVisible(true);
 	 } else {
 	    this.window.setVisible(false);

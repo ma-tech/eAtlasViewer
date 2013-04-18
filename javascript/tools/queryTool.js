@@ -133,6 +133,7 @@ var queryTool = new Class ({
 
       var win;
       var topEdge;
+      var queryModes;
       var titleTextContainer;
       var titleTextDiv;
       var titleTextContainer;
@@ -160,6 +161,8 @@ var queryTool = new Class ({
       var buttonContainerBkg;
 
       win = $(this.shortName + '-win');
+
+      queryModes = this.model.getQueryModes();
 
       titleTextContainer = new Element('div', {
          'class': 'sliderTextContainer'
@@ -246,6 +249,10 @@ var queryTool = new Class ({
           "class": "dbChkbx",
       });
 
+      if(queryModes.spatial) {
+         this.dbChkbx_mgi.disabled = true;
+      }
+
       //----------------------------------------
       // add db items
       //----------------------------------------
@@ -290,122 +297,6 @@ var queryTool = new Class ({
       });
       queryToolSpacerBGdark_1.inject(queryToolSpacer_1, 'inside');
       queryToolSpacerBGlight_1.inject(queryToolSpacer_1, 'inside');
-
-      //============================================================
-
-      //----------------------------------------
-      // the container for the query choice
-      //----------------------------------------
-      queryChoiceContainer = new Element('div', {
-	 'id': 'queryChoiceContainer'
-      });
-
-      //----------------------------------------
-      // the container for first query type
-      //----------------------------------------
-      queryTypeContainer_anatomy = new Element('div', {
-	 'id': 'queryTypeItemContainer_anatomy',
-	 'class': 'queryTypeItem'
-      });
-
-      queryTypeTextContainer_anatomy = new Element('div', {
-         'id': 'queryTypeTextContainer_anatomy',
-         'class': 'queryTypeTextContainer'
-      });
-
-      queryTypeTextDiv_anatomy = new Element('div', {
-         'id': 'queryTypeTextDiv_anatomy',
-         'class': 'queryTypeTextDiv'
-      });
-      queryTypeTextDiv_anatomy.set('text', 'Anatomy');
-
-      queryTypeRadioContainer_anatomy = new Element('div', {
-         'id': 'queryTypeRadioContainer_anatomy',
-         'class': 'queryTypeRadioContainer'
-      });
-
-      this.queryTypeRadio_anatomy = new Element('input', {
-          "type": "radio",
-          "checked": false,
-          "id": "queryTypeRadio_anatomy",
-          "name": "queryType",
-          "class": "queryTypeRadio"
-      });
-      //----------------------------------------
-      // the container for second query type
-      //----------------------------------------
-      queryTypeContainer_spatial = new Element('div', {
-	 'id': 'queryTypeItemContainer_spatial',
-	 'class': 'queryTypeItem'
-      });
-
-      queryTypeTextContainer_spatial = new Element('div', {
-         'id': 'queryTypeTextContainer_spatial',
-         'class': 'queryTypeTextContainer'
-      });
-
-      queryTypeTextDiv_spatial = new Element('div', {
-         'id': 'queryTypeTextDiv_spatial',
-         'class': 'queryTypeTextDiv'
-      });
-      queryTypeTextDiv_spatial.set('text', 'Spatial');
-
-      queryTypeRadioContainer_spatial = new Element('div', {
-         'id': 'queryTypeRadioContainer_spatial',
-         'class': 'queryTypeRadioContainer'
-      });
-
-      this.queryTypeRadio_spatial = new Element('input', {
-          "type": "radio",
-          "checked": false,
-          "id": "queryTypeRadio_spatial",
-          "name": "queryType",
-          "class": "queryTypeRadio"
-      });
-
-      //----------------------------------------
-      // add query type items
-      //----------------------------------------
-      queryTypeTextDiv_anatomy.inject(queryTypeTextContainer_anatomy, 'inside');
-      queryTypeTextContainer_anatomy.inject(queryTypeContainer_anatomy, 'inside');
-      this.queryTypeRadio_anatomy.inject(queryTypeRadioContainer_anatomy, 'inside');
-      queryTypeRadioContainer_anatomy.inject(queryTypeContainer_anatomy, 'inside');
-      queryTypeContainer_anatomy.inject(queryChoiceContainer, 'inside');
-
-      queryTypeTextDiv_spatial.inject(queryTypeTextContainer_spatial, 'inside');
-      queryTypeTextContainer_spatial.inject(queryTypeContainer_spatial, 'inside');
-      this.queryTypeRadio_spatial.inject(queryTypeRadioContainer_spatial, 'inside');
-      queryTypeRadioContainer_spatial.inject(queryTypeContainer_spatial, 'inside');
-      queryTypeContainer_spatial.inject(queryChoiceContainer, 'inside');
-
-      queryChoiceContainer.inject(win, 'inside');
-
-      //----------------------------------------
-      // event handlers for radio buttons
-      //----------------------------------------
-      this.queryTypeRadio_anatomy.addEvent('mouseup',function(e) {
-	 this.doRadio(e);
-      }.bind(this));
-
-      this.queryTypeRadio_spatial.addEvent('mouseup',function(e) {
-	 this.doRadio(e);
-      }.bind(this));
-
-      //----------------------------------------
-      // spacer
-      //----------------------------------------
-      queryToolSpacer_2 = new Element('div', {
-         "class": "queryToolSpacer"
-      });
-      queryToolSpacer_2.inject(win, 'inside');
-      queryToolSpacerBGdark_2 = new Element('div', {
-         "class": "queryToolSpacerBGdark"
-      });
-      queryToolSpacerBGlight_2 = new Element('div', {
-         "class": "queryToolSpacerBGlight"
-      });
-      queryToolSpacerBGdark_2.inject(queryToolSpacer_2, 'inside');
-      queryToolSpacerBGlight_2.inject(queryToolSpacer_2, 'inside');
 
       //============================================================
       //----------------------------------------
@@ -457,55 +348,57 @@ var queryTool = new Class ({
       emouseatlas.emap.utilities.addButtonStyle('queryToolQueryButton');
       emouseatlas.emap.utilities.addButtonStyle('queryToolCancelButton');
       //============================================================
-      //----------------------------------------
-      // the container for the export & import buttons
-      //----------------------------------------
-      buttonContainerBkg2 = new Element('div', {
-	 'id': 'queryToolButtonContainerBkg2'
-      });
-
-      buttonContainer2 = new Element('div', {
-	 'id': 'queryToolButtonContainer2'
-      });
-
-      this.exportButton = new Element('div', {
-         'id': 'queryToolExportButton',
-	 'class': 'queryToolButton'
-      });
-      this.exportButton.appendText('Export');
-
-      this.importButton = new Element('div', {
-         'id': 'queryToolImportButton',
-	 'class': 'queryToolButton'
-      });
-      this.importButton.appendText('Import');
-
-      //----------------------------------------
-      // add them to the tool
-      //----------------------------------------
-      this.exportButton.inject(buttonContainer2, 'inside');
-      this.importButton.inject(buttonContainer2, 'inside');
-
-      buttonContainer2.inject(buttonContainerBkg2, 'inside');
-      buttonContainerBkg2.inject(win, 'inside');
-
-      //----------------------------------------
-      // event handlers
-      //----------------------------------------
-      this.exportButton.addEvent('click',function() {
-	 this.doExportQuery();
-      }.bind(this));
-
-      this.importButton.addEvent('click',function(e) {
-	 this.getImportFile(e);
-      }.bind(this));
-
-
-      //----------------------------------------
-      // add button style (after buttons added to win)
-      //----------------------------------------
-      emouseatlas.emap.utilities.addButtonStyle('queryToolExportButton');
-      emouseatlas.emap.utilities.addButtonStyle('queryToolImportButton');
+      if(queryModes.spatial) {
+         //----------------------------------------
+         // the container for the export & import buttons
+         //----------------------------------------
+         buttonContainerBkg2 = new Element('div', {
+   	 'id': 'queryToolButtonContainerBkg2'
+         });
+   
+         buttonContainer2 = new Element('div', {
+   	 'id': 'queryToolButtonContainer2'
+         });
+   
+         this.exportButton = new Element('div', {
+            'id': 'queryToolExportButton',
+   	 'class': 'queryToolButton'
+         });
+         this.exportButton.appendText('Export');
+   
+         this.importButton = new Element('div', {
+            'id': 'queryToolImportButton',
+   	 'class': 'queryToolButton'
+         });
+         this.importButton.appendText('Import');
+   
+         //----------------------------------------
+         // add them to the tool
+         //----------------------------------------
+         this.exportButton.inject(buttonContainer2, 'inside');
+         this.importButton.inject(buttonContainer2, 'inside');
+   
+         buttonContainer2.inject(buttonContainerBkg2, 'inside');
+         buttonContainerBkg2.inject(win, 'inside');
+   
+         //----------------------------------------
+         // event handlers
+         //----------------------------------------
+         this.exportButton.addEvent('click',function() {
+   	 this.doExportQuery();
+         }.bind(this));
+   
+         this.importButton.addEvent('click',function(e) {
+   	 this.getImportFile(e);
+         }.bind(this));
+   
+   
+         //----------------------------------------
+         // add button style (after buttons added to win)
+         //----------------------------------------
+         emouseatlas.emap.utilities.addButtonStyle('queryToolExportButton');
+         emouseatlas.emap.utilities.addButtonStyle('queryToolImportButton');
+      }
 
       //============================================================
       //----------------------------------------
@@ -708,14 +601,14 @@ var queryTool = new Class ({
       target = emouseatlas.emap.utilities.getTarget(e);
       id = target.id;
       if(id === undefined || id === null || id === "") {
-         //console.log("doRadio no target.id");
+         console.log("doRadio no target.id");
          return;
       } else {
-         //console.log("doRadio: target.id %s",id);
+         console.log("doRadio: target.id %s",id);
 	 if(id.indexOf('spatial') !== -1) {
 	    this.query.typeChanged('spatial');
 	 } else if(id.indexOf('anatomy') !== -1) {
-            //console.log("doRadio: changed to anatomy");
+            console.log("doRadio: changed to anatomy");
 	    this.query.typeChanged('anatomy');
 	 }
       }
@@ -735,7 +628,8 @@ var queryTool = new Class ({
    viewUpdate: function (viewChanges, from) {
 
       var mode;
-      var type;
+      var queryModes;  // by anatomy term, by drawing
+      var type;        // 0 ==> emage, 1 ==> jackson
       var emapId;
       var emapIdNum;
       var url;
@@ -748,7 +642,15 @@ var queryTool = new Class ({
 	 mode = this.view.getMode();
 	 //console.log("queryTool.viewUpdate: mode ",mode);
 	 if(mode.name === 'query') {
-	    this.setQueryToolVisible(true, type);
+	    this.setQueryToolVisible(true);
+            queryModes = this.model.getQueryModes();
+	    //console.log("viewUpdate: ",queryModes);
+	    if(queryModes.anatomy == true) {
+	       this.query.typeChanged('anatomy');
+	    }
+	    if(queryModes.spatial == true) {
+	       this.query.typeChanged('spatial');
+	    }
 	 } else {
 	    this.setQueryToolVisible(false);
 	 }
@@ -950,7 +852,8 @@ var queryTool = new Class ({
 
       //console.log("do query");
       var target;
-      var queryState;
+      var queryModes;  // by anatomy term, by drawing
+      //var queryState;
 
       if (!e) {
 	 var e = window.event;
@@ -962,72 +865,24 @@ var queryTool = new Class ({
 	 return;
       }
 
-      queryState = this.getQueryState();
+      queryModes = this.model.getQueryModes();
 
-      if(!queryState["emage"] && !queryState["mgi"]) {
-         alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
+      if(queryModes.anatomy) {
+         this.doAnatomyQuery();
       }
-
-      if(!queryState["anatomy"] && !queryState["spatial"]) {
-         alert("You have not specifiied the type of query you want.\nPlease select 'Anatomy' or 'Spatial'.");
+      if(queryModes.spatial) {
+         this.doSpatialQuery();
       }
-
-      if(queryState["anatomy"]) {
-         this.doAnatomyQuery(queryState);
-      }
-
-      if(queryState["spatial"]) {
-         this.doSpatialQuery(queryState);
-      }
-
-   },
-
-   //---------------------------------------------------------------
-   // Gets the state of the query checkboxes and radio buttons
-   //---------------------------------------------------------------
-   getQueryState: function() {
-
-      var dbToQuery;
-      var queryType;
-      var emage_cb;
-      var mgi_cb;
-      var anatomy_rb;
-      var spatial_rb;
-      var state = {};
-      
-      emage_cb = $("dbChkbx_emage");
-      mgi_cb = $("dbChkbx_mgi");
-      anatomy_rb = $("queryTypeRadio_anatomy");
-      spatial_rb = $("queryTypeRadio_spatial");
-
-      state = {"emage":false, "mgi":false, "anatomy":false, "spatial":false}
-
-      if(emage_cb.checked) {
-         state["emage"] = true;
-      }
-      if(mgi_cb.checked) {
-         state["mgi"] = true;
-      }
-      if(anatomy_rb.checked) {
-         state["anatomy"] = true;
-         state["spatial"] = false;
-      }
-      if(spatial_rb.checked) {
-         state["anatomy"] = false;
-         state["spatial"] = true;
-      }
-
-      //console.log("query: ",state);
-
-      return state;
 
    },
 
    //---------------------------------------------------------------
    // Anatomy query
    //---------------------------------------------------------------
-   doAnatomyQuery: function(state) {
+   doAnatomyQuery: function() {
 
+      var emage_cb;
+      var mgi_cb;
       var termData;
       var reverseData;
       var len;
@@ -1039,10 +894,17 @@ var queryTool = new Class ({
       var url;
       var first;
 
+      emage_cb = $("dbChkbx_emage").checked;
+      mgi_cb = $("dbChkbx_mgi").checked;
+      if(!emage_cb && !mgi_cb) {
+         alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
+	 return false;
+      }
+
       termData = this.query.getQueryTermData();
       reverseData = emouseatlas.emap.utilities.reverseObject(termData);
 
-      if(state["emage"]) {
+      if(emage_cb) {
          url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
 	 first = true;
 
@@ -1073,7 +935,7 @@ var queryTool = new Class ({
       
       // we are only able to use 1 term for an MGI query
       // so we use the first one.
-      if(state["mgi"]) {
+      if(mgi_cb) {
          url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
 
          for(key in reverseData) {
@@ -1096,16 +958,17 @@ var queryTool = new Class ({
          //console.log(url);
          this.view.getQueryResults(url);
       }
-   },
+   },  // doAnatomyQuery
 
    //---------------------------------------------------------------
    // Spatial query
    //---------------------------------------------------------------
-   doSpatialQuery: function(state) {
+   doSpatialQuery: function() {
 
       var names;
 
       names = this.getQuerySectionNames();
+      console.log("names: ",names);
 
       // this is called recursively for all the query sections
       this.getTransformedBoundingBoxes(names);
@@ -1173,7 +1036,7 @@ var queryTool = new Class ({
       //console.log("transformedBoundingBoxUrl ",transformedBoundingBoxUrl);
 
       jsonStr = emouseatlas.JSON.stringify(names);
-      //console.log("jsonStr ",jsonStr);
+      console.log("jsonStr ",jsonStr);
 
       ajaxParams = {
          url:transformedBoundingBoxUrl,
@@ -1213,11 +1076,11 @@ var queryTool = new Class ({
 
       //console.log("getTransformedBoundingBoxCallback response = ",response);
       querySectionNamesArr = emouseatlas.JSON.parse(querySectionNamesStr);
-      //console.log("getTransformedBoundingBoxCallback querySectionNamesArr = ",querySectionNamesArr);
+      console.log("getTransformedBoundingBoxCallback querySectionNamesArr = ",querySectionNamesArr);
 
       values = response.split("Wlz-transformed-3d-bounding-box:")[1]
       valArr = values.split(" ");
-      //console.log("getTransformedBoundingBoxCallback valArr = ",valArr);
+      console.log("getTransformedBoundingBoxCallback valArr = ",valArr);
       x = valArr[4];
       y = valArr[2];
       z = valArr[0];

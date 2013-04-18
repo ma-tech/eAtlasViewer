@@ -89,6 +89,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var transverseView = {pitch:0, yaw:0, roll:0}; // read in with initModelCallback()
    var sagittalView = {pitch:90, yaw:0, roll:270};
    var coronalView = {pitch:90, yaw:90, roll:270};
+   var queryModes = {anatomy:false, spatial:false};
    var expressionLevelKey;
    var assayPath;
    var assayID;
@@ -445,6 +446,11 @@ emouseatlas.emap.tiledImageModel = function() {
       if(typeof(json.queryDataFile) !== 'undefined') {
          queryDataFile = json.queryDataFile;
          queryDataUrl = webServer + queryDataFile;
+      }
+
+      if(typeof(json.queryModes) !== 'undefined') {
+         queryModes.anatomy = (json.queryModes.anatomy === 'true') ? true : false;
+         queryModes.spatial = (json.queryModes.spatial === 'true') ? true : false;
       }
 
       if(typeof(json.transverseView) !== 'undefined') {
@@ -3073,6 +3079,12 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   // Get the enabled query modes; currently by anatomy term or by drawing.
+   var getQueryModes = function () {
+      return queryModes;
+   };
+
+   //---------------------------------------------------------
    var getExpressionSection = function() {
      return expressionSection;
    };
@@ -3171,6 +3183,7 @@ emouseatlas.emap.tiledImageModel = function() {
       getMenuData: getMenuData,
       getTreeData: getTreeData,
       getQueryDataUrl: getQueryDataUrl,
+      getQueryModes: getQueryModes,
       getKeySections: getKeySections,
       getKeySectionNames: getKeySectionNames,
       getUndelineatedRGBA: getUndelineatedRGBA,
