@@ -55,6 +55,8 @@ Mif.Tree.implement({
 	processCheck: function(nodeId, checked){
 		var node;
 
+		//console.log("processCheck: nodeId %s, checked %s",nodeId,checked);
+
 		node = this.root.getNodeById(nodeId.replace(/cb_/,''));
 		node.state.checked = checked;
 		this.root.checkChildren(nodeId, checked);
@@ -365,6 +367,7 @@ Mif.Tree.implement({
            return false;
         },
 
+//----------------------------------------------------------------------------------
 	/** 
 		Shows all domains in their corresponding colour
 	 */
@@ -373,6 +376,7 @@ Mif.Tree.implement({
 		return this;
 	},
 	
+//----------------------------------------------------------------------------------
 	/** 
 		Called from Tree.Draw
 		sets current section(distance) to that corresponding to the middle section of a given domain
@@ -381,6 +385,7 @@ Mif.Tree.implement({
 		return this;
 	}, 
 	
+//----------------------------------------------------------------------------------
 	/** 
 		Called from the anatomy search form
 		creates a list of all existing anatomy names as per tree nodes.
@@ -397,6 +402,7 @@ Mif.Tree.implement({
 		return data;
 	}, 
 	
+//----------------------------------------------------------------------------------
 	/** 
 		Called from the anatomy search form
 		finds a node on the tree by name, expands tree to that node and highlights it
@@ -443,18 +449,20 @@ Mif.Tree.Draw.getHTML = function(node,html){
 		var bg = 'rgba(' + node.color[0] + ', ' + node.color[1] + ', ' + node.color[2] + ', ' + alf + ')';
 		if(node.state.checked !== undefined){
 			if (!node.hasCheckbox) node.state.checked=false;
-		    //DomainId should be "" for clickable nodes with defined children, 
+		        //DomainId should be "" for clickable nodes with defined children, 
 			// and it should be undefined (undeclared) for nodes with no domains associated (black nodes)
 			var isDisabled = "";
 			var titl = "Click to change colour";
 			if (node.domainId === undefined) {
 			   titl = "Click to change system colour";   
 			}
+			/*
 			if(node.id === "0") { // the very top level
 			   isDisabled = "disabled";
 			   titl = "";   
 			   bg = 'rgba(255,255,255,255)';
 			}
+			*/
 			var colorPic = '<input class="pick" type="text" id="pic_'+ node.id + '"style="background:'+ bg +'" title="' + titl + '"' + ' ' + isDisabled + '/>' ;
 			var checkbox='<input class="mif-tree-checkbox mif-tree-node-' + node.state.checked + '" type="checkbox" name="'+node.name + '" id="cb_'+ node.id + '" UID='+ node.id + '" style="vertical-align:middle;"' + isDisabled + '/>';
 		}else{
@@ -590,7 +598,7 @@ Mif.Tree.Node.implement({
 	    num = family.length;
 
             if(family[0] === bare_id && !checked) {
-	       //continue;
+	       continue;
 	    }
 	    for(j=0; j<num; j++) {
 	       id = family[j];
@@ -656,9 +664,23 @@ Mif.Tree.Node.implement({
             var node;
             var cols;
             var alf;
+
+	    //console.log("changeImageElementColour: -->%s<-- ",id,rgba);
             
             node = this.tree.root.getNodeById(id);
+	    //console.log("changeImageElementColour: node ",node);
 	    if(node) {
+	       // deal with the very top node
+	       if(id === "0") {
+		  alf = parseInt(rgba.alpha * 255);
+		  cols = rgba.red + "," + rgba.green + "," + rgba.blue + "," + alf;
+		  node.color[0] = rgba.red;
+		  node.color[1] = rgba.green;
+		  node.color[2] = rgba.blue;
+		  node.color[3] = alf;
+                  return false;
+	       }
+	       // deal with other node
                allChildren.combine(this.tree.root.getDescendants([]));
                allChildren.each(function(el){
 
@@ -706,8 +728,10 @@ Mif.Tree.Node.implement({
 	clearAll: function () {
 
             var values='';
-            //Get all selected nodes
             var allChildren = [];
+	    var node;
+
+            //Get all selected nodes
             allChildren.combine(this.tree.root.getDescendants([]));
             allChildren.each(function(el){
                if ($("cb_"+el.id)){
@@ -715,6 +739,15 @@ Mif.Tree.Node.implement({
                }
                el.state.checked = false; 
             });
+
+	    // clear the top node, which isn't a child
+            if ($("cb_0")){
+               $("cb_0").checked = false;
+	       node = this.tree.root.getNodeById("0");
+	       if(node) {
+	          node.state.checked = false;
+	       }
+            }
 
             // also clear the 'systems' array
             this.tree.sysArr = [];
@@ -780,7 +813,9 @@ Mif.Tree.Node.implement({
 			return foundNode;
 		}
 		var list =this.getChildren();   
+		//console.log("getNodeById: list ",list);
 		list.each(function(node){
+		        //console.log("getNodeById: node ",node);
 			var tmp = node.getNodeById(nodeId);
 			if (tmp) {
 				foundNode = tmp;
