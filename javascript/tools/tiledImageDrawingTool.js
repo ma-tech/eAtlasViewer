@@ -349,6 +349,7 @@ var tiledImageDrawingTool = new Class ({
    viewUpdate: function(viewChanges, from) {
 
       var mode;
+      var queryModes;
       var currentLayer;
 
       currentLayer = this.view.getCurrentLayer();
@@ -358,8 +359,10 @@ var tiledImageDrawingTool = new Class ({
       }
 
       if(viewChanges.mode === true) {
+         queryModes = this.model.getQueryModes();
 	 mode = this.view.getMode();
-         if(mode.name === "query" && this.query.getQueryType() === "spatial") {
+         //if(mode.name === "query" && this.query.getQueryType() === "spatial") {
+         if(mode.name === "query" && queryModes.spatial) {
 	    this.window.setVisible(true);
 	 } else {
 	    this.window.setVisible(false);

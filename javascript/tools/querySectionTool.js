@@ -338,7 +338,7 @@ var querySectionTool = new Class ({
          //console.log("mode.name ",mode.name);
 	 queryModes = this.model.getQueryModes();
          //console.log(queryModes);
-	 if(queryModes.spatial) {
+	 if(mode.name === "query" && queryModes.spatial) {
 	    this.window.setVisible(true);
 	 } else {
 	    this.window.setVisible(false);

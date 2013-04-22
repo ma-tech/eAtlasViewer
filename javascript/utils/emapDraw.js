@@ -643,6 +643,14 @@ emouseatlas.emap.EmapDraw = function() {
    var viewUpdate = function (changes) {
 
       var previousSectionParams;
+      var queryModes;
+      var mode;
+      var copy;
+      var names;
+      var curName;
+      var data;
+      var len;
+      var i;
 
       if(changes.startDrawing) {
 
@@ -706,15 +714,12 @@ emouseatlas.emap.EmapDraw = function() {
       //......................
       if(changes.mode) {
          //console.log("view changes.mode");
-	 /*
-	 //lastScale = scale;
-	 scale = view.getScale().cur;
-	 //printDrawingInfo();
-	 view.popDrawingCanvas();
-         addCanvas("changes.scale || changes.mode");
-         setDrawMode(curDrawMode);
-	 paintDrawing();
-	 */
+	 queryModes = model.getQueryModes();
+	 mode = view.getMode();
+         if(mode.name !== "query" || queryModes.anatomy) {
+	    clearDrawingCanvas("viewUpdate mode");
+	    view.popDrawingCanvas();
+	 }
       }
 
       //.........................
