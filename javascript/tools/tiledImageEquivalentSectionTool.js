@@ -347,7 +347,13 @@ var tiledImageEquivalentSectionTool = new Class ({
       var webServer = this.model.getWebServer();
       var reg = /data/;  // case sensitive regexp for "data"
       var path1 = metadataRoot.replace(reg, 'php');
-      reg = /wlz/;
+      //console.log("getSectionUrl: path1 ",path1);
+      // hack to sort out equivalent section problem with anatomy models
+      if(path1.indexOf("/anatomy/")) {
+         reg = /anatomy/;
+      } else {
+         reg = /wlz/;
+      }
       var path2 = path1.replace(reg, 'sections');
       var indx = path2.lastIndexOf('/');
       var len = path2.length;

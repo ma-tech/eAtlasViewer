@@ -60,12 +60,15 @@ var tiledImageLocatorTool = new Class ({
 
       this.drag = params.params.drag;
       this.toBottom = params.params.toBottom;
+      this.borders = (params.params.borders === undefined) ? true : params.params.borders;
+      this.borders = (this.borders === 'false' || this.borders === false) ? false : true;
 
       var imagePath = this.model.getInterfaceImageDir();
       //console.log("Locator: imagePath %s",imagePath);
       this.window = new DraggableWindow({targetId:this.targetId,
                                          drag:this.drag,
                                          toBottom:this.toBottom,
+                                         borders:this.borders,
                                          title:this.shortName,
 					 view:this.view,
 					 imagePath: imagePath,
@@ -114,6 +117,11 @@ var tiledImageLocatorTool = new Class ({
 
       //console.log("exit tiledImageLocatorTool.initialize");
       this.setToolTip(this.toolTipText);
+
+      // this is a hack to fix the TPR demo
+      this.stackofs = this.model.getWlzToStackOffset();
+      //console.log("stackofs = ",stackofs);
+
 
    },
 
@@ -254,7 +262,7 @@ var tiledImageLocatorTool = new Class ({
 	 + "&mod=" + threeDInfo.wlzMode
 	 + "&fxp=" + (threeDInfo.fxp.x / sampleRate) + ',' + (threeDInfo.fxp.y / sampleRate) + ','+ (threeDInfo.fxp.z / sampleRate)
 	 + "&scl=" + (this.navscale * sampleRate)
-	 + "&dst=" + threeDInfo.dst.cur * this.navscale
+	 + "&dst=" + (threeDInfo.dst.cur - this.stackofs) * this.navscale
 	 + "&pit=" + threeDInfo.pitch.cur
 	 + "&yaw=" + threeDInfo.yaw.cur
 	 + "&rol=" + threeDInfo.roll.cur

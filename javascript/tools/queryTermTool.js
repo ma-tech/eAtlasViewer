@@ -374,7 +374,7 @@ var queryTermTool = new Class ({
 	 mode = this.view.getMode();
 	 type = this.query.getQueryType();
 
-	 //console.log("queryTerm viewUpdate: mode %s, type %s",mode,type);
+	 //console.log("queryTerm viewUpdate: mode %s, type %s",mode.name,type);
 	 if(mode.name === "query" && type === "anatomy") {
 	    this.window.setVisible(true);
 	 } else {

@@ -73,6 +73,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var toolsMetadataFilename;
    var fullDataPath;
    var busyIndicatorSrc;
+   var project;
    var infoDetails;
 
    var dataImgPaths;
@@ -334,6 +335,7 @@ emouseatlas.emap.tiledImageModel = function() {
 
          if(jsonLayerData[i].modelInfo !== undefined) {
 	    modelInfo = jsonLayerData[i].modelInfo;
+	    //console.log("model: modelInfo ",modelInfo);
 	 }
 
          if(jsonLayerData[i].current !== undefined) {
@@ -477,6 +479,12 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(typeof(json.expressionLevelKey) !== 'undefined') {
 	 expressionLevelKey = json.expressionLevelKey;
+      }
+
+      if(json.project !== undefined) {
+         project = json.project;
+      } else {
+         project = "";
       }
 
       if(json.initialState !== undefined) {
@@ -669,6 +677,15 @@ emouseatlas.emap.tiledImageModel = function() {
 	 x3dInfo.initTrans.z = parseInt(x3d.initTrans.z);
       } else {
          x3dInfo.initTrans = {x:0, y:0, z:0}; 
+      }
+
+      if(x3d.embryoPositionTrans) {
+         x3dInfo.embryoPositionTrans = {};
+	 x3dInfo.embryoPositionTrans.x = parseInt(x3d.embryoPositionTrans.x);
+	 x3dInfo.embryoPositionTrans.y = parseInt(x3d.embryoPositionTrans.y);
+	 x3dInfo.embryoPositionTrans.z = parseInt(x3d.embryoPositionTrans.z);
+      } else {
+         x3dInfo.embryoPositionTrans = {x:0, y:0, z:0}; 
       }
 
       x3dInfo.disc = {};
@@ -1808,7 +1825,9 @@ emouseatlas.emap.tiledImageModel = function() {
 
       for (i = 0; i < registry.length; i++) {
 	 //console.log("notify: registry[%s] = %s",i,registry[i]);
-         registry[i].modelUpdate(modelChanges);
+	 if(registry[i].modelUpdate) {
+            registry[i].modelUpdate(modelChanges);
+	 }
       }
       resetModelChanges();
    }; // notify
@@ -3106,6 +3125,11 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   var getProject = function() {
+     return project;
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
@@ -3187,7 +3211,8 @@ emouseatlas.emap.tiledImageModel = function() {
       getKeySections: getKeySections,
       getKeySectionNames: getKeySectionNames,
       getUndelineatedRGBA: getUndelineatedRGBA,
-      getScalebarLen: getScalebarLen
+      getScalebarLen: getScalebarLen,
+      getProject: getProject
    };
 
 }(); // end of module tiledImageModel

@@ -19,7 +19,7 @@
  *
  */
 //---------------------------------------------------------
-//   viewerInfo.js
+//   titleInfo.js
 //---------------------------------------------------------
 
 //---------------------------------------------------------
@@ -40,7 +40,7 @@ if(!emouseatlas.emap) {
 // module for tiledImage
 // encapsulating it in a module to preserve namespace
 //---------------------------------------------------------
-emouseatlas.emap.viewerInfo = function () {
+emouseatlas.emap.titleInfo = function () {
 
    //---------------------------------------------------------
    // modules
@@ -54,14 +54,14 @@ emouseatlas.emap.viewerInfo = function () {
    var target;
    var model;
    var view;
-   var infoIFrame;
+   var titleIFrame;
    var mydocument;
    var myparent;
    var hideOK;
-   var infoReadOK;
    var infoGeneratedOK;
    var infoDetails;
-   var modelInfo;
+   var rowLabels;
+   var rowContent;
    var ajax;
    var ajaxParams;
    var utils;
@@ -78,10 +78,15 @@ emouseatlas.emap.viewerInfo = function () {
 
    var initialise = function (params) {
 
+      var plate;
+      var subplate;
+      var info;
+
       _debug = false;
       targetId = params.targetId;
       target = document.getElementById(params.targetId);
-      infoDetails = params.details;
+      details = params.details;
+      info = details.info;
       model = params.model;
       model.register(this);
       view = params.view;
@@ -89,56 +94,61 @@ emouseatlas.emap.viewerInfo = function () {
 
       utils = emouseatlas.emap.utilities;
 
-      infoIFrame = document.getElementById("wlzIIPViewerInfoIFrame");
-      if(infoIFrame === undefined) {
+      //console.log("IFrame: details ",details);
+      //console.log("IFrame: info ",info);
+
+      titleIFrame = document.getElementById("wlzIIPViewerTitleIFrame");
+      if(titleIFrame === undefined) {
+         console.log("titleIFrame === undefined");
          return false;
       }
-      mydocument = window.frames[infoIFrame.name].document;
-      myparent = window.frames[infoIFrame.name].parent;
+      mydocument = window.frames[titleIFrame.name].document;
+      myparent = window.frames[titleIFrame.name].parent;
+
+      //console.log("myDocument ",mydocument);
+      //console.log("myParent ",myparent);
 
       hideOK = false;
-      infoReadOK = false;
       infoGeneratedOK = false;
 
-      if(infoDetails.jso !== undefined && infoDetails.jso !== "") {
-	 ajax = new emouseatlas.emap.ajaxContentLoader();
-	 ajaxParams = {
-	    url: infoDetails.jso,
-	    method:"POST",
-	    callback: readInfoCallback,
-	    contentType:"",
-	    urlParams:"",
-	    async:true,
-	    noCache:false
-	 };
-	 ajax.loadResponse(ajaxParams);
-      }
+      setTableContent(info);
 
       lmntArr = [];
 
+      plate = details.plate;
+      subplate = details.subplate;
+
+      generateInfoPage();
+
    };
+   
+   //---------------------------------------------------------------
+   var setTableContent = function (info) {
 
-   //---------------------------------------------------------
-   var readInfoCallback = function (response) {
+      var dpcTxt;
+      var tsTxt;
+      var dpcTxt;
+      var tsTxt;
+      var witTxt;
+      var carTxt;
+      var emdash = '—';
 
-      var json;
-      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
-         json = JSON.parse(response);
-      } else {
-         json = emouseatlas.JSON.parse(response);
-      }
-      if(!json) {
-         return false;
-      }
 
-      modelInfo = json;
-      if(modelInfo === undefined) {
-         infoReadOK = false;
-      } else {
-         infoReadOK = true;
-	 //console.log(modelInfo["ts21"]);
-	 //console.log(modelInfo);
-      }
+      rowLabels = ["Age", "Description", "Section orientation", "Crown—rump length", "Theiler Stage", "rat, Witschi Stage", "human, Carnegie Stage"];
+
+      dpcTxt = info.dpc;
+      dpcTxt += " days p.c.";
+
+      tsTxt = info.stage;
+
+      rowContent = [];
+      rowContent[0] = dpcTxt;
+      rowContent[1] = info.description;
+      rowContent[2] = info.sectionType;
+      rowContent[3] = info.crLength;
+      rowContent[4] = tsTxt;
+      rowContent[5] = info.witschi;
+      rowContent[6] = info.carnegie;
 
    };
    
@@ -151,14 +161,10 @@ emouseatlas.emap.viewerInfo = function () {
       var doc;
       var iframeContainer;
       var bdy;
-      var info;
-      var labels;
-      var rows;
       var klass;
       var nrows;
       var row;
       var txt;
-      var indx;
       var i;
       var j;
       var head;
@@ -170,57 +176,39 @@ emouseatlas.emap.viewerInfo = function () {
       var tBody; // required for IE8 or the table is invisible
       var infoTable;
       var project;
+      var test;
 
-      closeDiv = mydocument.getElementById("modelInfoFrameCloseDiv");
+      //console.log("enter generateInfoPage");
+
+      closeDiv = mydocument.getElementById("titleInfoFrameCloseDiv");
       mainContainer;
-      mainContainer = mydocument.getElementById("modelInfoMainContainer");
+      mainContainer = mydocument.getElementById("titleInfoMainContainer");
       if(mainContainer === undefined || mainContainer === null) {
+         //console.log("no main container");
          return false;
+      } else {
+         //console.log("got main container");
       }
-      iframe = myparent.document.getElementById("wlzIIPViewerInfoIFrame");
+      iframe = myparent.document.getElementById("wlzIIPViewerTitleIFrame");
       doc = iframe.contentDocument;
-      iframeContainer = myparent.document.getElementById("wlzIIPViewerInfoIFrameContainer");
+      iframeContainer = myparent.document.getElementById("wlzIIPViewerTitleIFrameContainer");
       iframe.className = "hullaballoo";
 
       if(mainContainer) {
 	 utils.removeChildNodes(mainContainer);
-      } else {
-         // it's probably IE8
-         bdy = doc.childNodes[0].childNodes[1];
-         bdy.className = "iframe";
-	 mainContainer = new Element('div', {
-	        "id" : "modelInfoMainContainer",
-                "class" : "wlzIIPViewerIFrameContainer",
-		"styles": {
-		   'margin' : '0',
-		   'padding' : '0',
-		   'width' : '100%',
-		   'height' : '100%'
-		}
-         });
-	 mainContainer.injectInside(bdy);
       }
 
-      //console.log("assocIndx ",infoDetails.assocIndx);
-      info = modelInfo[infoDetails.assocIndx];
-      if(info === undefined || info.length === 0) {
-         //console.log("no model info");
-         return false;
-      } else {
-         //console.log("info for %s",infoDetails.assocIndx, info);
-      }
-      labels = modelInfo.labels;
-      rows = modelInfo.rows;
+     // console.log("mainContainer ",mainContainer);
 
       klass = "";
-      nrows = rows.length;
+      nrows = rowLabels.length;
       project = model.getProject();
 
-      iframe.className = "wlzIIPViewerIFrame modelInfo "+ project;
-      iframeContainer.className = "wlzIIPViewerIFrameContainer modelInfo " + project;
+      iframe.className = "wlzIIPViewerIFrame titleInfo "+ project;
+      iframeContainer.className = "wlzIIPViewerIFrameContainer titleInfo " + project;
 
       infoTable = doc.createElement('table');
-      infoTable.id = "modelInfoTable";
+      infoTable.id = "titleInfoTable";
       infoTable.cellSpacing = "2";
       infoTable.cellPadding = "2";
       infoTable.style.margin = "auto";
@@ -229,10 +217,9 @@ emouseatlas.emap.viewerInfo = function () {
       tBody = doc.createElement('tBody');
       infoTable.appendChild(tBody);
 
-      indx = getModelIndex(info);
       // the rows of data
       for(i=0; i<nrows; i++) {
-         txt = labels[rows[i]];
+         txt = rowLabels[i];
          row = doc.createElement('tr');
 	 row.className = "help row";
          tBody.appendChild(row);
@@ -244,7 +231,7 @@ emouseatlas.emap.viewerInfo = function () {
 	 headerText = doc.createTextNode(txt);
 	 header.appendChild(headerText);
 
-         txt = info[indx][rows[i]];
+         txt = rowContent[i];
          rowData = doc.createElement('td');
          rowData.className = "rowData";
          row.appendChild(rowData);
@@ -254,6 +241,8 @@ emouseatlas.emap.viewerInfo = function () {
       mainContainer.appendChild(infoTable);
 
       infoGeneratedOK = true;
+
+      //console.log("exit generateInfoPage");
    };
 
    //---------------------------------------------------------
@@ -401,12 +390,11 @@ emouseatlas.emap.viewerInfo = function () {
    var viewUpdate = function (changes) {
 
       if(changes.showViewerInfo) {
-	 generateInfoPage();
-         infoIFrame.setStyle('visibility', 'visible');
+         titleIFrame.setStyle('visibility', 'visible');
       }
 
       if(changes.hideViewerInfo) {
-         infoIFrame.setStyle('visibility', 'hidden');
+         titleIFrame.setStyle('visibility', 'hidden');
       }
    };
 
@@ -419,5 +407,5 @@ emouseatlas.emap.viewerInfo = function () {
       viewUpdate: viewUpdate
    };
 
-}(); // end of module viewerInfoFrame
+}(); // end of module titleInfoFrame
 //----------------------------------------------------------------------------

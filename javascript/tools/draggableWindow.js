@@ -489,7 +489,17 @@ var DraggableWindow = new Class ({
 				  'cursor': 'pointer',
 				  'title': 'Click to close window'
 				 });
-      } // if borders
+      } else { // if no borders
+	 this.left.setStyles({ 'visibility':'hidden', });
+	 this.right.setStyles({ 'visibility':'hidden', });
+	 this.top.setStyles({ 'visibility':'hidden', });
+	 this.bottom.setStyles({ 'visibility':'hidden', });
+	 this.tlCorner.setStyles({ 'visibility':'hidden', });
+	 this.trCorner.setStyles({ 'visibility':'hidden', });
+	 this.collapseButton.setStyles({ 'visibility':'hidden', });
+	 this.closeDiv.setStyles({ 'visibility':'hidden', });
+	 this.closeImg.setStyles({ 'visibility':'hidden', });
+      }
                    
       var kurs;
       if(this.canDrag) {

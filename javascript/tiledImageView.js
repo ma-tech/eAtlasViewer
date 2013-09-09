@@ -92,6 +92,8 @@ emouseatlas.emap.tiledImageView = function() {
       dblClick: false,
       showViewerHelp: false,
       hideViewerHelp: false,
+      showX3domHelp: false,
+      hideX3domHelp: false,
       showViewerInfo: false,
       hideViewerInfo: false,
       hideMenu: false
@@ -195,6 +197,7 @@ emouseatlas.emap.tiledImageView = function() {
    var colourChooser;
    var elementIdToColour;
 
+   var stackofs = 0;
    //---------------------------------------------------------
    //   private methods
    //---------------------------------------------------------
@@ -755,7 +758,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 + "&mod=" + threeDInfo.wlzMode
 	 + "&fxp=" + (threeDInfo.fxp.x / sampleRate) + ',' + (threeDInfo.fxp.y / sampleRate) + ','+ (threeDInfo.fxp.z / sampleRate)
 	 + "&scl=" + (scale.cur * sampleRate)
-	 + "&dst=" + threeDInfo.dst.cur * scale.cur
+	 + "&dst=" + (threeDInfo.dst.cur - stackofs) * scale.cur
 	 + "&pit=" + threeDInfo.pitch.cur
 	 + "&yaw=" + threeDInfo.yaw.cur
 	 + "&rol=" + threeDInfo.roll.cur
@@ -1062,6 +1065,8 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.dblClick) console.log("viewChanges.dblClick ",viewChanges.dblClick);
       if(viewChanges.showViewerHelp) console.log("viewChanges.showViewerHelp ",viewChanges.showViewerHelp);
       if(viewChanges.hideViewerHelp) console.log("viewChanges.hideViewerHelp ",viewChanges.hideViewerHelp);
+      if(viewChanges.showX3domHelp) console.log("viewChanges.showX3domHelp ",viewChanges.showX3domHelp);
+      if(viewChanges.hideX3domHelp) console.log("viewChanges.hideX3domHelp ",viewChanges.hideX3domHelp);
       if(viewChanges.showViewerInfo) console.log("viewChanges.showViewerInfo ",viewChanges.showViewerInfo);
       if(viewChanges.hideViewerInfo) console.log("viewChanges.hideViewerInfo ",viewChanges.hideViewerInfo);
       if(viewChanges.hideMenu) console.log("viewChanges.hideMenu ",viewChanges.hideMenu);
@@ -1105,6 +1110,8 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.dblClick =  false;
       viewChanges.showViewerHelp =  false;
       viewChanges.hideViewerHelp =  false;
+      viewChanges.showX3domHelp =  false;
+      viewChanges.hideX3domHelp =  false;
       viewChanges.showViewerInfo =  false;
       viewChanges.hideViewerInfo =  false;
       viewChanges.hideMenu =  false;
@@ -2945,6 +2952,7 @@ emouseatlas.emap.tiledImageView = function() {
          info.initialise({
               targetId:targetId,
    	      details:infoDetails,
+   	      model:emouseatlas.emap.tiledImageModel,
    	      view:emouseatlas.emap.tiledImageView
          });
       }
@@ -3195,6 +3203,10 @@ emouseatlas.emap.tiledImageView = function() {
          query.register(emouseatlas.emap.tiledImageView);
       }
        
+      // this is a hack to fix the TPR demo
+      stackofs = model.getWlzToStackOffset();
+      //console.log("stackofs = ",stackofs);
+
       if(_debug) console.log("View: completeInitialisation");
       completeInitialisation();
       if(_debug) console.log("View: done");
@@ -3277,6 +3289,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    view:view,
 	    params:{targetId:toolData.locator.targetId,
 	            drag:toolData.locator.draggable,
+	            borders:toolData.locator.borders,
 	            toBottom:toolData.locator.toBottom,
 	            width:toolData.locator.width,
 		    height:toolData.locator.height,
@@ -3518,6 +3531,14 @@ emouseatlas.emap.tiledImageView = function() {
 	 });
       }
 
+      if(typeof(tools.x3domHelp) !== 'undefined') {
+	 new x3domHelp({
+	    targetId: "emapIIPViewerDiv",
+	    view: view,
+	    type: "wlzIIPViewerX3domHelp"
+	 });
+      }
+
       if(typeof(tools.scalebar) !== 'undefined') {
 	 new tiledImageScalebar({
 	    model:model,
@@ -3578,6 +3599,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    view:view,
 	    params:{targetId:toolData.pointClickSelector.targetId,
 	            drag:toolData.pointClickSelector.draggable,
+	            borders:toolData.pointClickSelector.borders,
 	            toBottom:toolData.pointClickSelector.toBottom,
 		    invert:toolData.pointClickSelector.invertArrows,
 		    useFilename:toolData.pointClickSelector.useFilename,
@@ -4687,6 +4709,13 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   var goToDownloadPage = function(url) {
+
+      window.open(url, 'blank');
+
+   };
+
+   //---------------------------------------------------------
    var enableImgLabels = function () {
 
       imgLabels_enabled = !imgLabels_enabled;
@@ -4739,12 +4768,29 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.hideViewerHelp = true;
       notify("hideViewerHelp");
    };
+
+   //---------------------------------------------------------
+   var showX3domHelpFrame = function () {
+      viewChanges.showX3domHelp = true;
+      notify("showX3domHelp");
+   };
+   
+   //---------------------------------------------------------
+   var hideX3domHelpFrame = function () {
+      viewChanges.hideX3domHelp = true;
+      notify("hideX3domHelp");
+   };
    
    //---------------------------------------------------------
    var showViewerInfo = function () {
       var infoDetails = model.getInfoDetails();
       var closeDiv = document.getElementById("wlzIIPViewerInfoIFrameCloseDiv");
       var div = document.getElementById("wlzIIPViewerInfoIFrameContainer");
+
+      if(!infoDetails) {
+         return false;
+      }
+
       div.style.visibility = "visible";
       if(closeDiv) {
 	 util.addEvent(closeDiv, 'click', hideViewerInfo, false);
@@ -4974,6 +5020,8 @@ emouseatlas.emap.tiledImageView = function() {
       maximiseImage: maximiseImage,
       showTileBorders: showTileBorders,
       showViewerHelp: showViewerHelp,
+      showX3domHelpFrame: showX3domHelpFrame,
+      hideX3domHelpFrame: hideX3domHelpFrame,
       setToolboxVisibility: setToolboxVisibility,
       enableImgLabels: enableImgLabels,
       showQueryDialogue: showQueryDialogue,
@@ -4981,6 +5029,7 @@ emouseatlas.emap.tiledImageView = function() {
       getModeSubType: getModeSubType,
       cancelContextMenu: cancelContextMenu,
       launchEquivalentSection: launchEquivalentSection,
+      goToDownloadPage: goToDownloadPage,
       printViewerInfo: printViewerInfo
    };
 

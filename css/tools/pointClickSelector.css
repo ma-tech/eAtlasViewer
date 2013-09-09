@@ -75,13 +75,14 @@
 
 #selector-dropDown {
    position: relative;
-   top: 1px;
+   top: 0px;
    left: 0px;
-   width:37px;
-   height:20px;
-   font-size: 12px;
-   font-style: bold;
+   width: 100%;
+   font-size: 10px;
+   font-style: normal;
    color: #303;
+   background: #fafaff;
+   border: none;
 }
 
 #selector-imageContainer {

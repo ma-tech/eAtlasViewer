@@ -451,7 +451,7 @@ var queryTool = new Class ({
          'id': 'spatialQueryForm',
          'name': 'spatialQueryForm',
 	 'method': 'post',
-	 'action': 'http://cudhub.hgu.mrc.ac.uk/emagenbwebapp/pages/emage_spatial_query_result.jsf'
+	 'action': 'http://cudhub.hgu.mrc.ac.uk/emagewebapp/pages/emage_spatial_query_result.jsf'
       });
 
       this.dummyInputView = new Element('input', {
@@ -539,6 +539,8 @@ var queryTool = new Class ({
       if(modelInfo === undefined) {
          //console.log("modelInfo undefined");
          return false;
+      } else {
+         //console.log("modelInfo ",modelInfo);
       }
 
       //console.log("modelInfo ",modelInfo);
@@ -601,14 +603,14 @@ var queryTool = new Class ({
       target = emouseatlas.emap.utilities.getTarget(e);
       id = target.id;
       if(id === undefined || id === null || id === "") {
-         console.log("doRadio no target.id");
+         //console.log("doRadio no target.id");
          return;
       } else {
-         console.log("doRadio: target.id %s",id);
+         //console.log("doRadio: target.id %s",id);
 	 if(id.indexOf('spatial') !== -1) {
 	    this.query.typeChanged('spatial');
 	 } else if(id.indexOf('anatomy') !== -1) {
-            console.log("doRadio: changed to anatomy");
+            //console.log("doRadio: changed to anatomy");
 	    this.query.typeChanged('anatomy');
 	 }
       }
@@ -968,7 +970,7 @@ var queryTool = new Class ({
       var names;
 
       names = this.getQuerySectionNames();
-      console.log("names: ",names);
+      //console.log("names: ",names);
 
       // this is called recursively for all the query sections
       this.getTransformedBoundingBoxes(names);
@@ -1036,7 +1038,7 @@ var queryTool = new Class ({
       //console.log("transformedBoundingBoxUrl ",transformedBoundingBoxUrl);
 
       jsonStr = emouseatlas.JSON.stringify(names);
-      console.log("jsonStr ",jsonStr);
+      //console.log("jsonStr ",jsonStr);
 
       ajaxParams = {
          url:transformedBoundingBoxUrl,
@@ -1076,11 +1078,11 @@ var queryTool = new Class ({
 
       //console.log("getTransformedBoundingBoxCallback response = ",response);
       querySectionNamesArr = emouseatlas.JSON.parse(querySectionNamesStr);
-      console.log("getTransformedBoundingBoxCallback querySectionNamesArr = ",querySectionNamesArr);
+      //console.log("getTransformedBoundingBoxCallback querySectionNamesArr = ",querySectionNamesArr);
 
       values = response.split("Wlz-transformed-3d-bounding-box:")[1]
       valArr = values.split(" ");
-      console.log("getTransformedBoundingBoxCallback valArr = ",valArr);
+      //console.log("getTransformedBoundingBoxCallback valArr = ",valArr);
       x = valArr[4];
       y = valArr[2];
       z = valArr[0];

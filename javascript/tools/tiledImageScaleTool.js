@@ -241,12 +241,17 @@ var tiledImageScaleTool = new Class ({
       var curStep;
       var numSteps;
       var sliderSteps;
+      var sliderLength;
+      var sliderTitleTxt;
 
       if(viewChanges.initial === true || viewChanges.scale === true) {
+	 sliderLength = parseInt((this.slider.getSliderLength(), 10));
+	 //console.log("slider : ",sliderLength);
          //console.log("scale.min %d, scale.max %d",scl.min, scl.max);
 	 this.slider.setUserChange(false);
 	 sclTxt = this.getSclText();
-	 this.sliderTextDiv.set('text', 'magnification: ' + sclTxt);
+	 sliderTitleTxt = (sliderLength < 100) ? "magn: " : "magnification: ";
+	 this.sliderTextDiv.set('text', sliderTitleTxt + sclTxt);
 	 this.slider.setUserChange(true);
 	 if (viewChanges.initial === true) {
 	   this.window.setVisible(true);

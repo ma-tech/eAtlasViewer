@@ -108,6 +108,8 @@ var combinedDistanceTool = new Class ({
       this.model.register(this);
       this.view.register(this);
 
+      this.stackOffset = this.model.getWlzToStackOffset();
+
    }, // initialize
 
    //---------------------------------------------------------------
@@ -376,6 +378,7 @@ var combinedDistanceTool = new Class ({
          //console.log("Dst.modelUpdate: modelChanges.distanceRange || modelChanges.setSection");
 	 mdst = this.model.getDistance();
 	 step = parseInt(mdst.cur);
+	 //console.log("modelUpdate: mdst = ",mdst);
 	 this.slider.setUserChange(false);
 	 this.slider.setNewRange({max:mdst.max, min:mdst.min});
 	 this.slider.setStep(step);
@@ -523,6 +526,7 @@ var combinedDistanceTool = new Class ({
       }
 
       len = this.keySections.length;
+      console.log(this.keySections[len-1]);
       this.model.setDistance(this.keySections[len-1]);
    },
 

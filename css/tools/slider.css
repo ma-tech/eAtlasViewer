@@ -101,7 +101,7 @@
 }
 
 .horizontal.sliderTrack {
-   top: 1px;
+   top: 0px;
    height: 15px;
    background-image: url(../../images/slider.png);
    background-repeat: repeat-x;

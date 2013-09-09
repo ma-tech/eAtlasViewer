@@ -22,6 +22,19 @@
    top: 100px;
    left: 200px;
 }
+.wlzIIPViewerIFrameContainer.titleInfo {
+   width: 450px;
+   height: 230px;
+   top: 43px;
+   left: 550px;
+}
+.wlzIIPViewerIFrameContainer.x3domHelp {
+   width: 700px;
+   height: 480px;
+   top: 70px;
+   left: 170px;
+}
+
 
 .wlzIIPViewerIFrameTopDiv {
    position: relative;
@@ -76,6 +89,13 @@ img.iframeClose {
 }
 .wlzIIPViewerIFrame.modelInfo {
    height: 89%;
+}
+.wlzIIPViewerIFrame.titleInfo {
+   height: 80%;
+   overflow: auto;
+}
+.wlzIIPViewerIFrame.x3domHelp {
+   overflow: auto;
 }
 
 h3.help {

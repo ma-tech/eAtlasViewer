@@ -211,6 +211,11 @@ var SliderComponent = new Class ({
    },
 
    //---------------------------------------------------------------
+   getSliderLength: function() {
+      return this.sliderLength;
+   },
+
+   //---------------------------------------------------------------
    setUserChange: function(bool, from) {
       //console.log("%s slider: setUserChange from %s, %s",this.type,from,bool);
       this.userChange = bool;

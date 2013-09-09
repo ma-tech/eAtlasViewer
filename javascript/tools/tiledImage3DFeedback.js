@@ -100,6 +100,10 @@ var tiledImage3DFeedback = new Class ({
       //console.log("exit tiledImage3DFeedback.initialize");
       this.setToolTip(this.toolTipText);
 
+      this.x3domHelpIconContainer;
+      this.x3domHelpIconImg;
+      this.keepX3domHelpFrame = false;
+
       this.createElements();
 
    },
@@ -113,6 +117,7 @@ var tiledImage3DFeedback = new Class ({
       var x3dInfo;
       var x3d;
       var scene;
+      var param;
       var group_disc;
       var group_embryo;
       var transform_fix;
@@ -127,11 +132,20 @@ var tiledImage3DFeedback = new Class ({
       var material;
       var transform;
       var inline;
-      var viewpoint;
+      var viewpointData;
+      var viewpointArr;
+      var nViews;
+      var vp;
+      var vpDescription;
+      var vpJump;
+      var vpFOV;
+      var vpTrans;
+      var vpOrient;
       var background;
       var fxp;
       var fxpTrans;
-      var initTrans;
+      var initTrans;  // sets the centre of rotation
+      var embryoPositionTrans;
       var disc;
       var discColour;
       var discHeight;
@@ -148,14 +162,9 @@ var tiledImage3DFeedback = new Class ({
       var stylWidth;
       var stylX;
       var stylY;
-      var viewpoints;
-      var vp;
-      var vpDescription;
-      var vpFOV;
-      var vpTrans;
-      var vpOrient;
       var bgc;
       var bgCol;
+      var i;
 
       //.................................................
       win = $(this.shortName + '-win');
@@ -168,6 +177,7 @@ var tiledImage3DFeedback = new Class ({
 
       fxpTrans = x3dInfo.fxpTrans.x + " " + x3dInfo.fxpTrans.y + " " + x3dInfo.fxpTrans.z;
       initTrans = x3dInfo.initTrans.x + " " + x3dInfo.initTrans.y + " " + x3dInfo.initTrans.z;
+      embryoPositionTrans = x3dInfo.embryoPositionTrans.x + " " + x3dInfo.embryoPositionTrans.y + " " + x3dInfo.embryoPositionTrans.z;
 
       disc = x3dInfo.disc;
       discColour = disc.colour.r + " " + disc.colour.g + " " + disc.colour.b;
@@ -187,11 +197,9 @@ var tiledImage3DFeedback = new Class ({
       stylX = styl.x;
       stylY = styl.y;
 
-      vp = x3dInfo.viewpoints[0]; // only consider 1 at the moment
-      vpDescription = vp.description;
-      vpFOV = vp.fov;
-      vpTrans = vp.trans.x + " " + vp.trans.y + " " + vp.trans.z;
-      vpOrient = vp.orient.xsi + " " + vp.orient.eta + " " + vp.orient.zeta + " " + vp.orient.rad;
+      viewpointData = x3dInfo.viewpoints;
+      nViews = viewpointData.length;
+      viewpointArr = [];
 
       bgc = x3dInfo.bgCol;
       bgCol = bgc.r + " " + bgc.g + " " + bgc.b;
@@ -215,6 +223,7 @@ var tiledImage3DFeedback = new Class ({
          console.log("stylX ",stylX);
          console.log("stylY ",stylY);
          console.log("vpDescription ",vpDescription);
+         console.log("vpJump ",vpJump);
          console.log("vpFOV ",vpFOV);
          console.log("vpTrans ",vpTrans);
          console.log("vpOrient ",vpOrient);
@@ -239,6 +248,12 @@ var tiledImage3DFeedback = new Class ({
 
       scene = document.createElement('Scene');
       scene.setAttribute('DEF', 'scene');
+
+      //................ set value to true for debugging
+      param = document.createElement('param');
+      param.setAttribute('name', 'showLog');
+      param.setAttribute('value', 'false');
+      //................ for debugging
 
       group_disc = document.createElement('Group');
 
@@ -292,30 +307,67 @@ var tiledImage3DFeedback = new Class ({
       group_embryo = document.createElement('Group');
 
       transform = document.createElement('Transform');
+      transform.setAttribute('id', 'embryoPosition');
+      transform.setAttribute('translation', embryoPositionTrans);
 
       inline = document.createElement('Inline');
       inline.setAttribute('DEF', 'embryonic');
       //inline.setAttribute('url', 'obj/embryonicvs111gml.x3d');
       inline.setAttribute('url', url);
 
-      viewpoint = document.createElement('Viewpoint');
-      viewpoint.setAttribute('fieldOfView', vpFOV);
-      //viewpoint.setAttribute('position', '230 140 2000');
-      viewpoint.setAttribute('position', vpTrans);
-      viewpoint.setAttribute('description', vpDescription);
-      viewpoint.setAttribute('orientation', vpOrient);
-      //viewpoint.setAttribute('centerOfRotation', '230 140 150');
-      viewpoint.setAttribute('centerOfRotation', fxp);
+      for(i=0; i<nViews; i++) {
+         vp = viewpointData[i];
+         vpFOV = vp.fov;
+         vpTrans = vp.trans.x + " " + vp.trans.y + " " + vp.trans.z;
+         vpOrient = vp.orient.xsi + " " + vp.orient.eta + " " + vp.orient.zeta + " " + vp.orient.rad;
+         vpDescription = vp.description;
+         vpJump = vp.jump;
+         viewpointArr[i] = document.createElement('Viewpoint');
+         viewpointArr[i].setAttribute('fieldOfView', vpFOV);
+         viewpointArr[i].setAttribute('position', vpTrans);
+         viewpointArr[i].setAttribute('orientation', vpOrient);
+         viewpointArr[i].setAttribute('centerOfRotation', fxp);
+         viewpointArr[i].setAttribute('description', vpDescription);
+         viewpointArr[i].setAttribute('jump', vpJump);
+      }
 
       background = document.createElement('Background');
       background.setAttribute('skyColor', bgCol);
 
+      // help icon for x3dom feedback
+      this.x3domHelpIconContainer = new Element( 'div', {
+         'id': 'x3domHelpFrameIconContainer',
+         'class': 'helpFrameIconContainer x3domHelp'
+      });
+      this.x3domHelpIconImg = new Element( 'img', {
+         'id': 'x3domHelpFrameIconImg',
+         'src': '../../../images/help-26.png'
+      });
+
+      this.x3domHelpIconContainer.appendChild(this.x3domHelpIconImg);
+
+      this.x3domHelpIconContainer.addEvent('click', function() {
+         this.doX3domHelpIconClicked(true);
+      }.bind(this));
+
+      this.x3domHelpIconContainer.addEvent('mouseover', function() {
+         this.doMouseOverHelpIcon();
+      }.bind(this));
+
+      this.x3domHelpIconContainer.addEvent('mouseout', function() {
+         this.doMouseOutHelpIcon();
+      }.bind(this));
+
       //------------------------------------------------------------------
       win.appendChild(x3d);
+      win.appendChild(this.x3domHelpIconContainer);
 
       x3d.appendChild(scene);
+      x3d.appendChild(param);
 
-      scene.appendChild(viewpoint);
+      for(i=0; i<nViews; i++) {
+         scene.appendChild(viewpointArr[i]);
+      }
       scene.appendChild(background);
       scene.appendChild(group_disc);
       scene.appendChild(group_embryo);
@@ -358,6 +410,8 @@ var tiledImage3DFeedback = new Class ({
    viewUpdate: function(viewChanges) {
 
       //console.log("tiledImage3DFeedback viewUpdate:");
+      var feedback;
+      var tmp;
 
       // do the setting up stuff
       if(viewChanges.initial === true) {
@@ -365,8 +419,37 @@ var tiledImage3DFeedback = new Class ({
 	 this.isWlz = this.model.isWlzData();
 	 this.window.setVisible(true);
 	 this.window.setDimensions(this.width,this.height);
+	 
+	 /*
+	 x3dom.ready = function() {
+	     alert("Hi peeps");
+	 };
+	 x3dom.runtime.ready = function() {
+	     alert("About to render something the first time");
+         };
+	 */
 
          x3dom.reload();
+
+         // trying out some runtime stuff
+         feedback = document.getElementById(this.x3d_id);
+	 feedback.runtime.debug(false);
+	 feedback.runtime.statistics(false);
+	 /*
+	 tmp = feedback.runtime.navigationType();
+	 //console.log("navigationType initially %s",tmp);
+	 //feedback.runtime.lookAt();
+	 //feedback.runtime.lookAround();
+	 //feedback.runtime.walk();
+	 //tmp = feedback.runtime.navigationType();
+	 //console.log("navigationType now %s",tmp);
+	 tmp = feedback.runtime.speed();
+	 console.log("speed orig %s",tmp);
+	 feedback.runtime.speed(0.1);
+	 tmp = feedback.runtime.speed();
+	 console.log("speed now %s",tmp);
+	 */
+
          this.setInitialPos();
       }; // viewChanges.initial
 
@@ -463,6 +546,85 @@ var tiledImage3DFeedback = new Class ({
       sTr.setAttribute('scale',       1.0 / tr.scale[0] + ' ' + 1.0 / tr.scale[1] + ' ' + 1.0 / tr.scale[2]);
       fTr.setAttribute('translation', tr.fixed[0] + ' ' + tr.fixed[1] + ' ' + tr.fixed[2]);
    }, // setInitialPos
+
+   //---------------------------------------------------------------
+   // called when help icon clicked
+   //---------------------------------------------------------------
+   doX3domHelpIconClicked: function (event) {
+      if(this.keepX3domHelpFrame === false) {
+         this.keepX3domHelpFrame = true;
+	 this.addHelpCloseEvent();
+         this.showX3domHelpContainer();
+         this.view.showX3domHelpFrame();
+      } else {
+         this.keepX3domHelpFrame = false;
+	 this.removeHelpCloseEvent();
+         this.hideX3domHelpContainer();
+         this.view.hideX3domHelpFrame();
+      }
+   },
+
+   //---------------------------------------------------------------
+   // event handler for close button
+   //---------------------------------------------------------------
+   closeX3domHelp: function (event, that) {
+      that.hideX3domHelpContainer();
+      that.view.hideX3domHelpFrame();
+      this.keepX3domHelpFrame = false;
+   },
+   //},
+
+   //---------------------------------------------------------------
+   // called on mouseover help icon
+   //---------------------------------------------------------------
+   doMouseOverHelpIcon: function (event) {
+      this.showX3domHelpContainer();
+      this.view.showX3domHelpFrame();
+   },
+
+   //---------------------------------------------------------------
+   // called on mouseout help icon
+   //---------------------------------------------------------------
+   doMouseOutHelpIcon: function (event) {
+      if(this.keepX3domHelpFrame) {
+         return false;
+      }
+      this.hideX3domHelpContainer();
+      this.view.hideX3domHelpFrame();
+      this.keepX3domHelpFrame = false;
+   },
+
+   //---------------------------------------------------------
+   addHelpCloseEvent: function () {
+      var closeDiv = document.getElementById("wlzIIPViewerX3domHelpIFrameCloseDiv");
+      if(closeDiv) {
+	 emouseatlas.emap.utilities.addEvent(closeDiv, 'mouseup', function(e) {
+	    this.closeX3domHelp(e, this);
+	 }.bind(this), false);
+      }
+   },
+
+   //---------------------------------------------------------
+   removeHelpCloseEvent: function () {
+      var closeDiv = document.getElementById("wlzIIPViewerX3domHelpIFrameCloseDiv");
+      if(closeDiv) {
+	 emouseatlas.emap.utilities.removeEvent(closeDiv, 'mouseup', function(e) {
+	    this.closeX3domHelp(e, this);
+	 }.bind(this), false);
+      }
+   },
+
+   //---------------------------------------------------------
+   showX3domHelpContainer: function () {
+      var div = document.getElementById("wlzIIPViewerX3domHelpIFrameContainer");
+      div.style.visibility = "visible";
+   },
+   
+   //---------------------------------------------------------
+   hideX3domHelpContainer: function () {
+      var div = document.getElementById("wlzIIPViewerX3domHelpIFrameContainer");
+      div.style.visibility = "hidden";
+   },
 
    //--------------------------------------------------------------
    setToolTip: function (text) {

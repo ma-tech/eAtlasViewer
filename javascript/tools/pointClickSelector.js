@@ -56,6 +56,8 @@ var pointClickSelector = new Class ({
       this.height = params.params.height;
       this.targetId = params.params.targetId;
       this.drag = params.params.drag;
+      this.borders = (params.params.borders === undefined) ? true : params.params.borders;
+      this.borders = (this.borders === 'false' || this.borders === false) ? false : true;
 
       this.invertArrows = (params.params.invert === undefined) ? false : params.params.invert;
       this.invertArrows = (this.invertArrows === 'true' || this.invertArrows === true) ? true : false;
@@ -73,6 +75,7 @@ var pointClickSelector = new Class ({
       this.imagePath = this.model.getInterfaceImageDir();
       this.window = new DraggableWindow({targetId:this.targetId,
                                          drag:this.drag,
+                                         borders:this.borders,
                                          title:this.name,
 					 view:this.view,
 					 width:this.width,
@@ -182,10 +185,12 @@ var pointClickSelector = new Class ({
       this.controlDiv.inject( this.window.win , 'inside');
       this.controlDiv.style.top = Number(imgH) + Number(2) + 'px';
 
+      /*
       this.label = new Element( 'div', {
 	 'id': 'selector-label'
       });
       this.label.inject( this.controlDiv , 'inside');
+      */
 
       //------------------------------------
       this.dropDownDiv = new Element( 'div', {
@@ -201,14 +206,27 @@ var pointClickSelector = new Class ({
       var len = optionArr.length;
       var option;
       var i;
+      var optionTxt;
+      var spantex;
+
+      //console.log("this.pointClickImgData ",this.pointClickImgData);
+
+      if(this.pointClickImgData.subplate) {
+         optionTxt = "Plate " + this.pointClickImgData.subplate + ", ";
+      } else {
+         optionTxt = " ";
+      }
+
       for(i=0; i<len; i++) {
+         spantex = optionTxt + '<span style="font-weight:bold;color:#cc00cc;"> ' + optionArr[i] + '</span>'
          option = new Element('option', {
 	    'id':'selector-option' + i,
 	    'class': 'selector-option',
-	    'value': i,
-	    'text': optionArr[i]
+	    'value': i
+	    //'text': optionTxt + optionArr[i]
 	 });
 	 option.inject(this.dropDown, 'inside');
+	 option.set('html', spantex);
       }
 
       this.dropDown.inject(this.dropDownDiv, 'inside');
@@ -218,6 +236,7 @@ var pointClickSelector = new Class ({
       }.bind(this));
 
       //------------------------------------
+      /*
       var nextarr = this.imagePath + "rightArrow_10.png";
       var prevarr = this.imagePath + "leftArrow_10.png";
 
@@ -261,6 +280,7 @@ var pointClickSelector = new Class ({
             this.model.setDistance(1 * dst.cur  + 1);
 	 }
       }.bind(this));
+      */
       //------------------------------------
 
    }, // createElements
@@ -532,8 +552,6 @@ var pointClickSelector = new Class ({
 
       //console.log("enter Selector modelUpdate:",modelChanges);
       var distance;
-      var pointClickImg;
-      var fbText;
 
 
       if(modelChanges.dst) {
@@ -541,10 +559,6 @@ var pointClickSelector = new Class ({
 	 distance = this.model.getDistance().cur;
 	 this.setSectionOffset(distance);
 
-         //pointClickImg = this.model.getPointClickImg();
-         //fbText = this.getFeedbackText(pointClickImg);
-         fbText = this.pointClickImgData.subplate;
-         this.label.innerHTML=(fbText);
          this.setSelectorImage();
       }
 
@@ -562,8 +576,8 @@ var pointClickSelector = new Class ({
       var name;
       var indx;
       var shortname;
-      var pointClickImg;
-      var fbText;
+      //var pointClickImg;
+      //var fbText;
       var cur3;
       var viz;
 
@@ -573,10 +587,12 @@ var pointClickSelector = new Class ({
 
          this.setSelectorImage();
 
+	 /*
          pointClickImg = this.model.getPointClickImg();
          //fbText = this.getFeedbackText(pointClickImg);
          fbText = this.pointClickImgData.subplate;
          this.label.innerHTML=(fbText);
+	 */
 
 	 this.window.setVisible(true);
 
