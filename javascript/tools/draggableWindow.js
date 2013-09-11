@@ -118,12 +118,12 @@ var DraggableWindow = new Class ({
 
       this.right.inject(this.container, 'inside');
 
-      this.top = new Element('div', {
+      this.topedge = new Element('div', {
 	 'id': this.title + '-topedge',
 	 'class': 'edge'
       });
 
-      this.top.inject(this.container, 'inside');
+      this.topedge.inject(this.container, 'inside');
 
       this.bottom = new Element('div', {
 	 'id': this.title + '-bottomedge',
@@ -253,7 +253,9 @@ var DraggableWindow = new Class ({
 	 //console.log("vpw %d, thisW %d, x %d, %d",vpWidth,this.width,x,(x+this.width));
 	 this.setPosition(x,y);
 	 this.distToEdge = this.calcDistToEdges();
-	 this.findClosestEdges();
+	 if(this.distToEdge) {
+	    this.findClosestEdges();
+	 }
       }
 
       //console.log("exit DraggableWindow.handleDrag");
@@ -272,6 +274,10 @@ var DraggableWindow = new Class ({
 	 // ----------------------------------------
 
 	 var dists = this.calcDistToEdges();
+	 if(!dists) {
+	    //console.log("viewUpdate: couldn't do this.calcDistToEdges");
+	    return false;
+	 }
 	 this.findClosestEdges(dists);
          //console.log("viewUpdate: this.leftClosest %s, this.topClosest %s",this.leftClosest,this.topClosest);
          //console.log("viewUpdate: this.oldLeftClosest %s, this.oldTopClosest %s",this.oldLeftClosest,this.oldTopClosest);
@@ -429,7 +435,7 @@ var DraggableWindow = new Class ({
 			       'top':this.edgeWidth + 'px'
 			      });
 
-	 this.top.setStyles({
+	 this.topedge.setStyles({
 			     'width':Math.round(this.width + 2*this.edgeWidth - 2*this.topEdgeWidth) + 'px',
 			     'height':this.topEdgeWidth + 'px',
 			     'left':this.topEdgeWidth + 'px',
@@ -492,7 +498,7 @@ var DraggableWindow = new Class ({
       } else { // if no borders
 	 this.left.setStyles({ 'visibility':'hidden', });
 	 this.right.setStyles({ 'visibility':'hidden', });
-	 this.top.setStyles({ 'visibility':'hidden', });
+	 this.topedge.setStyles({ 'visibility':'hidden', });
 	 this.bottom.setStyles({ 'visibility':'hidden', });
 	 this.tlCorner.setStyles({ 'visibility':'hidden', });
 	 this.trCorner.setStyles({ 'visibility':'hidden', });
@@ -538,6 +544,9 @@ var DraggableWindow = new Class ({
       this.height = Number(hei);
 
       this.distToEdge = this.calcDistToEdges();
+      if(!this.distToEdge) {
+         return false;
+      }
       //console.log("setDimensions: this.distToEdge ",this.distToEdge);
 
       // make sure controls are visible if they are initially placed outside the window.
@@ -588,7 +597,9 @@ var DraggableWindow = new Class ({
    // this can only be called after setDimensions() as we need this.width etc.
    //--------------------------------------------------------------
    calcDistToEdges: function() {
-      //console.log("enter calcDistToEdges ",this.initiator.name);
+      //if(this.initiator.name === "pointClickSelector") {
+      //   console.log("enter calcDistToEdges ",this.initiator.name);
+      //}
       var viewport = this.view.getViewportDims();
       var vpWidth = viewport.width;
       var vpHeight = viewport.height;
@@ -598,32 +609,17 @@ var DraggableWindow = new Class ({
       var t = parseInt(this.container.style.top);
       var b = vpHeight - (t + this.height);
 
-      //console.log("calcDistToEdges: vpWidth %d, w %d, l %d, r %d",vpWidth,this.width,l,r);
-      //console.log("exit calcDistToEdges ",this.initiator.name);
-      return {left:l, right:r, top:t, bottom:b};
+      //if(this.initiator.name === "pointClickSelector") {
+      //   console.log("calcDistToEdges: vpWidth %d, w %d, l %d, r %d",vpWidth,this.width,l,r);
+      //   console.log("exit calcDistToEdges ",this.initiator.name);
+      //}
 
-   /*
-      if(this.initiator.name.toLowerCase() === "treetool") {
-         console.log(this.initiator.name);
-	 var bottomOfTree = this.container.getCoordinates(window).bottom;
-	 var bottomOfWindow = window.getSize().y;
-	 console.log("gap %d",bottomOfWindow-bottomOfTree);
-      }
-      var windowSize = window.getSize();
-      var containerCoords = this.container.getCoordinates(window);
-      var gapL = containerCoords.left;
-      var gapR = windowSize.x - containerCoords.right;
-      var gapT = containerCoords.top;
-      var gapB = windowSize.y - containerCoords.bottom;
-
-      if(this.initiator.name.toLowerCase() === "treetool") {
-	 console.log("containerCoords ",containerCoords);
-	 console.log("windowSize ",windowSize);
-	 console.log("L %d, R %d, T %d, B %d",gapL,gapR,gapT,gapB);
+      if(l && r && t && b) {
+         return {left:l, right:r, top:t, bottom:b};
+      } else {
+         return undefined;
       }
 
-      return {left:gapL, right:gapR, top:gapT, bottom:gapB};
-      */
    },
 
    //--------------------------------------------------------------
@@ -687,7 +683,7 @@ var DraggableWindow = new Class ({
       this.handle.morph({height: collapseHeight3, width: collapseWidth2});
       this.left.morph({height: collapseHeight});
       this.right.morph({height: collapseHeight});
-      this.top.morph({width: collapseWidth3});
+      this.topedge.morph({width: collapseWidth3});
       this.bottom.morph({width: collapseWidth2 - 4});
       //console.log("exit DraggableWindow.collapseWindow");
    },
@@ -719,7 +715,7 @@ var DraggableWindow = new Class ({
       this.handle.morph({height:this.expandHeight, width: this.expandWidth});
       this.left.morph({height:this.expandHeight});
       this.right.morph({height:this.expandHeight});
-      this.top.morph({width: Math.round(this.width + 2*this.edgeWidth - 2*this.topEdgeWidth)});
+      this.topedge.morph({width: Math.round(this.width + 2*this.edgeWidth - 2*this.topEdgeWidth)});
       this.bottom.morph({ width:this.expandWidth});
       //console.log("exit DraggableWindow.expandWindow");
    },

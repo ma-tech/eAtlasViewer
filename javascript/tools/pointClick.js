@@ -105,39 +105,27 @@ emouseatlas.emap.pointClick = function() {
       pointClickImgData = model.getPointClickImgData();
       if(_debug) console.log("pointClickImgData ",pointClickImgData);
 
+      // testing at the moment
+      //getEMAPData();
+
+      subplateMarkerDetails = {};
+      tempMarkerKeys = [];
+      selectedRowKeys = [];
+      locationsForEditor = [];
+      subplateKeys = [];
+
+      maxCloseMarkersToShow = 3;
+
+      markerContainerId = 'histology_tileFrame';
+
+      //---------------------------------------------------------
+      // The marker img is 20x34 pixels and the locating point is mid-bottom-line
+      // so we apply an offset to the mouse click point to make it look right.
+      //---------------------------------------------------------
+      imgOfs = {x:-8, y:-32};
+      labelOfs = {x:30, y:-30};
+
       getPlateData();
-      if(PLATE_DATA) {
-         createElements();
-
-	 getTitleInfo();
-
-	 if(model.isEditor()) {
-	    if(_debug) console.log("isEditor ");
-	    var chk = $('pointClickShowTxtChkbx');
-	    chk.set('checked', true);
-	    showAllMarkerTxt();
-	 }
-
-	 // testing at the moment
-	 //getEMAPData();
-
-	 subplateMarkerDetails = {};
-	 tempMarkerKeys = [];
-	 selectedRowKeys = [];
-	 locationsForEditor = [];
-	 subplateKeys = [];
-
-	 maxCloseMarkersToShow = 3;
-
-	 markerContainerId = 'histology_tileFrame';
-
-	 //---------------------------------------------------------
-	 // The marker img is 20x34 pixels and the locating point is mid-bottom-line
-	 // so we apply an offset to the mouse click point to make it look right.
-	 //---------------------------------------------------------
-	 imgOfs = {x:-8, y:-32};
-	 labelOfs = {x:30, y:-30};
-      }
 
       scale = view.getScale().cur;
 
@@ -215,10 +203,12 @@ emouseatlas.emap.pointClick = function() {
       var details;
       var plate;
       var subplate;
-      var auxInfo;
       var len;
       var i;
       var infoDetails;
+      var infoDetailsTrimmed = {};
+      var stray;
+      var str;
 
       //console.log("enter setInfoIFrame");
 
@@ -240,20 +230,31 @@ emouseatlas.emap.pointClick = function() {
 
       //console.log("setInfoIFrame infoDetails: ",infoDetails);
 
-      var str;
-      len = infoDetails.carnegie.length;
+      infoDetailsTrimmed.crLength = infoDetails.crLength;
+      infoDetailsTrimmed.description = infoDetails.description;
+      infoDetailsTrimmed.plate = infoDetails.plate;
+      infoDetailsTrimmed.sectionType = infoDetails.sectionType;
+
+      infoDetailsTrimmed.images = [];
+      len = infoDetails.images.length;
       for(i=0; i<len; i++) {
-         str = infoDetails.carnegie;
-         //console.log ("character %d is %s / %s",i,str.substr(i,1),str.charCodeAt(i)) 
+         infoDetailsTrimmed.images[i] = infoDetails.images[i];
       }
 
-      /*
-      if(infoDetails.carnegie.indexOf("—") > 0) {
-         console.log("%s",infoDetails.carnegie.substr(2,1));
-      }
-      */
+      stray = infoDetails.stage.split(';');
+      infoDetailsTrimmed.stage = stray[0];
 
-      details = {plate:plate, subplate:subplate, info:infoDetails};
+      stray = infoDetails.dpc.split(';');
+      infoDetailsTrimmed.dpc = stray[0];
+
+      stray = infoDetails.carnegie.split(';');
+      infoDetailsTrimmed.carnegie = stray[0];
+
+      stray = infoDetails.witschi.split(';');
+      infoDetailsTrimmed.witschi = stray[0];
+
+      //console.log("setInfoIFrame infoDetailsTrimmed: ",infoDetails);
+      details = {plate:plate, subplate:subplate, info:infoDetailsTrimmed};
 
       // set up info frame
       emouseatlas.emap.titleInfo.initialise({
@@ -263,11 +264,14 @@ emouseatlas.emap.pointClick = function() {
          view:emouseatlas.emap.tiledImageView
       });
 
-      //console.log("exit setInfoIFrame");
+
+      // in case there is a url parameter asking for image on a different embryo (plate03, plate04)
+      doDistChanged();
+
    }; // setInfoIFrame:
 
    //---------------------------------------------------------------
-   var setViewerTitle = function () {
+   var setViewerTitle = function (indx) {
 
       var plate;
       var subplate;
@@ -277,22 +281,22 @@ emouseatlas.emap.pointClick = function() {
       var titleInfoIconDiv;
       var theiler;
       var dpc;
-      var multipleTheiler = false;
-      var multipleDPC = false;
       var len;
       var i;
       var found = false;
       var title = "Kaufman Atlas ";
 
       //console.log("enter setViewerTitle");
-      //createTitleIFrame(); 
+
+      if(!titleInfo) {
+         return false;
+      }
 
       plate = pointClickImgData.plate;
       subplate = pointClickImgData.subplate;
-      //console.log("plate ",plate);
-      //console.log("subplate ",subplate);
 
-      title += "Plate " + subplate;
+      // the parseInt trims leading zeros
+      title += "Plate " + parseInt(subplate, 10);
 
       len = titleInfo.length;
       for(i=0; i<len; i++) {
@@ -305,18 +309,21 @@ emouseatlas.emap.pointClick = function() {
 
       if(!found) return false;
 
-      //console.log("info ",info);
-
       dpc = info.dpc;
+      stray = dpc.split(';');
+      dpc = stray[0];
       title += " (" + dpc + " dpc)";
 
       theiler = info.stage;
+      stray = theiler.split(';');
+      theiler = stray[0];
       title += " TS " + theiler;
 
       titleDiv = new Element('div', {
          'id': 'wlzIIPViewerTitle',
 	 'text':title
       });
+
       titleDiv.inject(pageHeaderDiv, 'inside');
 
       titleInfoIconDiv = new Element('div', {
@@ -327,16 +334,156 @@ emouseatlas.emap.pointClick = function() {
          'id': 'titleInfoIconImg',
 	 'src': '/eAtlasViewer_dev/images/info-26.png'
       });
+
       titleInfoImg.inject(titleInfoIconDiv, 'inside');
-      titleInfoIconDiv.inject(wlzIIPViewerTitle, 'inside');
+      titleInfoIconDiv.inject(pageHeaderDiv, 'inside');
 
       utils.addEvent(titleInfoIconDiv, 'click', doTitleInfoIconClicked, false);
       utils.addEvent(titleInfoIconDiv, 'mouseover', showTitleInfoFrame, false);
       utils.addEvent(titleInfoIconDiv, 'mouseout', hideTitleInfoFrame, false);
 
-      //console.log("exit setViewerTitle");
+      // in case there is a url parameter asking for image on a different embryo (plate03, plate04)
+      doDistChanged();
 
    }; // setViewerTitle:
+
+   //---------------------------------------------------------------
+   var updateViewerTitle = function (indx) {
+
+      var plate;
+      var subplate;
+      var info;
+      var pageHeaderDiv = $("pageHeaderDiv");
+      var titleDiv;
+      var titleInfoIconDiv;
+      var stray = [];
+      var theiler;
+      var dpc;
+      var multipleTheiler = false;
+      var multipleDPC = false;
+      var len;
+      var i;
+      var found = false;
+      var title = "Kaufman Atlas ";
+
+      if(!titleInfo) {
+         return false;
+      }
+
+      plate = pointClickImgData.plate;
+      subplate = pointClickImgData.subplate;
+
+      // the parseInt trims leading zeros
+      title += "Plate " + parseInt(subplate, 10);
+
+      len = titleInfo.length;
+      for(i=0; i<len; i++) {
+         if(titleInfo[i].plate === subplate) {
+	    info = titleInfo[i];
+	    found = true;
+	    break;
+	 }
+      }
+
+      if(!found) return false;
+
+      dpc = info.dpc;
+      if(indx > -1) {
+	 stray = dpc.split(';');
+	 dpc = stray[indx];
+      }
+      title += " (" + dpc + " dpc)";
+
+      theiler = info.stage;
+      if(indx > -1) {
+	 stray = theiler.split(';');
+	 theiler = stray[indx];
+      }
+      title += " TS " + theiler;
+
+      titleDiv = $('wlzIIPViewerTitle');
+      if(titleDiv) {
+	 titleDiv.set('text', title);
+      }
+
+   }; // updateViewerTitle:
+
+   //---------------------------------------------------------------
+   var updateInfoIFrame = function (indx) {
+
+      var details;
+      var plate;
+      var subplate;
+      var len;
+      var i;
+      var infoDetails;
+      var infoDetailsTrimmed = {};
+      var stray;
+      var str;
+      var titleIFrame;
+
+      //console.log("indx ", indx);
+      if(indx === undefined) {
+         return false;
+      }
+
+      plate = pointClickImgData.plate;
+      subplate = pointClickImgData.subplate;
+
+      len = titleInfo.length;
+      for(i=0; i<len; i++) {
+	 if(titleInfo[i].plate === subplate) {
+	    infoDetails = titleInfo[i];
+	    found = true;
+	    break;
+	 }
+      }
+
+      if(!found) {
+         return false;
+      }
+
+      //console.log("setInfoIFrame infoDetails: ",infoDetails);
+
+      infoDetailsTrimmed.crLength = infoDetails.crLength;
+      infoDetailsTrimmed.description = infoDetails.description;
+      infoDetailsTrimmed.plate = infoDetails.plate;
+      infoDetailsTrimmed.sectionType = infoDetails.sectionType;
+
+      infoDetailsTrimmed.images = [];
+      len = infoDetails.images.length;
+      for(i=0; i<len; i++) {
+         infoDetailsTrimmed.images[i] = infoDetails.images[i];
+      }
+
+      stray = infoDetails.stage.split(';');
+      //console.log("stage: ",stray);
+      infoDetailsTrimmed.stage = stray[indx];
+
+      stray = infoDetails.dpc.split(';');
+      //console.log("dpc: ",stray);
+      infoDetailsTrimmed.dpc = stray[indx];
+
+      stray = infoDetails.carnegie.split(';');
+      //console.log("carnegie: ",stray);
+      infoDetailsTrimmed.carnegie = stray[indx];
+
+      stray = infoDetails.witschi.split(';');
+      //console.log("witschi: ",stray);
+      infoDetailsTrimmed.witschi = stray[indx];
+
+      details = {plate:plate, subplate:subplate, info:infoDetailsTrimmed};
+      //console.log("updateInfoIFrame infoDetailsTrimmed: ",infoDetailsTrimmed);
+
+      // set up info frame
+      emouseatlas.emap.titleInfo.initialise({
+         targetId:titleInfoTarget,
+         details:details,
+         model:emouseatlas.emap.tiledImageModel,
+         view:emouseatlas.emap.tiledImageView
+      });
+
+   }; // updateInfoIFrame:
 
    //---------------------------------------------------------------
    // called when info icon clicked
@@ -452,7 +599,7 @@ emouseatlas.emap.pointClick = function() {
       var subplateData;
       var len;
       var i;
-      
+
       // get model data via ajax
       //----------------
       response = emouseatlas.emap.utilities.trimString(response);
@@ -464,7 +611,7 @@ emouseatlas.emap.pointClick = function() {
          //if(_debug) console.log(response);
 	 PLATE_DATA = true;
       }
-      
+
       if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
          json = JSON.parse(response);
       } else {
@@ -482,9 +629,27 @@ emouseatlas.emap.pointClick = function() {
       //if(_debug) console.log("subplateData ", subplateData);
       storeSubplateKeys(subplateData);
       storeSubplateDetails(subplateData);
-      setMarkerTable();
-      showUrlSpecifiedMarkers();
 
+      //This has been moved here because we have to know that plate data has been found.
+      //---------------
+      if(PLATE_DATA) {
+         //console.log("got plate data");
+         createElements();
+         setMarkerTable();
+         showUrlSpecifiedMarkers();
+
+	 getTitleInfo();
+
+	 if(model.isEditor()) {
+	    if(_debug) console.log("isEditor ");
+	    var chk = $('pointClickShowTxtChkbx');
+	    chk.set('checked', true);
+	    showAllMarkerTxt();
+	 }
+
+      }
+      //---------------
+      
    }; // getPlateDataCallback:
 
    //---------------------------------------------------------------
@@ -3076,6 +3241,7 @@ emouseatlas.emap.pointClick = function() {
 	 if(PLATE_DATA) {
 	    hideAllMarkers();
 	    showSelectedMarkers();
+	    doDistChanged();
 	 }
       }
 
@@ -3162,6 +3328,57 @@ emouseatlas.emap.pointClick = function() {
       }
 
    }; // viewUpdate
+
+   //---------------------------------------------------------------
+   var titleIFrameLoaded = function (ifrm) {
+
+      titleIframeHandle = ifrm;
+      console.log("ifrm ",ifrm);
+
+   }; // titleIFrameLoaded
+
+   //---------------------------------------------------------------
+   var doDistChanged = function () {
+
+      var distance;
+      var wlzToStackOffset;
+      var cur;
+      var cur2;
+      var cur3;
+      var zsel;
+      var entry;
+      var num;
+      var indx = undefined;
+      var multiple = false;
+
+      //console.log("enter doDistChanged");
+      wlzToStackOffset = model.getWlzToStackOffset();
+      distance = model.getDistance();
+      dcur = distance.cur;
+      zsel = model.getZSelectorInfo();
+      //console.log("doDistChanged zsel ",zsel);
+      if(zsel.imgRange && zsel.imgRange.length > 1) {
+         num = zsel.imgRange.length;
+	 distance = model.getDistance();
+	 cur = distance.cur;
+	 cur2 = (model.isArrayStartsFrom0()) ? cur : cur - 1;
+	 cur3 = cur2 + wlzToStackOffset;
+	 //console.log("d %d, imgRange ",cur3,zsel.imgRange);
+	 for(i=0; i<num; i++) {
+	    entry = zsel.imgRange[i];
+	    if(cur3 >= entry.min && cur3 <= entry.max) {
+	       //aspectRatio = entry.aspectRatio;
+	       indx = i;
+	       multiple = true;
+	       break;
+	    }
+	 }
+      }
+
+      updateViewerTitle(indx);
+      updateInfoIFrame(indx); 
+
+   }; // doDistChanged
    
    //---------------------------------------------------------------
    var getDstForImage = function (name, sectionMap) {
@@ -3543,6 +3760,7 @@ emouseatlas.emap.pointClick = function() {
       initialize: initialize,
       viewUpdate: viewUpdate,
       modelUpdate: modelUpdate,
+      titleIFrameLoaded: titleIFrameLoaded,
       doMarkerEmageQuery: doMarkerEmageQuery,
       doMarkerGxdbQuery: doMarkerGxdbQuery,
       doTableEmageQuery: doTableEmageQuery,

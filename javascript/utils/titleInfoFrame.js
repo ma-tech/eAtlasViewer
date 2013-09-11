@@ -120,6 +120,10 @@ emouseatlas.emap.titleInfo = function () {
 
       generateInfoPage();
 
+      //console.log(myparent);
+      //myparent.titleIFrameLoaded(titleIFrame);
+
+
    };
    
    //---------------------------------------------------------------
@@ -135,6 +139,37 @@ emouseatlas.emap.titleInfo = function () {
 
 
       rowLabels = ["Age", "Description", "Section orientation", "Crown—rump length", "Theiler Stage", "rat, Witschi Stage", "human, Carnegie Stage"];
+
+      dpcTxt = info.dpc;
+      dpcTxt += " days p.c.";
+
+      tsTxt = info.stage;
+
+      rowContent = [];
+      rowContent[0] = dpcTxt;
+      rowContent[1] = info.description;
+      rowContent[2] = info.sectionType;
+      rowContent[3] = info.crLength;
+      rowContent[4] = tsTxt;
+      rowContent[5] = info.witschi;
+      rowContent[6] = info.carnegie;
+
+   };
+   
+   //---------------------------------------------------------------
+   var updateTableContent = function (info) {
+
+      var dpcTxt;
+      var tsTxt;
+      var dpcTxt;
+      var tsTxt;
+      var witTxt;
+      var carTxt;
+      var emdash = '—';
+
+
+      alert("updateTableContent");
+      //rowLabels = ["Age", "Description", "Section orientation", "Crown—rump length", "Theiler Stage", "rat, Witschi Stage", "human, Carnegie Stage"];
 
       dpcTxt = info.dpc;
       dpcTxt += " days p.c.";

@@ -1355,6 +1355,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	     zsel.fullname = webServer + metadataRoot + json.zsimgsrc;
 	   else 
 	     ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
+
 	 zsel.fullname = layer.imageDir + assayPath + json.zsimgsrc;
 
 	 zsel.width = json.zselwidth;
@@ -1362,6 +1363,9 @@ emouseatlas.emap.tiledImageModel = function() {
 	 zsel.border_tl = json.zseldragborderlefttop;
 	 zsel.border_br = json.zseldragborderrightbottom;
 	 zsel.orientation = json.zsliceorientation;
+
+	 zsel.aspectRatio = typeof(json.zsimgAspectRatio) === 'undefined' ? (zsel.width / zsel.height) : json.zsimgAspectRatio;
+	 //console.log("getStackMetadataCallback_1  zsel.aspectRatio ",zsel.aspectRatio);
 
 	 // Some Kaufman Plates have multiple selector images (eg Plate03)
 	 // In this case we need to know which sections relate to which image.
@@ -1375,6 +1379,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	       minval = Number(entry.min);
 	       maxval = Number(entry.max);
 	       zselName = entry.name;
+	       zselAspectRatio = Number(entry.aspectRatio);
 	       zselW = Number(entry.width);
 	       zselH = Number(entry.height);
 	       zselOrient = entry.orient;
@@ -1382,6 +1387,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	                                               min:minval,
 						       max:maxval,
 						       name:zselName,
+						       aspectRatio:zselAspectRatio,
 						       width:zselW,
 						       height:zselH,
 						       orient:zselOrient

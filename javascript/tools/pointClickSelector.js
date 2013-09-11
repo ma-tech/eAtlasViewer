@@ -119,24 +119,7 @@ var pointClickSelector = new Class ({
 
       var win = $(this.shortName + '-win');
 
-      this.titleTextContainer = new Element('div', {
-         'class': 'sliderTextContainer'
-      });
-
-      this.titleTextSpacer = new Element('div', {
-         'id': 'selectorTitleTextSpacer'
-      });
-
-      this.titleTextDiv = new Element('div', {
-         'class': 'sliderTextDiv'
-      });
-      this.titleTextDiv.set('text', 'Section');
-
       var topEdge = $(this.shortName + '-topedge');
-
-      this.titleTextDiv.inject(this.titleTextContainer, 'inside', 'inside');
-      this.titleTextSpacer.inject(topEdge, 'inside', 'inside');
-      this.titleTextContainer.inject(topEdge, 'inside', 'inside');
 
       this.cursorBarWidth = 1; // the width of the line that indicated the current section
 
@@ -146,6 +129,7 @@ var pointClickSelector = new Class ({
       this.imageContainer.inject( this.window.win , 'inside');
 
       this.image = new Element('img', {
+         'id': 'selector-image',
          'class': 'selector-image'
       });
 
@@ -163,7 +147,7 @@ var pointClickSelector = new Class ({
       //this.cursorBarContainer.makeDraggable(emouseatlas.emap.utilities.getDragOpts('selector-imageContainer',100,this));
 
       this.cursorBar = new Element( 'div', {
-	 id: 'selector-cursorBar',
+	 'id': 'selector-cursorBar',
          'class': 'selector-cursor'
       });
       this.cursorBar.inject( this.cursorBarContainer , 'inside');
@@ -183,14 +167,6 @@ var pointClickSelector = new Class ({
 	 'id': 'selector-controlDiv'
       });
       this.controlDiv.inject( this.window.win , 'inside');
-      this.controlDiv.style.top = Number(imgH) + Number(2) + 'px';
-
-      /*
-      this.label = new Element( 'div', {
-	 'id': 'selector-label'
-      });
-      this.label.inject( this.controlDiv , 'inside');
-      */
 
       //------------------------------------
       this.dropDownDiv = new Element( 'div', {
@@ -234,54 +210,6 @@ var pointClickSelector = new Class ({
       this.dropDown.addEvent('change',function(e) {
          this.doDropDownChanged(e);
       }.bind(this));
-
-      //------------------------------------
-      /*
-      var nextarr = this.imagePath + "rightArrow_10.png";
-      var prevarr = this.imagePath + "leftArrow_10.png";
-
-      this.decDiv = new Element( 'div', {
-	 'id': 'selector-decDiv'
-      });
-      this.decImg = new Element( 'img', {
-	 'id': 'selector-incImg',
-	 'src': prevarr,
-         'class': 'selector-arrow'
-      });
-
-      this.decImg.inject(this.decDiv, 'inside');
-      this.decDiv.inject(this.controlDiv, 'inside');
-      this.decImg.addEvent('click',function() {
-         var dst = this.model.getDistance();
-         if(this.invertArrows) {
-	   this.model.setDistance(1 * dst.cur  + 1);
-	 } else {
-	   this.model.setDistance(1 * dst.cur  - 1);
-	 }
-      }.bind(this));
-
-      this.incDiv = new Element( 'div', {
-	 'id': 'selector-incDiv'
-      });
-
-      this.incImg = new Element( 'img', {
-	 'id': 'selector-incImg',
-	 'src': nextarr,
-         'class': 'selector-arrow'
-      });
-
-      this.incImg.inject(this.incDiv, 'inside');
-      this.incDiv.inject(this.controlDiv, 'inside');
-      this.incImg.addEvent('click',function() {
-         var dst = this.model.getDistance();
-         if(this.invertArrows) {
-	   this.model.setDistance(1 * dst.cur  - 1);
-	 } else {
-            this.model.setDistance(1 * dst.cur  + 1);
-	 }
-      }.bind(this));
-      */
-      //------------------------------------
 
    }, // createElements
 
@@ -410,8 +338,10 @@ var pointClickSelector = new Class ({
       //console.log("nSections -->",this.nSections);
 
       perc = parseFloat(section / this.nSections);
+
       //console.log("perc %d",perc);
-      //this.cursorBarContainer.style.top = ofs + 'px';
+      //console.log("setSectionOffset: this.dragHeight %f, this.topDragOffset %f",this.dragHeight,this.topDragOffset);
+      //console.log("setSectionOffset: this.dragWidth %f, this.leftDragOffset %f",this.dragWidth,this.leftDragOffset);
 
       if (this.zsel.orientation == 'vertical') {
 	 ofs = perc * (this.dragWidth) + this.leftDragOffset;
@@ -443,6 +373,7 @@ var pointClickSelector = new Class ({
       var layerNames;
       var layer;
       var selectorName;
+      var aspectRatio;
       var distance;
       var cur;
       var cur2;
@@ -461,7 +392,7 @@ var pointClickSelector = new Class ({
          return undefined;
       }
 
-      if(this.kaufman) {
+      if(this.zsel.imgRange && this.zsel.imgRange.length > 1) {
          num = this.zsel.imgRange.length;
          //console.log("getting selector name for kaufman with %d ranges",num);
          if(num > 1) {
@@ -478,8 +409,6 @@ var pointClickSelector = new Class ({
 		  break;
 	       }
 	    }
-         } else {
-            selectorName = layer.selectorName;
          }
       } else {
          selectorName = layer.selectorName;
@@ -515,13 +444,18 @@ var pointClickSelector = new Class ({
          return undefined;
       }
 
-      
+      selectorSrc = server + '?fif=' + dataPath + selectorName
+         + '&qlt='
+         + quality.cur
+         + '&cvt=jpeg';
+/* 
       selectorSrc = server + '?fif=' + dataPath + selectorName
          + '&wid='
          + this.zsel.width
          + '&qlt='
          + quality.cur
          + '&cvt=jpeg';
+*/
       
       //console.log("exit selector.getSelectorSrc:",selectorSrc);
       return selectorSrc;
@@ -534,10 +468,10 @@ var pointClickSelector = new Class ({
       //console.log("enter selector.setSelectorImage");
       //console.log("zsel ",this.zsel);
 
-      this.image.style.width = this.zsel.width + 'px';
-      this.image.style.height = this.zsel.height + 'px';
-      this.imageContainer.style.width = this.zsel.width + 'px';
-      this.imageContainer.style.height = this.zsel.height + 'px';
+      //this.image.style.width = this.zsel.width + 'px';
+      //this.image.style.height = this.zsel.height + 'px';
+      //this.imageContainer.style.width = this.zsel.width + 'px';
+      //this.imageContainer.style.height = this.zsel.height + 'px';
 
       //this.imageContainer.style.left = '2px';
       this.imageContainer.style.top = '2px';
@@ -581,25 +515,20 @@ var pointClickSelector = new Class ({
       var cur3;
       var viz;
 
-      if(viewChanges.initial || viewChanges.locator) {
+      if(viewChanges.initial) {
 	 distance = this.model.getDistance();
 	 dcur = distance.cur;
-
          this.setSelectorImage();
-
-	 /*
-         pointClickImg = this.model.getPointClickImg();
-         //fbText = this.getFeedbackText(pointClickImg);
-         fbText = this.pointClickImgData.subplate;
-         this.label.innerHTML=(fbText);
-	 */
-
 	 this.window.setVisible(true);
-
 	 this.fitSelectorImage(dcur);
-
       } // initial
 
+      if(viewChanges.locator) {
+	 distance = this.model.getDistance();
+	 dcur = distance.cur;
+         this.setSelectorImage();
+	 this.fitSelectorImage(dcur);
+      } // locator
       //console.log("exit Selector viewUpdate:");
 
       if(viewChanges.toolbox === true) {
@@ -616,9 +545,15 @@ var pointClickSelector = new Class ({
    //---------------------------------------------------------------
    fitSelectorImage: function(dcur) {
 
-      var scaleFactor;
-      var tl;
-      var br;
+      var entry;
+      var num;
+      var aspectRatio;
+      var selector;
+      var topstr;
+      var toppx;
+      var imgWStr;
+      var imgW;
+      var imgH;
       var cur2;
       var cur3;
       var sliceOffset;
@@ -627,102 +562,74 @@ var pointClickSelector = new Class ({
       var controlDivWidth;
       var controlDivHeight;
       var imageContainerLeftOffset;
-      //var imageOffset;
 
-      //console.log("enter fitSelectorImage d %d",dcur);
-      
-      // make sure the zsel image fits the max dimension specified
-      scaleFactor = (this.zsel.width > this.zsel.height) ? this.maxDim / this.zsel.width : this.maxDim / this.zsel.height;
-      if (scaleFactor > 1) {
-	 scaleFactor = 1; 
+      if(this.zsel.imgRange && this.zsel.imgRange.length > 1) {
+         num = this.zsel.imgRange.length;
+	 distance = this.model.getDistance();
+	 cur = distance.cur;
+	 cur2 = (this.model.isArrayStartsFrom0()) ? cur : cur - 1;
+	 cur3 = cur2 + this.wlzToStackOffset;
+	 //console.log("d %d, imgRange ",cur3,this.zsel.imgRange);
+	 for(i=0; i<num; i++) {
+	    entry = this.zsel.imgRange[i];
+	    if(cur3 >= entry.min && cur3 <= entry.max) {
+	       //console.log("using %s",entry.name);
+	       aspectRatio = entry.aspectRatio;
+	       break;
+	    }
+	 }
+      } else {
+         aspectRatio = this.zsel.aspectRatio; 
       }
 
-      this.scaledSelectorWidth = (scaleFactor * this.zsel.width);
-      this.scaledSelectorHeight = (scaleFactor * this.zsel.height);
-      //console.log("scaleFactor %f, scaledSelectorWidth %f, scaledSelectorHeight %f",scaleFactor,this.scaledSelectorWidth,this.scaledSelectorHeight);
+      //console.log("fitSelectorImage: aspectRatio %f",aspectRatio);
 
-      // if the selector image has borders we must allow for them
-      tl = 0;
-      br = 0;
-      if (this.zsel.border_tl !== undefined) {
-	 tl = scaleFactor * this.zsel.border_tl;
-      }
-      if (this.zsel.border_br !== undefined) {
-	 br = scaleFactor * this.zsel.border_br;
-      }
+      imgWStr = window.getComputedStyle(this.image, null).getPropertyValue("width");
+      indx = imgWStr.indexOf("px");
+      imgW = Number(imgWStr.substring(0,indx));
 
-      // the actual usable image dimensions (not including borders).
-      this.dragWidth = this.scaledSelectorWidth - (tl + br);
-      this.dragHeight = this.scaledSelectorHeight - (tl + br)
-      //console.log("dragWidth %f, dragHeight %f",this.dragWidth,this.dragHeight);
+      imgH = parseInt(imgW / aspectRatio);
+      this.controlDiv.style.top = Number(imgH) + Number(10) + 'px';
 
-      // ----maze------- Offsets of drag constraint div relative to image
+      // for Kaufman point and click we need to adjust the position of the locator for plates 3 & 4
+      // when a different embryo is displayed.
+      selector = $('pointclickselector-container');
+      topstr = window.getComputedStyle(selector, null).getPropertyValue("top");
+      indx = topstr.indexOf("px");
+      toppx = topstr.substring(0,indx);
+      this.view.updateLocatorPosition(toppx, imgH);
+
+      this.dragHeight = imgH;
       this.topDragOffset = 0;
+
+      this.dragWidth = imgW;
       this.leftDragOffset = 0;
 
+      this.cursorBar.setStyles({
+	    'width': imgW 
+      });
+
       if (this.zsel.orientation == 'horizontal') {
-	 /*
-	    this.dragHeight = this.dragHeight - tl - br + this.cursorBarWidth;
-	    this.topDragOffset = tl - this.cursorBarWidth / 2;
-	  */
 	 this.cursorBarContainerHeight = 5;
-	 this.topDragOffset = tl - (this.cursorBarContainerHeight / 2);
-	 this.cursorBarContainer.style.width = this.scaledSelectorWidth + 'px';
+	 //this.topDragOffset =  - (this.cursorBarContainerHeight / 2);
+	 this.cursorBarContainer.style.width = imgW + 'px';
 	 this.cursorBarContainer.style.height = this.cursorBarContainerHeight + 'px';
 	 this.cursorBar.style.left = '0px';
 	 this.cursorBar.style.top = (this.cursorBarContainerHeight / 2) + 'px';
-	 this.cursorBar.style.width = this.scaledSelectorWidth + 'px';
+	 this.cursorBar.style.width = imgW + 'px';
 	 this.cursorBar.style.height = this.cursorBarWidth + 'px';
       } else if (this.zsel.orientation == 'vertical') {
 	 this.cursorBarContainerWidth = 5;
-	 this.leftDragOffset = tl - (this.cursorBarContainerWidth / 2);
+	 //this.leftDragOffset =  - (this.cursorBarContainerWidth / 2);
 	 this.cursorBarContainer.style.width = this.cursorBarContainerWidth + 'px';
-	 this.cursorBarContainer.style.height = this.scaledSelectorHeight + 'px';
+	 this.cursorBarContainer.style.height = (imgH-20) + 'px';
 	 this.cursorBar.style.left = (this.cursorBarContainerWidth / 2) + 'px';
 	 this.cursorBar.style.top = '0px';
 	 this.cursorBar.style.width = this.cursorBarWidth + 'px';
-	 this.cursorBar.style.height = this.scaledSelectorHeight + 'px';
+	 this.cursorBar.style.height = imgH + 'px';
       }
-      //console.log("leftDragOffset %f",this.leftDragOffset);
 
-      this.imageContainer.style.width = this.scaledSelectorWidth + 'px';
-      this.imageContainer.style.height = this.scaledSelectorHeight + 'px';
-      this.image.style.width = this.scaledSelectorWidth + 'px';
-      this.image.style.height = this.scaledSelectorHeight + 'px';
-
-      //cur2 = (this.model.isArrayStartsFrom0()) ? dcur : dcur - 1;
-      //cur3 = cur2 + this.wlzToStackOffset;
-      //fullDepth = this.model.getFullDepth();
-      //sliceOffset = cur3 / fullDepth;
-      //this.setSliceOffset(sliceOffset);
       this.setSectionOffset(dcur);
-
-      this.totWidth = (this.dragWidth > this.scaledSelectorWidth) ? this.dragWidth : this.scaledSelectorWidth;
-      totHeight = (this.dragHeight > this.scaledSelectorHeight) ? this.dragHeight : this.scaledSelectorHeight;
-      if (this.leftDragOffset < 0) {
-	 this.totWidth = this.scaledSelectorWidth - this.leftDragOffset * 2;
-      }
-      if (this.topDragOffset < 0) {
-	 totHeight = this.scaledSelectorHeight - this.topDragOffset * 2;
-      }
-
-      controlDivWidth = $('selector-controlDiv').getWidth();
-      controlDivHeight = $('selector-controlDiv').getHeight();
-
-      this.totWidth = (this.totWidth < controlDivWidth) ? controlDivWidth : this.totWidth;
-      //console.log("controlDivWidth %s, controlDivHeight %s, this.totWidth %s",controlDivWidth,controlDivHeight,this.totWidth);
-
-      this.window.setDimensions(this.totWidth, totHeight + controlDivHeight + 4);
-
-      imageContainerLeftOffset = Math.floor((this.totWidth - this.scaledSelectorWidth) / 2);
-      //console.log("imageContainerLeftOffset %s",imageContainerLeftOffset);
-      this.imageContainer.style.left = imageContainerLeftOffset + 'px';
-
-      //this.label.style.top = totHeight + 2 + 'px';
-
-      //imageOffset = $('selector-imageContainer').style.left;
-      //console.log("imageOffset = ", imageOffset);
-      //console.log("exit fitSelectorImage d %d",dcur);
 
    }, // fitSelectorImage
 

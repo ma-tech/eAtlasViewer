@@ -4949,6 +4949,20 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   // for Kaufman point and click we need to adjust the position of the locator for plates 3 & 4
+   // when a different embryo is displayed.
+   var updateLocatorPosition = function (toppx, imgH) {
+      var locator = $('locator-container');
+      var loctop;
+
+      loctop = Number(toppx) + Number(imgH) + Number(30) + 'px';
+
+      if(locator) {
+         locator.setStyle('top', loctop);
+      }
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
@@ -5030,6 +5044,7 @@ emouseatlas.emap.tiledImageView = function() {
       cancelContextMenu: cancelContextMenu,
       launchEquivalentSection: launchEquivalentSection,
       goToDownloadPage: goToDownloadPage,
+      updateLocatorPosition: updateLocatorPosition,
       printViewerInfo: printViewerInfo
    };
 
