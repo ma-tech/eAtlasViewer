@@ -102,17 +102,27 @@ var tiledImagePropertiesTool = new Class ({
       }.bind(this));
 
       this.layerNames = [];
+      this.isVisible = false;
+      this.prevLayer = undefined;
 
+      this.createElements();
+
+      this.window.setDimensions(this.width, this.height);
+      this.setToolTip(this.toolTipText);
+
+   }, // initialize
+
+   //---------------------------------------------------------------
+   createElements: function () {
+
+      var win = $(this.shortName + '-win');
+      var topEdge = $(this.shortName + '-topedge');
       //.................................................
       // spacer to move feedback text away from left edge
       //.................................................
       this.spacer = new Element('div', {
          'class': 'sliderTextContainer_spacer5'
       });
-
-      var win = $(this.shortName + '-win');
-      var topEdge = $(this.shortName + '-topedge');
-      this.spacer.inject(topEdge, 'inside');
 
       this.titleTextContainer = new Element('div', {
          'class': 'titleTextContainer'
@@ -279,10 +289,118 @@ var tiledImagePropertiesTool = new Class ({
                                              range: {min:this.filterRange.min, max:this.filterRange.max}
 					   });
 
-      this.window.setDimensions(this.width, this.height);
-      this.setToolTip(this.toolTipText);
+      //----------------------------------------
+      // a spacer element
+      //----------------------------------------
+      var propertySpacerContainer = new Element('div', {
+	 'id': 'propertySpacerContainer',
+	 'class':'propertySpacer'
+      });
 
-   }, // initialize
+      propertySpacerContainer.inject(win, 'inside');
+
+      //----------------------------------------
+      // the container for display mode radio buttons
+      //----------------------------------------
+      var renderModeButtonContainer = new Element('div', {
+	 'id': 'renderModeButtonContainer',
+	 'class':'properties render'
+      });
+      var renderModeButtonContainerTop = new Element('div', {
+	 'id': 'renderModeButtonContainerTop',
+	 'class':'properties render'
+      });
+      var renderModeButtonContainerBot = new Element('div', {
+	 'id': 'renderModeButtonContainerBot',
+	 'class':'properties render'
+      });
+
+
+      var sectionRadioLabel = new Element('label', {
+	 'id': 'sectionRadioLabel',
+	 'class':'properties rmlabel',
+	 'for': 'render_mode'
+      });
+      this.sectionRadio = new Element('input', {
+	 'id': 'sectionRadio',
+	 'type': 'radio',
+	 'value': 'sect',
+	 'name': 'renderMode',
+	 'checked': 'true'
+      });
+
+      var shadowRadioLabel = new Element('label', {
+	 'id': 'shadowRadioLabel',
+	 'class':'properties rmlabel',
+	 'for': 'render_mode'
+      });
+      this.shadowRadio = new Element('input', {
+	 'id': 'shadowRadio',
+	 'type': 'radio',
+	 'value': 'prjn',
+	 'name': 'renderMode',
+      });
+
+      var domintRadioLabel = new Element('label', {
+	 'id': 'domintRadioLabel',
+	 'class':'properties rmlabel',
+	 'for': 'render_mode'
+      });
+      this.domintRadio = new Element('input', {
+	 'id': 'domintRadio',
+	 'type': 'radio',
+	 'value': 'prjd',
+	 'name': 'renderMode',
+	 'checked': 'true'
+      });
+
+      var voxintRadioLabel = new Element('label', {
+	 'id': 'voxintRadioLabel',
+	 'class':'properties rmlabel',
+	 'for': 'render_mode'
+      });
+      this.voxintRadio = new Element('input', {
+	 'id': 'voxintRadio',
+	 'type': 'radio',
+	 'value': 'prjv',
+	 'name': 'renderMode',
+      });
+
+      sectionRadioLabel.set('text', 'section');
+      shadowRadioLabel.set('text', 'shadow');
+      domintRadioLabel.set('text', 'domint');
+      voxintRadioLabel.set('text', 'voxint');
+
+      renderModeButtonContainer.inject(win, 'inside');
+      renderModeButtonContainerTop.inject(renderModeButtonContainer, 'inside');
+      renderModeButtonContainerBot.inject(renderModeButtonContainer, 'inside');
+      this.sectionRadio.inject(sectionRadioLabel, 'inside');
+      this.shadowRadio.inject(shadowRadioLabel, 'inside');
+      this.domintRadio.inject(domintRadioLabel, 'inside');
+      this.voxintRadio.inject(voxintRadioLabel, 'inside');
+
+      sectionRadioLabel.inject(renderModeButtonContainerTop, 'inside');
+      shadowRadioLabel.inject(renderModeButtonContainerTop, 'inside');
+      domintRadioLabel.inject(renderModeButtonContainerBot, 'inside');
+      voxintRadioLabel.inject(renderModeButtonContainerBot, 'inside');
+
+      this.sectionRadio.addEvent('click',function(e) {
+	 this.doClickRadio(e);
+      }.bind(this));
+
+      this.shadowRadio.addEvent('click',function(e) {
+	 this.doClickRadio(e);
+      }.bind(this));
+
+      this.domintRadio.addEvent('click',function(e) {
+	 this.doClickRadio(e);
+      }.bind(this));
+
+      this.voxintRadio.addEvent('click',function(e) {
+	 this.doClickRadio(e);
+      }.bind(this));
+
+   }, // createElements
 
    //---------------------------------------------------------------
    doStepChanged: function(step, type) {
@@ -344,6 +462,32 @@ var tiledImagePropertiesTool = new Class ({
    },
 
    //---------------------------------------------------------------
+   doClickRadio: function(e) {
+
+      var mode;
+      var currentLayer;
+      var LRM;
+
+      //console.log("%s doClickRadio:",this.name);
+      var target = emouseatlas.emap.utilities.getTarget(e);
+      if(target === undefined) {
+         return false;
+      }
+      //console.log(target.value);
+
+      mode = target.value;
+      currentLayer = this.view.getCurrentLayer();
+
+      this.view.setLayerRenderMode({layer:currentLayer, mode:mode});
+
+      // just as a check ...
+      LRM = this.view.getLayerRenderMode(currentLayer);
+      mode = LRM.mode;
+      //console.log("doClickRadio: mode now ",mode);
+
+   },
+
+   //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {
 
       if(modelChanges.initial === true) {
@@ -396,8 +540,20 @@ var tiledImagePropertiesTool = new Class ({
 
       //...................................
       if(viewChanges.showProperties === true) {
-	 this.setPropertiesVisible(true);
-	 this.setToCurrentLayer();
+
+	 var currentLayer = this.view.getCurrentLayer();
+	 if (this.prevLayer === undefined) {
+	    this.setPropertiesVisible(true);
+	    this.isVisible = !this.isVisible;
+	    this.prevLayer = currentLayer;
+	 } else if (currentLayer === this.prevLayer) {
+	    this.isVisible = !this.isVisible;
+	    this.setPropertiesVisible(this.isVisible);
+	 } else {
+	    this.setPropertiesVisible(true);
+	    this.isVisible = !this.isVisible;
+	    this.prevLayer = currentLayer;
+	 }
       }
 
       //...................................
@@ -410,12 +566,14 @@ var tiledImagePropertiesTool = new Class ({
 
    //--------------------------------------------------------------
    setToCurrentLayer: function () {
-      //console.log("setToCurrentLayer");
       var step;
       var currentLayer = this.view.getCurrentLayer();
       var opacity = this.view.getOpacity(currentLayer);
-      //console.log("setToCurrentLayer: opacity ",opacity);
       var filter = this.view.getFilter(currentLayer);
+      var radios;
+      var i;
+      var renderMode = this.view.getLayerRenderMode(currentLayer);
+
       this.titleTextDiv.set('text', currentLayer);
 
       step = Math.round(opacity * 100);
@@ -441,6 +599,14 @@ var tiledImagePropertiesTool = new Class ({
       this.blueSlider.setStep(step);
       this.blueValueContainer.set('text', step);
       this.blueSlider.setUserChange(true);
+
+      var radios = document.getElementsByName("renderMode");
+      for( i = 0; i < radios.length; i++ ) {
+         radio = radios[i];
+	 if(radio.value === renderMode.mode) {
+	    radio.checked = true;
+	 }
+      }
    },
 
    //--------------------------------------------------------------

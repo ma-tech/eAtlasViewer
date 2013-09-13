@@ -101,6 +101,23 @@ var tiledImageLayerTool = new Class ({
 
       this.layerNames = [];
 
+      this.createElement();
+
+      this.window.setDimensions(this.width, this.height);
+      this.setToolTip(this.toolTipText);
+      this.setPropertiesToolTip(this.propertiesToolTipText);
+
+      if(this.model.modelReady()) {
+	 //this.slider.setUserChange(false);
+	 //this.slider.setPosition(1.0);
+	 //this.slider.setUserChange(true);
+      }
+
+   }, // initialize
+
+   //---------------------------------------------------------------
+   createElements: function(e) {
+
       //.................................................
       // spacer to move feedback text away from left edge
       //.................................................
@@ -282,17 +299,7 @@ var tiledImageLayerTool = new Class ({
          emouseatlas.emap.utilities.addButtonStyle(layerNames[i] + '_propertiesDiv');
       } // for
 
-      this.window.setDimensions(this.width, this.height);
-      this.setToolTip(this.toolTipText);
-      this.setPropertiesToolTip(this.propertiesToolTipText);
-
-      if(this.model.modelReady()) {
-	 //this.slider.setUserChange(false);
-	 //this.slider.setPosition(1.0);
-	 //this.slider.setUserChange(true);
-      }
-
-   }, // initialize
+   }, // createElements
 
    //---------------------------------------------------------------
    // If checkbox is checked the layer will be loaded and displayed

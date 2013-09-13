@@ -252,7 +252,7 @@ var DraggableWindow = new Class ({
 
 	 //console.log("vpw %d, thisW %d, x %d, %d",vpWidth,this.width,x,(x+this.width));
 	 this.setPosition(x,y);
-	 this.distToEdge = this.calcDistToEdges();
+	 this.distToEdge = this.calcDistToEdges("handleDrag");
 	 if(this.distToEdge) {
 	    this.findClosestEdges();
 	 }
@@ -273,10 +273,10 @@ var DraggableWindow = new Class ({
 	 // maintain the closest distance to an edge
 	 // ----------------------------------------
 
-	 var dists = this.calcDistToEdges();
+	 var dists = this.calcDistToEdges("viewUpdate");
 	 if(!dists) {
 	    //console.log("viewUpdate: couldn't do this.calcDistToEdges");
-	    return false;
+	    //return false;
 	 }
 	 this.findClosestEdges(dists);
          //console.log("viewUpdate: this.leftClosest %s, this.topClosest %s",this.leftClosest,this.topClosest);
@@ -543,9 +543,9 @@ var DraggableWindow = new Class ({
       this.width = Number(wid);
       this.height = Number(hei);
 
-      this.distToEdge = this.calcDistToEdges();
+      this.distToEdge = this.calcDistToEdges("setDimensions");
       if(!this.distToEdge) {
-         return false;
+         //return false;
       }
       //console.log("setDimensions: this.distToEdge ",this.distToEdge);
 
@@ -555,23 +555,23 @@ var DraggableWindow = new Class ({
       var vpHeight = viewport.height;
       //console.log("setDimensions: vpHeight %d",vpHeight);
 
-      if(this.distToEdge.left < 0) {
+      if(this.distToEdge === undefined || this.distToEdge.left < 0) {
 	 //console.log("setDimensions: l < 0");
          this.distToEdge.left = 2*this.edgeWidth;
 	 this.distToEdge.right = parseInt(viewport.width - (this.width + 2*this.edgeWidth));
       }
-      if(this.distToEdge.left > (viewport.width-(this.width+2*this.edgeWidth))) {
+      if(this.distToEdge === undefined || this.distToEdge.left > (viewport.width-(this.width+2*this.edgeWidth))) {
 	 //console.log("setDimensions: r > width");
          this.distToEdge.left = parseInt(viewport.width - (this.width + 2*this.edgeWidth));
 	 this.distToEdge.right = 2*this.edgeWidth;
       }
 
-      if(this.distToEdge.top < 0) {
+      if(this.distToEdge === undefined || this.distToEdge.top < 0) {
 	 //console.log("setDimensions: t < 0");
          this.distToEdge.top = 2*this.edgeWidth;
 	 this.distToEdge.bottom = parseInt(viewport.height - (this.height + 2*this.edgeWidth));
       }
-      if(this.distToEdge.top > (viewport.height-(this.height+2*this.edgeWidth))) {
+      if(this.distToEdge === undefined || this.distToEdge.top > (viewport.height-(this.height+2*this.edgeWidth))) {
 	 //console.log("setDimensions: b > height");
          this.distToEdge.top = parseInt(viewport.height - (this.height + 2*this.edgeWidth));
 	 this.distToEdge.bottom = this.topEdgeWidth;
@@ -579,7 +579,7 @@ var DraggableWindow = new Class ({
 
       if(this.canDrag) {
 	 this.setPosition(this.distToEdge.left, this.distToEdge.top);
-	 this.calcDistToEdges();
+	 this.calcDistToEdges("setDimensions, canDrag");
 	 this.findClosestEdges();
       }
 
@@ -596,29 +596,43 @@ var DraggableWindow = new Class ({
    //--------------------------------------------------------------
    // this can only be called after setDimensions() as we need this.width etc.
    //--------------------------------------------------------------
-   calcDistToEdges: function() {
+   calcDistToEdges: function(from) {
+
+      //console.log("calcDistToEdges, called from: %s",from);
+
       //if(this.initiator.name === "pointClickSelector") {
       //   console.log("enter calcDistToEdges ",this.initiator.name);
       //}
       var viewport = this.view.getViewportDims();
       var vpWidth = viewport.width;
       var vpHeight = viewport.height;
+      var style;
+      var str;
+      var indx;
+      var l;
+      var r;
+      var t;
+      var b;
 
-      var l = parseInt(this.container.style.left);
-      var r = vpWidth - (l + this.width);
-      var t = parseInt(this.container.style.top);
-      var b = vpHeight - (t + this.height);
+      //console.log("initiator: %s",this.initiator.name);
+      style = window.getComputedStyle(this.container, null);
 
-      //if(this.initiator.name === "pointClickSelector") {
-      //   console.log("calcDistToEdges: vpWidth %d, w %d, l %d, r %d",vpWidth,this.width,l,r);
-      //   console.log("exit calcDistToEdges ",this.initiator.name);
-      //}
+      str = style.getPropertyValue("left");
+      indx = str.indexOf("px")
+      l = parseInt(str.substring(0,indx));
 
-      if(l && r && t && b) {
-         return {left:l, right:r, top:t, bottom:b};
-      } else {
-         return undefined;
-      }
+      indx = str.indexOf("px")
+      r = parseInt(str.substring(0,indx));
+
+      str = style.getPropertyValue("top");
+      indx = str.indexOf("px")
+      t = parseInt(str.substring(0,indx));
+
+      str = style.getPropertyValue("bottom");
+      indx = str.indexOf("px")
+      b = parseInt(str.substring(0,indx));
+
+      return {left:l, right:r, top:t, bottom:b};
 
    },
 

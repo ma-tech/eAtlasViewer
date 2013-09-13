@@ -33,6 +33,24 @@
    left: 2px;
    top: 2px;
 }
+.properties.rmlabel {
+   position: relative;
+   left: 2px;
+   top: 0px;
+   vertical-align: center;
+}
+#sectionRadioLabel {
+   left: 4px;
+}
+#shadowRadioLabel {
+   left: 6px;
+}
+#domintRadioLabel {
+   left: 5px;
+}
+#voxintRadioLabel {
+   left: 12px;
+}
 
 .properties.value {
    position: absolute;
@@ -71,6 +89,14 @@
 
 #blueValueContainer {
    top: 108px;
+}
+/* --------------------------- */
+#renderModeButtonContainer {
+   background: #fafafa;
+}
+#renderModeButtonContainerTop {
+}
+#renderModeButtonContainerBot {
 }
 /* --------------------------- */
 .titleTextContainer {

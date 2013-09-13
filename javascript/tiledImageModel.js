@@ -222,6 +222,7 @@ emouseatlas.emap.tiledImageModel = function() {
       var jsonLayerData;
       var modelInfo;
       var opacity;
+      var renderMode;
       var filter;
       var layerType;
       var lowRes;
@@ -343,6 +344,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 }
 
          opacity = (jsonLayerData[i].opacity === undefined) ? 1.0 : jsonLayerData[i].opacity;
+         renderMode = (jsonLayerData[i].renderMode === undefined) ? 'sect' : jsonLayerData[i].renderMode;
          filter = (jsonLayerData[i].filter === undefined) ? {red:255,green:255,blue:255} : jsonLayerData[i].filter;
 
 	 if(jsonLayerData[i].lowResData !== undefined) {
@@ -392,6 +394,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	       type:jsonLayerData[i].type,
 	       initialFilter:filter,
 	       initialOpacity:opacity,
+	       initialRenderMode:renderMode,
 	       treeStructure:treeStructureURL,
 	       treeData:treeDataURL
 	    };

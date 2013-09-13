@@ -144,6 +144,7 @@ emouseatlas.emap.tiledImageView = function() {
    var currentLayer;
    var layerData = {};
    var layerVisibility = {};
+   var layerRenderMode = {};
    var layerOpacity = {};
    var layerFilter = {};
    var currentSectionName = undefined;
@@ -247,6 +248,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    setLayerVisibility({layer:layerNames[i], value:layerData[layerNames[i]].visible});
 	    setInitialOpacity(layerNames[i]);
 	    setInitialFilter(layerNames[i]);
+	    setInitialRenderMode(layerNames[i]);
 
 	    // set up the event handlers (we need to do it for each layer)
 	    // only add/remove 'mousemove' on mousedown/mouseup (ie not here)
@@ -363,6 +365,16 @@ emouseatlas.emap.tiledImageView = function() {
       }
       hideViewerInfo();
       keepViewerInfoFrame = false;
+   };
+
+   //---------------------------------------------------------
+   var setInitialRenderMode = function (layer) {
+
+      if(typeof(layerRenderMode[layer]) === 'undefined') {
+	 layerRenderMode[layer] = {layer:layer, mode:layerData[layer].initialRenderMode};
+      } else {
+	 layerRenderMode[layer].mode = {mode:layerData[layer].initialRenderMode};
+      }
    };
 
    //---------------------------------------------------------
@@ -700,6 +712,7 @@ emouseatlas.emap.tiledImageView = function() {
 
       var sel = undefined;
       var filter = undefined;
+      var renderMode = undefined;
 
       if(layer.type === 'label') {
 	 if(typeof(tools.tree) === 'undefined') {
@@ -737,7 +750,10 @@ emouseatlas.emap.tiledImageView = function() {
 	  sel = sel+"&sel=3,0,0,255,255";
 	  sel = sel+"&sel=4,0,255,0,255";
 	  sel = sel+"&sel=5,0,255,255,255";
-	}
+      }
+
+      renderMode = getLayerRenderMode(layerName);
+      //console.log("getTileSrc: renderMode for %s %s",layerName,renderMode.mode);
 
       //console.log("getTileSrc: sel ",sel);
 
@@ -763,6 +779,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 + "&yaw=" + threeDInfo.yaw.cur
 	 + "&rol=" + threeDInfo.roll.cur
 	 + "&qlt=" + qlt
+	 + "&rmd=" + renderMode.mode
 	 + imgType
 	 + k;
       } else {
@@ -4515,6 +4532,37 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   var setLayerRenderMode = function (data) {
+
+      var layer;
+      var clearParams = {scale: false, distance: false, rotation: false};
+
+      //console.log("setLayerRenderMode with ",data);
+
+      // make sure it is a valid render mode
+      if(data.mode != 'sect' && data.mode != 'prjn' && data.mode != 'prjd' && data.mode != 'prjv') {
+         //console.log("setLayerRenderMode unkown mode %s",data.mode);
+         return false;
+      }
+
+      layer = data.layer;
+      if(typeof(layerRenderMode[layer]) === 'undefined') {
+	 layerRenderMode[layer] = {layer:layer, mode:data.mode};
+      } else {
+	 layerRenderMode[layer].mode = data.mode;
+      }
+
+      clearTiles(clearParams);
+      setTimeout("emouseatlas.emap.tiledImageView.requestImages('setLayerRenderMode')", 10);
+
+   };
+
+   //---------------------------------------------------------
+   var getLayerRenderMode = function (layer) {
+      return layerRenderMode[layer];
+   };
+
+   //---------------------------------------------------------
    var setCurrentLayer = function (layer) {
       currentLayer = layer;
       //setResolutionData('setCurrentLayer');
@@ -5002,6 +5050,8 @@ emouseatlas.emap.tiledImageView = function() {
       getIndexArray: getIndexArray,
       setLayerVisibility: setLayerVisibility,
       getLayerVisibility: getLayerVisibility,
+      setLayerRenderMode: setLayerRenderMode,
+      getLayerRenderMode: getLayerRenderMode,
       //getResolutionData: getResolutionData,
       //getLocatorData: getLocatorData,
       clearTiles: clearTiles,
