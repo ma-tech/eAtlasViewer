@@ -123,6 +123,7 @@ emouseatlas.emap.titleInfo = function () {
       //console.log(myparent);
       //myparent.titleIFrameLoaded(titleIFrame);
 
+      addLinks(info);
 
    };
    
@@ -157,6 +158,84 @@ emouseatlas.emap.titleInfo = function () {
    };
    
    //---------------------------------------------------------------
+   var addLinks = function (info) {
+
+      var mainContainer;
+      var iframe;
+      var doc;
+      var iframeContainer;
+      var stage;
+      var bottomDiv;
+      var theilerBookA;
+      var emapAnatomyA;
+      var url_theilerBook;
+      var url_emapAnatomy;
+
+      stage = info.stage;
+      // replaces leading non-digits with nothing
+      stage = stage.replace( /^\D+/g, '');
+      stage = parseInt(stage);
+      console.log("stage %d",stage);
+
+      url_theilerBook = "http://testwww.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
+      url_emapAnatomy = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
+
+      mainContainer = mydocument.getElementById("titleInfoMainContainer");
+      if(mainContainer === undefined || mainContainer === null) {
+         //console.log("no main container");
+         return false;
+      } else {
+         //console.log("got main container");
+      }
+      iframe = myparent.document.getElementById("wlzIIPViewerTitleIFrame");
+      doc = iframe.contentDocument;
+
+      bottomDiv = new Element('div', {
+         'id': 'wlzIIPViewerTitleIFrameBottomDiv'
+      });
+      bottomTxt = new Element('text', {
+         'id': 'wlzIIPViewerTitleIFrameBottomTxt',
+	 'text': 'see also the '
+      });
+      bottomTxt2 = new Element('text', {
+         'id': 'wlzIIPViewerTitleIFrameBottomTxt2',
+	 'text': ' pages '
+      });
+
+      theilerDiv = new Element('div', {
+         'id': 'wlzIIPViewerTitleIFrameTheilerDiv'
+      });
+
+      theilerBookA = new Element('a', {
+         'id': 'theilerBookAnchor',
+	 'text':'Theiler Book',
+	 'href':url_theilerBook,
+	 'target': '_parent'
+      });
+
+      emapADiv = new Element('div', {
+         'id': 'wlzIIPViewerTitleIFrameEmapADiv',
+	 'text': " and "
+      });
+
+      emapAnatomyA = new Element('a', {
+         'id': 'emapAnatomyAnchor',
+	 'text':'EMAP anatomy',
+	 'href':url_emapAnatomy,
+	 'target': '_parent'
+      });
+
+      bottomDiv.inject(mainContainer, 'inside');
+      theilerDiv.inject(bottomDiv, 'inside');
+      bottomTxt.inject(theilerDiv, 'before');
+      emapADiv.inject(bottomDiv, 'inside');
+      theilerBookA.inject(theilerDiv, 'inside');
+      emapAnatomyA.inject(emapADiv, 'inside');
+      bottomTxt2.inject(emapADiv, 'after');
+   };
+   
+   /*
+   //---------------------------------------------------------------
    var updateTableContent = function (info) {
 
       var dpcTxt;
@@ -186,6 +265,7 @@ emouseatlas.emap.titleInfo = function () {
       rowContent[6] = info.carnegie;
 
    };
+   */
    
    //---------------------------------------------------------------
    var generateInfoPage = function () {
@@ -216,7 +296,7 @@ emouseatlas.emap.titleInfo = function () {
       //console.log("enter generateInfoPage");
 
       closeDiv = mydocument.getElementById("titleInfoFrameCloseDiv");
-      mainContainer;
+      //mainContainer;
       mainContainer = mydocument.getElementById("titleInfoMainContainer");
       if(mainContainer === undefined || mainContainer === null) {
          //console.log("no main container");
