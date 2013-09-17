@@ -99,7 +99,7 @@ emouseatlas.emap.titleInfo = function () {
 
       titleIFrame = document.getElementById("wlzIIPViewerTitleIFrame");
       if(titleIFrame === undefined) {
-         console.log("titleIFrame === undefined");
+         if(_debug) console.log("titleIFrame === undefined");
          return false;
       }
       mydocument = window.frames[titleIFrame.name].document;
@@ -175,7 +175,7 @@ emouseatlas.emap.titleInfo = function () {
       // replaces leading non-digits with nothing
       stage = stage.replace( /^\D+/g, '');
       stage = parseInt(stage);
-      console.log("stage %d",stage);
+      //console.log("stage %d",stage);
 
       url_theilerBook = "http://testwww.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
       url_emapAnatomy = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;

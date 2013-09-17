@@ -5076,6 +5076,7 @@ emouseatlas.emap.tiledImageView = function() {
       getInitialPointClickPoint: getInitialPointClickPoint,
       getDataAtMouse: getDataAtMouse,
       getDisplayPositionGivenImgCoords: getDisplayPositionGivenImgCoords,
+      getMousePositionInImage: getMousePositionInImage,
       getCompObjIndxArr: getCompObjIndxArr,
       testCoordSystem: testCoordSystem,
       isMouseDownInImage: isMouseDownInImage,

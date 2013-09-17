@@ -292,7 +292,7 @@ var DraggableWindow = new Class ({
 	 if(this.leftClosest === this.oldLeftClosest) {
 	    // if the closest edge hasn't changed OK to adjust position of object to maintain gap.
 	    if(this.leftClosest === true) {
-	       x = this.distToEdge.left;
+	       x = (this.distToEdge) ? this.distToEdge.left : 0;
 	    } else {
 	       x = vpWidth - (this.distToEdge.right + this.width);
 	    }
@@ -310,7 +310,7 @@ var DraggableWindow = new Class ({
 	 if(this.topClosest === this.oldTopClosest) {
 	    // if the closest edge hasn't changed OK to adjust position of object to maintain gap.
 	    if(this.topClosest === true) {
-	       y = this.distToEdge.top;
+	       y = (this.distToEdge) ? this.distToEdge.top : 0;
 	    } else {
 	       y = vpHeight - (this.distToEdge.bottom + this.height);
 	    }

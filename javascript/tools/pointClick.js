@@ -1524,6 +1524,8 @@ emouseatlas.emap.pointClick = function() {
          return false;
       }
 
+      //console.log("setMarkerSrc: key %s, src %s",key, src);
+
       markerNode = subplateMarkerDetails[key];
       flagDivs = markerNode.flags;
       len = flagDivs.length;
@@ -1547,13 +1549,11 @@ emouseatlas.emap.pointClick = function() {
       var key;
 
       key = getKeyFromStr(target.id, true);
-      //console.log("target %s, key %s",target.id, key);
-
-      allowClosestMarkers = false;
+      //console.log("doMouseOverMarker: target %s, key %s",target.id, key);
 
       setMarkerSrc(key, srcHighlighted);
       displayMarkerLabel(key, true);
-      positionMarkerLabel(key, true);
+      positionMarkerLabel(e, key, true);
       highlightRow(key);
    };
 
@@ -1597,7 +1597,7 @@ emouseatlas.emap.pointClick = function() {
 
       if(previousOpenMarker == undefined) {
          displayMarkerLabel(key, false);
-         positionMarkerLabel(key, false);
+         positionMarkerLabel(e, key, false);
 	 previousOpenMarker = key;
 	 return false;
       }
@@ -1608,7 +1608,7 @@ emouseatlas.emap.pointClick = function() {
       } else {
          hideMarkerLabel(previousOpenMarker, false);
          displayMarkerLabel(key, false);
-         positionMarkerLabel(key, false);
+         positionMarkerLabel(e, key, false);
 	 previousOpenMarker = key;
       }
 
@@ -2794,13 +2794,13 @@ emouseatlas.emap.pointClick = function() {
       for (i=0; i<len; i++) {
          key = selectedRowKeys[i];
 	 positionMarker(key);
-	 positionMarkerLabel(key);
+	 positionMarkerLabelByKey(key, undefined);
       }
       len = tempMarkerKeys.length;
       for (i=0; i<len; i++) {
          key = tempMarkerKeys[i];
 	 positionMarker(key);
-	 positionMarkerLabel(key);
+	 positionMarkerLabelByKey(key, undefined);
       }
    };
    
@@ -3034,7 +3034,73 @@ emouseatlas.emap.pointClick = function() {
    };
 
    //---------------------------------------------------------------
-   var positionMarkerLabel = function (key, small) {
+   var positionMarkerLabel = function (e, key, small) {
+
+      var markerNode;
+      var subplate;
+      var label;
+      var OK;
+      var labelWStr;
+      var labelHStr;
+      var labelW;
+      var labelH;
+      var docX;
+      var docY;
+      var mousePosInImg;
+
+      if(key === undefined || key === null) {
+         return false;
+      }
+
+      OK = labelOKToDisplay(e, key, small);
+
+      docX = emouseatlas.emap.utilities.getMouseX(e);
+      docY = emouseatlas.emap.utilities.getMouseY(e);
+
+      mousePosInImg = view.getMousePositionInImage({x:docX, y:docY});
+
+      markerNode = subplateMarkerDetails[key];
+      if(small) {
+         label = markerNode.smallLabel;
+      } else {
+         label = markerNode.bigLabel;
+      }
+
+      labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
+      indx = labelWStr.indexOf("px");
+      labelW = Number(labelWStr.substring(0,indx));
+
+      labelHStr = window.getComputedStyle(label, null).getPropertyValue("height");
+      indx = labelHStr.indexOf("px");
+      labelH = Number(labelHStr.substring(0,indx));
+
+      if(OK.right) {
+         labelX = parseInt(mousePosInImg.x + labelOfs.x);
+      } else {
+         labelX = parseInt(mousePosInImg.x - (labelW + labelOfs.x));
+      }
+
+      if(OK.top && OK.bottom) {
+         labelY = parseInt(mousePosInImg.y + labelOfs.y);
+      }
+
+      if(!OK.top) {
+         labelY = parseInt(mousePosInImg.y);
+      }
+
+      if(!OK.bottom) {
+         labelY = parseInt(mousePosInImg.y - labelH);
+      }
+
+      label.setStyles({
+         'left': labelX + 'px',
+         'top': labelY + 'px'
+      });
+
+   }; // positionMarkerLabel
+
+   //---------------------------------------------------------------
+   var positionMarkerLabelByKey = function (key, small) {
 
       var markerNode;
       var locations;
@@ -3051,6 +3117,7 @@ emouseatlas.emap.pointClick = function() {
       if(key === undefined || key === null || key === "") {
          return false;
       }
+      //console.log("positionMarkerLabelByKey %s ",key);
 
       markerNode = subplateMarkerDetails[key];
       locations = markerNode.locdets;
@@ -3064,6 +3131,7 @@ emouseatlas.emap.pointClick = function() {
 
       for(i=0; i<len; i++) {
          locn = locations[i];
+	 //console.log("positionMarkerLabelByKey trgt %s, locn ",trgt,locn);
          subplate = locn.img;
          if(subplate == currentImg) {
             x = parseFloat(locn.x);
@@ -3076,7 +3144,7 @@ emouseatlas.emap.pointClick = function() {
             });
          }
       }
-   };
+   }; // positionMarkerLabelByKey
    
    //---------------------------------------------------------------
    var hideMarkerLabel = function (key, small) {
@@ -3149,13 +3217,8 @@ emouseatlas.emap.pointClick = function() {
 	 len2 = locations.length;
 	 for(j=0; j<len2; j++) {
 	    locn = locations[j];
-	    //if(locn.img != currentImg) {
-	     //  continue;
-	    //}
 	    hideMarker(key);
 	    hideMarkerLabel(key, false);
-	    //toBeRemoved[toBeRemoved.length] = key;
-	    //if(_debug) console.log("to be removed ",toBeRemoved);
 	 }
       }
    };
@@ -3180,15 +3243,10 @@ emouseatlas.emap.pointClick = function() {
       len = locations.length;
 
       for(i=0; i<len; i++) {
-	 subplate = locations[i].img;
-	 if(subplate == currentImg) {
-	    flags[i].setStyles({
-	       'visibility': 'hidden'
-	    });
-	    if(SHOW_MARKER_TXT) {
-	       hideMarkerTxt(key);
-	    }
-	 }
+	 flags[i].setStyles({
+	    'visibility': 'hidden'
+	 });
+	 hideMarkerTxt(key);
       }
    };
    
@@ -3211,13 +3269,10 @@ emouseatlas.emap.pointClick = function() {
       len = locations.length;
 
       for(i=0; i<len; i++) {
-	 subplate = locations[i].img;
-	 if(subplate == currentImg) {
-            markerTxt = $('markerTxtDiv_' + key + '_' + i);
-	    markerTxt.setStyles({
-	       'visibility': 'hidden'
-	    });
-	 }
+         markerTxt = $('markerTxtDiv_' + key + '_' + i);
+         markerTxt.setStyles({
+         'visibility': 'hidden'
+      });
       }
    };
    
@@ -3227,6 +3282,86 @@ emouseatlas.emap.pointClick = function() {
    var getDistance = function(pntFrom, pntTo) {
       return Math.sqrt(Math.pow(pntFrom.x - pntTo.x,2) + Math.pow(pntFrom.y - pntTo.y,2));
    };
+   
+   //-----------------------------------------------------------------------
+   // Calculate if label is too close to R/T/B edgeto be displayed properly
+   //-----------------------------------------------------------------------
+   var labelOKToDisplay = function(e, key, small) {
+
+      var ret;
+      var labelWStr;
+      var labelW;
+      var labelHStr;
+      var labelH;
+      var docX;
+      var docY;
+      var mousePosInImg;
+      var mousePosWrtVpLeftEdge;
+      var mouseDistToVpRightEdge;
+      var mouseDistToVpTopEdge;
+      var labelPosn;
+      var vpLeftEdge;
+      var vpTopEdge;
+      var vpDims;
+      var vpRightwrtImgL;
+      var labelX;
+      var labelY;
+
+      if(key === undefined || key === null) {
+         return false;
+      }
+
+      ret = {right:true, top:true, bottom:true};
+
+      docX = emouseatlas.emap.utilities.getMouseX(e);
+      docY = emouseatlas.emap.utilities.getMouseY(e);
+
+      mousePosInImg = view.getMousePositionInImage({x:docX, y:docY});
+
+      vpLeftEdge = view.getViewportLeftEdge();
+      vpTopEdge = view.getViewportTopEdge();
+
+      vpDims = view.getViewportDims();
+
+      vpRightwrtImgL = vpLeftEdge + vpDims.width;
+
+      mouseDistToVpRightEdge = parseInt(vpRightwrtImgL - mousePosInImg.x);
+      mouseDistToVpTopEdge = parseInt(mousePosInImg.y - vpTopEdge );
+      mouseDistToVpBottomEdge = parseInt(vpDims.height - mouseDistToVpTopEdge);
+
+      mousePosInImg = view.getMousePositionInImage({x:docX,y:docY});
+
+      markerNode = subplateMarkerDetails[key];
+      if(small) {
+         label = markerNode.smallLabel;
+      } else {
+         label = markerNode.bigLabel;
+      }
+
+      labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
+      indx = labelWStr.indexOf("px");
+      labelW = Number(labelWStr.substring(0,indx));
+
+      labelHStr = window.getComputedStyle(label, null).getPropertyValue("height");
+      indx = labelHStr.indexOf("px");
+      labelH = Number(labelHStr.substring(0,indx));
+
+      if((mouseDistToVpRightEdge - labelW - labelOfs.x) < 0 ) {
+         ret.right = false;
+      }
+
+      //if((mouseDistToVpTopEdge - labelH - labelOfs.y) < 0 ) {
+      if((mouseDistToVpTopEdge - labelH) < 0 ) {
+         ret.top = false;
+      }
+
+      if((mouseDistToVpBottomEdge - labelH + labelOfs.y) < 0 ) {
+         ret.bottom = false;
+      }
+
+      return ret;
+
+   }; // labelOKToDisplay
 
    //---------------------------------------------------------------
    var modelUpdate = function (modelChanges) {
@@ -3333,7 +3468,7 @@ emouseatlas.emap.pointClick = function() {
    var titleIFrameLoaded = function (ifrm) {
 
       titleIframeHandle = ifrm;
-      console.log("ifrm ",ifrm);
+      //console.log("ifrm ",ifrm);
 
    }; // titleIFrameLoaded
 

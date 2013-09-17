@@ -360,6 +360,7 @@
 .markerBigLabelContainerDiv {
    position: absolute;
    width: 200px;
+   height: 161px;
    padding: 2px;
    margin: 0px;
    overflow: visible;
@@ -580,4 +581,13 @@
 .markerLabelTableSpacerCell.ruled {
    height: 1px;
    background: #aaa;
+}
+
+#titleInfoIconDiv {
+   float: right;
+   position: relative;
+   right: 2px;
+   top: 2px;
+   padding: 0px;
+   margin: 0px;
 }
