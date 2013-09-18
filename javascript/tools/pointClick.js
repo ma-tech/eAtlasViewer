@@ -352,6 +352,8 @@ emouseatlas.emap.pointClick = function() {
 
       var plate;
       var subplate;
+      var subplateAlpha;
+      var subplateNum;
       var info;
       var pageHeaderDiv = $("pageHeaderDiv");
       var titleDiv;
@@ -372,9 +374,12 @@ emouseatlas.emap.pointClick = function() {
 
       plate = pointClickImgData.plate;
       subplate = pointClickImgData.subplate;
+      subplateAlpha = subplate.replace(/\d+/g, '');
+      subplateAlpha = (subplateAlpha === undefined) ? "" : subplateAlpha;
+      subplateNum = parseInt(subplate, 10);
 
       // the parseInt trims leading zeros
-      title += "Plate " + parseInt(subplate, 10);
+      title += "Plate " + subplateNum + subplateAlpha;
 
       len = titleInfo.length;
       for(i=0; i<len; i++) {
