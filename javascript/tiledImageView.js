@@ -713,6 +713,7 @@ emouseatlas.emap.tiledImageView = function() {
       var sel = undefined;
       var filter = undefined;
       var renderMode = undefined;
+      var map = undefined;
 
       if(layer.type === 'label') {
 	 if(typeof(tools.tree) === 'undefined') {
@@ -753,7 +754,7 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       renderMode = getLayerRenderMode(layerName);
-      //console.log("getTileSrc: renderMode for %s %s",layerName,renderMode.mode);
+      map = (renderMode.mode == "prjd" || renderMode.mode == "prjv") ? "&map=gamma,0,255,255,0,1.0" : "";
 
       //console.log("getTileSrc: sel ",sel);
 
@@ -761,7 +762,8 @@ emouseatlas.emap.tiledImageView = function() {
       var qlt = (highQual) ? model.getImgQuality().cur : 1;
 
       if (model.isWlzData()) {
-         var imgType = (layer.type === 'greyLevel') ? "&jtl=0" : "&ptl=0";
+         //var imgType = (layer.type === 'greyLevel') ? "&jtl=0" : "&ptl=0";
+         var imgType = "&ptl=";
          var threeDInfo = model.getThreeDInfo();
 	 var selectedIndexes = (typeof(sel) === 'undefined') ? ""  : sel;
 	 var greyFilter = (typeof(filter) === 'undefined') ? ""  : filter;
@@ -780,6 +782,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 + "&rol=" + threeDInfo.roll.cur
 	 + "&qlt=" + qlt
 	 + "&rmd=" + renderMode.mode
+	 + map
 	 + imgType
 	 + k;
       } else {
