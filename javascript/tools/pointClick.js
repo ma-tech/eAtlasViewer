@@ -67,9 +67,10 @@ emouseatlas.emap.pointClick = function() {
    var markerContainerId;
    var tempMarkerKeys;
    var previousOpenMarker;
-   var selectedRowKeys;
    var locationsForEditor;
    var subplateKeys;
+   var selectedRowKeys;
+   var lastSelectedRow = undefined;
    var lastHighlightedKey = undefined;
    var maxCloseMarkersToShow;
    var scale;
@@ -1817,10 +1818,15 @@ emouseatlas.emap.pointClick = function() {
    }; // doMouseOutRow
 
    //---------------------------------------------------------------
+   // only left / middlw mouse clicks reach here, right click is captured elsewhere.
+   //---------------------------------------------------------------
    var doMouseUpTableRow = function (e) {
 
       var target = emouseatlas.emap.utilities.getTarget(e);
+      var mouseButtons;
+      var modifierKeys;
       var row = undefined;
+      var allRows = undefined;
       var children = undefined;
       var child = undefined;
       var gchild = undefined;
@@ -1829,6 +1835,7 @@ emouseatlas.emap.pointClick = function() {
       var key;
       var ref;
       var desc;
+      var theTable;
       var prnt = target.parentNode;
       var gprnt = prnt.parentNode;
       var tKlass = target.className;
@@ -1841,6 +1848,11 @@ emouseatlas.emap.pointClick = function() {
       var newX;
       var newY;
       var tmpArr = [];
+      var found = false;
+      var iLast;
+      var iThis;
+      var iTmp;
+      var indx;
 
       if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
@@ -1866,44 +1878,121 @@ emouseatlas.emap.pointClick = function() {
       }
       //if(_debug) console.log("key %s, ref %s, desc %s", key,ref,desc);
 
+      if(lastSelectedRow === undefined) {
+         //console.log("doMouseUpTableRow: selected row %s, previously selectedRows ",key,selectedRowKeys);
+      } else {
+         //console.log("doMouseUpTableRow: lastSelected row %s, selected row %s, previously selectedRows ",lastSelectedRow,key,selectedRowKeys);
+      }
+
+      //mouseButtons = utils.whichMouseButtons(e);
+      //console.log("mouse Buttons ", mouseButtons);
+      modifierKeys = utils.whichModifierKeys(e);
+      //console.log("modifier keys ", modifierKeys);
+
+      NO_MODIFIERS = (!modifierKeys.shift && !modifierKeys.ctrl && !modifierKeys.alt && !modifierKeys.meta) ? true : false;
+
       len = selectedRowKeys.length;
-      for(i=0; i<len; i++) {
-         markerNode = subplateMarkerDetails[selectedRowKeys[i]];
-	 // if the item is already selected, de-select it.
-	 if(key === markerNode.key) {
+
+      //................................................................
+      // If there are no previously selected rows, select it.
+      if(len === 0) {
+	 row.className = "pointClickTableRow selected";
+	 setMarkerSrc(key, srcSelected);
+	 displayMarker(key);
+	 positionMarker(key);
+	 // add the key for this marker to the list of selected markers
+	 selectedRowKeys[selectedRowKeys.length] = key;
+	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	 selectedRowKeys = utils.duplicateArray(tmpArr);
+	 lastSelectedRow = key;
+      }
+      //................................................................
+      // If there are previously selected row(s) and no modifier is pressed ...
+      // de-select everything then select the clicked row
+      if(len > 0 && NO_MODIFIERS) {
+	 doHideAllMarkers(null);
+	 row.className = "pointClickTableRow selected";
+	 setMarkerSrc(key, srcSelected);
+	 displayMarker(key);
+	 positionMarker(key);
+	 // add the key for this marker to the list of selected markers
+	 selectedRowKeys[selectedRowKeys.length] = key;
+	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	 selectedRowKeys = utils.duplicateArray(tmpArr);
+	 lastSelectedRow = key;
+      }
+      //................................................................
+      // If there are previously selected row(s) and ctrl is pressed ...
+      // select if not selected, otherwise de-select
+      if(len > 0 && modifierKeys.ctrl && !modifierKeys.shift) {
+	 len = selectedRowKeys.length;
+	 for(i=0; i<len; i++) {
+	    markerNode = subplateMarkerDetails[selectedRowKeys[i]];
+	    // if the item is already selected, de-select it.
+	    if(key === markerNode.key) {
+	       found = true;
+	       break;
+	    }
+	 }
+	 if(!found) {
+	    row.className = "pointClickTableRow selected";
+	    setMarkerSrc(key, srcSelected);
+	    displayMarker(key);
+	    positionMarker(key);
+	    // add the key for this marker to the list of selected markers
+	    selectedRowKeys[selectedRowKeys.length] = key;
+	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	    selectedRowKeys = utils.duplicateArray(tmpArr);
+	 } else {
 	    row.className = "pointClickTableRow";
 	    // and hide the marker
 	    hideMarker(markerNode.key, false);
 	    removeKey(key, true);
-	    return false;
+	    lastSelectedRow = key;
 	 }
       }
-
-      // editors want single selections in the table
-      // Unless the point is defined already, this is a new point
-      if(model.isEditor()) {
-	 deselectAllRows();
-
-	 // now we can modify the selected item's class
-	 row.className = "pointClickTableRow selected";
-
-	 setMarkerSrc(key, srcSelected);
-	 displayMarker(key);
-	 positionMarker(key);
-	 // add the key for this marker to the list of selected markers
-	 selectedRowKeys[selectedRowKeys.length] = key;
-	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
-	 selectedRowKeys = utils.duplicateArray(tmpArr);
-      } else {
-	 // general users want multiple selections in the table
-	 setMarkerSrc(key, srcSelected);
-	 displayMarker(key);
-	 positionMarker(key);
-	 // add the key for this marker to the list of selected markers
-	 selectedRowKeys[selectedRowKeys.length] = key;
-	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
-	 selectedRowKeys = utils.duplicateArray(tmpArr);
+      //................................................................
+      // If there are previously selected row(s) and shift is pressed ...
+      // de-select everything then select everything from the last selected row
+      if(len > 0 && modifierKeys.shift && !modifierKeys.ctrl) {
+	 if(lastSelectedRow === undefined) {
+	    row.className = "pointClickTableRow selected";
+	    setMarkerSrc(key, srcSelected);
+	    displayMarker(key);
+	    positionMarker(key);
+	    // add the key for this marker to the list of selected markers
+	    selectedRowKeys[selectedRowKeys.length] = key;
+	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	    selectedRowKeys = utils.duplicateArray(tmpArr);
+	 } else {
+	    doHideAllMarkers(null);
+	    iLast = parseInt(lastSelectedRow);
+	    iThis = parseInt(key);
+	    if(iThis < iLast) {
+	       iTmp = iThis;
+	       iThis = iLast;
+	       iLast = iTmp;
+	    }
+            theTable = row.parentNode;
+            allRows = theTable.getElementsByTagName("tr");
+            //console.log("theTable rows ",allRows);
+	    len = iThis - iLast + Number(1);
+	    for(i=0; i<len; i++) {
+	       indx = Number(iLast) + Number(i) - Number(1);
+	       row = allRows[indx];
+	       row.className = "pointClickTableRow selected";
+	       setMarkerSrc(indx, srcSelected);
+	       displayMarker(indx);
+	       positionMarker(indx);
+	       // add the key for this marker to the list of selected markers
+	       selectedRowKeys[selectedRowKeys.length] = indx;
+	    }
+	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	    selectedRowKeys = utils.duplicateArray(tmpArr);
+	 }
+	 
       }
+      //................................................................
 
    }; // doMouseUpTableRow
 
