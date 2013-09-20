@@ -1389,7 +1389,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    } else if(indexName) {
 	       getGreyValue(point);
 	       //console.log("indexName ",indexArray);
-               showImgLabel_cb(indexArray);
+               showImgLabel_cb(indexArray, "strong");
             }
 	 }
       }
@@ -1537,7 +1537,7 @@ emouseatlas.emap.tiledImageView = function() {
    //--------------------------------------------------------------
    // Called from callback function
    //--------------------------------------------------------------
-   var showImgLabel_cb = function (indexArr) {
+   var showImgLabel_cb = function (indexArr, filter) {
 
       var layerNames;
       var name;
@@ -1545,6 +1545,7 @@ emouseatlas.emap.tiledImageView = function() {
       var layerData;
       var layer;
       var hasTree;
+      var treeData;
       var indexData;
       var header;
       var indexes = [];
@@ -1570,6 +1571,11 @@ emouseatlas.emap.tiledImageView = function() {
       len = layerNames.length;
       for(i=0; i<len; i++) {
          name = layerNames[i];
+         if(filter === undefined) {
+            header = name;
+	 } else {
+            header = name + " (" + filter + ")";
+	 }
 	 layer = layerData[name];
 	 //console.log("showImgLabel_cb layer ",layer);
          type = layer.type;
@@ -1600,12 +1606,15 @@ emouseatlas.emap.tiledImageView = function() {
                if(indexData[indexArr[j]] === undefined) {
                   continue;
                } else {
-                  indexes[indexes.length] = indexData[indexArr[j]].name;
+	          if(imgLabelEntryOK(treeData, indexData[indexArr[j]], filter)) {
+                     indexes[indexes.length] = indexData[indexArr[j]].name;
+		  }
                }
             }
 	    if(indexes.length > 0 && name === currentLayer) {
 	       //console.log(indexes);
-	       report[report.length] = {header:name, indexArr:indexes, spacer:true};
+	       report[report.length] = {header:header, indexArr:indexes, spacer:true};
+	       //console.log("showImgLabel_cb: header:header %s, indexArr:indexes ",header,indexes);
 	    }
 	 }
       }
@@ -1632,6 +1641,45 @@ emouseatlas.emap.tiledImageView = function() {
       emouseatlas.emap.imgLabel.setReport(report);
 
    }; // showImgLabel_cb
+
+   //----------------------------------------------------------------------------
+   // Check if the entry is acceptable, for example only strong genex expression.
+   //----------------------------------------------------------------------------
+   var imgLabelEntryOK = function (treeData, entry, filter) {
+
+      var OK = false;
+      var lcfilter;
+      var iNodeIdEntry;
+      var iNodeIdParent;
+      var nameEntry;
+      var nameParent;
+      var domainIdEntry;
+      var domainIdParent;
+      var data;
+      var len;
+      var i;
+
+      lcfilter = filter.toLowerCase();
+
+      iNodeIdEntry = parseInt(entry.nodeId);
+      i = parseInt(iNodeIdEntry - 1);
+      //console.log("iNodeEntry %d, i %d",iNodeIdEntry,i);
+
+      while(treeData[i]) {
+         data = treeData[i];
+	 if(data.domainData.domainId === undefined) {
+	    if(data.name.toLowerCase() === lcfilter) {
+	       OK = true;
+               //console.log(entry.name, treeData[i].name);
+	    }
+	    break;
+	 }
+	 i--;
+      }
+
+      return OK;
+
+   }; // imgLabelEntryOK
 
    //--------------------------------------------------------------
    // When mouse pauses in 'measurement mode' get the distances
