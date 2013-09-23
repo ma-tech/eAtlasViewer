@@ -96,7 +96,9 @@ emouseatlas.emap.tiledImageView = function() {
       hideX3domHelp: false,
       showViewerInfo: false,
       hideViewerInfo: false,
-      hideMenu: false
+      hideMenu: false,
+      contextMenuOn: false,
+      contextMenuOff: false
    };
    var targetContainer;
    var model;
@@ -1090,6 +1092,8 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.showViewerInfo) console.log("viewChanges.showViewerInfo ",viewChanges.showViewerInfo);
       if(viewChanges.hideViewerInfo) console.log("viewChanges.hideViewerInfo ",viewChanges.hideViewerInfo);
       if(viewChanges.hideMenu) console.log("viewChanges.hideMenu ",viewChanges.hideMenu);
+      if(viewChanges.contextMenuOn) console.log("viewChanges.contextMenuOn ",viewChanges.contextMenuOn);
+      if(viewChanges.contextMenuOff) console.log("viewChanges.contextMenuOff ",viewChanges.contextMenuOff);
       console.log("++++++++++++++++++++++++++++++++++++++++++++");
    };
 
@@ -1135,6 +1139,8 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.showViewerInfo =  false;
       viewChanges.hideViewerInfo =  false;
       viewChanges.hideMenu =  false;
+      viewChanges.contextMenuOn =  false;
+      viewChanges.contextMenuOff =  false;
    };
 
 
@@ -5062,6 +5068,19 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   // for Kaufman point and click context menu for table, highlight relevant items.
+   var contextMenuHighlight = function (yes) {
+
+      resetViewChanges();
+      if(yes) {
+         viewChanges.contextMenuOn = true;
+      } else {
+         viewChanges.contextMenuOff = true;
+      }
+      notify("contextMenuOn");
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
@@ -5147,6 +5166,7 @@ emouseatlas.emap.tiledImageView = function() {
       launchEquivalentSection: launchEquivalentSection,
       goToDownloadPage: goToDownloadPage,
       updateLocatorPosition: updateLocatorPosition,
+      contextMenuHighlight: contextMenuHighlight,
       printViewerInfo: printViewerInfo
    };
 

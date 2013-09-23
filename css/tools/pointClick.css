@@ -53,6 +53,7 @@
 #pointClickTable {
    padding: 0px;
    margin: 0px;
+   margin-left: 1px;
    color: #000;
    border: none;
    border-collapse: collapse;
@@ -72,6 +73,24 @@
 .pointClickTableRow.selected {
    color: #ccc;
    background: #ccf;
+}
+.pointClickTableRow.context {
+   color: #ccc;
+   background: #eee;
+   border-left: solid 1px #00f;
+   border-right: solid 1px #00f;
+   border-top: none;
+   border-bottom: none;
+}
+.pointClickTableRow.context.top {
+   border-top: solid 1px #00f;
+}
+.pointClickTableRow.context.bottom {
+   border-bottom: solid 1px #00f;
+}
+.pointClickTableRow.context.both {
+   border-top: solid 1px #00f;
+   border-bottom: solid 1px #00f;
 }
 
 .pointClickTableCell {
@@ -590,4 +609,16 @@
    top: 2px;
    padding: 0px;
    margin: 0px;
+}
+
+#pointClickTableContextMenuHighlight {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   width: 100%;
+   height: 100px;
+   padding: 0px;
+   margin: 0px;
+   border: solid 1px #0f0;
+   visibility: hidden;
 }

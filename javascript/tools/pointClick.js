@@ -88,6 +88,7 @@ emouseatlas.emap.pointClick = function() {
    var srcHighlighted = imgDir + "mapIconHighlighted.png";
    var srcClose = imgDir + "close_10x8.png";
    var srcClose2 = imgDir + "close2_10x8.png";
+   var CONTEXT_MENU = false;
 
 
    //---------------------------------------------------------
@@ -1576,7 +1577,7 @@ emouseatlas.emap.pointClick = function() {
 
       allowClosestMarkers = true;
 
-      if(keyPresent(key, true)) {
+      if(keyPresent(key, true, "doMouseOutMarker")) {
          setMarkerSrc(key, srcSelected);
          row = getRowWithKey(key);
          row.className = 'pointClickTableRow selected';
@@ -1667,40 +1668,55 @@ emouseatlas.emap.pointClick = function() {
    };
 
    //---------------------------------------------------------------
-   var doTableEmageQuery = function () {
+   var doTableQuery = function (database) {
 
-      var key;
+      var keys;
+      var len;
+      var i;
       var EmapId;
+      var queryData = [];
+      var emage = "EMAGE";
+      var mgi = "MGI";
       var url;
 
-      key = lastHighlightedKey;
-      EmapId = getEmapIdForKey(key);
+      keys = getSelectedRowKeys();
+      if(keys === undefined || keys === null || keys.length === 0) {
+         return false;
+      }
 
+      //console.log("doTableEmageQuery keys ",keys);
+      len = keys.length;
+      for(i=0; i<len; i++) {
+         EmapId = getEmapIdForKey(keys[i]);
+	 if(EmapId === undefined || EmapId === null || EmapId === "" || EmapId.toLowerCase() === "not allocated") {
+	    continue;
+	 }
+	 queryData[queryData.length] = {key: keys[i], id: EmapId};
+      }
+
+      //console.log("doTableEmageQuery query data ",queryData);
+      if(queryData.length <= 0) {
+         alert("Sorry:  there were no selected terms with an EMAP id");
+	 return false;
+      }
+
+      if(queryData.length > 1 &&  database.toLowerCase() === mgi.toLowerCase()) {
+         alert("MGI / GXD will only accept one search term: using " + queryData[0].term + " with EMAP id + " + queryData[0].id);
+	 return false;
+      }
+
+      /*
       url =
          'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
          EmapId +
 	 '&exactmatchstructures=true&includestructuresynonyms=true'; 
-
-      window.open(url);
-
-   };
-
-   //---------------------------------------------------------------
-   var doTableGxdbQuery = function () {
-
-      var key;
-      var EmapId;
-      var url;
-
-      key = lastHighlightedKey;
-      EmapId = getEmapIdForKey(key);
-      edid = EmapId.substr(5);
 
       url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
             edid +
 	    '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
 
       window.open(url);
+      */
 
    };
 
@@ -1734,6 +1750,10 @@ emouseatlas.emap.pointClick = function() {
       var gKlass = gprnt.className;
       var highlighted;
       var key;
+
+      if(CONTEXT_MENU) {
+         return false;
+      }
 
       if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
@@ -1772,6 +1792,10 @@ emouseatlas.emap.pointClick = function() {
       var newKlass = 'pointClickTableRow';
       var highlighted;
 
+      if(CONTEXT_MENU) {
+         return false;
+      }
+
       if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
       } else if(gprnt.hasClass('pointClickTableRow')) {
@@ -1797,28 +1821,29 @@ emouseatlas.emap.pointClick = function() {
 
       // make sure the flags are the right colour
       // selected takes precedence over temp
-      if(keyPresent(key, false)) {
+      if(keyPresent(key, false, "doMouseOutRow")) {
          setMarkerSrc(key, srcClosest);
       }
-      if(keyPresent(key, true)) {
+      if(keyPresent(key, true, "doMouseOutRow")) {
          setMarkerSrc(key, srcSelected);
       }
-      if(!keyPresent(key, true) && !keyPresent(key, false)) {
+      if(!keyPresent(key, true, "doMouseOutRow") && !keyPresent(key, false, "doMouseOutRow")) {
          setMarkerSrc(key, srcClosest);
          hideMarker(key, false);
       }
 
       // make sure selected rows are shown in table
-      if(keyPresent(key, true)) {
+      if(keyPresent(key, true, "doMouseOutRow")) {
 	 row.className = 'pointClickTableRow selected';
          setMarkerSrc(key, srcSelected);
       } else {
+         //console.log("doMouseOutRow %d",key);
          row.className = 'pointClickTableRow';
       }
    }; // doMouseOutRow
 
    //---------------------------------------------------------------
-   // only left / middlw mouse clicks reach here, right click is captured elsewhere.
+   // only left / middle mouse clicks reach here, right click is captured elsewhere.
    //---------------------------------------------------------------
    var doMouseUpTableRow = function (e) {
 
@@ -1852,7 +1877,8 @@ emouseatlas.emap.pointClick = function() {
       var iLast;
       var iThis;
       var iTmp;
-      var indx;
+      var indx0;
+      var indx1;
 
       if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
@@ -1978,14 +2004,16 @@ emouseatlas.emap.pointClick = function() {
             //console.log("theTable rows ",allRows);
 	    len = iThis - iLast + Number(1);
 	    for(i=0; i<len; i++) {
-	       indx = Number(iLast) + Number(i) - Number(1);
-	       row = allRows[indx];
+	       indx0 = Number(iLast) + Number(i) - Number(1);
+	       indx1 = Number(iLast) + Number(i);
+	       //console.log("iLast %d, iThis %d, len %d, i %d, indx %d",iLast,iThis,len,i,indx);
+	       row = allRows[indx0];
 	       row.className = "pointClickTableRow selected";
-	       setMarkerSrc(indx, srcSelected);
-	       displayMarker(indx);
-	       positionMarker(indx);
+	       setMarkerSrc(indx1, srcSelected);
+	       displayMarker(indx1);
+	       positionMarker(indx1);
 	       // add the key for this marker to the list of selected markers
-	       selectedRowKeys[selectedRowKeys.length] = indx;
+	       selectedRowKeys[selectedRowKeys.length] = indx1 + ""; // keys are strings
 	    }
 	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 	    selectedRowKeys = utils.duplicateArray(tmpArr);
@@ -2183,7 +2211,7 @@ emouseatlas.emap.pointClick = function() {
    }; //getRowWithKey
 
    //---------------------------------------------------------------
-   var keyPresent = function (testKey, markers) {
+   var keyPresent = function (testKey, markers, from) {
 
       var keys
       var key;
@@ -2192,6 +2220,8 @@ emouseatlas.emap.pointClick = function() {
 
       keys = markers ? selectedRowKeys : tempMarkerKeys;
       len = keys.length;
+
+      //console.log("keyPresent from %s, testKey %s, markers %s",from,testKey,markers);
 
       if(testKey === undefined) {
          return false;
@@ -2263,7 +2293,7 @@ emouseatlas.emap.pointClick = function() {
 
       for(i=0; i<len; i++) {
          key = tempMarkerKeys[i];
-	 if(!keyPresent(key, true)) {
+	 if(!keyPresent(key, true, "hideTempMarkers")) {
 	    hideMarker(key);
 	 }
       }
@@ -2279,7 +2309,7 @@ emouseatlas.emap.pointClick = function() {
 
       for(i=0; i<len; i++) {
          key = tempMarkerKeys[i];
-	 if(!keyPresent(key, true)) {
+	 if(!keyPresent(key, true, "showTempMarkers")) {
 	    setMarkerSrc(key, srcClosest);
 	    displayMarker(key);
 	    positionMarker(key);
@@ -3547,6 +3577,20 @@ emouseatlas.emap.pointClick = function() {
       }
 
       //...................................
+      if(viewChanges.contextMenuOn) {
+
+	 setSelectedRowHighlightType("context");
+	 CONTEXT_MENU = true;
+      }
+
+      //...................................
+      if(viewChanges.contextMenuOff) {
+
+	 setSelectedRowHighlightType("selected");
+	 CONTEXT_MENU = false;
+      }
+
+      //...................................
       if(viewChanges.toolbox === true) {
 	var viz = view.toolboxVisible();
 	if(viz === true) {
@@ -3980,6 +4024,158 @@ emouseatlas.emap.pointClick = function() {
       return ret;
    };
    
+   //---------------------------------------------------------
+   var setSelectedRowHighlightType = function (type) {
+      
+      var tbody;
+      var selectedKeys;
+      var key;
+      var ikey;
+      var rows;
+      var row;
+      var rowkey;
+      var lenKeys;
+      var lenRows;
+      var klass;
+      var found = false;
+      var i;
+      var j;
+
+      tbody = $("pointClickTableBody");
+      selectedKeys = getSelectedRowKeys();
+      rows = tbody.getElementsByTagName("tr");
+
+      lenKeys = selectedKeys.length;
+      lenRows = rows.length;
+
+      if(lenKeys === 0) {
+	 for(i=0; i<lenRows; i++) {
+	    row = rows[i];
+	    rowkey = getKeyFromStr(row.id, false);
+	    if(type.toLowerCase() === "context") {
+	       klass = row.className;
+	       if(klass.indexOf("over") !== -1) {
+	          klass = type + ' both';
+                  row.className = 'pointClickTableRow ' + klass;
+		  break;
+	       }
+	    } else if(type.toLowerCase() === "selected") {
+	       //doHideAllMarkers(null);
+	       klass = row.className;
+	       if(klass.indexOf("context") !== -1) {
+                  row.className = 'pointClickTableRow ' + type;;
+		  setMarkerSrc(rowkey, srcSelected);
+		  displayMarker(rowkey);
+		  positionMarker(rowkey);
+		  // add the key for this marker to the list of selected markers
+		  selectedRowKeys[selectedRowKeys.length] = rowkey;
+		  tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+		  selectedRowKeys = utils.duplicateArray(tmpArr);
+		  lastSelectedRow = rowkey;
+		  break;
+	       }
+	    }
+	 }
+      }
+
+      for(i=0; i<lenKeys; i++) {
+         key = selectedKeys[i];
+	 ikey = parseInt(key);
+	 for(j=0; j<lenRows; j++) {
+	    row = rows[j];
+	    rowkey = getKeyFromStr(row.id, false);
+	    if(key === rowkey) {
+	       found = true;
+	       break;
+	    }
+	 }
+	 if(found) {
+            row.className = 'pointClickTableRow ' + type;
+	 }
+	 found = false;
+      }
+
+      if(type === "context") {
+         addTopBottomContextBorders();
+      }
+
+      return false;
+   };
+   
+   //---------------------------------------------------------
+   var addTopBottomContextBorders = function () {
+
+      var selectedKeys;
+      var sortedKeys;
+      var klass;
+      var btop = false;
+      var bbot = false;
+      var ikey;
+      var itest;
+      var row;
+      var len;
+      var i;
+
+      selectedKeys = getSelectedRowKeys();
+      sortedKeys = utils.sortArrayNumerically(selectedKeys); 
+      len = sortedKeys.length;
+
+      if(len === 0) {
+	 return false;
+      }
+
+      // find all rows which are not adjoining other rows
+      if(len === 1) {
+	 row = getRowWithKey(sortedKeys[0]);
+         row.className = row.className + ' both';
+	 return false;
+      }
+
+      for(i=0; i<len; i++) {
+         ikey = parseInt(sortedKeys[i]);
+	 if(i === 0) {
+	    row = getRowWithKey(sortedKeys[0]);
+            itest = parseInt(sortedKeys[1]);
+	    if(itest - ikey > 1) {
+	       row.className = row.className + ' both';
+	    } else {
+	       row.className = row.className + ' top';
+	    }
+	 } else if(i === len-1) {
+	    row = getRowWithKey(sortedKeys[len - 1]);
+            itest = parseInt(sortedKeys[len - 2]);
+	    if(ikey - itest > 1) {
+	       row.className = row.className + ' both';
+	    } else {
+	       row.className = row.className + ' bottom';
+	    }
+	 } else {
+	    row = getRowWithKey(sortedKeys[i]);
+            itest = parseInt(sortedKeys[i - 1]);
+	    if(ikey - itest > 1) {
+	       btop = true;
+	    }
+            itest = parseInt(sortedKeys[i + 1]);
+	    if(itest - ikey > 1) {
+	       bbot = true;
+	    }
+	    if(btop && bbot) {
+	       klass = " both";
+	    } else if(btop && !bbot) {
+	       klass = " top";
+	    } else if(bbot && !btop) {
+	       klass = " bottom";
+	    } else if(!bbot && !btop) {
+	       klass = "";
+	    }
+	    row.className = row.className + klass;
+	    klass = undefined;
+	    btop= false;
+	    bbot = false;
+	 }
+      }
+      return false;
+   };
 
    //---------------------------------------------------------
    // expose 'public' properties
@@ -3992,8 +4188,7 @@ emouseatlas.emap.pointClick = function() {
       titleIFrameLoaded: titleIFrameLoaded,
       doMarkerEmageQuery: doMarkerEmageQuery,
       doMarkerGxdbQuery: doMarkerGxdbQuery,
-      doTableEmageQuery: doTableEmageQuery,
-      doTableGxdbQuery: doTableGxdbQuery,
+      doTableQuery: doTableQuery,
       doTableCancel: doTableCancel,
       doMouseOverLabelTableRow: doMouseOverLabelTableRow
    };

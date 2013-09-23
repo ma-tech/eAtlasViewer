@@ -291,21 +291,11 @@ emouseatlas.emap.EmapMenu = function() {
       Y = emouseatlas.emap.utilities.getMouseY(evt);
       position = {x:X, y:Y};
       targetWithMenu = getTargetWithMenu(target);
-/*
-      //console.log("emapMenu rightMouseDownHandler target %s, position",target.id,position);
-      view.getDataAtMouse(evt, {tooltip:false,
-                        overlay:false,
-                        fixedPoint:false,
-                        measuringOrigin:false,
-                        measuringTarget:false,
-                        measuring:false,
-                        draw:false,
-                        HRSection:false,
-                        pointClick:false,
-                        contextMenu:true
-      });
-*/
+      //console.log("emapMenu rightMouseDownHandler menu %s, target %s, position",menuName,target.id,position);
       makeMenuVisible(targetWithMenu, position, 'rightMouseDownHandler');
+      if(menuName.toLowerCase() === "table") {
+         view.contextMenuHighlight(true);
+      }
       return false;
    };
 
@@ -1393,6 +1383,7 @@ emouseatlas.emap.EmapMenu = function() {
       var len = allContent.length;
       var i;
 
+      //console.log("doActionFor ",id);
       for(i=0; i<len; i++) {
          content = allContent[i];
          if(content.id === itemId) {
@@ -1402,6 +1393,8 @@ emouseatlas.emap.EmapMenu = function() {
       }
 
       if(found) {
+         view.contextMenuHighlight(false);
+         //console.log(content.action);
          eval(content.action);
       }
 
@@ -1434,7 +1427,7 @@ emouseatlas.emap.EmapMenu = function() {
    var viewUpdate = function (changes) {
 
       if(changes.contextMenu) {
-         //console.log("emapMenu targetWithMenu, position",targetWithMenu, position);
+         console.log("emapMenu targetWithMenu, position",targetWithMenu, position);
          makeMenuVisible(targetWithMenu, position, 'viewUpdate');
       }
       if(changes.hideMenu) {
