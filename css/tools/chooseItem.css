@@ -1,0 +1,212 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+#fontSize {
+   height: 50px;
+}
+/* --------------------------- */
+#chooseItemContainer {
+   position: absolute;
+   top: 100px;
+   left: 160px;
+   visibility: hidden;
+   width: 150px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   border: outset 1px #fef;
+   color: #000;
+   background: #eaeaea;
+   z-index: 2;
+}
+.chooseItemTitleTextContainer {
+   position: relative;
+   top: -1px;
+   width:85px;
+   height:10px;
+   padding: 0px;
+   margin: 0px;
+   margin-left: auto;
+   margin-right: auto;
+   border: none;
+   color: #000;
+}
+
+.chooseItemTitleText {
+   border: medium none;
+   color: #000000;
+   font-size: 10px;
+   margin-top: 2px;
+   padding: 0;
+}
+
+/* --------------------------- */
+.explainContainer {
+   position: relative;
+   left: 0px;
+   top: 5px;
+   height: 40px;
+   padding: 0 0 3px;
+   margin: 0 4px;
+}
+
+.explainDiv {
+   position: relative;
+   top: 5px;
+   left: 11px;
+   border: solid 1px #900;
+   padding: 2px 8px;
+   margin: 0px;
+   width: 100px;
+   color: #900;
+   font-size: 9px;
+}
+
+.chooseItemButtonContainer {
+   position: relative;
+   bottom: 0px;
+   height: 22px;
+   padding: 0px;
+   margin: 0px;
+   font-size: 9px;
+}
+
+.chooseItemButtonDiv {
+   position: relative;
+   top: 0px;
+   padding: 0px;
+   width: 100px;
+   margin-left: auto;
+   margin-right: auto;
+}
+.chooseItemButton {
+   padding: 0 2px;
+   margin: 0 5px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+}
+.chooseItemButton.ok {
+   float: left
+}
+.chooseItemButton.cancel {
+   float: left
+}
+
+.chooseItemButton.over {
+   background: #ddd;
+}
+.chooseItemButton.out {
+   background: #eee;
+}
+.chooseItemButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+/* --------------------------- */
+#chooseItemItemScrollContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   max-height: 208px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   overflow: auto;
+   font-size: 9px;
+}
+
+#chooseItemItemContainer {
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   color: #000;
+}
+/* --------------------------- */
+.chooseItemItemDiv {
+   height: 12px;
+   width: 100%;
+   padding: 0px;
+   margin: 0 2px 1px 0;
+   color: #000;
+   border: none;
+   background: #eaeaea;
+}
+.chooseItemItemTextContainer {
+   width: 100%;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   border: none;
+}
+
+.chooseItemItemTextDiv {
+   padding: 0px;
+   margin: 0px 0px 0px 3px;
+   color: #000;
+   border: none;
+}
+.chooseItemItemTextDiv.over {
+   background: #ffdddd;
+}
+.chooseItemItemTextDiv.out {
+   background: #eaeaea;
+}
+.chooseItemItemTextDiv.up {
+   background: #eaeaea;
+}
+.chooseItemItemTextDiv.disabled {
+   background: #eaeaea;
+   color: #999;
+}
+.chooseItemItemTextDiv.over.disabled {
+   background: #ffdddd;
+   color: #999;
+}
+/* --------------------------- */
+.chooseItemSpacer{
+   height: 10px;
+   padding: 0px;
+   margin: 2px 0px;
+   background: #eaeaea;
+}
+
+.chooseItemSpacerBGdark{
+   position: relative;
+   top: 5px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #999;
+}
+
+.chooseItemSpacerBGlight{
+   position: relative;
+   top: 5px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #fff;
+}

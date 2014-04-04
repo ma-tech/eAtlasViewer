@@ -73,6 +73,8 @@ var tiledImageMeasuringTool = new Class ({
       this.borders = params.params.borders;
       this.transparent = params.params.transparent;
 
+      this.bgc = (params.params.bgc === undefined) ? "#fff" : params.params.bgc;
+
       this.visible = true;
 
       //console.log("tiledImageMeasuringTool this.transparent ",this.transparent);
@@ -81,6 +83,7 @@ var tiledImageMeasuringTool = new Class ({
                                          drag:this.drag,
                                          borders:this.borders,
                                          transparent:this.transparent,
+					 bgc:this.bgc,
                                          title:this.shortName,
 					 view:this.view,
 					 imagePath: this.imagePath,
@@ -468,6 +471,11 @@ var tiledImageMeasuringTool = new Class ({
          this.targetMarkerArm180.setStyle('visibility', viz);
          this.targetMarkerArm270.setStyle('visibility', viz);
       }
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 });

@@ -1,0 +1,236 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+
+/* --------------------------- */
+.chooseKaufmanItemContainer {
+   position: absolute;
+   top: 100px;
+   visibility: hidden;
+   width: 150px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   border: outset 1px #fef;
+   color: #000;
+   background: #eaeaea;
+   font-size: 9px;
+   z-index: 2;
+}
+.chooseKaufmanItemContainer.mgi {
+   right: 300px;
+}
+.chooseKaufmanItemContainer.wiki {
+   right: 300px;
+}
+
+.chooseKaufmanItemTitleTextContainer {
+   position: relative;
+   top: -1px;
+   width:85px;
+   height:10px;
+   padding: 0px;
+   margin: 0px;
+   margin-left: auto;
+   margin-right: auto;
+   border: none;
+   color: #000;
+}
+.chooseKaufmanItemTitleTextContainer.mgi {
+   width:85px;
+}
+.chooseKaufmanItemTitleTextContainer.wiki {
+   width:60px;
+}
+
+.chooseKaufmanItemTitleText {
+   border: medium none;
+   color: #000000;
+   font-size: 10px;
+   margin-top: 2px;
+   padding: 0;
+}
+
+/* --------------------------- */
+.kaufmanExplainContainer {
+   position: relative;
+   left: 0px;
+   top: 0px;
+   padding: 0 0 3px;
+   margin: 0 4px;
+}
+.kaufmanExplainContainer.mgi{
+   top: 5px;
+}
+.kaufmanExplainContainer.wiki{
+   top: 5px;
+}
+
+.kaufmanExplainDiv {
+   position: relative;
+   top: 5px;
+   left: 11px;
+   border: solid 1px #900;
+   padding: 2px 8px;
+   margin: 0px;
+   width: 100px;
+   color: #900;
+   font-size: 9px;
+}
+.kaufmanExplainDiv {
+   top: 0px;
+}
+
+.chooseKaufmanItemButtonContainer {
+   position: relative;
+   bottom: 0px;
+   height: 22px;
+   padding: 0px;
+   margin: 0px;
+   font-size: 9px;
+}
+.chooseKaufmanItemButtonContainer {
+}
+
+.chooseKaufmanItemButtonDiv {
+   position: relative;
+   top: 0px;
+   padding: 0px;
+   width: 100px;
+   margin-left: auto;
+   margin-right: auto;
+}
+.chooseKaufmanItemButton {
+   padding: 0 2px;
+   margin: 0 5px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+}
+.chooseKaufmanItemButton.ok {
+   float: left
+}
+.chooseKaufmanItemButton.cancel {
+   float: left
+}
+
+.chooseKaufmanItemButton.over {
+   background: #ddd;
+}
+.chooseKaufmanItemButton.out {
+   background: #eee;
+}
+.chooseKaufmanItemButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+/* --------------------------- */
+#chooseKaufmanItemItemScrollContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   max-height: 208px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   overflow: auto;
+   font-size: 9px;
+}
+
+#chooseKaufmanItemItemContainer {
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   color: #000;
+}
+/* --------------------------- */
+.chooseKaufmanItemItemDiv {
+   height: 12px;
+   width: 100%;
+   padding: 0px;
+   margin: 0 2px 1px 0;
+   color: #000;
+   border: none;
+   background: #eaeaea;
+}
+.chooseKaufmanItemItemTextContainer {
+   width: 100%;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   border: none;
+}
+
+.chooseKaufmanItemItemTextDiv {
+   padding: 0px;
+   margin: 0px 0px 0px 3px;
+   color: #000;
+   border: none;
+   white-space: pre;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+.chooseKaufmanItemItemTextDiv.over {
+   background: #ffdddd;
+}
+.chooseKaufmanItemItemTextDiv.out {
+   background: #eaeaea;
+}
+.chooseKaufmanItemItemTextDiv.up {
+   background: #eaeaea;
+}
+.chooseKaufmanItemItemTextDiv.disabled {
+   background: #eaeaea;
+   color: #999;
+}
+.chooseKaufmanItemItemTextDiv.over.disabled {
+   background: #ffdddd;
+   color: #999;
+}
+/* --------------------------- */
+.chooseKaufmanItemSpacer{
+   height: 10px;
+   padding: 0px;
+   margin: 2px 0px;
+   background: #eaeaea;
+}
+
+.chooseKaufmanItemSpacerBGdark{
+   position: relative;
+   top: 5px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #999;
+}
+
+.chooseKaufmanItemSpacerBGlight{
+   position: relative;
+   top: 5px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #fff;
+}

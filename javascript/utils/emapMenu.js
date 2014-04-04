@@ -1530,6 +1530,12 @@ emouseatlas.emap.EmapMenu = function() {
 
    };
 
+   //---------------------------------------------------------
+   var getName = function () {
+      //console.log(observer);
+      return 'emapMenu';
+   };
+
 
    //---------------------------------------------------------
    // expose 'public' properties
@@ -1538,6 +1544,7 @@ emouseatlas.emap.EmapMenu = function() {
    return {
       initialise: initialise,
       viewUpdate: viewUpdate,
+      getName: getName,
       setRadioButton: setRadioButton,
       readMenuStructureCallback: readMenuStructureCallback,
       readMenuContentCallback: readMenuContentCallback,

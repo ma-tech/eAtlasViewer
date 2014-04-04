@@ -323,9 +323,8 @@
 
 .markerTxtDiv {
    position: absolute;
-   top: 0px;
+   top: 5px;
    left: 0px;
-   width: 20px;
    height: 10px;
    padding: 0px;
    margin: 0px;
@@ -335,17 +334,27 @@
    text-align: center;
    visibility: hidden;
 }
+.markerTxtDiv.one {
+   left: 8px;
+}
+.markerTxtDiv.two {
+   left: 5px;
+}
+.markerTxtDiv.three {
+   left: 2px;
+}
 
 .markerLabelDiv {
    position: absolute;
-   width: auto;
-   padding: 2px;
+   width: 90px;
+   padding: 2px 4px;
    margin: 0px;
    color: #111;
    font-size: 11px;
    background: #eee;
    border: solid 1px #aaa;
    z-index: 300;
+   text-align: left;
    visibility: hidden;
 }
 
@@ -622,3 +631,4 @@
    border: solid 1px #0f0;
    visibility: hidden;
 }
+

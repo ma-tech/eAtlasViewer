@@ -106,9 +106,6 @@ var querySectionTool = new Class ({
       //console.log("querySectionTool createElements");
 
       var win = $(this.shortName + '-win');
-      // make sure existing elements are removed.
-      // or they will appear multiple times
-      emouseatlas.emap.utilities.removeChildNodes(win);
 
       //.................................................
       // spacer to move feedback text away from left edge
@@ -118,6 +115,13 @@ var querySectionTool = new Class ({
       });
 
       this.topEdge = $(this.shortName + '-topedge');
+
+      // make sure existing elements are removed.
+      // or they will appear multiple times
+      // emouseatlas.emap.utilities.removeChildNodes(win);
+      win.innerHTML = "";
+      this.topEdge.innerHTML = "";
+
       this.spacer.inject(this.topEdge, 'inside');
 
       this.sliderTextContainer = new Element('div', {
@@ -229,6 +233,10 @@ var querySectionTool = new Class ({
 	    this.doSectionClicked(e);
 	 }.bind(this));
 
+	 trashIcon.addEvent('mouseup', function(e){
+	    this.doTrashMouseUp(e);
+	 }.bind(this));
+
       } // for
 
       //----------------------------------------
@@ -318,6 +326,95 @@ var querySectionTool = new Class ({
 	 }
       }
    },
+
+   //---------------------------------------------------------------
+   // If trash is clicked the section should be removed
+   //---------------------------------------------------------------
+   doTrashMouseUp: function(e) {
+
+      if (!e) {
+	 var e = window.event;
+      }
+      var target = emouseatlas.emap.utilities.getTarget(e);
+      //console.log("doTrashMouseUp: %s",target.id);
+      //var type = emouseatlas.emap.utilities.getEventType(e);
+      if(target.id.indexOf("_trash") === -1) {
+	 console.log("doTrashMouseUp returning: event not from trash ",target.id);
+	 return;
+      }
+
+      var curSection;
+      var querySection;
+      var sectionDiv;
+      var sectionNames;
+      var name;
+      var numSections;
+      var userChoice;
+      var i;
+
+      sectionNames = this.query.getAllQuerySectionNames();
+      numSections = sectionNames.length;
+
+      curSection = this.model.getCurrentSection();
+
+      for(i=0; i<numSections; i++) {
+         name = sectionNames[i];
+	 sectionDiv = $(name + '_sectionDiv');
+	 if(target.id.indexOf(name) !== -1) {
+	    //sectionDiv.className = 'sectionDiv selected';
+            querySection = this.query.getQuerySectionAtIndex(i);
+            if(emouseatlas.emap.utilities.isSameSection(curSection, querySection)) {
+	       userChoice = confirm("Are you sure you want to remove this section from your query?");
+	       if(userChoice) {
+	          this.removeSectionFromQuery(name);
+	       } else {
+	          return false;
+	       }
+            } else {
+	       alert("You can only remove the current (highlighted) section from a query?");
+	       return false;
+	    }
+	 }
+      }
+
+   },
+
+   //---------------------------------------------------------------
+   removeSectionFromQuery: function(name) {
+
+      var sectionNames;
+      var numSections;
+      var querySectionName;
+      var sectionDiv;
+      var indx;
+      var i;
+
+      //querySectionName = this.query.getQuerySectionName(querySectionName);
+      //indx = this.query.getIndexOfQuerySectionName(querySectionName);
+      //console.log("indx before removeQuery %d",indx);
+      this.query.removeQuerySection(name);
+
+      sectionNames = this.query.getAllQuerySectionNames();
+      numSections = sectionNames.length;
+
+      querySectionName = this.query.getQuerySectionName(querySectionName);
+      indx = this.query.getIndexOfQuerySectionName(querySectionName);
+      indx = (indx === -1) ? 0 : indx;
+      this.createElements();
+      this.query.selectQuerySection(indx);
+
+      for(i=0; i<numSections; i++) {
+         sectionDiv = $(sectionNames[i] + '_sectionDiv');
+         sectionDiv.className = 'sectionDiv';
+      }
+
+      sectionDiv = $(sectionNames[indx] + '_sectionDiv');
+      if(sectionDiv) {
+         sectionDiv.className = 'sectionDiv selected';
+      }
+
+
+   }, // removeSectionFromQuery
 
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {

@@ -196,6 +196,7 @@ var tiledImageDrawingTool = new Class ({
 
       this.lineSelect = new Element('select', {
 	 'id': 'lineSelect',
+	 'name': 'lineSelect'
       });
 
       this.lineSelect.set('html', options);
@@ -209,6 +210,7 @@ var tiledImageDrawingTool = new Class ({
 
       this.lineSelect.inject(this.lineSelectDiv, 'inside');
       this.lineSelectDiv.inject(this.lineControlContainer, 'inside');
+      //this.lineSelect.inject(this.lineControlContainer, 'inside');
 
       this.lineControlContainer.inject(this.drawingToolBoxDiv, 'inside');
       
@@ -313,6 +315,11 @@ var tiledImageDrawingTool = new Class ({
 	 this.doLineSelect(e);
       }.bind(this));
 
+      this.lineSelect.addEvent('mousedown',function(e) {
+	 this.doLineSelectMouseDown(e);
+      }.bind(this));
+
+
       this.redoImg.addEvent('click',function(e) {
 	 this.doClickRedo(e);
       }.bind(this));
@@ -415,6 +422,17 @@ var tiledImageDrawingTool = new Class ({
          return false;
       }
       this.emapDraw.setPenSize(target, this.emapDraw);
+   },
+   //---------------------------------------------------------------
+   // you need to explicitly give focus to the drop-down as later
+   // browsers lose focus of a 'select' element inside a container
+   //---------------------------------------------------------------
+   doLineSelectMouseDown: function(e) {
+      var target = emouseatlas.emap.utilities.getTarget(e);
+      if(target === undefined) {
+         return false;
+      }
+      target.focus();
    },
 
    //---------------------------------------------------------------

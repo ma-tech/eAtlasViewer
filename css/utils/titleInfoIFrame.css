@@ -291,7 +291,6 @@ li.IIP3DViewerHelp.level3 {
 
 #titleInfoMainContainer {
    height: 100%;
-   background: #eafbfc;
 }
 #wlzIIPViewerTitleIFrameBottomDiv {
    position: relative;
@@ -300,7 +299,6 @@ li.IIP3DViewerHelp.level3 {
    padding: 0px;
    margin-left: auto;
    margin-right: auto;
-   width: 260px;
    font-size: 10px;
    font-style: normal;
    background: #fafbfc;

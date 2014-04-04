@@ -60,17 +60,16 @@ var SliderComponent = new Class ({
       this.view = params.view;
       this.model = params.model;
       this.initiator = params.initiator; // so we can update the appropriate quantity
-      this.name = this.initiator.shortName + "_sliderComponent";
-      this.shortName = this.initiator.shortName + "_sliderComponent";
-
-      this.type = (params.type === undefined) ? this.shortName : params.type;
-      //console.log("SliderComponent name %s, type %s",this.shortName,this.type);
+      this.name = (this.initiator.shortName) ? this.initiator.shortName : this.initiator.getName();
+      this.name = this.name + "_sliderComponent";
+      this.type = (params.type === undefined) ? this.name : params.type;
 
       this.userChange = false;
 
       this.currentPosition = 0;
 
       this.targetId = params.targetId;
+      this.target = $(params.targetId);
 
       this.mode = (params.mode === undefined) ? "horizontal" : params.mode;
       if(this.mode === "horizontal") {
@@ -114,10 +113,15 @@ var SliderComponent = new Class ({
 	 this.sliderBody.setStyle("height", this.sliderLength + 'px');
       }
 
+      //console.log("sliderComponent %s",this.name);
 
       this.knob.inject(this.sliderBody, 'inside');
       this.sliderBody.inject(this.sliderContainer, 'inside');
-      this.sliderContainer.inject($(this.targetId), 'inside');
+
+      if(this.target) {
+	 this.sliderContainer.inject($(this.targetId), 'inside');
+      }
+
 
       this.sliderBody.addEvent('mouseup',function() {
          this.initiator.doMouseUpSlider(this.type);
@@ -219,6 +223,16 @@ var SliderComponent = new Class ({
    setUserChange: function(bool, from) {
       //console.log("%s slider: setUserChange from %s, %s",this.type,from,bool);
       this.userChange = bool;
+   },
+
+   //---------------------------------------------------------------
+   getContainer: function() {
+      return this.sliderContainer;
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 });

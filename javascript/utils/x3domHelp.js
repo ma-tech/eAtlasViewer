@@ -27,8 +27,11 @@ var x3domHelp = new Class ({
       this.target = $(params.targetId);
 
       this.helpIFrame = $(this.type + "IFrame");
+      //console.log(this.type + "IFrame");
 
       this.hideOK = false;
+
+      this.name = "x3domHelp";
 
    },
 
@@ -43,6 +46,11 @@ var x3domHelp = new Class ({
       if(changes.hideX3domHelp) {
          this.helpIFrame.setStyle('visibility', 'hidden');
       }
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 }); // end of class x3domHelp

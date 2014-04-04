@@ -105,12 +105,6 @@ select option {
    border-right: 1px solid #000;
 }
 /* ------------------ */
-.over {
-   background: #ddd;
-}
-.out {
-   background: #eee;
-}
 #redoButton.down {
    background: #ddd;
    border-left: solid 1px #555;

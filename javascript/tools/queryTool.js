@@ -71,6 +71,11 @@ var queryTool = new Class ({
       this.borders = params.params.borders;
       this.transparent = params.params.transparent;
 
+      this.project = this.model.getProject();
+      //console.log("queryTool project ",this.project);
+
+      this.bgc = "#eaeaea";
+
       this.boundingBox;
 
       //this.visible = true;
@@ -79,6 +84,7 @@ var queryTool = new Class ({
                                          drag:this.drag,
                                          borders:this.borders,
                                          transparent:this.transparent,
+					 bgc:this.bgc,
                                          title:this.shortName,
 					 view:this.view,
 					 imagePath: this.imagePath,
@@ -159,6 +165,9 @@ var queryTool = new Class ({
       var queryTypeRadioContainer_spatial;
       var buttonContainer;
       var buttonContainerBkg;
+      var webServer;
+      var iipServer;
+      var action;
 
       win = $(this.shortName + '-win');
 
@@ -203,7 +212,12 @@ var queryTool = new Class ({
          'id': 'dbTextDiv_emage',
          'class': 'dbTextDiv'
       });
-      dbTextDiv_emage.set('text', 'EMAGE');
+
+      if(this.project.toLowerCase() === "gudmap") {
+         dbTextDiv_emage.set('text', 'GUDMAP');
+      } else {
+         dbTextDiv_emage.set('text', 'EMAGE');
+      }
 
       dbChkbxContainer_emage = new Element('div', {
          'id': 'dbChkbxContainer_emage',
@@ -217,37 +231,40 @@ var queryTool = new Class ({
           "name": "dbChkbx_emage",
           "class": "dbChkbx",
       });
-      //----------------------------------------
-      // the container for second database choice
-      //----------------------------------------
 
-      dbItemContainer_mgi = new Element('div', {
-	 'id': 'queryToolDbItemContainer_mgi',
-	 'class': 'queryToolDbItem'
-      });
+      if(this.project.toLowerCase() !== "gudmap") {
+	 //----------------------------------------
+	 // the container for second database choice
+	 //----------------------------------------
 
-      dbTextContainer_mgi = new Element('div', {
-         'id': 'dbTextContainer_mgi',
-         'class': 'dbTextContainer'
-      });
+	 dbItemContainer_mgi = new Element('div', {
+	    'id': 'queryToolDbItemContainer_mgi',
+	    'class': 'queryToolDbItem'
+	 });
 
-      dbTextDiv_mgi = new Element('div', {
-         'id': 'dbTextDiv_mgi',
-         'class': 'dbTextDiv'
-      });
-      dbTextDiv_mgi.set('text', 'MGI GXD');
+	 dbTextContainer_mgi = new Element('div', {
+	    'id': 'dbTextContainer_mgi',
+	    'class': 'dbTextContainer'
+	 });
 
-      dbChkbxContainer_mgi = new Element('div', {
-         'id': 'dbChkbxContainer_mgi',
-         'class': 'dbChkbxContainer'
-      });
+	 dbTextDiv_mgi = new Element('div', {
+	    'id': 'dbTextDiv_mgi',
+	    'class': 'dbTextDiv'
+	 });
+	 dbTextDiv_mgi.set('text', 'MGI GXD');
 
-      this.dbChkbx_mgi = new Element('input', {
-          "type": "checkbox",
-          "checked": false,
-          "id": "dbChkbx_mgi",
-          "class": "dbChkbx",
-      });
+	 dbChkbxContainer_mgi = new Element('div', {
+	    'id': 'dbChkbxContainer_mgi',
+	    'class': 'dbChkbxContainer'
+	 });
+
+	 this.dbChkbx_mgi = new Element('input', {
+	     "type": "checkbox",
+	     "checked": false,
+	     "id": "dbChkbx_mgi",
+	     "class": "dbChkbx",
+	 });
+      }
 
       if(queryModes.spatial) {
          this.dbChkbx_mgi.disabled = true;
@@ -261,25 +278,28 @@ var queryTool = new Class ({
       this.dbChkbx_emage.inject(dbChkbxContainer_emage, 'inside');
       dbChkbxContainer_emage.inject(dbItemContainer_emage, 'inside');
       dbItemContainer_emage.inject(dbChoiceContainer, 'inside');
-
-      dbTextDiv_mgi.inject(dbTextContainer_mgi, 'inside');
-      dbTextContainer_mgi.inject(dbItemContainer_mgi, 'inside');
-      this.dbChkbx_mgi.inject(dbChkbxContainer_mgi, 'inside');
-      dbChkbxContainer_mgi.inject(dbItemContainer_mgi, 'inside');
-      dbItemContainer_mgi.inject(dbChoiceContainer, 'inside');
-
-      dbChoiceContainer.inject(win, 'inside');
-
       //----------------------------------------
-      // event handlers for checkboxes
+      // event handler for checkbox
       //----------------------------------------
       this.dbChkbx_emage.addEvent('mouseup',function(e) {
 	 this.doChkbx(e);
       }.bind(this));
 
-      this.dbChkbx_mgi.addEvent('mouseup',function(e) {
-	 this.doChkbx(e);
-      }.bind(this));
+      if(this.project.toLowerCase() !== "gudmap") {
+	 dbTextDiv_mgi.inject(dbTextContainer_mgi, 'inside');
+	 dbTextContainer_mgi.inject(dbItemContainer_mgi, 'inside');
+	 this.dbChkbx_mgi.inject(dbChkbxContainer_mgi, 'inside');
+	 dbChkbxContainer_mgi.inject(dbItemContainer_mgi, 'inside');
+	 dbItemContainer_mgi.inject(dbChoiceContainer, 'inside');
+	 //----------------------------------------
+	 // event handler for checkbox
+	 //----------------------------------------
+	 this.dbChkbx_mgi.addEvent('mouseup',function(e) {
+	    this.doChkbx(e);
+	 }.bind(this));
+      }
+
+      dbChoiceContainer.inject(win, 'inside');
 
       //============================================================
       //----------------------------------------
@@ -411,7 +431,7 @@ var queryTool = new Class ({
 	 'type': 'file'
       });
 
-      queryImportFile.inject(win, 'inside');
+      //queryImportFile.inject(win, 'inside');
 
       //----------------------------------------
       // event handler
@@ -440,18 +460,25 @@ var queryTool = new Class ({
       });
 
       this.dummyQueryExport.inject(this.queryExportForm, 'inside');
-      this.queryExportForm.inject(win, 'inside');
+      //this.queryExportForm.inject(win, 'inside');
 
       //============================================================
       //----------------------------------------
       // add a dummy form for transferring drawing
       //----------------------------------------
+      webServer = this.model.getWebServer();
+      //console.log("web server: %s",webServer);
+
+      // for production (test and released) use emagewebapp not nb_emagewebapp
+      //action = webServer + "/emagewebapp/pages/emage_spatial_query_result.jsf";
+      action = webServer + "/nb_emagewebapp/pages/emage_spatial_query_result.jsf";
+      //console.log("action: %s",action);
 
       this.dummyForm = new Element('form', {
          'id': 'spatialQueryForm',
          'name': 'spatialQueryForm',
 	 'method': 'post',
-	 'action': 'http://cudhub.hgu.mrc.ac.uk/emagewebapp/pages/emage_spatial_query_result.jsf'
+	 'action': action
       });
 
       this.dummyInputView = new Element('input', {
@@ -514,7 +541,7 @@ var queryTool = new Class ({
       this.dummyInputToStage.inject(this.dummyForm, 'inside');
       this.dummyInputEmbryo.inject(this.dummyForm, 'inside');
       this.dummyInputDetect.inject(this.dummyForm, 'inside');
-      this.dummyForm.inject(win, 'inside');
+      //this.dummyForm.inject(win, 'inside');
 
    }, // createElements
 
@@ -631,9 +658,10 @@ var queryTool = new Class ({
 
       var mode;
       var queryModes;  // by anatomy term, by drawing
-      var type;        // 0 ==> emage, 1 ==> jackson
+      var type;        // 0 ==> emage or gudmap, 1 ==> MGI/GXD
       var emapId;
       var emapIdNum;
+      var anatStr;
       var url;
       var selections;
       var indxArr;
@@ -649,6 +677,11 @@ var queryTool = new Class ({
 	    //console.log("viewUpdate: ",queryModes);
 	    if(queryModes.anatomy == true) {
 	       this.query.typeChanged('anatomy');
+	       selections = this.view.getSelections();
+	       indxArr = this.getIndexArrFromSelections(selections);
+	       //console.log("query indxArr ",indxArr);
+	       this.termData = this.getTermDataFromTree(indxArr);
+	       this.query.setQueryTermData(this.termData);
 	    }
 	    if(queryModes.spatial == true) {
 	       this.query.typeChanged('spatial');
@@ -662,7 +695,16 @@ var queryTool = new Class ({
 	 emapId = this.getEmapId();
 	 //console.log("mode sub type = ",type);
 	 if(type === 0) {
-            url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+            if(this.project.toLowerCase() === "gudmap") {
+	       /*
+	       //anatStr = this.getAnatStr();
+	       anatStr = "renal vesicle";
+               url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20' + anatStr + '%20';
+	       */
+	    } else {
+               //url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+               url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+	    }
 	 } else if(type === 1) {
 	    emapIdNum = emapId.substring(5);
 	    url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' + emapIdNum + '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
@@ -750,7 +792,7 @@ var queryTool = new Class ({
          //console.log("resultNode ",resultNode);
    
          if(resultNode === undefined) {
-   	 alert("Sorry, I couldn't find data for domain %s",key);
+   	    alert("Sorry, I couldn't find data for domain ",key);
             return undefined;
          } else {
 	    name = resultNode.property.name;
@@ -897,42 +939,64 @@ var queryTool = new Class ({
       var first;
 
       emage_cb = $("dbChkbx_emage").checked;
-      mgi_cb = $("dbChkbx_mgi").checked;
-      if(!emage_cb && !mgi_cb) {
-         alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
-	 return false;
+
+      if(this.project.toLowerCase() === "gudmap") {
+	 if(!emage_cb) {
+	    alert("You have not chosen a database to query.\nPlease select 'GUDMAP'");
+	    return false;
+	 }
+      } else {
+	 mgi_cb = $("dbChkbx_mgi").checked;
+	 if(!emage_cb && !mgi_cb) {
+	    alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
+	    return false;
+	 }
       }
 
       termData = this.query.getQueryTermData();
       reverseData = emouseatlas.emap.utilities.reverseObject(termData);
 
       if(emage_cb) {
-         url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	 if(this.project.toLowerCase() === "gudmap") {
+	    url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=';
+	 } else {
+	    //url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	    url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	 }
 	 first = true;
 
-         for(key in reverseData) {
+	 for(key in reverseData) {
    
-            if(!reverseData.hasOwnProperty(key)) {
-               continue;
-            }
-   
-            term = reverseData[key];
-            name = reverseData[key].name;
-            id = term.fbId[0];
-            //console.log("term ",term);
-            //console.log("term  %s, %s",name,id);
-   
-            if(!first) {
-               url += ',';
+	    if(!reverseData.hasOwnProperty(key)) {
+	       continue;
 	    }
-            url += id;
-            //console.log(url);
+   
+	    term = reverseData[key];
+	    name = reverseData[key].name;
+	    id = term.fbId[0];
+	    //console.log("term ",term);
+	    //console.log("term  %s, %s",name,id);
+   
 
+	    if(this.project.toLowerCase() === "gudmap") {
+	       if(!first) {
+		  url += '%20';
+	       }
+	       url += '%22' + name + '%22';
+	    } else {
+	       if(!first) {
+		  url += ',';
+	       }
+	       url += id;
+	    }
 	    first = false;
-         }
-         url += '&exactmatchstructures=true&includestructuresynonyms=true';
-         //console.log(url);
-         this.view.getQueryResults(url);
+	 }
+
+	 if(this.project.toLowerCase() !== "gudmap") {
+	    url += '&exactmatchstructures=true&includestructuresynonyms=true';
+	 }
+	 //console.log(url);
+	 this.view.getQueryResults(url);
       }
       
       // we are only able to use 1 term for an MGI query
@@ -1086,6 +1150,7 @@ var queryTool = new Class ({
       x = valArr[4];
       y = valArr[2];
       z = valArr[0];
+      console.log("getTransformedBoundingBoxCallback origin x %d, y %d, z %d",x,y,z);
 
       if(this.transformedOrigins[name] === undefined) {
          this.transformedOrigins[name] = {sectionName:name, x:x , y:y , z:z };
@@ -1133,7 +1198,6 @@ var queryTool = new Class ({
       layerData = this.model.getLayerData();
       queryStrHeader = "WLZ_DRAW_DOMAIN:1;";
 
-      //console.log("sendQuery: querySections ",querySections);
       if(webServer === undefined || iipServer === undefined) {
          //console.log("webServer or iipServer undefined");
          return false;
@@ -1157,7 +1221,7 @@ var queryTool = new Class ({
 	 layer.imageDir +
 	 layer.imageName;
 
-      //queryStrHeader = queryStrHeader + iipUrl;
+      queryStrHeader = queryStrHeader + iipUrl;
 
       if(len <= 0) {
          return false;
@@ -1207,9 +1271,9 @@ var queryTool = new Class ({
       }
 
       this.dummyInputView.value = iipUrl;
-      //console.log("iipUrl ",iipUrl);
+      console.log("iipUrl ",iipUrl);
       this.dummyInputDrawing.value = queryStr;
-      //console.log(queryStr);
+      console.log(queryStr);
       this.dummyQueryExport.value = queryStr;
 
       // If you do a form.submit, the servlet has to re-draw the page, the call is from the web-page.
@@ -1218,7 +1282,7 @@ var queryTool = new Class ({
       if(this.EXPORT) {
          this.queryExportForm.submit();
       } else {
-         this.dummyForm.submit();
+         //this.dummyForm.submit();
       }
 
       return false;

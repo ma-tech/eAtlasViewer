@@ -108,6 +108,7 @@ var pointClickSelector = new Class ({
       this.nSections = (this.nSections === undefined) ? 100 : this.nSections;
 
       this.zsel = this.model.getZSelectorInfo();
+
       this.createElements();
 
       this.setToolTip(this.toolTipText);
@@ -117,56 +118,60 @@ var pointClickSelector = new Class ({
    //---------------------------------------------------------------
    createElements: function () {
 
+      var src;
+
       var win = $(this.shortName + '-win');
 
       var topEdge = $(this.shortName + '-topedge');
 
       this.cursorBarWidth = 1; // the width of the line that indicated the current section
 
-      this.imageContainer = new Element( 'div', {
-	 id: 'selector-imageContainer'
-      });
-      this.imageContainer.inject( this.window.win , 'inside');
+      if(this.getSelectorName()) {
+	 this.imageContainer = new Element( 'div', {
+	    id: 'selector-imageContainer'
+	 });
+	 this.imageContainer.inject( this.window.win , 'inside');
 
-      this.image = new Element('img', {
-         'id': 'selector-image',
-         'class': 'selector-image'
-      });
+	 this.image = new Element('img', {
+	    'id': 'selector-image',
+	    'class': 'selector-image'
+	 });
 
-      var imgW = this.zsel.width;
-      var imgH = this.zsel.height;
-      //console.log("image: W %s, H %s",imgW,imgH);
+	 var imgW = this.zsel.width;
+	 var imgH = this.zsel.height;
+	 //console.log("image: W %s, H %s",imgW,imgH);
 
-      this.image.inject( this.imageContainer , 'inside');
+	 this.image.inject( this.imageContainer , 'inside');
 
-      this.cursorBarContainer = new Element( 'div', {
-	 id: 'selector-cursorBarContainer',
-         'class': 'selector-cursor'
-      });
-      this.cursorBarContainer.inject( this.imageContainer , 'inside');
-      //this.cursorBarContainer.makeDraggable(emouseatlas.emap.utilities.getDragOpts('selector-imageContainer',100,this));
+	 this.cursorBarContainer = new Element( 'div', {
+	    id: 'selector-cursorBarContainer',
+	    'class': 'selector-cursor'
+	 });
+	 this.cursorBarContainer.inject( this.imageContainer , 'inside');
+	 //this.cursorBarContainer.makeDraggable(emouseatlas.emap.utilities.getDragOpts('selector-imageContainer',100,this));
 
-      this.cursorBar = new Element( 'div', {
-	 'id': 'selector-cursorBar',
-         'class': 'selector-cursor'
-      });
-      this.cursorBar.inject( this.cursorBarContainer , 'inside');
+	 this.cursorBar = new Element( 'div', {
+	    'id': 'selector-cursorBar',
+	    'class': 'selector-cursor'
+	 });
+	 this.cursorBar.inject( this.cursorBarContainer , 'inside');
 
-      if(this.getSelectorSrc() === undefined) {
-         this.cursorBar.style.visibility = 'hidden';
+	 if(this.getSelectorSrc() === undefined) {
+	    this.cursorBar.style.visibility = 'hidden';
+	 }
+
+	 //------------------------------------
+	 var dragTarget = this.shortName + '-win';
+	 $(dragTarget).addEvent('mouseup', function(e) {
+	    this.doMouseUp(e);
+	 }.bind(this));
       }
-
-      //------------------------------------
-      var dragTarget = this.shortName + '-win';
-      $(dragTarget).addEvent('mouseup', function(e) {
-         this.doMouseUp(e);
-      }.bind(this));
       //------------------------------------
 
       this.controlDiv = new Element( 'div', {
 	 'id': 'selector-controlDiv'
       });
-      this.controlDiv.inject( this.window.win , 'inside');
+      //this.controlDiv.inject( this.window.win , 'inside');
 
       //------------------------------------
       this.dropDownDiv = new Element( 'div', {
@@ -198,8 +203,8 @@ var pointClickSelector = new Class ({
          option = new Element('option', {
 	    'id':'selector-option' + i,
 	    'class': 'selector-option',
-	    'value': i
-	    //'text': optionTxt + optionArr[i]
+	    'value': i,
+	    'text': optionTxt + optionArr[i]
 	 });
 	 option.inject(this.dropDown, 'inside');
 	 option.set('html', spantex);
@@ -337,25 +342,27 @@ var pointClickSelector = new Class ({
       //console.log("section -->",section);
       //console.log("nSections -->",this.nSections);
 
-      perc = parseFloat(section / this.nSections);
+      if(this.getSelectorName()) {
+	 perc = parseFloat(section / this.nSections);
 
-      //console.log("perc %d",perc);
-      //console.log("setSectionOffset: this.dragHeight %f, this.topDragOffset %f",this.dragHeight,this.topDragOffset);
-      //console.log("setSectionOffset: this.dragWidth %f, this.leftDragOffset %f",this.dragWidth,this.leftDragOffset);
+	 //console.log("perc %d",perc);
+	 //console.log("setSectionOffset: this.dragHeight %f, this.topDragOffset %f",this.dragHeight,this.topDragOffset);
+	 //console.log("setSectionOffset: this.dragWidth %f, this.leftDragOffset %f",this.dragWidth,this.leftDragOffset);
 
-      if (this.zsel.orientation == 'vertical') {
-	 ofs = perc * (this.dragWidth) + this.leftDragOffset;
-	 ofs = parseInt(ofs);
-	 //console.log("ofs %d",ofs);
-	 this.cursorBarContainer.style.left = ofs + 'px';
-      } else if (this.zsel.orientation == 'horizontal') {
-	 ofs = perc * (this.dragHeight) + this.topDragOffset;
-	 ofs = parseInt(ofs);
-	 //console.log("ofs %d",ofs);
-	 this.cursorBarContainer.style.top = ofs + 'px';
-      } else {
-	 alert("Error: selector orientation "+this.zsel.orientation+" is invalid or undefined");
-	 //console.log("getSliceOffset: selector orientation ",this.zsel.orientation," is invalid or undefined");
+	 if (this.zsel.orientation == 'vertical') {
+	    ofs = perc * (this.dragWidth) + this.leftDragOffset;
+	    ofs = parseInt(ofs);
+	    //console.log("ofs %d",ofs);
+	    this.cursorBarContainer.style.left = ofs + 'px';
+	 } else if (this.zsel.orientation == 'horizontal') {
+	    ofs = perc * (this.dragHeight) + this.topDragOffset;
+	    ofs = parseInt(ofs);
+	    //console.log("ofs %d",ofs);
+	    this.cursorBarContainer.style.top = ofs + 'px';
+	 } else {
+	    alert("Error: selector orientation "+this.zsel.orientation+" is invalid or undefined");
+	    //console.log("getSliceOffset: selector orientation ",this.zsel.orientation," is invalid or undefined");
+	 }
       }
 
       dropDownIndx = this.dropDown.selectedIndex;
@@ -389,6 +396,7 @@ var pointClickSelector = new Class ({
       layer = layerData[layerNames[0]];  // in future we should be able to select which layer provides the selector Image
 
       if(layer.selectorName === undefined || layer.selectorName === "") {
+         //console.log("getSelectorName: ",layer.selectorName);
          return undefined;
       }
 
@@ -465,20 +473,11 @@ var pointClickSelector = new Class ({
    //--------------------------------------------------------------
    setSelectorImage: function () {
 
-      //console.log("enter selector.setSelectorImage");
-      //console.log("zsel ",this.zsel);
+      if(this.getSelectorName()) {
+         this.imageContainer.style.top = '2px';
+         this.image.src = this.getSelectorSrc();
+      }
 
-      //this.image.style.width = this.zsel.width + 'px';
-      //this.image.style.height = this.zsel.height + 'px';
-      //this.imageContainer.style.width = this.zsel.width + 'px';
-      //this.imageContainer.style.height = this.zsel.height + 'px';
-
-      //this.imageContainer.style.left = '2px';
-      this.imageContainer.style.top = '2px';
-
-      this.image.src = this.getSelectorSrc();
-
-      //console.log("exit selector.setSelectorImage");
    }, // setSelectorImage
 
    //---------------------------------------------------------------
@@ -562,6 +561,10 @@ var pointClickSelector = new Class ({
       var controlDivWidth;
       var controlDivHeight;
       var imageContainerLeftOffset;
+
+      if(!this.getSelectorName()) {
+         return false;
+      }
 
       if(this.zsel.imgRange && this.zsel.imgRange.length > 1) {
          num = this.zsel.imgRange.length;
@@ -701,7 +704,11 @@ var pointClickSelector = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
-   }
+   },
 
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
+   }
 
 }); // pointClickSelector

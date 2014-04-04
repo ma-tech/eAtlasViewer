@@ -440,10 +440,16 @@ All project-specific additions should be implemented here, instead of the main M
  */
 
 Mif.Tree.Draw.getHTML = function(node,html){
+                //console.log("Mif.Tree.Draw.getHTML node ",node);
 		var prefix = node.tree.DOMidPrefix;
+
+		var alf
 	        // the alpha value required by css background: rgba(...) is from 0 to 1
 	        // the alpha value required by IIP3DViewer is from 0 to 255
-		var alf = parseFloat(node.color[3] / 255);
+		if(!node.color) {
+		   node.color = [240,240,240,255];
+	        }
+		alf = parseFloat(node.color[3] / 255);
 		//console.log("alf ",alf);
 		//console.log("Mif.Tree.Draw.getHTML  domainId %s",node.domainId);
 		var bg = 'rgba(' + node.color[0] + ', ' + node.color[1] + ', ' + node.color[2] + ', ' + alf + ')';

@@ -218,6 +218,7 @@ emouseatlas.emap.EmapDraw = function() {
      // called from select control event handler
      var setPenSize = function(sel) {
         var indx = sel.selectedIndex;
+	//console.log("setPenSize indx ",indx);
 	curLineWidth = availableWidths[indx];
 	selectedLineWidth = curLineWidth;
         setLineWidth(curLineWidth);
@@ -751,7 +752,7 @@ emouseatlas.emap.EmapDraw = function() {
 
       //......................
       if(changes.saveQuerySection) {
-         //console.log("model saveQuerySection");
+         //console.log("query saveQuerySection");
 	 copy = copyDrawing(drawing);
          //console.log("query saveQuerySection copy ",copy);
 	 query.setQuerySectionData(copy);
@@ -761,7 +762,7 @@ emouseatlas.emap.EmapDraw = function() {
       // Section change due to user selection
       //......................
       if(changes.changeQuerySection) {
-         //console.log("model changeQuerySection");
+         //console.log("query changeQuerySection");
 	 querySectionChanged = true;
 	 names = query.getAllQuerySectionNames();
 	 curName = query.getQuerySectionName();
@@ -779,6 +780,36 @@ emouseatlas.emap.EmapDraw = function() {
 	 //console.log(copy);
 	 //querySectionChanged = true;
 	 paintDrawing("queryUpdate changeQuerySection");
+      }
+
+      //.........................
+      // Section removed by user
+      //......................
+      if(changes.removeQuerySection) {
+
+         var toRemove = query.getQuerySectionToRemove();
+	 var copy;
+	 var names;
+	 var curName;
+	 var curSection;
+	 var data;
+	 var len;
+
+         //console.log("query removeQuerySection %s", toRemove);
+
+	 names = query.getAllQuerySectionNames();
+	 len = names.length;
+	 if(len > 1) {
+	    curName = query.getQuerySectionName();
+	    //console.log("emapDraw: curName %s",curName);
+	    data = query.getQuerySectionData(curName);
+	    copy = copyDrawing(data.drg);
+	    drawing = copy;
+	    clearDrawingCanvas();
+	    paintDrawing("queryUpdate changeQuerySection");
+	 } else {
+	    clearDrawing();
+	 }
       }
 
    };
@@ -917,6 +948,12 @@ emouseatlas.emap.EmapDraw = function() {
    };
 
    //---------------------------------------------------------
+   var getName = function () {
+      //console.log(observer);
+      return 'emapDraw';
+   };
+
+   //---------------------------------------------------------
    //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
@@ -926,6 +963,7 @@ emouseatlas.emap.EmapDraw = function() {
       viewUpdate: viewUpdate,
       modelUpdate: modelUpdate,
       queryUpdate: queryUpdate,
+      getName: getName,
       setDrawOrErase: setDrawOrErase,
       setPenSize: setPenSize,
       clearDrawingCanvas: clearDrawingCanvas,
@@ -934,5 +972,5 @@ emouseatlas.emap.EmapDraw = function() {
       doRedo: doRedo
    };
 
-}; // end of function EmapSpatialQuery
+}; // end of function EmapDraw
 //----------------------------------------------------------------------------

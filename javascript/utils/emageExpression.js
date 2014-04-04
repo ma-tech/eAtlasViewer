@@ -336,6 +336,11 @@ emouseatlas.emap.emageExpression = function() {
       showFrame(undefined);
 
    };
+   
+   //---------------------------------------------------------
+   var getName = function () {
+      return "emageExpression";
+   };
 
    //---------------------------------------------------------
    // expose 'public' properties
@@ -343,6 +348,7 @@ emouseatlas.emap.emageExpression = function() {
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
       initialise: initialise
+      getName: getName,
    };
 
 }(); // end of module emouseatlas.emap.emageExpression

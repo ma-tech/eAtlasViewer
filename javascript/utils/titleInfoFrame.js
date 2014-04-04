@@ -324,9 +324,11 @@ emouseatlas.emap.titleInfo = function () {
 
       infoTable = doc.createElement('table');
       infoTable.id = "titleInfoTable";
+      infoTable.class = "info";
       infoTable.cellSpacing = "2";
       infoTable.cellPadding = "2";
-      infoTable.style.margin = "auto";
+      infoTable.style.width = "100%";
+      //infoTable.style.margin = "auto";
 
       // the tBody
       tBody = doc.createElement('tBody');
@@ -514,11 +516,18 @@ emouseatlas.emap.titleInfo = function () {
    };
 
    //---------------------------------------------------------
+   var getName = function () {
+      //console.log(observer);
+      return 'titleInfo';
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
       initialise: initialise,
+      getName: getName,
       viewUpdate: viewUpdate
    };
 

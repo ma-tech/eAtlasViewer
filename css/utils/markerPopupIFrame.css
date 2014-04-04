@@ -1,0 +1,191 @@
+/* style for marker popup iFrames */
+
+body.iframe {
+   font-family: Verdana, Arial, sans-serif;
+   background: #eef;
+}
+
+a {
+   text-decoration: none;
+}
+a:link {
+   color:#0000ff;
+}
+a:visited {
+   color:#0000ff;
+}
+a:hover {
+   color:#990099;
+}
+a:active {
+   color:#0055bb;
+}
+
+#markerPopupMainContainerScrollContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   visibility: visible;
+   width: 100%;
+   height: 215px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   overflow: auto;
+}
+
+.markerPopupIFrame {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   visibility: hidden;
+   width: 100%;
+   height: 223px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   z-index: 1000;
+}
+
+.markerPopupMainContainer {
+   width: 100%;
+   font-size: 9pt;
+   font-style: normal;
+   font-weight: normal;
+   color: #333;
+}
+
+.markerPopupGroupContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   margin: 0px;
+   padding: 0px;
+}
+
+.markerPopupItemContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   margin: 0px;
+   padding: 0px;
+}
+.markerPopupTermText {
+   margin: 4px;
+   padding: 4px;
+}
+
+table.markerPopup {
+   table-layout: auto;
+   font-family: Verdana, Arial, sans-serif;
+   font-size: 11px; /* for IE8 which doesn't inherit font-size */
+   border-collapse: collapse;
+}
+table.markerPopup.search {
+   margin-top: 10px;
+   border-collapse: collapse;
+}
+table.markerPopup.misc {
+   margin-top: 10px;
+   border-collapse: collapse;
+}
+
+hr.markerPopup {
+   padding: 0;
+   margin: 4px 0 0;
+   text-align: left;
+   font-size: 12px;
+   font-style: italic;
+   font-weight: bold;
+   width: 180px;
+   height: 15px;
+   border: none;
+}
+
+td.rowHeader {
+   padding: 2px 2px;
+   margin-left: auto;
+   margin-right: auto;
+   text-align: left;
+   font-size: 11px;
+   font-style: normal;
+   font-weight: bold;
+   background: #dedede;
+   width: 75px;
+   border: solid 1px #bbb;
+}
+
+td.rowData {
+   padding: 2px 2px;
+   margin: 0;
+   text-align: left;
+   font-size: 11px;
+   font-style: normal;
+   background: #dedede;
+   min-width: 200px;
+   border: solid 1px #bbb;
+   color: #333;
+}
+td.rowData.disabled {
+   color: #999;
+}
+
+tr.markerPopup {
+   padding: 0px;
+   margin: 0px;
+   text-align: left;
+   font-size: 12px;
+   font-style: normal;
+}
+
+.popupBalloonDiv {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 20px;
+   height: 20px;
+   padding: 0px;
+   margin: 0px;
+}
+.popupBalloonImg {
+   position: relative;
+   top: -5px;
+   left: 0px;
+   width: 110%;
+   height: 30px;
+   padding: 0px;
+   margin: 0px;
+}
+.popupBalloonTxt {
+   position: absolute;
+   top: -1px;
+   padding: 0px;
+   margin: 0px;
+   text-align: left;
+   font-size: 9px;
+   font-style: normal;
+}
+.popupBalloonTxt.one {
+   left: 9px;
+}
+.popupBalloonTxt.two {
+   left: 6px;
+}
+.popupBalloonTxt.three {
+   left: 3px;
+}
+
+.markerPopupTableSpacer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   padding: 0px;
+   margin: 0px;
+   height: 16px;
+}
+.markerPopupTableSpacer.misc {
+   height: 16px;
+}
+.markerPopupTableSpacer.search {
+   height: 4px;
+}

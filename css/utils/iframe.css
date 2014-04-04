@@ -21,6 +21,19 @@ a:active {
    color:#0055bb;
 }
 
+#IIP3DViewerHelpMainContainerScrollContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   visibility: visible;
+   width: 937px;
+   height: 552px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   overflow: auto;
+}
+
 p.help {
    position: relative;
    left: 0px;
@@ -119,7 +132,7 @@ h6.help {
    color: #33c;
 }
 
-table {
+table.info {
    table-layout: fixed;
    font-family: Verdana, Arial, sans-serif;
    font-size: 11px; /* for IE8 which doesn't inherit font-size */
@@ -239,9 +252,9 @@ ul.IIP3DViewerHelp {
    color: #333;
    padding: 0px;
    margin: 0px;
-   /* list-style: none; */
+   list-style: none;
    /* list-style-type: disc; */
-   list-style-type: circle;
+   /* list-style-type: circle; */
 }
 ul.IIP3DViewerHelp.level0 {
    left: 0px;

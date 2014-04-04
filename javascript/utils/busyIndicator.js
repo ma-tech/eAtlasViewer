@@ -185,6 +185,11 @@ emouseatlas.emap.busyIndicator = function() {
       }
       //console.log("exit update");
    };
+   
+   //---------------------------------------------------------
+   var getName = function () {
+      return "busyIndicator";
+   };
 
    //---------------------------------------------------------
    // expose 'public' properties
@@ -192,6 +197,7 @@ emouseatlas.emap.busyIndicator = function() {
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
       initialise: initialise,
+      getName: getName,
       setImageSrc: setImageSrc,
       setDims: setDims,
       setPosition: setPosition,

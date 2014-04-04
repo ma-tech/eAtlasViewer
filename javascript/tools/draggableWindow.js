@@ -87,6 +87,8 @@ var DraggableWindow = new Class ({
       }
       //console.log("%s transparent %s",this.initiator.name, this.isTransparent);
 
+      this.bgc = (params.bgc === undefined) ? "#fff" : params.bgc;
+
       this.hasThinTopEdge = (params.thinTopEdge === undefined) ? false : params.thinTopEdge;
       if(typeof(params.thinTopEdge)  === "string") {
           this.hasThinTopEdge = (params.thinTopEdge === "true") ? true : false;
@@ -228,6 +230,10 @@ var DraggableWindow = new Class ({
 	 'class': "draggable-win"
       });
 
+      this.win = new Element( 'div', {
+	 'id': this.title + '-win'
+      });
+
       this.win.inject( this.container , 'inside');
 
       //console.log("exit DraggableWindow.initialize");
@@ -325,9 +331,11 @@ var DraggableWindow = new Class ({
 	    }
 	 }
 
+	 /*
 	 if(this.canDrag === true) {
 	    this.setPosition(x,y);
 	 }
+	 */
 
          //console.log("exit DraggableWindow.viewUpdate ",this.initiator.name);
       }
@@ -367,6 +375,10 @@ var DraggableWindow = new Class ({
       // console.log("enter DraggableWindow.setPosition:",this.initiator.name,x,y);
       this.x = x;
       this.y = y;
+
+      if(this.initiator.name === "colChooser") {
+         //console.log("enter DraggableWindow.setPosition:",this.initiator.name,x,y);
+      }
       
       if(this.toRight) {
          this.container.style.right = this.x + 'px';
@@ -414,87 +426,85 @@ var DraggableWindow = new Class ({
    setDraggableStyles: function() {
 
       this.container.setStyles({
-                                'zIndex':'100',
-                                'display':'block',
 				'width':Math.round(this.width + 2*this.edgeWidth) + 'px',
 				'height':Math.round(this.height + this.edgeWidth * 2) + 'px'
 			       });
 
       if(this.borders) {
-	 this.left.setStyles({
-			      'width':'2px',
-			      'height':Math.round(this.height + this.edgeWidth) + 'px',
-			      'left':'0px',
-			      'top':this.edgeWidth + 'px'
-			     });
+      this.left.setStyles({
+			   'width':'2px',
+			   'height':Math.round(this.height + this.edgeWidth) + 'px',
+			   'left':'0px',
+			   'top':this.edgeWidth + 'px'
+			  });
 
-	 this.right.setStyles({
-			       'width':'2px',
-			       'height':Math.round(this.height + this.edgeWidth) + 'px',
-			       'right':'0px',
-			       'top':this.edgeWidth + 'px'
-			      });
+      this.right.setStyles({
+			    'width':'2px',
+			    'height':Math.round(this.height + this.edgeWidth) + 'px',
+			    'right':'0px',
+			    'top':this.edgeWidth + 'px'
+			   });
 
-	 this.topedge.setStyles({
-			     'width':Math.round(this.width + 2*this.edgeWidth - 2*this.topEdgeWidth) + 'px',
-			     'height':this.topEdgeWidth + 'px',
-			     'left':this.topEdgeWidth + 'px',
-			     'top':this.edgeWidth - this.topEdgeWidth + 'px'
+      this.topedge.setStyles({
+			  'width':Math.round(this.width + 2*this.edgeWidth - 2*this.topEdgeWidth) + 'px',
+			  'height':this.topEdgeWidth + 'px',
+			  'left':this.topEdgeWidth + 'px',
+			  'top':this.edgeWidth - this.topEdgeWidth + 'px'
+			 });
+
+      this.bottom.setStyles({
+			     'width':Math.round(this.width) + 'px',
+			     'height':'2px',
+			     'left':'2px',
+			     'bottom':'0px'
 			    });
 
-	 this.bottom.setStyles({
-				'width':Math.round(this.width) + 'px',
-				'height':'2px',
-				'left':'2px',
-				'bottom':'0px'
-			       });
+      var cornerNW = this.imagePath + "corners/NW10.png";
+      this.tlCorner.setStyles({
+			       'width':this.topEdgeWidth + 'px',
+			       'height':this.topEdgeWidth + 'px',
+			       'top':this.edgeWidth - this.topEdgeWidth + 'px',
+			       'background-image':'url(' + cornerNW + ')'
+			      });
 
-	 var cornerNW = this.imagePath + "corners/NW10.png";
-	 this.tlCorner.setStyles({
-				  'width':this.topEdgeWidth + 'px',
-				  'height':this.topEdgeWidth + 'px',
-				  'top':this.edgeWidth - this.topEdgeWidth + 'px',
-				  'background-image':'url(' + cornerNW + ')'
-				 });
+      var cornerNE = this.imagePath + "corners/NE10.png";
+      this.trCorner.setStyles({
+			       'width':this.topEdgeWidth + 'px',
+			       'height':this.topEdgeWidth + 'px',
+			       'top':this.edgeWidth - this.topEdgeWidth + 'px',
+			       'left':this.width + 2*this.edgeWidth - this.topEdgeWidth + 'px',
+			       'background-image':'url(' + cornerNE + ')'
+			      });
 
-	 var cornerNE = this.imagePath + "corners/NE10.png";
-	 this.trCorner.setStyles({
-				  'width':this.topEdgeWidth + 'px',
-				  'height':this.topEdgeWidth + 'px',
-				  'top':this.edgeWidth - this.topEdgeWidth + 'px',
-				  'left':this.width + 2*this.edgeWidth - this.topEdgeWidth + 'px',
-				  'background-image':'url(' + cornerNE + ')'
-				 });
+      var tmpl = (this.width > 34) ? '10px' : '5px';
+      this.collapseButton.setStyles({
+				     'width':'15px',
+				     'height':'13px',
+				     'left':tmpl,
+				     'top':'4px',
+				     'position':'absolute',
+				     'cursor':'pointer',
+				     'title': 'Click to collapse window'
+				    });
 
-	 var tmpl = (this.width > 34) ? '10px' : '5px';
-	 this.collapseButton.setStyles({
-					'width':'15px',
-					'height':'13px',
-					'left':tmpl,
-					'top':'4px',
-					'position':'absolute',
-					'cursor':'pointer',
-					'title': 'Click to collapse window'
-				       });
-
-	 this.closeDiv.setStyles({
-				  'background-color':'676969',
-				  'right':'10px',
-				  'top':'4px',
-				  'position':'absolute',
-				  'cursor':'pointer',
-				  'title':'Click to close window'
-				 });
+      this.closeDiv.setStyles({
+			       'background-color':'676969',
+			       'right':'10px',
+			       'top':'4px',
+			       'position':'absolute',
+			       'cursor':'pointer',
+			       'title':'Click to close window'
+			      });
 
 
-	 this.closeImg.setStyles({
-				  'background-color': '#aaaaaa',
-				  'right': '5px',
-				  'top': '1px',
-				  'position': 'absolute',
-				  'cursor': 'pointer',
-				  'title': 'Click to close window'
-				 });
+      this.closeImg.setStyles({
+			       'background-color': '#aaaaaa',
+			       'right': '5px',
+			       'top': '1px',
+			       'position': 'absolute',
+			       'cursor': 'pointer',
+			       'title': 'Click to close window'
+			      });
       } else { // if no borders
 	 this.left.setStyles({ 'visibility':'hidden', });
 	 this.right.setStyles({ 'visibility':'hidden', });
@@ -515,31 +525,34 @@ var DraggableWindow = new Class ({
       }
       this.handle.setStyles({
 			     'width':Math.round(this.width + this.edgeWidth * 2) + 'px',
-			     'height':Math.round(this.height + this.edgeWidth + this.topEdgeWidth) + 'px',
+			     'height':Math.round(this.edgeWidth + this.topEdgeWidth) + 'px',
 			     'top':this.edgeWidth - this.topEdgeWidth + 'px',
 		             'cursor':kurs
 			    });
 
-      var bkg = "white";
+      //console.log("this.bgc ",this.bgc);
       if(this.isTransparent === true) {
-	 bkg = "transparent";
+	 this.bgc = "transparent";
       }
+      //'height':Math.round(this.height) + 'px',
       this.win.setStyles({
+                          'position':'absolute',
                           'width':Math.round(this.width) + 'px',
-                          'height':Math.round(this.height) + 'px',
+			  'height': this.height + 'px',
 	                  'top': this.edgeWidth + 'px',
 	                  'left': this.edgeWidth + 'px',
-	                  'background': bkg
+	                  'background': this.bgc
                          });
    }, // setDraggableStyles
 
    //--------------------------------------------------------------
    setDimensions: function(wid,hei) {
 
-      //if(this.title === 'treetool') {
-      //   console.log("enter DraggableWindow.setDimensions for %s, %d, %d",this.title, wid, hei);
-      //}
-      //console.log("enter DraggableWindow.setDimensions:",wid,hei);
+//      if(this.title === 'querytool') {
+//         console.log("enter DraggableWindow.setDimensions for %s, %d, %d",this.title, wid, hei);
+//      }
+//      console.log("enter DraggableWindow.setDimensions:",wid,hei);
+
       this.width = Number(wid);
       this.height = Number(hei);
 
@@ -594,15 +607,29 @@ var DraggableWindow = new Class ({
    },
 
    //--------------------------------------------------------------
+   setClass: function(klass) {
+
+      var newclass;
+
+      if(klass.indexOf("draggable-container") === -1) {
+         newclass = "draggable-container " + klass;
+      } else {
+         newclass = klass;
+      }
+
+      this.container.set("class", newclass);
+   },
+
+   //--------------------------------------------------------------
    // this can only be called after setDimensions() as we need this.width etc.
    //--------------------------------------------------------------
    calcDistToEdges: function(from) {
 
       //console.log("calcDistToEdges, called from: %s",from);
 
-      //if(this.initiator.name === "pointClickSelector") {
-      //   console.log("enter calcDistToEdges ",this.initiator.name);
-      //}
+//      if(this.initiator.name === "pointClickSelector") {
+//         console.log("enter calcDistToEdges ",this.initiator.name);
+//      }
       var viewport = this.view.getViewportDims();
       var vpWidth = viewport.width;
       var vpHeight = viewport.height;
@@ -616,6 +643,10 @@ var DraggableWindow = new Class ({
 
       //console.log("initiator: %s",this.initiator.name);
       style = window.getComputedStyle(this.container, null);
+
+//      if(this.initiator.name.toLowerCase() === "locator") {
+//         console.log("style for %s ",this.initiator.name,style);
+//      }
 
       str = style.getPropertyValue("left");
       indx = str.indexOf("px")
@@ -748,8 +779,14 @@ var DraggableWindow = new Class ({
 	 fadeIn.start({opacity : 1});
       }.bind(this) );
       //console.log("exit DraggableWindow.showChildren:");
-   }
+   },
    // end of maze code
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return "draggableWindow";
+   }
+
 
 }); // end of class DraggableWindow
 //----------------------------------------------------------------------------

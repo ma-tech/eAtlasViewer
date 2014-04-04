@@ -135,13 +135,69 @@ if(!emouseatlas.emap.utilities) {
 	 if (!e) {
 	    var e = window.event;
 	 }
-	 var shift = e.shiftKey;
-	 var ctrl = e.ctrlKey;
-	 var meta = e.metaKey;
-	 var alt = e.altKey;
-	 var modifiers = {shift:shift, ctrl:ctrl, meta:meta, alt:alt};
+
+	 var alt = false;
+	 var ctrl = false;
+	 var shift = false;
+	 var meta = false;
+
+	 if(e.modifiers) {
+	    alt = e.modifiers & Event.ALT_MASK;
+	    ctrl = e.modifiers & Event.CONTROL_MASK;
+	    shift = e.modifiers & Event.SHIFT_MASK;
+	    meta = e.modifiers & Event.META_MASK;
+	 } else {
+	    var alt = e.altKey;
+	    var ctrl = e.ctrlKey;
+	    var shift = e.shiftKey;
+	    var meta = e.metaKey;
+	 }
+	 var modifiers = {alt:alt, ctrl:ctrl, shift:shift, meta:meta};
 
 	 return modifiers
+      },
+
+      //---------------------------------------------------------
+      keyCheck: function (e) {
+
+	 if (!e) {
+	    var e = window.event;
+	 }
+
+	 var keys = {};
+	 var shift = false;
+	 var ctrl = false;
+	 var meta = false;
+	 var alt = false;
+	 var lwin = false;
+	 var rwin = false;
+	 var sel = false;
+         var keyId = e.keyCode;
+
+         keyId = e.keyCode;
+         switch(keyId) {
+            case 16:
+	       shift = true;
+               break; 
+            case 17:
+	       ctrl = true;
+               break;
+            case 18:
+	       alt = true;
+               break; 
+            case 91:
+	       lwin = true;
+               break;
+            case 92:
+	       rwin = true;
+               break;
+            case 93:
+	       sel = true;
+               break;
+         }
+	 keys = {shift:shift, ctrl:ctrl, alt:alt, lwin:lwin, rwin:rwin, sel:sel};
+
+	 return keys
       },
 
       //---------------------------------------------------------
@@ -911,7 +967,7 @@ if(!emouseatlas.emap.utilities) {
 
       //---------------------------------------------------------
       /**
-       *   Checks for entry in array of markers.
+       *   Checks for entry in array of marker objectss.
        */
       containsMarker: function(markers, key) {
 
@@ -927,6 +983,26 @@ if(!emouseatlas.emap.utilities) {
 	    }
 	 }
 
+	 return ret;
+      },
+
+      //---------------------------------------------------------
+      /**
+       *   Checks if array contains given element
+       */
+      arrayContains: function(arr, lmnt) {
+
+         var len = arr.length;
+	 var el;
+	 var i;
+	 ret = false;
+
+	 for(i=0; i<len; i++) {
+	    el = arr[i]
+	    if(el === lmnt) {
+	       ret = true;
+	    }
+	 }
 	 return ret;
       },
 
@@ -1331,6 +1407,28 @@ if(!emouseatlas.emap.utilities) {
             z = z.offsetParent;
          }
          return {x:elmnt.X = x,y:elmnt.Y = y};
+      },
+
+      //---------------------------------------------------------------
+      // this function returns an array of numbers (not strings)
+      //---------------------------------------------------------------
+      extractNumbersFromString: function (str, from) {
+   
+         var stages;
+   
+         //console.log("extractNumbersFromString called from %s",from);
+         //console.log(typeof(str));
+         if(typeof(str) !== "string") {
+   	 return str;
+         }
+   
+         // from http://stackoverflow.com/questions/18712347/how-to-get-numeric-value-from-string
+         // (Array.map provides a new array with every element operated on by the map function)
+         stages = str.match(/\d+/g).map(Number);
+   
+         //console.log("extractNumbersFromString %s, ",str,stages);
+   
+         return stages;
       },
 
       //---------------------------------------------------------

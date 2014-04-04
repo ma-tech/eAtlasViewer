@@ -403,6 +403,11 @@ var queryAnatomy = new Class ({
    },
 
    //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
+   },
+
+   //---------------------------------------------------------------
    doCollapsed: function() {
       //console.log("%s doCollapsed:",this.name);
       this.isCollapsed = true;

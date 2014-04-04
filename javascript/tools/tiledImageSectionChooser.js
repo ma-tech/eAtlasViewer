@@ -107,6 +107,8 @@ var tiledImageSectionChooser = new Class ({
    //---------------------------------------------------------
    createElements: function() {
 
+      //console.log("createElements for tiledImageSectionChooser");
+
       var win = $(this.shortName + '-win');
       // make sure existing elements are removed.
       // or they will appear multiple times
@@ -228,6 +230,10 @@ var tiledImageSectionChooser = new Class ({
 
 	 sectionDiv.addEvent('click', function(e){
 	    this.doSectionClicked(e);
+	 }.bind(this));
+
+	 trashIcon.addEvent('click', function(e){
+	    this.doTrashClicked(e);
 	 }.bind(this));
 
       } // for
@@ -435,6 +441,27 @@ var tiledImageSectionChooser = new Class ({
 	    sectionDiv.className = 'sectionDiv';
 	 }
       }
+   },
+
+   //---------------------------------------------------------------
+   // If trash is clicked the section is removed
+   //---------------------------------------------------------------
+   doTrashClicked: function(e) {
+
+      var target;
+      var type;
+
+      if (!e) {
+	 var e = window.event;
+      }
+      target = emouseatlas.emap.utilities.getTarget(e);
+      console.log("doTrashClicked: %s",target.id);
+      //type = emouseatlas.emap.utilities.getEventType(e);
+      if(target.id.indexOf("_trash") === -1) {
+	 //console.log("doTrashClicked returning: event not from trash icon ",target.id);
+	 return;
+      }
+
    },
 
    //---------------------------------------------------------------

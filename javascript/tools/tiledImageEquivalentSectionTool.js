@@ -438,6 +438,11 @@ var tiledImageEquivalentSectionTool = new Class ({
          this.markerArm180.setStyle('visibility', viz);
          this.markerArm270.setStyle('visibility', viz);
       }
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 });

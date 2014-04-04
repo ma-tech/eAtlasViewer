@@ -32,11 +32,10 @@
 
 /* --------------------------- */
 .termDiv {
-   padding: 0 2px;
-   margin: 0px;
+   padding: 0;
+   margin: 0px 2px 1px 0px;
    color: #000;
-   height: 20px;
-   border: solid 1px #aaa;
+   height: 12px;
    border: none;
    background: #eaeaea;
 }
@@ -53,10 +52,10 @@
 
 .termTextDiv {
    position: relative;
-   top: 4px;
+   left: 0px;
    border: none;
    padding: 0px;
-   margin: 0px;
+   margin: 0px 0px 0px 3px;
    color: #000;
    font-size: 9px;
 }

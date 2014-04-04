@@ -648,6 +648,11 @@ var combinedDistanceTool = new Class ({
       } else {
 	 $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': 'hidden'});
       }
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 });

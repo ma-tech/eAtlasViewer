@@ -101,7 +101,7 @@ var tiledImageLayerTool = new Class ({
 
       this.layerNames = [];
 
-      this.createElement();
+      this.createElements();
 
       this.window.setDimensions(this.width, this.height);
       this.setToolTip(this.toolTipText);
@@ -234,35 +234,6 @@ var tiledImageLayerTool = new Class ({
 	 propertiesIndicatorDiv.inject(propertiesButtonDiv, 'inside');
 	 propertiesButtonText.inject(propertiesButtonDiv, 'inside');
 
-	 /*
-	 // tooltips for properties button
-	 propertiesButtonDiv.addEvent('mouseover', function(e){
-
-	    this.propTipX = e.client.x;
-	    this.propTipY = e.client.y;
-
-	    this.pttchain = new Chain();
-	    var showTip = function () {
-	       this.showPropertiesToolTip(true);
-	       this.pttchain.callChain.delay(1000, this.pttchain);
-	    }.bind(this);
-	    var hideTip = function () {
-	       this.showPropertiesToolTip(false);
-	    }.bind(this);
-	    this.pttchain.chain(showTip).chain(hideTip);
-	    this.pttchain.callChain.delay(250, this.pttchain);
-	 }.bind(this));
-
-	 propertiesButtonDiv.addEvent('mouseout', function(){
-	    if(typeof(this.pttchain) === 'undefined') {
-	       this.showPropertiesToolTip(false);
-	    } else {
-	       this.pttchain.clearChain();
-	       this.showPropertiesToolTip(false);
-	    }
-	 }.bind(this));
-	 */
-
 	 //----------------------------------------
 	 // add them to the tool
 	 //----------------------------------------
@@ -276,9 +247,7 @@ var tiledImageLayerTool = new Class ({
 	 layerTextDiv.inject(layerTextContainer, 'inside');
 	 layerTextContainer.inject(layerDiv, 'inside');
 
-	 if(this.model.hasPropertiesTool() === true || this.model.hasPropertiesTool() === "true") {
-	    propertiesButtonDiv.inject(layerDiv, 'inside');
-	 }
+         propertiesButtonDiv.inject(layerDiv, 'inside');
 
 	 //----------------------------------------
 	 // add event handlers
@@ -438,7 +407,8 @@ var tiledImageLayerTool = new Class ({
       }
 
       if(viewChanges.filter === true) {
-         var filter = this.view.getFilter(currentLayer);
+	 var filter = this.view.getFilter(currentLayer);
+	 //console.log("filter ",filter);
 	 var red = (filter.red === 0) ? '00' : filter.red.toString(16);
 	 var green = (filter.green === 0) ? '00' : filter.green.toString(16);
 	 var blue = (filter.blue === 0) ? '00' : filter.blue.toString(16);
@@ -535,7 +505,11 @@ var tiledImageLayerTool = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
-   }
+   },
 
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
+   }
 
 });

@@ -19,7 +19,7 @@
  *
  */
 //---------------------------------------------------------
-//   pointClick.js
+//   tiledImagePointClick.js
 //   Tool for entering markers relating to list items.
 //---------------------------------------------------------
 
@@ -38,10 +38,10 @@ if(!emouseatlas.emap) {
 }
 
 //---------------------------------------------------------
-// module for pointClick
+// module for tiledImagePointClick
 // encapsulating it in a module to preserve namespace
 //---------------------------------------------------------
-emouseatlas.emap.pointClick = function() {
+emouseatlas.emap.tiledImagePointClick = function() {
 
    //---------------------------------------------------------
    // modules
@@ -49,13 +49,14 @@ emouseatlas.emap.pointClick = function() {
    var model = emouseatlas.emap.tiledImageModel;
    var view = emouseatlas.emap.tiledImageView;
    var utils = emouseatlas.emap.utilities;
-   //var info = emouseatlas.emap.titleInfo;
 
    //---------------------------------------------------------
    // private members
    //---------------------------------------------------------
    var _debug;
    var editorUtils;
+   var plateList = [];
+   var emaModels = [];
    var titleInfo;
    var subplateMarkerDetails;
    var pointClickImgData;
@@ -69,19 +70,24 @@ emouseatlas.emap.pointClick = function() {
    var previousOpenMarker;
    var locationsForEditor;
    var subplateKeys;
+   var imgKeyArr;
    var selectedRowKeys;
-   var lastSelectedRow = undefined;
+   var latestSelectedRow = undefined;
+   var latestClickedRow = undefined;
+   var previousSelectedRow = undefined;
    var lastHighlightedKey = undefined;
    var maxCloseMarkersToShow;
    var scale;
    var imgOfs;
    var labelOfs;
    var titleInfoTarget = "projectDiv";
-   var keepTitleInfoFrame = false;
+   var KEEP_TITLE_INFO_FRAME = false;
+   var markerPopupTarget = "emapIIPViewerDiv";
+   var targetDiv;
    var allowClosestMarkers = true; // temporary, while hovering over marker
    var ALLOW_CLOSEST_MARKERS = true; // more permanent (from checkbox)
    var SHOW_MARKER_TXT = true;
-   var moving = false;
+   var MOVING = false;
    var imgDir = "../../images/";
    var srcSelected = imgDir + "mapIconSelected.png";
    var srcClosest = imgDir + "mapIconClosest.png";
@@ -89,17 +95,40 @@ emouseatlas.emap.pointClick = function() {
    var srcClose = imgDir + "close_10x8.png";
    var srcClose2 = imgDir + "close2_10x8.png";
    var CONTEXT_MENU = false;
+   var SHOWING_ALL_MARKERS = false;
+   var stagedOntologyUrl;
+   var abstractOntologyUrl;
+   var emageUrl;
+   var mgiUrl;
+   //......................
+   var registry = [];
+   var pointClickChanges = { 
+      initial: false,
+      wikiChoice: false,
+      mgiChoice: false,
+      showAll: false,
+      hideAll: false,
+      plateList: false,
+      emaModels: false
+   };
 
 
    //---------------------------------------------------------
    //   private methods
    //---------------------------------------------------------
 
-   var initialize = function () {
+   //---------------------------------------------------------
+   var register = function (observer) {
+      registry.push(observer);
+      //console.log(observer.getName());
+   };
+
+   //---------------------------------------------------------
+   var initialise = function () {
 
       _debug = false;
 
-      //if(_debug) console.log("enter pointClick.initialize");
+      //if(_debug) console.log("enter tiledImagePointClick.initialise");
 
       model.register(this);
       view.register(this);
@@ -115,10 +144,16 @@ emouseatlas.emap.pointClick = function() {
       selectedRowKeys = [];
       locationsForEditor = [];
       subplateKeys = [];
+      imgKeyArr = [];
 
       maxCloseMarkersToShow = 3;
 
       markerContainerId = 'histology_tileFrame';
+      stagedOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
+      abstractOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/abstract.html";
+      emageUrl = "http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=";
+      mgiUrl = "http://www.informatics.jax.org/gxd/structure/"; 
+
 
       //---------------------------------------------------------
       // The marker img is 20x34 pixels and the locating point is mid-bottom-line
@@ -127,11 +162,154 @@ emouseatlas.emap.pointClick = function() {
       imgOfs = {x:-8, y:-32};
       labelOfs = {x:30, y:-30};
 
+      getListOfPlates();
+      getEmaModels();
       getPlateData();
 
       scale = view.getScale().cur;
 
-   }; // initialize
+      markerIFrameID = "markerPopupIFrameContainer";
+      createMarkerIFrame();
+
+      emouseatlas.emap.drag.register({drag:"wlzIIPViewerTitleIFrameContainer", drop:"projectDiv"});
+
+   }; // initialise
+
+   //---------------------------------------------------------------
+   var getListOfPlates = function () {
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      var url;
+      var ajax;
+      var ajaxParams;
+
+      url = '/kaufmanwebapp/GetListOfPlates';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"",
+         callback:getListOfPlatesCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // getListOfPlates
+
+   //---------------------------------------------------------------
+   var getListOfPlatesCallback = function (response) {
+
+      //if(_debug) console.log("getListOfPlatesCallback: \n" + urlParams);
+      //console.log("getListOfPlatesCallback:");
+      //console.log("getListOfPlatesCallback: response ",response);
+      var json;
+      
+      // get Title info via ajax
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         if(_debug) console.log("getListOfPlatesCallback returning: response null");
+         return false;
+      } else {
+         //if(_debug) console.log(response);
+      }
+      //console.log(response);
+      
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         json = JSON.parse(response);
+      } else {
+         json = emouseatlas.JSON.parse(response);
+      }
+      if(!json) {
+         if(_debug) console.log("getListOfPlatesCallback returning: json null");
+         return false;
+      }
+      if(_debug) console.log("getListOfPlatesCallback json ",json);
+      //console.log("getListOfPlatesCallback json ",json);
+
+      plateList = json;
+
+      //console.log("ListOfPlates ",plateList);
+      pointClickChanges.plateList = true;
+      notify("plateList");
+
+   }; // getListOfPlatesCallback:
+
+   //---------------------------------------------------------------
+   var getEmaModels = function () {
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      var subplate;
+      var url;
+      var ajax;
+      var ajaxParams;
+
+      subplate = pointClickImgData.subplate;
+
+      //console.log("getEmaModels %s",subplate);
+
+      url = '/kaufmanwebapp/GetEmaModels';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"",
+	 urlParams:"plate=" + subplate,          // kaufman plate
+         callback:getEmaModelsCallback,
+         async:true
+      }
+      if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // getEmaModels
+
+   //---------------------------------------------------------------
+   var getEmaModelsCallback = function (response) {
+
+      var json;
+      
+      // get EMA models for plate via ajax
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         if(_debug) console.log("getEmaModelsCallback returning: response null");
+         return false;
+      } else {
+         //if(_debug) console.log(response);
+      }
+      //console.log("getEmaModelsCallback, ",response);
+      
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         json = JSON.parse(response);
+      } else {
+         json = emouseatlas.JSON.parse(response);
+      }
+      if(!json) {
+         if(_debug) console.log("getEmaModelsCallback returning: json null");
+         return false;
+      }
+      if(_debug) console.log("getEmaModelsCallback json ",json);
+      //console.log("getEmaModelsCallback json ",json);
+
+      emaModels = json;
+
+      //console.log("emaModels ",emaModels);
+      pointClickChanges.emaModels = true;
+      notify("emaModels");
+
+   }; // getEmaModelsCallback:
+
 
    //---------------------------------------------------------------
    var getTitleInfo = function () {
@@ -262,6 +440,13 @@ emouseatlas.emap.pointClick = function() {
       emouseatlas.emap.titleInfo.initialise({
          targetId:titleInfoTarget,
          details:details,
+         model:emouseatlas.emap.tiledImageModel,
+         view:emouseatlas.emap.tiledImageView
+      });
+
+      // set up marker popup frame
+      emouseatlas.emap.markerPopup.initialise({
+         targetId:markerPopupTarget,
          model:emouseatlas.emap.tiledImageModel,
          view:emouseatlas.emap.tiledImageView
       });
@@ -428,6 +613,7 @@ emouseatlas.emap.pointClick = function() {
       var stray;
       var str;
       var titleIFrame;
+      var found = false;
 
       //console.log("indx ", indx);
       if(indx === undefined) {
@@ -437,12 +623,14 @@ emouseatlas.emap.pointClick = function() {
       plate = pointClickImgData.plate;
       subplate = pointClickImgData.subplate;
 
-      len = titleInfo.length;
-      for(i=0; i<len; i++) {
-	 if(titleInfo[i].plate === subplate) {
-	    infoDetails = titleInfo[i];
-	    found = true;
-	    break;
+      if(titleInfo) {
+	 len = titleInfo.length;
+	 for(i=0; i<len; i++) {
+	    if(titleInfo[i].plate === subplate) {
+	       infoDetails = titleInfo[i];
+	       found = true;
+	       break;
+	    }
 	 }
       }
 
@@ -496,8 +684,8 @@ emouseatlas.emap.pointClick = function() {
    // called when info icon clicked
    //---------------------------------------------------------------
    var doTitleInfoIconClicked = function (event) {
-      if(keepTitleInfoFrame === false) {
-         keepTitleInfoFrame = true;
+      if(KEEP_TITLE_INFO_FRAME === false) {
+         KEEP_TITLE_INFO_FRAME = true;
          showTitleInfo();
       } else {
          hideTitleInfo();
@@ -515,11 +703,11 @@ emouseatlas.emap.pointClick = function() {
    // called on mouseout info icon
    //---------------------------------------------------------------
    var hideTitleInfoFrame = function (event) {
-      if(keepTitleInfoFrame) {
+      if(KEEP_TITLE_INFO_FRAME) {
          return false;
       }
       hideTitleInfo();
-      keepTitleInfoFrame = false;
+      KEEP_TITLE_INFO_FRAME = false;
    };
  
    //---------------------------------------------------------
@@ -551,7 +739,7 @@ emouseatlas.emap.pointClick = function() {
 	 utils.removeEvent(closeDiv, 'click', hideTitleInfo, false);
       }
 
-      keepTitleInfoFrame = false;
+      KEEP_TITLE_INFO_FRAME = false;
       iframe.style.visibility = "hidden";
    };
 
@@ -634,8 +822,9 @@ emouseatlas.emap.pointClick = function() {
       //if(_debug) console.log(subplateNames," ",subplateImgNames);
       subplateData = getSubplateData(json, pointClickImgData.subplate);
       //if(_debug) console.log("subplateData ", subplateData);
-      storeSubplateKeys(subplateData);
+      storeSubplateKeysAndTerms(subplateData);
       storeSubplateDetails(subplateData);
+      //console.log("subplateData ", subplateData);
 
       //This has been moved here because we have to know that plate data has been found.
       //---------------
@@ -757,6 +946,60 @@ emouseatlas.emap.pointClick = function() {
       }
 
    }; // updatePlateDataCallback:
+
+   //---------------------------------------------------------------
+   // This is called from context menu.
+   // We only want data for the image that is being displayed
+   //---------------------------------------------------------------
+   var doDownloadImageData = function () {
+
+      //console.log("doDownloadImageData for img%s",currentImg);
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      var url = '/kaufmanwebapp/GetDownloadInfo';
+      var ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"image="+currentImg,
+         callback:doDownloadImageDataCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      var ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // doDownloadImageData
+
+   //---------------------------------------------------------------
+   var doDownloadImageDataCallback = function (response, urlParams) {
+
+      //if(_debug) console.log("doDownloadImageDataCallback: \n" + urlParams);
+      var url;
+      var div;
+      var len;
+      var i;
+      
+      // get model data via ajax
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         //if(_debug) console.log("updatePlateDataCallback returning: response null");
+         return false;
+      } else {
+         //if(_debug) console.log(response);
+      }
+      
+      url = response;
+      //if(_debug) console.log("updatePlateDataCallback url ",url);
+
+      window.open(url);
+
+   }; // doDownloadImageDataCallback:
 
    //---------------------------------------------------------------
    var getMarkerByLocId = function (testid) {
@@ -952,15 +1195,100 @@ emouseatlas.emap.pointClick = function() {
    	    // add event handlers.
 	    utils.addEvent(theRow, 'mouseover', doMouseOverTableRow, false);
 	    utils.addEvent(theRow, 'mouseout', doMouseOutTableRow, false);
+	    //utils.addEvent(theRow, 'mousedown', doMouseDownTableRow, false);
 	    utils.addEvent(theRow, 'mouseup', doMouseUpTableRow, false);
+	    //utils.addEvent(theRow, 'click', doMouseUpTableRow, false); // for programmatic selection
       }
 
    }; // setMarkerTable
 
    //---------------------------------------------------------------
-   // This stores the keys for the images on the subplate
+   // This stores the keys and terms for the images on the subplate
    //---------------------------------------------------------------
-   var storeSubplateKeys = function (subplateData) {
+   var storeSubplateKeysAndTerms = function (subplateData) {
+
+      var tempAllKeys = [];
+      var tempImgKeys = [];
+      var imgKeys = [];
+      var tempTerms = [];
+      var imageData;
+      var locations;
+      var locn;
+      var term;
+      var len;
+      var len2;
+      var len3;
+      var i,j,k;
+
+      len = subplateData.length;
+
+      for(i=0; i<len; i++) {
+         imageData = subplateData[i];
+         //if(_debug) console.log(imageData);
+	 locations = imageData.locations;
+	 len2 = locations.length;
+         for(j=0; j<len2; j++) {
+	    locn = locations[j];
+	    term = locn.term;
+	    tempImgKeys[tempImgKeys.length] = term.name;
+	    tempTerms[tempTerms.length] = term;
+	 }
+         //console.log(tempImgKeyArr);
+	 len3 = tempImgKeys.length;
+	 for(k=0; k<len3; k++) {
+	    tempAllKeys.push(tempImgKeys[k]);
+	 }
+
+         imgKeys = utils.filterDuplicatesFromArray(tempImgKeys);
+	 imgKeyArr[imgKeyArr.length] = imgKeys;
+	 tempImgKeys = [];
+      }
+      //if(_debug) console.log("tempArr ",tempArr);
+      // this function doesn't change the original so you need to assign it.
+      subplateKeys = [];
+      subplateKeys = utils.filterDuplicatesFromArray(tempAllKeys);
+      if(_debug) {
+	 len3 = imgKeyArr.length;
+	 for(i=0; i<len3; i++) {
+	    console.log(imgKeyArr[i]);
+	 }
+      }
+      subplateTerms = [];
+      subplateTerms = filterDuplicateTermDetails(tempTerms);
+
+   }; // storeSubplateKeysAndTerms
+
+   //---------------------------------------------------------------
+   // this has a very sloppy test but it should be OK as there i
+   //---------------------------------------------------------------
+   var filterDuplicateTermDetails = function (arr) {
+
+      var names = [];
+      var objArr = [];
+      var name;
+      var i;
+
+      for (i = 0 ; i < arr.length ; i++) {
+	 name = arr[i].name;
+	 if (names.indexOf(name) == -1) {
+	    names.push(name);
+	    objArr.push(arr[i]);
+	 }
+      }
+
+      return objArr;
+   };
+
+   //---------------------------------------------------------------
+   var getSubplateKeys = function (imageData) {
+      return subplateKeys;
+   };
+
+   /*
+   //---------------------------------------------------------------
+   // This stores the terms for the images on the subplate
+   //---------------------------------------------------------------
+   var storeSubplateTerms = function (subplateData) {
 
       var tempArr = [];
       var imageData;
@@ -988,15 +1316,12 @@ emouseatlas.emap.pointClick = function() {
       // this function doesn't change the original so you need to assign it.
       subplateKeys = [];
       subplateKeys = utils.filterDuplicatesFromArray(tempArr);
+      console.log("subplate keys: ",subplateKeys);
       //if(_debug) console.log("subplateKeys ",subplateKeys);
       // sort the keys numerically (they are strings)
 
-   }; // storeSubplateKeys
-
-   //---------------------------------------------------------------
-   var getSubplateKeys = function (imageData) {
-      return subplateKeys;
-   };
+   }; // storeSubplateTerms
+   */
 
    //---------------------------------------------------------------
    // Stores the details for all the images on the subplate
@@ -1017,7 +1342,7 @@ emouseatlas.emap.pointClick = function() {
       var y;
       var z;
       var smallLabel;
-      var bigLabel;
+      //var bigLabel;
       var len;
       var len2;
       var len3;
@@ -1039,6 +1364,7 @@ emouseatlas.emap.pointClick = function() {
          // for each image in the subplate get the location details etc.
          for(j=0; j<len2; j++) {
 	    imageData = subplateData[j];
+	    //console.log(imageData);
 	    imgLocations = imageData.locations;
 	    len3 = imgLocations.length;
             // for each location on this image, store details for appropriate key.
@@ -1052,12 +1378,13 @@ emouseatlas.emap.pointClick = function() {
 	          z = locn.z;
 		  //console.log("storeSubplateDetails: location %s x %s, y %s, z %s",term.name,x,y,z);
 	          smallLabel = makeMarkerSmallLabel(term);
-	          bigLabel = makeMarkerBigLabel(term);
+	          //bigLabel = makeMarkerBigLabel(term);
 	          flag = makeMarkerFlag(term, flags.length);
 	          subplateMarkerDetails[key].EmapId = term.externalRef.source;
+	          subplateMarkerDetails[key].EmapaId = term.externalRef.emapa;
 	          subplateMarkerDetails[key].descr = term.description;
 	          subplateMarkerDetails[key].smallLabel = smallLabel;
-	          subplateMarkerDetails[key].bigLabel = bigLabel;
+	          //subplateMarkerDetails[key].bigLabel = bigLabel;
 	          subplateMarkerDetails[key].flags[flags.length] = flag;
 	          subplateMarkerDetails[key].locdets[locdets.length] = {img:imageData.name, loc_id:loc_id, x:x, y:y, z:z};
 	       }
@@ -1090,11 +1417,15 @@ emouseatlas.emap.pointClick = function() {
    var getEmapIdForKey = function (key) {
 
       var markerDetails;
-      var len;
-      var i;
+      var ret = [];
 
+      //console.log("getEmapIdForKey subplateMarkerDetails ",subplateMarkerDetails);
       markerDetails = subplateMarkerDetails[key];
-      return markerDetails.EmapId;
+      ret[0] = markerDetails.EmapId;
+      ret[1] = markerDetails.EmapaId;
+
+      return ret;
+
    }; // getEmapIdForKey
 
    //---------------------------------------------------------------
@@ -1103,9 +1434,24 @@ emouseatlas.emap.pointClick = function() {
       //if(_debug) console.log("enter makeMarkerFlag ",term,num);
       var container = $(markerContainerId);
       var name = term.name;
+      var strlen;
       var map;
       var usemap;
       var mapArea;
+      var klass;
+
+      strlen = name.length;
+      switch (strlen) {
+         case 1:
+	    klass = "markerTxtDiv one";
+	 break;
+         case 2:
+	    klass = "markerTxtDiv two";
+	 break;
+         case 3:
+	    klass = "markerTxtDiv three";
+	 break;
+      }
 
       var markerImgDiv = new Element('div', {
             'id': 'markerImgDiv_' + name + "_" + num,
@@ -1133,7 +1479,7 @@ emouseatlas.emap.pointClick = function() {
 
       var markerTxtDiv = new Element('div', {
             'id': 'markerTxtDiv_' + name + "_" + num,
-            'class': 'markerTxtDiv'
+            'class': klass
       });
       markerTxtDiv.set('text', name);
 
@@ -1146,7 +1492,7 @@ emouseatlas.emap.pointClick = function() {
       map.inject(container, 'inside');
       markerImg.inject(markerImgDiv, 'inside');
       markerImgDiv.inject(container, 'inside');
-      markerTxtDiv.inject(container, 'inside');
+      markerTxtDiv.inject(markerImgDiv, 'inside');
 
       utils.addEvent(mapArea, 'mouseover', doMouseOverMarker, false);
       utils.addEvent(mapArea, 'mouseout', doMouseOutMarker, false);
@@ -1156,7 +1502,6 @@ emouseatlas.emap.pointClick = function() {
       utils.addEvent(markerTxtDiv, 'mouseout', doMouseOutMarker, false);
       utils.addEvent(markerTxtDiv, 'mouseup', doMouseUpMarker, false);
 
-      //if(_debug) console.log("exit makeMarkerFlag ",term,num);
       return markerImgDiv;
    };
 
@@ -1176,343 +1521,6 @@ emouseatlas.emap.pointClick = function() {
 
       return markerLabelDiv;
    };
-
-   //---------------------------------------------------------------
-   var makeMarkerLabelTableEntry = function (tableBody, obj) {
-
-      // set up the table row
-      var row;
-      var cell;
-      var entry;
-      var key = obj.key;
-      var txt = obj.txt;
-      var action = obj.action;
-
-      row = new Element("tr", {
-      'id': 'markerLabelTableRow_' + key,
-      'class': 'markerLabelTableRow'
-      });
-      // Create a <td> element and a text node, make the text
-      // node the contents of the <td>, and put the <td> at
-      // the end of the table row
-      cell = new Element("td", {
-      'id': 'markerLabelTableCell_' + key,
-      'class': 'markerLabelTableCell'
-      });
-      entry = new Element('textNode', {
-      'id': 'markerLabelTableEntry_' + key,
-      'class': 'markerLabelTableEntry',
-      'text': txt
-      });
-      //entry.readOnly = false;
-      //utils.addEvent(entry, 'mousedown', initSelection, false);
-      //utils.addEvent(entry, 'mouseup', getSelectedTextFromTableEntry, false);
-      
-      cell.inject(row, 'inside');
-      entry.inject(cell, 'inside');
-      
-      // add event handlers.
-      if(action) {
-         utils.addEvent(row, 'mouseover', doMouseOverLabelTableRow, false);
-         utils.addEvent(row, 'mouseout', doMouseOutLabelTableRow, false);
-         utils.addEvent(row, 'mouseup', action, false);
-      }
-
-      row.inject(tableBody, 'inside');
-   };
-
-   //---------------------------------------------------------------
-   var makeMarkerLabelTableSpacer = function (tableBody, withRule) {
-
-      var row;
-      var cell;
-      var entry;
-      var klass;
-
-      klass = withRule ? 'markerLabelTableSpacerCell ruled' : 'markerLabelTableSpacerCell';
-
-      row = new Element("tr", {
-      'class': 'markerLabelTableSpacerRow'
-      });
-      // Create a <td> element and a text node, make the text
-      // node the contents of the <td>, and put the <td> at
-      // the end of the table row
-      cell = new Element("td", {
-      'class': klass
-      });
-      entry = new Element('div', {
-      });
-      
-      cell.inject(row, 'inside');
-      entry.inject(cell, 'inside');
-      
-      row.inject(tableBody, 'inside');
-   };
-
-   //---------------------------------------------------------------
-   var makeMarkerBigLabel = function (term) {
-
-      //if(_debug) console.log("makeMarkerBigLabel ",term);
-      //---------------------------------------------------------
-      // the Container
-      //---------------------------------------------------------
-      var markerContainer;
-      var name;
-      var descr;
-      var EmapId;
-      var EmapDesc;
-      var markerBigLabelContainerDiv;
-      var closeDiv;
-      var closeImg;
-      var tableContainer;
-      var table;
-      var tableBody;
-      var row;
-
-      markerContainer = $(markerContainerId);
-      name = term.name;
-      descr = term.description;
-      EmapId = term.externalRef.source;
-      EmapDesc = term.externalRef.description;
-      markerBigLabelContainerDiv = new Element('div', {
-            'id': 'markerBigLabelContainerDiv_' + name,
-            'class': 'markerBigLabelContainerDiv'
-      });
-
-      //---------------------------------------------------------
-      // the close button
-      //---------------------------------------------------------
-      closeDiv = new Element('div', {
-         'id': 'markerBigLabelCloseDiv_' + name,
-         'class': 'markerBigLabelCloseDiv'
-      });
-
-      closeImg = new Element( 'img', {
-         'id': 'markerBigLabelCloseImg_' + name,
-         'class': 'markerBigLabelCloseImg',
-         'src': srcClose
-      });
-
-      closeImg.inject(closeDiv, 'inside');
-
-      //----------------------------------------
-      // container for the Table of options
-      //----------------------------------------
-      tableContainer = new Element('div', {
-         'id': 'markerLabelTableContainer'
-      });
-
-      //----------------------------------------
-      // the table
-      //----------------------------------------
-      // creates a <table> element and a <tbody> element
-      table = new Element("table", {
-         'id': 'markerLabelTable',
-	 'border': '2'
-      });
-
-      tableBody = new Element("tbody", {
-         'id': 'markerLabelTableBody'
-      });
-
-      // put the <tbody> in the <table>
-      tableBody.inject(table, 'inside');
-      table.inject(tableContainer, 'inside');
-
-      closeDiv.inject(markerBigLabelContainerDiv, 'inside');
-      tableContainer.inject(markerBigLabelContainerDiv, 'inside');
-      markerBigLabelContainerDiv.inject(markerContainer, 'inside');
-
-      utils.addEvent(closeImg, 'mouseup', doCloseMarkerBigLabel, false);
-      utils.addButtonStyle('markerBigLabelCloseDiv_' + name);
-
-      //..........................................
-      makeMarkerLabelTableEntry(tableBody, {
-                                          'key':'desc',
-					  'txt':name + ": " +descr,
-					  'action':''
-                                      });
-
-
-      makeMarkerLabelTableEntry(tableBody, {
-                                          'key':'emap',
-					  'txt':EmapId + " ---  " + EmapDesc,
-					  'action':''
-                                      });
-
-      makeMarkerLabelTableSpacer(tableBody, true);
-
-      makeMarkerLabelTableEntry(tableBody, {
-                                          'key':'queryEmage_' + name,
-					  'txt':'search EMAGE database',
-					  'action': doMouseUpLabelTableRow
-                                      });
-
-      makeMarkerLabelTableEntry(tableBody, {
-                                          'key':'queryGxdb_' + name,
-					  'txt':'search Jackson GXD',
-					  'action': doMouseUpLabelTableRow
-                                      });
-
-      makeMarkerLabelTableSpacer(tableBody, true);
-
-      makeMarkerLabelTableEntry(tableBody, {
-                                          'key':'3D_' + name,
-					  'txt':'3D model',
-					  'action': doMouseUpLabelTableRow
-                                      });
-
-      //..........................................
-      return markerBigLabelContainerDiv;
-   };
-
-   //---------------------------------------------------------------
-   var doMouseOverLabelTableRow = function (e) {
-
-      var target;
-      var prnt;
-      var tKlass;
-      var pKlass;
-      var cell;
-
-      target = utils.getTarget(e);
-      tKlass = target.className;
-      prnt = target.parentNode;
-      pKlass = prnt.className;
-
-      //console.log("doMouseOverLabelTableRow");
-
-      if(target.hasClass('markerLabelTableCell')) {
-         cell = target;
-      } else if(prnt.hasClass('markerLabelTableCell')) {
-         cell = prnt;
-      }
-      cell.className = 'markerLabelTableCell over';
-
-   }; //doMouseOverTableRow
-
-   //---------------------------------------------------------------
-   var doMouseOutLabelTableRow = function (e) {
-
-      var target;
-      var prnt;
-      var tKlass;
-      var pKlass;
-      var cell;
-
-      target = utils.getTarget(e);
-      tKlass = target.className;
-      prnt = target.parentNode;
-      pKlass = prnt.className;
-
-      if(target.hasClass('markerLabelTableCell')) {
-         cell = target;
-      } else if(prnt.hasClass('markerLabelTableCell')) {
-         cell = prnt;
-      }
-      cell.className = 'markerLabelTableCell';
-
-   }; //doMouseOverTableRow
-
-   //---------------------------------------------------------------
-   var doMouseUpLabelTableRow = function (e) {
-
-      var target;
-      var key;
-      var EmapId;
-      var edid;
-      var url = undefined;
-
-      target = utils.getTarget(e);
-      key = getKeyFromStr(target.id, false);
-      //console.log("doMouseUpLabelTableRow: key %s",key);
-      EmapId = getEmapIdForKey(key);
-      edid = EmapId.substr(5);
-
-      //console.log("EmapId %s, edid %s",EmapId,edid);
-
-      if(target.id.toLowerCase().indexOf('emage') > -1) {
-         url =
-            'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-            EmapId +
-            '&exactmatchstructures=true&includestructuresynonyms=true';
-      } else if(target.id.toLowerCase().indexOf('gxdb') > -1) {
-         url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
-               edid +
-	       '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
-      } else if(target.id.toLowerCase().indexOf('3d') > -1) {
-         url = 'http://testwww.emouseatlas.org/eAtlasViewer_ema/application/ema/wlz/EMA49.php';
-      }
-
-      if(url) {
-         window.open(url);
-      }
-   }; //doMouseOverTableRow
-
-   /*
-   //---------------------------------------------------------------
-   var initSelection = function (e) {
-
-      var target;
-      var range;
-
-      target = utils.getTarget(e);
-
-      if(!target) {
-         return "";
-      }
-
-      console.log("target ",target);
-
-      range = document.createRange();
-
-      if(!range) {
-         return false;
-      }
-
-      range.setStart(target, 0);
-      console.log("range ",range);
-
-   }; //initSelection
-
-   //---------------------------------------------------------------
-   var getSelectedTextFromTableEntry = function (e) {
-
-      var target;
-      var selection;
-      var selectedText;
-      var sel;
-      var startPos;
-      var endPos;
-
-      target = utils.getTarget(e);
-
-      if(!target) {
-         return "";
-      }
-
-      console.log("target ",target);
-
-      selection = window.getSelection();
-      console.log("selection: ",selection);
-
-      // IE version
-      if (document.selection != undefined) {
-	 target.focus();
-	 sel = document.selection.createRange();
-	 selectedText = sel.text;
-      }
-
-      // Mozilla version
-      else if (target.selectionStart != undefined) {
-	 startPos = target.selectionStart;
-	 endPos = target.selectionEnd;
-	 selectedText = target.value.substring(startPos, endPos)
-      }
-      alert("You selected: " + selectedText);
-
-   }; //getSelectedTextFromTableEntry
-   */
 
    //---------------------------------------------------------------
    // There may be multiple markers associated with a key
@@ -1562,6 +1570,7 @@ emouseatlas.emap.pointClick = function() {
       displayMarkerLabel(key, true);
       positionMarkerLabel(e, key, true);
       highlightRow(key);
+      //allowClosestMarkers = false;
    };
 
    //---------------------------------------------------------------
@@ -1583,7 +1592,7 @@ emouseatlas.emap.pointClick = function() {
          row.className = 'pointClickTableRow selected';
       } else {
 	 if(ALLOW_CLOSEST_MARKERS) {
-            setMarkerSrc(key, srcClosest);
+            //setMarkerSrc(key, srcClosest);
 	 }
       }
       hideMarkerLabel(key, true);
@@ -1593,14 +1602,24 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var doMouseUpMarker = function (e) {
 
-      var target = utils.getTarget(e);
-      var prnt = target.parentNode;
-      var gprnt = prnt.parentNode;
+      var target;
       var key;
-      var row;
+      var mouseButtons;
+
+      mouseButtons = utils.whichMouseButtons(e);
+      //console.log("mouse up: mouse Buttons ", mouseButtons);
+      if(mouseButtons.right) {
+         return false;
+      }
+
+      target = utils.getTarget(e);
 
       key = getKeyFromStr(target.id, true);
       //console.log("doMouseUpMarker previousOpenMarker -->%s<-- key -->%s<--",previousOpenMarker,key);
+
+      SHOWING_ALL_MARKERS = false;
+
+      selectThisTerm(key);
 
       if(previousOpenMarker == undefined) {
          displayMarkerLabel(key, false);
@@ -1624,62 +1643,100 @@ emouseatlas.emap.pointClick = function() {
    };
 
    //---------------------------------------------------------------
-   var doMarkerEmageQuery = function (e) {
+   var selectThisTerm = function (key) {
 
-      var target;
-      var key;
-      var EmapId;
-      var url;
+      var trgtId;
+      var row = undefined;
+      var popup;
+      var viz;
 
-      target = utils.getTarget(e);
-      key = getKeyFromStr(target.id, false);
-      EmapId = getEmapIdForKey(key);
+      if(!key) {
+         return false;
+      }
 
-      url =
-         'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-         EmapId +
-	 '&exactmatchstructures=true&includestructuresynonyms=true'; 
+      trgtId = "pointClickTableRow_" + key;
+      row = document.getElementById(trgtId);
 
-      window.open(url);
+      len = selectedRowKeys.length;
+      //................................................................
+      // If there are no previously selected rows, select it.
+      if(len === 0) {
+	 row.className = "pointClickTableRow selected";
+	 setMarkerSrc(key, srcSelected);
+	 displayMarker(key);
+	 positionMarker(key);
+	 // add the key for this marker to the list of selected markers
+	 selectedRowKeys[selectedRowKeys.length] = key;
+	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	 selectedRowKeys = utils.duplicateArray(tmpArr);
+	 previousSelectedRow = (previousSelectedRow === undefined) ? key : latestSelectedRow;
+	 latestSelectedRow = key;
+	 listSelectedTerms("selectThisTerm, no others selected");
+	 return false;
+      }
+      //................................................................
+      // If this is the only previously selected row and there are no modifiers,
+      // de-select it if the popup is visible, otherwise leave it alone
+      // The popup visibility is before the marker click.
+      if(len === 1 && selectedRowKeys[0] === key) {
+         viz = "hidden";
+         popup = document.getElementById("markerPopupIFrameContainer");
+	 if(popup) {
+            viz = window.getComputedStyle(popup, null).getPropertyValue("visibility");
+	    if(viz === "visible") {
+	       doHideAllMarkers(null);
+	       previousSelectedRow = latestSelectedRow;
+	       latestSelectedRow = undefined;
+	    }
+	 }
+	 return false;
+      }
+      //................................................................
+      // If there are previously selected row(s) and no modifier is pressed ...
+      // select the clicked row if it is not already selected
+      if(len > 0) {
+	 //doHideAllMarkers(null);
+	 if(keyPresent(key,true,"selectThisTerm")) {
+	    //removeKey(key,true);
+	    //row.className = "pointClickTableRow";
+            ////setMarkerSrc(key, srcHighlighted);
+	    // remove the key for this marker from the list of selected markers
+	 } else {
+	    row.className = "pointClickTableRow selected";
+	    setMarkerSrc(key, srcSelected);
+	    // add the key for this marker to the list of selected markers
+	    selectedRowKeys[selectedRowKeys.length] = key;
+	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	    selectedRowKeys = utils.duplicateArray(tmpArr);
+	    previousSelectedRow = latestSelectedRow;
+	    latestSelectedRow = key;
+	 }
+	 listSelectedTerms("selectThisTerm, others already selected");
+	 displayMarker(key);
+	 positionMarker(key);
+	 return false;
+      }
 
-   };
-
-   //---------------------------------------------------------------
-   var doMarkerGxdbQuery = function (e) {
-
-      var target;
-      var key;
-      var EmapId;
-      var edid;
-      var url;
-
-      target = utils.getTarget(e);
-      key = getKeyFromStr(target.id, false);
-      EmapId = getEmapIdForKey(key);
-      // strip off the 'EMAP:' part
-      edid = EmapId.substr(5);
-
-      url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
-            edid +
-	    '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
-
-      window.open(url);
-
-   };
+   }; // selectThisTerm
 
    //---------------------------------------------------------------
    var doTableQuery = function (database) {
 
+      var dbLC;
       var keys;
       var len;
       var i;
-      var EmapId;
+      var EmapIdArr;
       var queryData = [];
-      var emage = "EMAGE";
-      var mgi = "MGI";
+      var queryIds; // a comma separated list
+      var abstractQueryIds; // a comma separated list
+      var EMAGE = "emage";
+      var MGI = "mgi";
       var url;
 
+      //console.log("doTableQuery");
       keys = getSelectedRowKeys();
+      //console.log(keys);
       if(keys === undefined || keys === null || keys.length === 0) {
          return false;
       }
@@ -1687,37 +1744,118 @@ emouseatlas.emap.pointClick = function() {
       //console.log("doTableEmageQuery keys ",keys);
       len = keys.length;
       for(i=0; i<len; i++) {
-         EmapId = getEmapIdForKey(keys[i]);
-	 if(EmapId === undefined || EmapId === null || EmapId === "" || EmapId.toLowerCase() === "not allocated") {
+         EmapIdArr = getEmapIdForKey(keys[i]);
+	 if(EmapIdArr === undefined || EmapIdArr === null || EmapIdArr.length === 0 || EmapIdArr[0].toLowerCase() === "not allocated") {
 	    continue;
 	 }
-	 queryData[queryData.length] = {key: keys[i], id: EmapId};
+	 queryData[queryData.length] = {key: keys[i], id: EmapIdArr[0], ida: EmapIdArr[1]};
       }
 
+      len = queryData.length;
       //console.log("doTableEmageQuery query data ",queryData);
-      if(queryData.length <= 0) {
+      if(len <= 0) {
          alert("Sorry:  there were no selected terms with an EMAP id");
 	 return false;
       }
 
-      if(queryData.length > 1 &&  database.toLowerCase() === mgi.toLowerCase()) {
-         alert("MGI / GXD will only accept one search term: using " + queryData[0].term + " with EMAP id + " + queryData[0].id);
-	 return false;
+      if(len > 1 &&  database.toLowerCase() === MGI) {
+         //alert("MGI / GXD will only accept one search term: using term #" + queryData[0].key + " with EMAP id + " + queryData[0].id);
+	 pointClickChanges.mgiChoice = true;
+	 notify("doTableQuery MGI");
+	 return;
       }
 
-      /*
-      url =
-         'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-         EmapId +
-	 '&exactmatchstructures=true&includestructuresynonyms=true'; 
+      queryIds = queryData[0].id;
+      abstractQueryIds = queryData[0].ida;
+      for(i=1; i<len; i++) {
+         queryIds = queryIds + "," + queryData[i].id;
+         abstractQueryIds = abstractQueryIds + "," + queryData[i].ida;
+      }
 
-      url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
-            edid +
-	    '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
+      //console.log(queryIds);
+      dbLC = database.toLowerCase();
 
+      switch(dbLC) {
+         case EMAGE:
+            url = emageUrl + queryIds + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+	    break;
+         case MGI:
+            url = mgiUrl + abstractQueryIds;
+	    break;
+	 default:
+	    break;
+      }
+
+      //console.log(url);
       window.open(url);
-      */
 
+   };
+
+   //---------------------------------------------------------------
+   var doTableLink = function (trgt) {
+      //console.log("doTableLink %s",trgt);
+
+      var plate;
+      var subplate;
+      var infoDetails;
+      var key;
+      var multiple;
+      var len;
+      var i;
+      var trgtLC;
+      var EMAP = "emap";
+      var EMAPA = "emapa";
+      var WIKI = "wiki";
+      var url;
+
+      //console.log("doTableLink %s",trgt);
+      trgtLC = trgt.toLowerCase();
+
+      plate = pointClickImgData.plate;
+      subplate = pointClickImgData.subplate;
+
+      len = titleInfo.length;
+      for(i=0; i<len; i++) {
+	 if(titleInfo[i].plate === subplate) {
+	    infoDetails = titleInfo[i];
+	    found = true;
+	    break;
+	 }
+      }
+      if(found) {
+         stage = infoDetails.stage;
+      } else {
+         return false;
+      }
+
+      multiple = (selectedRowKeys.length > 1) ? true : false;
+
+      switch(trgtLC) {
+         case EMAP:
+            url = stagedOntologyUrl + stage;
+	    break;
+         case EMAPA:
+            url = abstractOntologyUrl;
+	    break;
+         case WIKI:
+	    if(latestSelectedRow) {
+	       if(multiple) {
+	          pointClickChanges.wikiChoice = true;
+		  notify("doTableLink");
+		  return false;
+	       } else {
+		  url = getWikiUrl(latestSelectedRow);
+	       }
+            } else {
+               return false;
+	    }
+	    break;
+	 default:
+	    break;
+      }
+
+      //console.log(url);
+      window.open(url);
    };
 
    //---------------------------------------------------------------
@@ -1729,7 +1867,6 @@ emouseatlas.emap.pointClick = function() {
    var doCloseMarkerBigLabel = function (e) {
 
       var target;
-      var bigLabel;
       var key;
 
       target = utils.getTarget(e);
@@ -1847,7 +1984,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    var doMouseUpTableRow = function (e) {
 
-      var target = emouseatlas.emap.utilities.getTarget(e);
+      var target;
       var mouseButtons;
       var modifierKeys;
       var row = undefined;
@@ -1856,16 +1993,17 @@ emouseatlas.emap.pointClick = function() {
       var child = undefined;
       var gchild = undefined;
       var len;
+      var klen;
       var i;
       var key;
       var ref;
       var desc;
       var theTable;
-      var prnt = target.parentNode;
-      var gprnt = prnt.parentNode;
-      var tKlass = target.className;
-      var pKlass = prnt.className;
-      var gKlass = gprnt.className;
+      var prnt;
+      var gprnt;
+      var tKlass;
+      var pKlass;
+      var gKlass;
       var newKlass = 'pointClickTableRow';
       var markerNode;
       var x;
@@ -1879,12 +2017,31 @@ emouseatlas.emap.pointClick = function() {
       var iTmp;
       var indx0;
       var indx1;
+      var back = false;
 
-      if(prnt.hasClass('pointClickTableRow')) {
+      if(e.type === "click") {
+	 target = emouseatlas.emap.utilities.getTarget(e);
+         //console.log("target from click ",target);
+      } else {
+	 target = emouseatlas.emap.utilities.getTarget(e);
+         //console.log("target from mouseup ",target);
+      }
+
+      prnt = target.parentNode;
+      gprnt = prnt.parentNode;
+      tKlass = target.className;
+      pKlass = prnt.className;
+      gKlass = gprnt.className;
+
+      if(target.hasClass('pointClickTableRow')) {
+         row = target;
+      } else if(prnt.hasClass('pointClickTableRow')) {
          row = prnt;
       } else if(gprnt.hasClass('pointClickTableRow')) {
          row = gprnt;
       }
+
+      SHOWING_ALL_MARKERS = false;
 
       children = row.childNodes;
       len = children.length;
@@ -1904,20 +2061,55 @@ emouseatlas.emap.pointClick = function() {
       }
       //if(_debug) console.log("key %s, ref %s, desc %s", key,ref,desc);
 
-      if(lastSelectedRow === undefined) {
+      if(latestSelectedRow === undefined) {
          //console.log("doMouseUpTableRow: selected row %s, previously selectedRows ",key,selectedRowKeys);
       } else {
-         //console.log("doMouseUpTableRow: lastSelected row %s, selected row %s, previously selectedRows ",lastSelectedRow,key,selectedRowKeys);
+         //console.log("doMouseUpTableRow: lastSelected row %s, selected row %s, previously selectedRows ",latestSelectedRow,key,selectedRowKeys);
       }
 
-      //mouseButtons = utils.whichMouseButtons(e);
-      //console.log("mouse Buttons ", mouseButtons);
+      mouseButtons = utils.whichMouseButtons(e);
+      //console.log("mouse up: mouse Buttons ", mouseButtons);
       modifierKeys = utils.whichModifierKeys(e);
       //console.log("modifier keys ", modifierKeys);
-
       NO_MODIFIERS = (!modifierKeys.shift && !modifierKeys.ctrl && !modifierKeys.alt && !modifierKeys.meta) ? true : false;
 
       len = selectedRowKeys.length;
+      //console.log("selectedRowKeys ",selectedRowKeys);
+
+      latestClickedRow = key;
+
+      //................................................................
+      // If the R mouse button was used:
+      //................................................................
+      if(mouseButtons.right) {
+	 //................................................................
+	 // and there were previously selected rows, and this isn't one of them,
+	 // select this one and de-select the rest.
+	 //................................................................
+	 if(len > 0) {
+	    if(utils.arrayContains(selectedRowKeys, key)) {
+	       // use all context selected terms
+               //console.log(selectedRowKeys);
+	       return true;
+	    } else {
+	       // use only the newly selected term
+	       doHideAllMarkers(null);
+	       row.className = "pointClickTableRow selected";
+	       setMarkerSrc(key, srcSelected);
+	       displayMarker(key);
+	       positionMarker(key);
+	       // add the key for this marker to the list of selected markers
+	       selectedRowKeys[selectedRowKeys.length] = key;
+	       tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
+	       selectedRowKeys = utils.duplicateArray(tmpArr);
+	       previousSelectedRow = latestSelectedRow;
+	       latestSelectedRow = key;
+	       listSelectedTerms("mouseUpTableRow, others selected, no modifiers");
+	       clearContextHighlight("mouseUpTableRow, others selected, no modifiers");
+	       return true;
+	    }
+	 }
+      } // it was R mouse button
 
       //................................................................
       // If there are no previously selected rows, select it.
@@ -1930,7 +2122,19 @@ emouseatlas.emap.pointClick = function() {
 	 selectedRowKeys[selectedRowKeys.length] = key;
 	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 	 selectedRowKeys = utils.duplicateArray(tmpArr);
-	 lastSelectedRow = key;
+	 previousSelectedRow = latestSelectedRow;
+	 latestSelectedRow = key;
+	 listSelectedTerms("mouseUpTableRow, no others selected");
+	 return false;
+      }
+      //................................................................
+      // If this is the only previously selected row and there are no modifiers, de-select it.
+      if(len === 1 && NO_MODIFIERS && latestSelectedRow === key) {
+	 doHideAllMarkers(null);
+	 previousSelectedRow = latestSelectedRow;
+	 latestSelectedRow = undefined;
+	 listSelectedTerms("mouseUpTableRow, de-select only selected row");
+	 return false;
       }
       //................................................................
       // If there are previously selected row(s) and no modifier is pressed ...
@@ -1945,7 +2149,10 @@ emouseatlas.emap.pointClick = function() {
 	 selectedRowKeys[selectedRowKeys.length] = key;
 	 tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 	 selectedRowKeys = utils.duplicateArray(tmpArr);
-	 lastSelectedRow = key;
+	 previousSelectedRow = latestSelectedRow;
+	 latestSelectedRow = key;
+	 listSelectedTerms("mouseUpTableRow, others selected, no modifiers");
+	 return false;
       }
       //................................................................
       // If there are previously selected row(s) and ctrl is pressed ...
@@ -1969,19 +2176,25 @@ emouseatlas.emap.pointClick = function() {
 	    selectedRowKeys[selectedRowKeys.length] = key;
 	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 	    selectedRowKeys = utils.duplicateArray(tmpArr);
+	    previousSelectedRow = latestSelectedRow;
+	    latestSelectedRow = selectedRowKeys[selectedRowKeys.length - 1];
 	 } else {
 	    row.className = "pointClickTableRow";
 	    // and hide the marker
 	    hideMarker(markerNode.key, false);
 	    removeKey(key, true);
-	    lastSelectedRow = key;
+	    previousSelectedRow = latestSelectedRow;
+	    latestSelectedRow = key;
+	    listSelectedTerms("mouseUpTableRow, others selected, ctrl pressed");
 	 }
+	 listSelectedTerms("mouseUpTableRow, others selected, ctrl pressed");
+	 return false;
       }
       //................................................................
       // If there are previously selected row(s) and shift is pressed ...
       // de-select everything then select everything from the last selected row
       if(len > 0 && modifierKeys.shift && !modifierKeys.ctrl) {
-	 if(lastSelectedRow === undefined) {
+	 if(latestSelectedRow === undefined) {
 	    row.className = "pointClickTableRow selected";
 	    setMarkerSrc(key, srcSelected);
 	    displayMarker(key);
@@ -1991,13 +2204,15 @@ emouseatlas.emap.pointClick = function() {
 	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 	    selectedRowKeys = utils.duplicateArray(tmpArr);
 	 } else {
-	    doHideAllMarkers(null);
-	    iLast = parseInt(lastSelectedRow);
+	    back = false;
+	    doHideAllMarkers(modifierKeys);
+	    iLast = parseInt(latestSelectedRow);
 	    iThis = parseInt(key);
 	    if(iThis < iLast) {
 	       iTmp = iThis;
 	       iThis = iLast;
 	       iLast = iTmp;
+	       back = true;
 	    }
             theTable = row.parentNode;
             allRows = theTable.getElementsByTagName("tr");
@@ -2018,19 +2233,39 @@ emouseatlas.emap.pointClick = function() {
 	    tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 	    selectedRowKeys = utils.duplicateArray(tmpArr);
 	 }
-	 
+	 previousSelectedRow = latestSelectedRow;
+	 klen = selectedRowKeys.length;
+	 if(back) {
+	    latestSelectedRow = selectedRowKeys[0];
+	 } else {
+	    latestSelectedRow = selectedRowKeys[klen-1];
+	 }
+	 listSelectedTerms("mouseUpTableRow, others selected, shift pressed");
+	 return false;
       }
-      //................................................................
 
    }; // doMouseUpTableRow
+   //---------------------------------------------------------------
+
+   var doMouseDownTableRow = function (e) {
+
+
+   }; // doMouseDownTableRow
 
    //---------------------------------------------------------------
-   var deselectAllRows = function () {
+   var deselectAllRows = function (from) {
 
-      var rowArr = $$('.pointClickTableRow');
-      var len = rowArr.length;
+      var rowArr;
+      var len;
       var i;
-      var newKlass = 'pointClickTableRow';
+      var newKlass;
+
+      //console.log("deselectAllRows from %s",from);
+
+      rowArr = $$('.pointClickTableRow.selected');
+      len = rowArr.length;
+      newKlass = 'pointClickTableRow';
+      selectedRowKeys = [];
 
       for(i=0; i<len; i++) {
          rowArr[i].className = newKlass;
@@ -2670,13 +2905,48 @@ emouseatlas.emap.pointClick = function() {
       // add event handlers
       //----------------------------------------
       utils.addEvent(pointClickShowAllButton, 'mouseup', showAllMarkers, false);
-      utils.addEvent(pointClickHideAllButton, 'mouseup', doHideAllMarkers, false);
+      utils.addEvent(pointClickHideAllButton, 'mouseup', doHideAll, false);
       if(!EDITOR) {
          utils.addEvent(pointClickShowClosestChkbx, 'mouseup', doAllowClosestMarkers, false);
       }
       utils.addEvent(pointClickShowTxtChkbx, 'mouseup', doShowMarkerText, false);
 
+      //..................................
+
    }; // createElements
+   
+   //---------------------------------------------------------------
+   var getMarkerKeysForCurrentImg = function () {
+
+      var keys;
+      var imgKeys;
+      var indx;
+      var found = false;
+      var len;
+      var i;
+
+      len = subplateImgNames.length;
+
+      for(i=0; i<len; i++) {
+         if(subplateImgNames[i].toLowerCase() === currentImg.toLowerCase()) {
+	    indx = i;
+	    found = true;
+	    break;
+	 }
+      }
+
+      if(!found) {
+         console.log("not found");
+         return false;
+      }
+
+      if(indx >= (imgKeyArr.length)) {
+         console.log("indx too high");
+         return false;
+      }
+
+      return imgKeyArr[indx];
+   };
    
    //---------------------------------------------------------------
    var doAllowClosestMarkers = function (e) {
@@ -2735,14 +3005,14 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          key = selectedRowKeys[i];
 	 displayMarkerTxt(key);
-	 positionMarkerTxt(key);
+	 //positionMarkerTxt(key);
       }
 
       len = tempMarkerKeys.length;
       for(i=0; i<len; i++) {
          key = tempMarkerKeys[i];
 	 displayMarkerTxt(key);
-	 positionMarkerTxt(key);
+	 //positionMarkerTxt(key);
       }
    };
    
@@ -2805,18 +3075,20 @@ emouseatlas.emap.pointClick = function() {
    var showAllMarkers = function (e) {
 
       var keys = undefined;
+      
+      selectedRowKeys = [];
 
       if(_debug) console.log("enter showAllMarkers");
 
-      keys = getSubplateKeys();
-      /*
-      len = keys.length;
-      for(i=0; i<len; i++) {
-         selectedRowKeys[selectedRowKeys.length] = keys[i];
-      }
-      showSelectedMarkers();
-      */
+      keys = getMarkerKeysForCurrentImg();
+      selectedRowKeys = keys;
+      latestSelectedRow = selectedRowKeys[selectedRowKeys.length - 1];
+      //console.log(keys);
       showTheseMarkers(keys);
+      SHOWING_ALL_MARKERS = true;
+
+      pointClickChanges.showAll = true;
+      notify("showAllMarkers");
 
       if(_debug) console.log("exit showAllMarkers");
    }; // showAllMarkers
@@ -2828,6 +3100,7 @@ emouseatlas.emap.pointClick = function() {
 
       var urlSpecified;
       var compArr = undefined;
+      var selectedRowKeys = [];
       var len;
       var i;
 
@@ -2837,8 +3110,15 @@ emouseatlas.emap.pointClick = function() {
       if(urlSpecified.comps !== undefined) {
          compArr = urlSpecified.comps.split(",");
 	 if(compArr !== undefined && compArr !== null && compArr[0] !== "") {
+	    selectedRowKeys = compArr;
             showTheseMarkers(compArr);
 	 }
+	 len = compArr.length;
+	 for(i=0; i<len; i++) {
+	    selectedRowKeys[selectedRowKeys.length] = parseInt(compArr[i]);
+	 }
+	 latestSelectedRow = selectedRowKeys[selectedRowKeys.length -1];
+         previousSelectedRow = latestSelectedRow;
       }
 
    }; // showUrlSpecifiedMarkers
@@ -2891,9 +3171,6 @@ emouseatlas.emap.pointClick = function() {
 	    }
 
 	    selectedRowKeys[selectedRowKeys.length] = key;
-	    //setMarkerSrc(key, srcSelected);
-	    //displayMarker(key);
-	    //positionMarker(key);
 	 }
       }
       tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
@@ -2901,6 +3178,7 @@ emouseatlas.emap.pointClick = function() {
       //if(_debug) console.log("selectedRowKeys after removing duplicates ",selectedRowKeys);
 
       showSelectedMarkers();
+      listSelectedTerms("showTheseMarkers" + keys);
 
       if(_debug) console.log("exit showTheseMarkers");
    }; // showTheseMarkers
@@ -2964,7 +3242,7 @@ emouseatlas.emap.pointClick = function() {
 	    });
 	    if(SHOW_MARKER_TXT) {
 	       displayMarkerTxt(key);
-	       positionMarkerTxt(key);
+	       //positionMarkerTxt(key);
 	    }
 	 }
       }
@@ -3014,6 +3292,9 @@ emouseatlas.emap.pointClick = function() {
       var t;
       var x;
       var y;
+      var pxlwdth;
+      var sty;
+      var lft;
 
       if(key === undefined || key === null || key === "") {
          return false;
@@ -3023,6 +3304,19 @@ emouseatlas.emap.pointClick = function() {
       locations = markerNode.locdets;
       flags = markerNode.flags;
       len = locations.length;
+
+      /*
+      pxlwdth = getStringPixelWidth(markerTxtDiv.id);
+      lft = window.getComputedStyle(container, null).getPropertyValue("left");
+      console.log("first ",lft);
+      ofs = 30.0 + (20.0 - pxlwdth) / 2.0;
+      console.log("ofs ",ofs);
+      lfti = parseInt(lft, 10) + ofs;
+      lft = lfti + "px";
+      console.log("second ",lft);
+      //markerTxtDiv.setStyle('left', lft);
+      //if(_debug) console.log("exit makeMarkerFlag ",term,num);
+      */
 
       for(i=0; i<len; i++) {
 	 subplate = locations[i].img;
@@ -3088,7 +3382,7 @@ emouseatlas.emap.pointClick = function() {
          if(_debug) console.log("positionMarker %s location %d %d,%d ",key,i,x,y);
 	 //if(_debug) console.log("positionMarker %s, SHOW_MARKER_TXT %s",key,SHOW_MARKER_TXT);
          if(SHOW_MARKER_TXT) {
-            positionMarkerTxt(key);
+            //positionMarkerTxt(key);
 	 }
       }
       if(_debug) console.log("exit positionMarker");
@@ -3098,6 +3392,7 @@ emouseatlas.emap.pointClick = function() {
    //---------------------------------------------------------------
    // There may be multiple markers for a key
    //---------------------------------------------------------------
+   /*
    var positionMarkerTxt = function (key) {
 
       var posArr;
@@ -3116,6 +3411,7 @@ emouseatlas.emap.pointClick = function() {
          });
       }
    };
+   */
 
    //---------------------------------------------------------------
    // There may be multiple markers for a key, and they may be on the
@@ -3143,16 +3439,21 @@ emouseatlas.emap.pointClick = function() {
       if(small) {
          label = markerNode.smallLabel;
       } else {
-         label = markerNode.bigLabel;
+         //label = markerNode.bigLabel;
       }
 
       for(i=0; i<len; i++) {
          subplate = locations[i].img;
          //console.log("displayMarkerLabel: %s, %s",subplate,currentImg);
          if(subplate == currentImg) {
-            label.setStyles({
-               'visibility': 'visible'
-            });
+	    if(small) {
+	       label.setStyles({
+		  'visibility': 'visible'
+	       });
+	    } else {
+	       view.showMarkerPopupIFrame(key);
+	       setMarkerPopupIFrameContent(key)
+	    }
          }
       }
    };
@@ -3161,65 +3462,27 @@ emouseatlas.emap.pointClick = function() {
    var positionMarkerLabel = function (e, key, small) {
 
       var markerNode;
-      var subplate;
       var label;
-      var OK;
-      var labelWStr;
-      var labelHStr;
-      var labelW;
-      var labelH;
-      var docX;
-      var docY;
-      var mousePosInImg;
+      var labelPos;
 
       if(key === undefined || key === null) {
          return false;
       }
 
-      OK = labelOKToDisplay(e, key, small);
-
-      docX = emouseatlas.emap.utilities.getMouseX(e);
-      docY = emouseatlas.emap.utilities.getMouseY(e);
-
-      mousePosInImg = view.getMousePositionInImage({x:docX, y:docY});
-
       markerNode = subplateMarkerDetails[key];
       if(small) {
          label = markerNode.smallLabel;
+         labelPos = getSmallMarkerLabelPos(e, key, label);
       } else {
-         label = markerNode.bigLabel;
-      }
-
-      labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
-      indx = labelWStr.indexOf("px");
-      labelW = Number(labelWStr.substring(0,indx));
-
-      labelHStr = window.getComputedStyle(label, null).getPropertyValue("height");
-      indx = labelHStr.indexOf("px");
-      labelH = Number(labelHStr.substring(0,indx));
-
-      if(OK.right) {
-         labelX = parseInt(mousePosInImg.x + labelOfs.x);
-      } else {
-         labelX = parseInt(mousePosInImg.x - (labelW + labelOfs.x));
-      }
-
-      if(OK.top && OK.bottom) {
-         labelY = parseInt(mousePosInImg.y + labelOfs.y);
-      }
-
-      if(!OK.top) {
-         labelY = parseInt(mousePosInImg.y);
-      }
-
-      if(!OK.bottom) {
-         labelY = parseInt(mousePosInImg.y - labelH);
+         label = $(markerIFrameID);
+         labelPos = getLargeMarkerLabelPos(e, key, label);
       }
 
       label.setStyles({
-         'left': labelX + 'px',
-         'top': labelY + 'px'
+         'left': labelPos.x + 'px',
+         'top': labelPos.y + 'px'
       });
+
 
    }; // positionMarkerLabel
 
@@ -3250,7 +3513,7 @@ emouseatlas.emap.pointClick = function() {
       if(small) {
          label = markerNode.smallLabel;
       } else {
-         label = markerNode.bigLabel;
+         //label = markerNode.bigLabel;
       }
 
       for(i=0; i<len; i++) {
@@ -3262,10 +3525,12 @@ emouseatlas.emap.pointClick = function() {
             y = parseFloat(locn.y);
             newX = x * scale + imgOfs.x + labelOfs.x;
             newY = y * scale + imgOfs.y + labelOfs.y;
-            label.setStyles({
-               'left': newX,
-               'top': newY
-            });
+	    if(label) {
+	       label.setStyles({
+		  'left': newX,
+		  'top': newY
+	       });
+	    }
          }
       }
    }; // positionMarkerLabelByKey
@@ -3291,28 +3556,246 @@ emouseatlas.emap.pointClick = function() {
       if(small) {
          label = markerNode.smallLabel;
       } else {
-         label = markerNode.bigLabel;
+         label = $(markerIFrameID);
       }
 
       for(i=0; i<len; i++) {
          subplate = locations[i].img;
          if(subplate == currentImg) {
-         label.setStyles({
-            'visibility': 'hidden'
-         });
+	    label.setStyles({
+	       'visibility': 'hidden'
+	    });
+	    if(!small) {
+               emouseatlas.emap.markerPopup.showIFrame(false);
+	    }
          }
       }
 
    };
 
    //---------------------------------------------------------------
+   var getSmallMarkerLabelPos = function (e, key, label) {
+
+      var markerNode;
+      var OK;
+      var labelWStr;
+      var labelHStr;
+      var labelW;
+      var labelH;
+      var docX;
+      var docY;
+      var mousePosInImg;
+
+
+      docX = emouseatlas.emap.utilities.getMouseX(e);
+      docY = emouseatlas.emap.utilities.getMouseY(e);
+
+      //console.log("docX %f, docY %f",docX,docY);
+
+      mousePosInImg = view.getMousePositionInImage({x:docX, y:docY});
+
+      OK = smallLabelOKToDisplay(e, key, mousePosInImg, label);
+
+      labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
+      indx = labelWStr.indexOf("px");
+      labelW = Number(labelWStr.substring(0,indx));
+
+      labelHStr = window.getComputedStyle(label, null).getPropertyValue("height");
+      indx = labelHStr.indexOf("px");
+      labelH = Number(labelHStr.substring(0,indx));
+
+      if(OK.right) {
+         labelX = parseInt(mousePosInImg.x + labelOfs.x);
+      } else {
+         labelX = parseInt(mousePosInImg.x - (labelW + labelOfs.x));
+      }
+
+      if(OK.top && OK.bottom) {
+         labelY = parseInt(mousePosInImg.y + labelOfs.y);
+      }
+
+      if(!OK.top) {
+         labelY = parseInt(mousePosInImg.y);
+      }
+
+      if(!OK.bottom) {
+         labelY = parseInt(mousePosInImg.y - labelH);
+      }
+
+      return {x:labelX, y:labelY};
+
+   }; // getSmallMarkerLabelPos
+
+   //---------------------------------------------------------------
+   var getLargeMarkerLabelPos = function (e, key, label) {
+
+      var markerNode;
+      var OK;
+      var labelWStr;
+      var labelHStr;
+      var labelW;
+      var labelH;
+      var docX;
+      var docY;
+      //var mousePosInImg;
+
+
+      docX = emouseatlas.emap.utilities.getMouseX(e);
+      docY = emouseatlas.emap.utilities.getMouseY(e);
+
+      //console.log("docX %f, docY %f",docX,docY);
+
+      mousePos = {x:docX, y:docY};
+
+      OK = largeLabelOKToDisplay(e, key, mousePos, label);
+      //console.log("OK ",OK);
+
+      labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
+      indx = labelWStr.indexOf("px");
+      labelW = Number(labelWStr.substring(0,indx));
+
+      labelHStr = window.getComputedStyle(label, null).getPropertyValue("height");
+      indx = labelHStr.indexOf("px");
+      labelH = Number(labelHStr.substring(0,indx));
+
+      //console.log("labelW %f, labelH %f",labelW,labelH);
+
+      if(OK.right) {
+         labelX = parseInt(mousePos.x + labelOfs.x);
+      } else {
+         labelX = parseInt(mousePos.x - (labelW + labelOfs.x));
+      }
+
+      if(OK.top && OK.bottom) {
+         labelY = parseInt(mousePos.y + labelOfs.y);
+      }
+
+      if(!OK.top) {
+         labelY = parseInt(mousePos.y);
+      }
+
+      if(!OK.bottom) {
+         labelY = parseInt(mousePos.y - labelH);
+      }
+
+      return {x:labelX, y:labelY};
+
+   }; // getLargeMarkerLabelPos
+
+   //---------------------------------------------------------------
+   var getWikiUrl = function (key) {
+
+      var termDets;
+      var url;
+      var found = false;
+      var len;
+      var i;
+
+      len = subplateTerms.length;
+      for (i=0; i<len; i++) {
+        termDets = subplateTerms[i]; 
+	//console.log("getWikiUrl termDets ",termDets);
+	if(termDets.name === key) {
+	   found = true;
+           url = termDets.externalRef.wiki;
+	   break;
+        }
+      }
+
+      if(!found) {
+         return false;
+      } else {
+         //console.log("getWikiUrl for term %s %s",key,url);
+         return url;
+      }
+   };
+
+   //---------------------------------------------------------------
+   var setMarkerPopupIFrameContent = function (key) {
+
+      var termDets;
+      var plate;
+      var info;
+      var found = false;
+      var stage;
+      var len;
+      var i;
+
+      len = subplateTerms.length;
+      for (i=0; i<len; i++) {
+        termDets = subplateTerms[i]; 
+	if(termDets.name === key) {
+	   found = true;
+	   break;
+        }
+      }
+
+      if(!found) {
+         return false;
+      }
+
+      plate = pointClickImgData.plate;
+      info = getTitleInfoForPlate(plate);
+      stage = info.stage;
+
+      emouseatlas.emap.markerPopup.showIFrame(true);
+      emouseatlas.emap.markerPopup.updateTableContent({termDets:termDets, stage:stage});
+      emouseatlas.emap.markerPopup.generateMarkerPopupPage();
+
+   };
+
+   //---------------------------------------------------------------
+   var getTitleInfoForPlate = function (plate) {
+
+      var info;
+      var subplate;
+      var iplate;
+      var found = false;
+      var len;
+      var i;
+
+      len = titleInfo.length;
+      for (i=0; i<len; i++) {
+        info = titleInfo[i]; 
+	subplate = info.plate;
+	iplate = parseInt(subplate);
+	if(iplate == plate) {
+	   found = true;
+	   break;
+        }
+      }
+
+      if(!found) {
+         return false;
+      }
+
+      return info;
+   };
+
+   //---------------------------------------------------------------
    // Handler fo hideAll button
    //---------------------------------------------------------------
-   var doHideAllMarkers = function (e) {
+   var doHideAll = function (e) {
+      doHideAllMarkers(undefined);
+      pointClickChanges.hideAll = true;
+      notify("doHideAll");
+   };
+
+   //---------------------------------------------------------------
+   var doHideAllMarkers = function (modifiers) {
       hideAllMarkers();
-      deselectAllRows();
+      deselectAllRows("doHideAllMarkers");
       selectedRowKeys = [];
-   }
+      previousSelectedRow = latestSelectedRow;
+      if(modifiers) {
+         if(!modifiers.shift) {
+            latestSelectedRow = undefined;
+	 }
+      } else {
+         latestSelectedRow = undefined;
+      }
+      listSelectedTerms("doHideAllMarkers");
+   };
    
    //---------------------------------------------------------------
    var hideAllMarkers = function () {
@@ -3410,16 +3893,13 @@ emouseatlas.emap.pointClick = function() {
    //-----------------------------------------------------------------------
    // Calculate if label is too close to R/T/B edgeto be displayed properly
    //-----------------------------------------------------------------------
-   var labelOKToDisplay = function(e, key, small) {
+   var smallLabelOKToDisplay = function(e, key, mousePosInImg, label) {
 
       var ret;
       var labelWStr;
       var labelW;
       var labelHStr;
       var labelH;
-      var docX;
-      var docY;
-      var mousePosInImg;
       var mousePosWrtVpLeftEdge;
       var mouseDistToVpRightEdge;
       var mouseDistToVpTopEdge;
@@ -3437,11 +3917,6 @@ emouseatlas.emap.pointClick = function() {
 
       ret = {right:true, top:true, bottom:true};
 
-      docX = emouseatlas.emap.utilities.getMouseX(e);
-      docY = emouseatlas.emap.utilities.getMouseY(e);
-
-      mousePosInImg = view.getMousePositionInImage({x:docX, y:docY});
-
       vpLeftEdge = view.getViewportLeftEdge();
       vpTopEdge = view.getViewportTopEdge();
 
@@ -3452,15 +3927,6 @@ emouseatlas.emap.pointClick = function() {
       mouseDistToVpRightEdge = parseInt(vpRightwrtImgL - mousePosInImg.x);
       mouseDistToVpTopEdge = parseInt(mousePosInImg.y - vpTopEdge );
       mouseDistToVpBottomEdge = parseInt(vpDims.height - mouseDistToVpTopEdge);
-
-      mousePosInImg = view.getMousePositionInImage({x:docX,y:docY});
-
-      markerNode = subplateMarkerDetails[key];
-      if(small) {
-         label = markerNode.smallLabel;
-      } else {
-         label = markerNode.bigLabel;
-      }
 
       labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
       indx = labelWStr.indexOf("px");
@@ -3485,21 +3951,94 @@ emouseatlas.emap.pointClick = function() {
 
       return ret;
 
-   }; // labelOKToDisplay
+   }; // smallLabelOKToDisplay
+   
+   //-----------------------------------------------------------------------
+   // Calculate if label is too close to R/T/B edgeto be displayed properly
+   //-----------------------------------------------------------------------
+   var largeLabelOKToDisplay = function(e, key, mousePos, label) {
+
+      var ret;
+      var labelWStr;
+      var labelW;
+      var labelHStr;
+      var labelH;
+      var mousePosWrtVpLeftEdge;
+      var mouseDistToVpRightEdge;
+      var mouseDistToVpTopEdge;
+      var labelPosn;
+      var vpLeftEdge;
+      var vpTopEdge;
+      var vpDims;
+      var vpRightwrtImgL;
+      var labelX;
+      var labelY;
+
+      if(key === undefined || key === null) {
+         return false;
+      }
+
+      ret = {right:true, top:true, bottom:true};
+
+      vpLeftEdge = view.getViewportLeftEdge();
+      vpTopEdge = view.getViewportTopEdge();
+
+      vpDims = view.getViewportDims();
+
+      vpRightwrtImgL = vpLeftEdge + vpDims.width;
+
+      mouseDistToVpRightEdge = parseInt(vpRightwrtImgL - mousePos.x);
+      mouseDistToVpTopEdge = parseInt(mousePos.y - vpTopEdge );
+      mouseDistToVpBottomEdge = parseInt(vpDims.height - mouseDistToVpTopEdge);
+
+      labelWStr = window.getComputedStyle(label, null).getPropertyValue("width");
+      indx = labelWStr.indexOf("px");
+      labelW = Number(labelWStr.substring(0,indx));
+
+      labelHStr = window.getComputedStyle(label, null).getPropertyValue("height");
+      indx = labelHStr.indexOf("px");
+      labelH = Number(labelHStr.substring(0,indx));
+
+      if((mouseDistToVpRightEdge - labelW - labelOfs.x) < 0 ) {
+         ret.right = false;
+      }
+
+      //if((mouseDistToVpTopEdge - labelH - labelOfs.y) < 0 ) {
+      if((mouseDistToVpTopEdge - labelH) < 0 ) {
+         ret.top = false;
+      }
+
+      if((mouseDistToVpBottomEdge - labelH + labelOfs.y) < 0 ) {
+         ret.bottom = false;
+      }
+
+      return ret;
+
+   }; // largeLabelOKToDisplay
 
    //---------------------------------------------------------------
    var modelUpdate = function (modelChanges) {
 
       var dst;
+      var keys
 
       if(modelChanges.dst === true) {
+         //console.log("tiledImagePointClick.modelUpdate modelChanges.dst %s",modelChanges.dst);
          dst = model.getDistance();   
 	 previousImg = currentImg;
          currentImg = pointClickImgData.subplate + pointClickImgData.sectionMap[dst.cur].label;
 	 //if(_debug) console.log(currentImg);
 	 if(PLATE_DATA) {
-	    hideAllMarkers();
-	    showSelectedMarkers();
+	    if(SHOWING_ALL_MARKERS) {
+	       hideAllMarkers();
+               deselectAllRows("modelUpdate.modelChanges.dst");
+               selectedRowKeys = [];
+               keys = getMarkerKeysForCurrentImg();
+               showTheseMarkers(keys);
+	    } else {
+	       hideAllMarkers();
+	       showSelectedMarkers();
+	    }
 	    doDistChanged();
 	 }
       }
@@ -3547,6 +4086,7 @@ emouseatlas.emap.pointClick = function() {
       if(viewChanges.pointClick) {
          //console.log("pointClick: viewChanges.pointClick %s",viewChanges.pointClick);
          if(!ALLOW_CLOSEST_MARKERS || !allowClosestMarkers) return false;
+         //if(!ALLOW_CLOSEST_MARKERS) return false;
 	 var point = view.getPointClickPoint();
 	 hideTempMarkers(false);
 	 tempMarkerKeys = [];
@@ -3563,9 +4103,9 @@ emouseatlas.emap.pointClick = function() {
       //...................................
       if(viewChanges.movingPCPoint) {
 	 //console.log("viewChanges.movingPCPoint ",viewChanges.movingPCPoint);
-	 moving = true;
+	 MOVING = true;
 	 addMarkerLocation();
-	 moving = false;
+	 MOVING = false;
       }
 
       //...................................
@@ -3606,7 +4146,6 @@ emouseatlas.emap.pointClick = function() {
    var titleIFrameLoaded = function (ifrm) {
 
       titleIframeHandle = ifrm;
-      //console.log("ifrm ",ifrm);
 
    }; // titleIFrameLoaded
 
@@ -3737,7 +4276,7 @@ emouseatlas.emap.pointClick = function() {
       for(i=0; i<len; i++) {
          locn = locations[i];
 	 if(locn.img == currentImg) {
-	    if(moving || (locn.x === '0' && locn.y === '0' && locn.z === '0')) {
+	    if(MOVING || (locn.x === '0' && locn.y === '0' && locn.z === '0')) {
 	       x = Math.round(point.x / scale);
 	       y = Math.round(point.y / scale);
 	       locn.x = x.toString(10);
@@ -4043,10 +4582,13 @@ emouseatlas.emap.pointClick = function() {
 
       tbody = $("pointClickTableBody");
       selectedKeys = getSelectedRowKeys();
+
       rows = tbody.getElementsByTagName("tr");
 
       lenKeys = selectedKeys.length;
       lenRows = rows.length;
+
+      //console.log("setSelectedRowHighlightType %s selected = ",type, selectedKeys);
 
       if(lenKeys === 0) {
 	 for(i=0; i<lenRows; i++) {
@@ -4062,6 +4604,10 @@ emouseatlas.emap.pointClick = function() {
 	    } else if(type.toLowerCase() === "selected") {
 	       //doHideAllMarkers(null);
 	       klass = row.className;
+	       // trying to avoid non-selected term being highlighted when Rclick menu cancelled but no luck so far :^(
+	       if(klass.indexOf("context") !== -1 && klass.indexOf("over") !== -1) {
+                  row.className = 'pointClickTableRow';
+	       }
 	       if(klass.indexOf("context") !== -1) {
                   row.className = 'pointClickTableRow ' + type;;
 		  setMarkerSrc(rowkey, srcSelected);
@@ -4071,7 +4617,8 @@ emouseatlas.emap.pointClick = function() {
 		  selectedRowKeys[selectedRowKeys.length] = rowkey;
 		  tmpArr = utils.filterDuplicatesFromArray(selectedRowKeys);
 		  selectedRowKeys = utils.duplicateArray(tmpArr);
-		  lastSelectedRow = rowkey;
+	          previousSelectedRow = latestSelectedRow;
+		  latestSelectedRow = rowkey; // think about this one
 		  break;
 	       }
 	    }
@@ -4099,6 +4646,7 @@ emouseatlas.emap.pointClick = function() {
          addTopBottomContextBorders();
       }
 
+      listSelectedTerms("setSelectedRowHighlightType " + type);
       return false;
    };
    
@@ -4176,21 +4724,264 @@ emouseatlas.emap.pointClick = function() {
       }
       return false;
    };
+   
+   //---------------------------------------------------------
+   var createMarkerIFrame = function () {
+
+      //console.log("enter createMarkerIFrame");
+
+      var histologyDiv;
+      var container;
+      var topDiv;
+      var header;
+      var link;
+      var closeDiv
+      var closeImg
+      var iFrame;
+      var dropTarget;
+
+      container = new Element('div', {
+         'id': markerIFrameID,
+         'class': 'markerPopupIFrameContainer'
+      });
+
+      topDiv = new Element('div', {
+         'id': 'markerPopupIFrameTopDiv',
+         'class': 'markerPopupIFrameTopDiv'
+      });
+
+      header = new Element('h4', {
+         'class': 'markerPopup'
+      });
+
+      header = new Element('h4', {
+         'class': 'markerPopup',
+      });
+
+      link = new Element('a', {
+	 'href': "http://www.emouseatlas.org", 
+      });
+      link.innerHTML = "emouseatlas";
+
+      closeDiv = new Element('div', {
+         'id': 'markerPopupIFrameCloseDiv',
+         'class': 'wlzIIPViewerIFrameCloseDiv'
+      });
+         //'class': 'wlzIIPViewerIFrameCloseDiv markerPopup'
+
+      closeImg = new Element('img', {
+         'class': 'iframeClose',
+	 'src': "../../images/close_10x8.png"
+      });
+
+      iFrame = new Element('iframe', {
+         'id': 'markerPopupIFrame',
+         'class': 'markerPopupIFrame',
+         'name': 'markerPopupIFrame',
+	 'src': "../../html/markerPopupIFrame.html",
+	 'scrolling': "no"
+      });
+
+      //........................
+      targetDiv = $("emapIIPViewerDiv");
+
+      if(!targetDiv) {
+         if(_debug) console.log("no target div");
+         return false;
+      }
+
+      topDiv.inject(container, 'inside');
+      link.inject(header, 'inside');
+      header.inject(topDiv, 'inside');
+      closeImg.inject(closeDiv, 'inside');
+      closeDiv.inject(topDiv, 'inside');
+      container.inject(targetDiv, 'inside');
+      iFrame.inject(container, 'inside');
+
+      emouseatlas.emap.utilities.addButtonStyle('markerPopupIFrameCloseDiv');
+
+      emouseatlas.emap.drag.register({drag:markerIFrameID, drop:"projectDiv"});
+
+      //console.log("exit createMarkerIFrame");
+   };
+   
+   //---------------------------------------------------------
+   var getStringPixelWidth = function (strContainerId) {
+
+      var container;
+      var sty;
+      var font;
+      var wid;
+      var ret;
+
+      if(strContainerId === undefined || strContainerId === null || strContainerId === "") {
+         return undefined;
+      }
+
+      container = document.getElementById(strContainerId);
+      if(container === undefined || container === null) {
+         return undefined;
+      }
+
+      sty = window.getComputedStyle(container, null);
+      wid = sty.getPropertyValue("width");
+      ret = parseInt(wid, 10);
+
+      //console.log("getStringPixelWidth is %s for ",ret,container);
+
+      return ret;
+   };
+   
+   //---------------------------------------------------------
+   var listSelectedTerms = function (from) {
+
+      //if(true) {
+      if(_debug) {
+	 console.log("listSelectedTerms from %s",from);
+	 console.log(selectedRowKeys);
+	 console.log("previousSelectedRow %s",previousSelectedRow);
+	 console.log("latestSelectedRow %s",latestSelectedRow);
+      }
+   };
+   
+   //---------------------------------------------------------
+   var clearContextHighlight = function (from) {
+
+      var conterms;
+      var row;
+      var len;
+      var i;
+
+      conterms = $$(".context");
+      len = conterms.length;
+
+      if(len > 0) {
+         for(i=0; i<len; i++) {
+            row = conterms[i];
+            row.className = 'pointClickTableRow';
+	 }
+      }
+   };
+   
+   //---------------------------------------------------------
+   var getLatestClickedRow = function () {
+      return latestClickedRow;;
+   };
+   
+   //---------------------------------------------------------
+   var getTermDetsForKey = function (key) {
+
+      var termDets;
+      var found = false;
+      var len;
+      var i;
+
+      len = subplateTerms.length;
+      for (i=0; i<len; i++) {
+        termDets = subplateTerms[i]; 
+	if(termDets.name === key) {
+	   found = true;
+	   break;
+        }
+      }
+
+      if(found) {
+         return termDets;
+      } else {
+         return undefined;
+      }
+   };
+
+   //---------------------------------------------------------
+   /**
+    *   Informs registered observers of a change to pointClick.
+    */
+   var notify = function (from) {
+
+      var i;
+      //console.log("enter tiledImagePointClick.notify ",from);
+      //printViewChanges();
+
+      for (i = 0; i < registry.length; i++) {
+	 //console.log(registry[i].getName());
+	 registry[i].pointClickUpdate(pointClickChanges);
+      }
+
+      resetPointClickChanges();
+      //console.log("exit tiledImagePointClick.notify ",from);
+   }; // notify
+
+   //---------------------------------------------------------
+   /**
+    *   Prints the state of observable changes to pointClick.
+    */
+   var printPointClickChanges = function() {
+      if(pointClickChanges.initial) console.log("pointClickChanges.initial ",pointClickChanges.initial);
+      if(pointClickChanges.wikiChoice) console.log("pointClickChanges.wikiChoice ",pointClickChanges.wikiChoice);
+      if(pointClickChanges.mgiChoice) console.log("pointClickChanges.mgiChoice ",pointClickChanges.mgiChoice);
+      if(pointClickChanges.showAll) console.log("pointClickChanges.showAll ",pointClickChanges.showAll);
+      if(pointClickChanges.hideAll) console.log("pointClickChanges.hideAll ",pointClickChanges.hideAll);
+      if(pointClickChanges.plateList) console.log("pointClickChanges.plateList ",pointClickChanges.plateList);
+      if(pointClickChanges.emaModels) console.log("pointClickChanges.emaModels ",pointClickChanges.emaModels);
+      console.log("++++++++++++++++++++++++++++++++++++++++++++");
+   };
+
+   //---------------------------------------------------------
+   /**
+    *   Resets the list of observable changes to pointClick.
+    */
+   var resetPointClickChanges = function() {
+      pointClickChanges.initial =  false;
+      pointClickChanges.wikiChoice =  false;
+      pointClickChanges.mgiChoice =  false;
+      pointClickChanges.showAll =  false;
+      pointClickChanges.hideAll =  false;
+      pointClickChanges.plateList =  false;
+      pointClickChanges.emaModels =  false;
+   };
+
+   //---------------------------------------------------------
+   var getName = function () {
+      return "pointClick";
+   };
+
+   //---------------------------------------------------------
+   var getPlateList = function () {
+      return plateList;
+   };
+
+   //---------------------------------------------------------
+   var getModels = function () {
+      return emaModels;
+   };
+
+   //---------------------------------------------------------
+   var getCurrentImg = function () {
+      return currentImg;
+   };
 
    //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
-      initialize: initialize,
+      initialise: initialise,
+      register: register,
       viewUpdate: viewUpdate,
       modelUpdate: modelUpdate,
+      getName: getName,
+      getCurrentImg: getCurrentImg,
+      getPlateList: getPlateList,
       titleIFrameLoaded: titleIFrameLoaded,
-      doMarkerEmageQuery: doMarkerEmageQuery,
-      doMarkerGxdbQuery: doMarkerGxdbQuery,
       doTableQuery: doTableQuery,
+      doTableLink: doTableLink,
       doTableCancel: doTableCancel,
-      doMouseOverLabelTableRow: doMouseOverLabelTableRow
+      getSelectedRowKeys: getSelectedRowKeys,
+      getTermDetsForKey: getTermDetsForKey,
+      getLatestClickedRow: getLatestClickedRow,
+      getWikiUrl: getWikiUrl,
+      getModels: getModels,
+      doDownloadImageData: doDownloadImageData
    };
 
-}(); // end of module pointClick
+}(); // end of module tiledImagePointClick

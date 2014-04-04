@@ -1,0 +1,143 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for noddy test page  */
+
+body {
+   margin: 0px;
+   padding: 0px;
+   font-family: "Arial", sans-serif;
+   color: gray;
+   background: #fff;
+}
+
+/* try to prevent firefox putting a dooted border round things */
+div::-moz-focus-inner, input[type='range']::-moz-focus-inner {
+   border: 0;
+   outline: 0;
+}
+
+#bigContainer {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   width: 100%;
+   height: 100%;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   background: #fef;
+}
+
+#dragContainer {
+   position: absolute;
+   left: 50px;
+   top: 50px;
+   width: 185px;
+   height: 105px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
+}
+
+#sliderContainer {
+   position: relative;
+   left: 6px;
+   top: 2px;
+   width: 171px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+}
+
+form {
+}
+
+fieldset {
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   color: #555;
+   font-size: 12px;
+}
+fieldset.opacity {
+   height: 35px;
+}
+fieldset.filter {
+   height: 65px;
+}
+
+legend {
+   margin: 0 0 4px 0;
+   padding: 0px;
+}
+
+input[type='range'] {
+   position: relative;
+   float: left;
+   margin: 0px;
+   padding: 0px;
+   width: 130px;
+   height: 14px;
+   background: #fff;
+}
+input[type='range'].opacity {
+   background: #fff;
+   top: -4px;
+}
+input[type='range'].red {
+   background: #fdd;
+   top: -4px;
+}
+input[type='range'].green {
+   background: #dfd;
+   top: -4px;
+}
+input[type='range'].blue {
+   background: #ddf;
+   top: -4px;
+}
+
+input[type='text'] {
+   position: relative;
+   left: 4px;
+   float: left;
+   margin: 0px;
+   padding: 0px;
+   width: 35px;
+   border: dotted 1px #eee;
+   background: #fff;
+}
+input[type='text'].opacity {
+   top: -4px;
+}
+input[type='text'].red {
+   top: -5px;
+}
+input[type='text'].green {
+   top: -5px;
+}
+input[type='text'].blue {
+   top: -5px;
+}
+

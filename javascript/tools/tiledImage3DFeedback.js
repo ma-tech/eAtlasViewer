@@ -67,14 +67,14 @@ var tiledImage3DFeedback = new Class ({
 
       this.toolTipText = this.shortName;
 
-      var imagePath = this.model.getInterfaceImageDir();
-      //console.log("3DFeedback: imagePath %s",imagePath);
+      this.imagePath = this.model.getInterfaceImageDir();
+      //console.log("3DFeedback: imagePath %s",this.imagePath);
 
       this.window = new DraggableWindow({targetId:this.targetId,
                                          drag:this.drag,
                                          title:this.shortName,
 					 view:this.view,
-					 imagePath: imagePath,
+					 imagePath: this.imagePath,
 					 initiator:this });
 
       //console.log("x %s, y %s",params.params.x, params.params.y);
@@ -341,7 +341,7 @@ var tiledImage3DFeedback = new Class ({
       });
       this.x3domHelpIconImg = new Element( 'img', {
          'id': 'x3domHelpFrameIconImg',
-         'src': '../../../images/help-26.png'
+         'src': this.imagePath + 'help-26.png'
       });
 
       this.x3domHelpIconContainer.appendChild(this.x3domHelpIconImg);
@@ -551,6 +551,7 @@ var tiledImage3DFeedback = new Class ({
    // called when help icon clicked
    //---------------------------------------------------------------
    doX3domHelpIconClicked: function (event) {
+      //console.log("click");
       if(this.keepX3domHelpFrame === false) {
          this.keepX3domHelpFrame = true;
 	 this.addHelpCloseEvent();
@@ -578,6 +579,7 @@ var tiledImage3DFeedback = new Class ({
    // called on mouseover help icon
    //---------------------------------------------------------------
    doMouseOverHelpIcon: function (event) {
+      //console.log("over");
       this.showX3domHelpContainer();
       this.view.showX3domHelpFrame();
    },
@@ -586,6 +588,7 @@ var tiledImage3DFeedback = new Class ({
    // called on mouseout help icon
    //---------------------------------------------------------------
    doMouseOutHelpIcon: function (event) {
+      //console.log("out");
       if(this.keepX3domHelpFrame) {
          return false;
       }
@@ -675,6 +678,11 @@ var tiledImage3DFeedback = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 }); // end of class tiledImage3DFeedback

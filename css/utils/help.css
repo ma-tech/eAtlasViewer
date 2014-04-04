@@ -2,12 +2,8 @@
 
 .wlzIIPViewerIFrameContainer {
    position: absolute;
-   top: 100px;
-   right: 200px;
    visibility: hidden;
    border: ridge 4px #555;
-   width: 60%;
-   height: 600px;
    margin: 0px;
    padding: 0px;
    color: #222;
@@ -15,6 +11,12 @@
    z-index: 1000;
    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
    opacity: 0.8;
+}
+.wlzIIPViewerIFrameContainer.mainHelp {
+   width: 947px;
+   height: 600px;
+   top: 100px;
+   right: 200px;
 }
 .wlzIIPViewerIFrameContainer.modelInfo {
    width: 450px;
@@ -59,7 +61,7 @@
 
 .wlzIIPViewerIFrameCloseDiv {
    position: absolute;
-   top: 0px;
+   top: 3px;
    right: 4px;
    padding: 0px;
    margin: 0px;
@@ -67,6 +69,53 @@
    height: 10px;
    width: 11px;
 }
+.wlzIIPViewerIFrameCloseDiv.over {
+   background: #ddd;
+}
+.wlzIIPViewerIFrameCloseDiv.out {
+   background: #eee;
+}
+.wlzIIPViewerIFrameCloseDiV.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+.markerPopupIFrameContainer {
+   position: absolute;
+   top: 100px;
+   right: 200px;
+   border: ridge 4px #555;
+   width: 350px;
+   height: 240px;
+   top: 100px;
+   left: 550px;
+   margin: 0px;
+   padding: 0px;
+   color: #222;
+   background: #ffeeff;
+   z-index: 1000;
+   visibility: hidden;
+   overflow: hidden;
+   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+   opacity: 0.8;
+}
+.markerPopupIFrameTopDiv {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 100%;
+   margin: 0px;
+   padding: 0px;
+   background: #eef;
+}
+.markerPopupIFrameTopDiv h4 {
+   margin: 0px;
+   padding: 0px;
+}
+
 
 img.iframeClose {
    padding: 0px;
@@ -88,25 +137,31 @@ img.iframeClose {
 
 .wlzIIPViewerIFrame {
    position: relative;
-   overflow: scroll;
+   overflow: hidden;
    top: 0px;
    left: 0px;
    visibility: hidden;
-   width: 100%;
-   height: 91%;
    margin: 0px;
    padding: 0px;
    border: none;
    z-index: 1000;
 }
+.wlzIIPViewerIFrame.mainHelp {
+   width: 945px;
+   height: 559px;
+}
 .wlzIIPViewerIFrame.modelInfo {
+   width: 100%;
    height: 89%;
 }
 .wlzIIPViewerIFrame.titleInfo {
+   width: 100%;
    height: 84%;
    overflow: auto;
 }
 .wlzIIPViewerIFrame.x3domHelp {
+   width: 700px;
+   height: 440px;
    overflow: auto;
 }
 
@@ -137,4 +192,31 @@ h6.help {
    padding: 0px;
    margin: 0px;
    color: #33c;
+}
+
+#dragtest {
+   position: relative;
+   left: -400px;
+   top: 100px;
+   width: 100px;
+   height: 100px;
+   padding: 0px;
+   margin: 0px;
+   border: solid 1px #0f0;
+   visibility: visible;
+   background: #af6;
+}
+
+#dragText {
+   position: relative;
+   left: 0px;
+   top: 0px;
+   bottom: 50px;
+   width: 100%;
+   height: 20px;
+   padding: 0px;
+   margin: 0px;
+   border: solid 1px #0f0;
+   visibility: visible;
+   background: #fa6;
 }

@@ -1,0 +1,159 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+#fontSize {
+	height: 50px;
+}
+
+/* --------------------------- */
+.itemDiv {
+   position: absolute;
+   left: 0px;
+   width: 100%;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   border: none;
+   background: #f3f3f3;
+}
+
+.explainContainer {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   height: 30px;
+   padding: 0 0 3px;
+   margin: 0 4px;
+   border-bottom: solid 1px #aaa;
+}
+
+.explainDiv {
+   position: relative;
+   top: 5px;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   font-size: 9px;
+}
+
+.itemIdContainer {
+   float: left;
+   padding: 0px;
+   margin: 0 4px;
+}
+
+.itemIdDiv {
+   position: relative;
+   top: 6px;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   font-size: 9px;
+}
+
+.itemDescContainer {
+   float: left;
+   width: 140px;
+   padding: 0px;
+   margin: 0 4px;
+}
+
+.itemDescDiv {
+   position: relative;
+   top: 5px;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+   font-size: 9px;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   text-align: left;
+}
+
+.itemRadioDiv {
+   position: relative;
+   top: 0px;
+   left: -3px;
+   float: right;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   color: #000;
+}
+
+.itemRadio {
+   width:20px;
+   height: 20px;
+   border: none;
+   padding: 0px;
+   margin: 0px;
+}
+
+.queryChoiceButtonContainer {
+   position: relative;
+   width: 100%;
+   padding: 0px;
+   margin: 0px;
+   background: #eee;
+   font-size: 9px;
+}
+
+.queryChoiceButtonDiv {
+   position: relative;
+   top: 0px;
+   padding: 0px;
+   width: 75px;
+   height: 14px;
+   margin-left: auto;
+   margin-right: auto;
+}
+.queryChoiceButton {
+   padding: 0 2px;
+   margin: 0 5px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+}
+.queryChoiceButton.ok {
+   float: left
+}
+.queryChoiceButton.cancel {
+   float: left
+}
+
+.queryChoiceButton.over {
+   background: #ddd;
+}
+.queryChoiceButton.out {
+   background: #eee;
+}
+.queryChoiceButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+

@@ -71,11 +71,14 @@
 
 .horizontal {
    position: relative;
-   left: 0px;
-   top: 0px;
+   left: 1px;
+   top: 1px;
    padding: 0px;
    margin: 0px;
    border: none;
+}
+.opacity.horizontal {
+   width: 110px;
 }
 
 .knob {

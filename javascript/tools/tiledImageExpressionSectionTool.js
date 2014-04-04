@@ -208,7 +208,11 @@ var tiledImageExpressionSectionTool = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
-   }
+   },
 
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
+   }
 
 });

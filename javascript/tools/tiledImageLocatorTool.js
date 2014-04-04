@@ -73,6 +73,8 @@ var tiledImageLocatorTool = new Class ({
 					 view:this.view,
 					 imagePath: imagePath,
 					 initiator:this });
+
+      //console.log("x %s, y %s",params.params.x, params.params.y);
       this.window.setPosition(params.params.x, params.params.y);
 
       this.window.handle.addEvent('mouseover', function(){
@@ -421,9 +423,12 @@ var tiledImageLocatorTool = new Class ({
       var top = $(this.shortName + '-container').getPosition().y - 5;
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
-
-
 
 }); // end of class tiledImageLocatorTool
 //----------------------------------------------------------------------------

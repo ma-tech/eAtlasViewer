@@ -61,7 +61,9 @@ var queryTermTool = new Class ({
       this.width = parseInt(params.params.width);
 
       this.baseHeight = 0;
-      this.heightOfOneTerm = 20;
+      this.heightOfOneTerm = 15;
+
+      this.bgc = "#EAEAEA";
 
       var imagePath = this.model.getInterfaceImageDir();
 
@@ -72,6 +74,7 @@ var queryTermTool = new Class ({
 					 thinTopEdge:params.params.thinTopEdge,
                                          title:this.shortName,
 					 view:this.view,
+					 bgc:this.bgc,
 					 imagePath: imagePath,
 					 initiator:this});
 
@@ -81,6 +84,7 @@ var queryTermTool = new Class ({
       this.window.setPosition(x, y);
 
       // for tooltips
+      /*
       this.window.handle.addEvent('mouseover', function(){
 	 this.ttchain = new Chain();
 	 var showTip = function () {
@@ -97,6 +101,7 @@ var queryTermTool = new Class ({
 	    this.showToolTip(false);
 	 }
       }.bind(this));
+      */
 
       this.createElements(undefined);
    },
@@ -120,6 +125,8 @@ var queryTermTool = new Class ({
       var wid;
       //var txtwid;
       var termDiv;
+      var termTextH;
+      var cumHeight;
       var termTextDiv;
       var termTextContainer;
       var termCheckboxContainer;
@@ -134,6 +141,7 @@ var queryTermTool = new Class ({
       container.setStyles({
 	 'max-height': '304px'
       });
+      /*
       leftedge = $(this.shortName + '-leftedge');
       leftedge.setStyles({
 	 'max-height': '302px'
@@ -146,6 +154,7 @@ var queryTermTool = new Class ({
       handle.setStyles({
 	 'max-height': '312px'
       });
+      */
 
       win = $(this.shortName + '-win');
       // make sure existing elements are removed.
@@ -179,7 +188,7 @@ var queryTermTool = new Class ({
 
       if(termData === undefined) {
          this.window.setDimensions(this.width, this.height);
-         this.setToolTip(this.toolTipText);
+         //this.setToolTip(this.toolTipText);
 	 return false;
       }
 
@@ -198,6 +207,7 @@ var queryTermTool = new Class ({
       klass = 'termDiv';
       total = 0;
       reverseData = emouseatlas.emap.utilities.reverseObject(termData);
+      cumHeight = Number(0);
 
       for(key in reverseData) {
 
@@ -211,7 +221,8 @@ var queryTermTool = new Class ({
 	 //console.log("term ",term);
 	 //console.log("term  %s, %s",name,id);
 
-         top = total*20;
+         //top = total*this.heightOfOneTerm;
+         top = cumHeight + 'px';
 	 wid = this.width;
 	 //txtwid = this.width - 30;
 
@@ -220,7 +231,7 @@ var queryTermTool = new Class ({
 	    'class': klass
 	 });
 	 termDiv.setStyles({
-                             'top': top + 'px'
+                             'top': top
                             });
 
 	 termTextContainer = new Element('div', {
@@ -249,9 +260,9 @@ var queryTermTool = new Class ({
 	 termTextDiv.inject(termTextContainer, 'inside');
 	 termTextContainer.inject(termDiv, 'inside');
 
-	 if(total > 20) {
-	    console.log("scrollbar needed");
-	 }
+         termTextH = window.getComputedStyle(termTextDiv, null).getPropertyValue("height");
+	 cumHeight += parseInt(termTextH);
+	 //console.log("%s, %s %d",term.name, termTextH, cumHeight);
 
          total++;
 
@@ -263,17 +274,48 @@ var queryTermTool = new Class ({
       if(total > 9) {
          win.setStyles({
             'overflow': 'auto',
-   	 'max-height': '300px'
+   	    'max-height': '300px'
          });
       }
       //win.style.background="background-color=#eaeaea";
 
       //----------------------------------------
-      this.height = this.baseHeight + total * this.heightOfOneTerm;
+      // now we need to go through all the terms and adjust their height (they may wrap onto 2 lines)
+      //----------------------------------------
+      this.height = this.adjustTermHeight();
+
       this.window.setDimensions(this.width, this.height);
-      this.setToolTip(this.toolTipText);
+      //this.setToolTip(this.toolTipText);
 
    }, // createElements
+
+   //---------------------------------------------------------------
+   // returns cumulative total height
+   //---------------------------------------------------------------
+   adjustTermHeight: function() {
+
+      var termDivs;
+      var termDiv;
+      var termH;
+      var totalH;
+      var len;
+      var i;
+
+      termDivs = $$('.termDiv');
+      len = termDivs.length;
+      totalH = Number(0);
+
+      for(i=0; i<len; i++) {
+	 termDiv = termDivs[i];
+         termH = window.getComputedStyle(termDiv, null).getPropertyValue("height");
+	 termDiv.setStyle("height", termH);
+	 totalH += parseInt(termH);
+         //console.log("totalH for %s ",termDiv.id,totalH);
+      }
+
+      return totalH;
+
+   },
 
    //---------------------------------------------------------------
    // If checkbox is checked the term will be loaded and displayed
@@ -336,7 +378,7 @@ var queryTermTool = new Class ({
       for(i=0; i<numTerms; i++) {
          name = termNames[i];
 	 termDiv = $(name + '_termDiv');
-         //console.log("doTermClicked: name %s",name);
+         console.log("doTermClicked: name %s",name);
 	 if(target.id.indexOf(name) !== -1) {
 	    //console.log("select %s",name);
 	    termDiv.className = 'termDiv selected';
@@ -418,6 +460,7 @@ var queryTermTool = new Class ({
    //--------------------------------------------------------------
    setToolTip: function (text) {
       // we only want 1 toolTip
+      //console.log("setToolTip:");
       if(typeof(this.toolTip === 'undefined')) {
 	 this.toolTip = new Element('div', {
 	       'id': this.shortName + '-toolTipContainer',

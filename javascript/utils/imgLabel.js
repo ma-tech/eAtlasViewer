@@ -409,11 +409,18 @@ emouseatlas.emap.imgLabel = function() {
    }; // setReport
 
    //---------------------------------------------------------
+   var getName = function () {
+      //console.log(observer);
+      return 'imgLabel';
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
       initialise: initialise,
+      getName: getName,
       setVisible: setVisible,
       setPosition: setPosition,
       setReport: setReport

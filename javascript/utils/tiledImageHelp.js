@@ -30,6 +30,17 @@ var tiledImageHelp = new Class ({
 
       this.hideOK = false;
 
+      this.name = "tiledImageHelp";
+
+      var closeDiv = $("wlzIIPViewerIFrameCloseDiv");
+      var klass = closeDiv.className;
+
+      /*
+      console.log("klass %s",klass);
+      emouseatlas.emap.utilities.addEvent(closeDiv, 'mouseover', doMouseOver, false);
+      emouseatlas.emap.utilities.addEvent(closeDiv, 'mouseout', doMouseOut, false);
+      */
+
    },
 
    //---------------------------------------------------------------
@@ -42,6 +53,21 @@ var tiledImageHelp = new Class ({
       if(changes.hideViewerHelp) {
          this.helpIFrame.setStyle('visibility', 'hidden');
       }
+   },
+
+   //---------------------------------------------------------------
+   doMouseOver: function(e) {
+      console.log("over");
+   },
+
+   //---------------------------------------------------------------
+   doMouseOut: function(e) {
+      console.log("out");
+   },
+
+   //---------------------------------------------------------------
+   getName: function() {
+      return this.name;
    }
 
 }); // end of class tiledImageHelp

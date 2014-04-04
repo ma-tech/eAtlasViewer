@@ -3484,6 +3484,11 @@ emouseatlas.emap.tprPointClick = function() {
       markerNode.flags[indx].firstChild.set('src', src);
       return src;
    };
+   
+   //---------------------------------------------------------
+   var getName = function () {
+      return "tprPointClick";
+   };
 
    //---------------------------------------------------------
    // expose 'public' properties
@@ -3493,6 +3498,7 @@ emouseatlas.emap.tprPointClick = function() {
       initialize: initialize,
       viewUpdate: viewUpdate,
       modelUpdate: modelUpdate,
+      getName: getName,
       doMarkerEmageQuery: doMarkerEmageQuery,
       doMarkerGxdbQuery: doMarkerGxdbQuery,
       doTableEmageQuery: doTableEmageQuery,

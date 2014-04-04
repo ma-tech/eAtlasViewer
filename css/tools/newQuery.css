@@ -1,0 +1,442 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for newQueryTool */
+
+#newQueryToolContainer {
+   position: absolute;
+   top: 100px;
+   left: 160px;
+   visibility: hidden;
+   width: 150px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   border: outset 1px #fef;
+   color: #000;
+   background: #eaeaea;
+   z-index: 2;
+}
+/* --------------------------- */
+.queryTitleTextContainer {
+   position: relative;
+   top: -1px;
+   width:80px;
+   padding: 0px;
+   margin: 0px;
+   margin-left: auto;
+   margin-right: auto;
+   border: none;
+   color: #000;
+}
+
+.queryTitleText {
+   border: medium none;
+   color: #000000;
+   font-size: 10px;
+   margin-top: 2px;
+   padding: 0;
+}
+/* --------------------------- */
+#newQueryToolMessageText {
+   positioy: relative;
+   top: 4py;
+   margin-left: auto;
+   margin-right: auto;
+   width: 100px;
+   font-size: 9px;
+   color: #000;
+   text-align: justify;
+   background: #fafafa;
+}
+
+/* --------------------------- */
+#newQueryToolInfoDiv {
+   padding: 2px 5px;
+   width: 140px;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+   text-align: justify;
+}
+
+#newQueryToolText {
+   margin: 0 0 0 auto;
+   padding: 0;
+   width: 55px;
+}
+
+#newQueryTool-win {
+   margin: 0;
+   padding: 0;
+   background: #fafafa;
+}
+
+//=======================================================
+#newQueryToolDbChoiceContainer  {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 150px;
+   height: 22px;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+   background: #00f;
+}
+
+.newQueryToolDbItem {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 150px;
+   height: 22px;
+   margin: 0;
+   padding: 0;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+}
+
+.dbTextContainer {
+   float: left;
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 80px;
+   height: 22px;
+   margin: 0;
+   padding: 0;
+}
+
+.dbTextDiv {
+   position: relative;
+   top: 6px;
+   left: 4px;
+   width: 80px;
+   margin: 0;
+   padding: 0;
+   font-size: 9px;
+   color: #000;
+}
+
+.dbRadioContainer {
+   float: right;
+   position: relative;
+   top: 2px;
+   right: 4px;
+   width: 17px;
+   height: 17px;
+   margin: 0;
+   padding: 0;
+   z-index: 10;
+}
+
+.dbRadio {
+   position: relative;
+   top: -1px;
+   left: -1px;
+   width: 15px;
+   height: 15px;
+   margin: 0;
+   padding: 0;
+}
+
+.newQueryToolSpacer{
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+   background: #eaeaea;
+}
+
+.newQueryToolSpacerBGdark{
+   position: relative;
+   top: 5px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #999;
+}
+
+.newQueryToolSpacerBGlight{
+   position: relative;
+   top: 5px;
+   height: 1px;
+   padding: 0px;
+   margin: 0 30px 0 25px;
+   background: #fff;
+}
+
+#newQueryChoiceContainer  {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 150px;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+}
+
+.newQueryTypeItem {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 150px;
+   height: 22px;
+   margin: 0;
+   padding: 0;
+   font-size: 9px;
+   color: #000;
+}
+
+.newQueryTypeTextContainer {
+   float: left;
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 80px;
+   height: 22px;
+   margin: 0;
+   padding: 0;
+}
+
+.newQueryTypeTextDiv {
+   position: relative;
+   top: 6px;
+   left: 4px;
+   width: 80px;
+   margin: 0;
+   padding: 0;
+   font-size: 9px;
+   color: #000;
+}
+
+.newQueryTypeRadioContainer {
+   float: right;
+   position: relative;
+   top: 2px;
+   right: 4px;
+   width: 17px;
+   height: 17px;
+   margin: 0;
+   padding: 0;
+   z-index: 10;
+}
+
+.newQueryTypeRadio {
+   position: relative;
+   top: -1px;
+   left: -1px;
+   width: 15px;
+   height: 15px;
+   margin: 0;
+   padding: 0;
+}
+
+/* --------------------------- */
+#newQueryToolButtonContainerBkg {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 100%;
+   height: 24px;
+   background: #eaeaea;
+}
+#newQueryToolButtonContainer {
+   position: relative;
+   top: -2px;
+   left: -4px;
+   width: 90px;
+   height: 24px;
+   margin-left: auto;
+   margin-right: auto;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+}
+/* --------------------------- */
+#newQueryToolButtonContainerBkg2 {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 100%;
+   height: 24px;
+   background: #eaeaea;
+}
+#newQueryToolButtonContainer2 {
+   position: relative;
+   top: -2px;
+   left: -4px;
+   width: 100px;
+   height: 24px;
+   margin-left: auto;
+   margin-right: auto;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+}
+
+.newQueryToolButton {
+   float: left;
+   position: relative;
+   top: 4px;
+   left: 2px;
+   padding: 1px 2px;
+   margin: 0 4px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+
+.newQueryToolButton.over {
+   background: #ddd;
+}
+.newQueryToolButton.out {
+   background: #eee;
+}
+.newQueryToolButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+#newQueryImportFormContainer {
+   position: relative;
+   top: 0px;
+   left: 200px;
+   width: 200px;
+   height: 25px;
+   margin: 0px;
+   padding: 0px;
+   background: #eaeaea;
+   visibility: hidden;
+}
+
+#newQueryImportForm {
+}
+
+#newQueryImportFile {
+   visibility: hidden;
+   height: 0px;
+   margin: 0px;
+   padding: 0px;
+   background: #aaeeff;
+}
+
+#newQueryExportForm {
+   visibility: hidden;
+   height: 0px;
+   margin: 0px;
+   padding: 0px;
+   background: #ffeeaa;
+}
+
+#spatialQueryForm {
+   visibility: hidden;
+   height: 0px;
+   margin: 0px;
+   padding: 0px;
+   background: #eeffaa;
+}
+
+#dummyForm {
+   visibility: hidden;
+   height: 0px;
+   margin: 0px;
+   padding: 0px;
+   background: #eeffaa;
+}
+
+#importLabelContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 139px;
+   height: 24px;
+   margin: 0px;
+   padding: 0px;
+   font-size: 9px;
+   color: #000;
+   background: #abc;
+   z-index: 10;
+}
+
+#importLabel {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 80px;
+   height: 18px;
+   margin-left: auto;
+   margin-right: auto;
+   padding: 0px;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+   text-align: center;
+}
+
+#importOKContainer {
+   position: relative;
+   top: 2px;
+   left: 0px;
+   width: 20px;
+   height: 14px;
+   margin-left: auto;
+   margin-right: auto;
+   padding: 0px;
+   background: #def;
+}
+
+#importOK {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 17px;
+   height: 13px;
+   margin: 0px;
+   padding: 0px;
+   font-size: 9px;
+   color: #000;
+   background: #eaeaea;
+}
+
+#newQueryTermScrollContainer {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   max-height: 208px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   overflow: auto;
+}
+
+#newQueryTermContainer {
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   color: #000;
+}
+/* --------------------------- */

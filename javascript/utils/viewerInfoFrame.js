@@ -221,6 +221,7 @@ emouseatlas.emap.viewerInfo = function () {
 
       infoTable = doc.createElement('table');
       infoTable.id = "modelInfoTable";
+      infoTable.id = "info";
       infoTable.cellSpacing = "2";
       infoTable.cellPadding = "2";
       infoTable.style.margin = "auto";
@@ -244,11 +245,13 @@ emouseatlas.emap.viewerInfo = function () {
 	 headerText = doc.createTextNode(txt);
 	 header.appendChild(headerText);
 
-         txt = info[indx][rows[i]];
-         rowData = doc.createElement('td');
-         rowData.className = "rowData";
-         row.appendChild(rowData);
-         addRowData(txt, rowData);
+         if(info[indx]) {
+	    txt = info[indx][rows[i]];
+	    rowData = doc.createElement('td');
+	    rowData.className = "rowData";
+	    row.appendChild(rowData);
+	    addRowData(txt, rowData);
+	 }
       }
 
       mainContainer.appendChild(infoTable);
@@ -411,11 +414,18 @@ emouseatlas.emap.viewerInfo = function () {
    };
 
    //---------------------------------------------------------
+   var getName = function () {
+      //console.log(observer);
+      return 'viewerInfo';
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
    return {
       initialise: initialise,
+      getName: getName,
       viewUpdate: viewUpdate
    };
 
