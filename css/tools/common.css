@@ -1,0 +1,177 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for common elements  */
+
+body {
+   margin: 0px;
+   padding: 0px;
+   font-family: "Arial", sans-serif;
+   color: gray;
+   background: #fff;
+}
+
+/* try to prevent firefox putting a dotted border round things */
+div::-moz-focus-inner, input[type='range']::-moz-focus-inner {
+   border: 0;
+   outline: 0;
+}
+
+form {
+}
+
+input.range:valid {
+   border: solid 1px #0f0;
+}
+input.range:invalid {
+   border: none;
+}
+
+fieldset {
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   color: #555;
+   font-size: 12px;
+}
+
+legend {
+   margin: 0 0 4px 0;
+   padding: 0px;
+   font-size: 10px;
+}
+
+label {
+   float: left;
+   position: relative;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   background: none;
+   font-size: 10px;
+}
+
+input[type='range'] {
+   float: left;
+   position: relative;
+   margin: 0px;
+   padding: 0px;
+   width: 100px;
+   height: 14px;
+   background: #fff;
+}
+
+input[type='number'] {
+   position: relative;
+   float: left;
+   margin: 0px;
+   padding: 0px;
+   border: 1px inset #999;
+   border: none;
+   background: #fff;
+   font-size: 9px;
+   -moz-appearance:textfield; /* prevent spinners from appearing on mozilla browsers */
+}
+/* prevent spinners from appearing in webkit browsers */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+   -webkit-appearance: none; 
+   margin: 0; 
+}
+
+input[type='text'] {
+   position: relative;
+   margin: 0px;
+   padding: 0px;
+   border: dotted 1px #eee;
+   background: #fff;
+   font-size: 10px;
+}
+
+input[type='radio'] {
+   position: relative;
+   float: right;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   background: none;
+}
+
+select {
+   color:#333;
+   font-size: 10px;
+   font-style:normal;
+   font-weight:normal;
+}
+
+select optgroup {
+   background:#eee;
+   color:#777;
+   font-size: 9px;
+   font-style:italic;
+   font-weight:normal;
+}
+
+select option {
+   color:#333;
+   font-size: 10px;
+   font-style:normal;
+   font-weight:normal;
+}
+
+.closeButton {
+   position: relative;
+   right: -1px;
+   float: right;
+   top: -14px;
+   width: 12px;
+   height: 12px;
+   margin: 0px;
+   padding: 0px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+.closeButton.over {
+   background: #ddd;
+}
+.closeButton.out {
+   background: #eee;
+}
+.closeButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+.closeButtonImg {
+   position: relative;
+   top: -3px;
+   left: 1px;
+   width: 10px;
+   height: 10px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+}

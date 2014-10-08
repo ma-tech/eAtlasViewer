@@ -1,0 +1,158 @@
+/*
+ * Copyright (C) 2010 Medical research Council, UK.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ *
+ */
+/* style for magnification  */
+
+#comboDistDragContainer {
+   position: absolute;
+   left: 10px;
+   top: 357px;
+   width: 130px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
+   visibility: visible;
+   z-index: 10;
+   font-size: 9px;
+   font-style: normal;
+}
+
+fieldset.keySlider {
+}
+
+fieldset.keyNumber {
+   height: 20px;
+}
+
+legend.keySlider {
+   float: left;
+   position: relative;
+   left: 2px;
+   top: 0px;
+}
+
+legend.keyNumber {
+   float: left;
+   position: relative;
+   left: 2px;
+   top: 3px;
+}
+
+input[type='text'].keySlider {
+   width: 35px;
+   height: 14px;
+}
+
+input[type='range'].keySlider {
+   top: -2px;
+   left: 2px;
+   width: 125px;
+}
+
+input[type='number'].keySlider {
+   top: 0px;
+   left: 6px;
+   width: 36px;
+}
+
+input[type='number'].keyNumber {
+   top: 2px;
+   left: 6px;
+   width: 36px;
+}
+/*   -moz-appearance:resizer; */ /* prevent numbers from appearing on mozilla browsers */
+
+/* prevent numbers from appearing in webkit browsers */
+input[type=number]::-webkit-textfield { 
+   -webkit-appearance: none; 
+   margin: 0; 
+}
+
+.keySectionButton {
+   position: relative;
+   top: 1px;
+   float: left;
+   margin: 1px 2px 0;
+   margin: 0;
+   padding: 0px;
+   height: 16px;
+   width: 13px;
+   border-left: solid 1px #fff;
+   border-top: solid 1px #fff;
+   border-right: solid 1px #999;
+   border-bottom: solid 1px #999;
+   background: #eee;
+}
+.keySectionButton.over {
+   background: #ddd;
+}
+.keySectionButton.out {
+   background: #eee;
+}
+.keySectionButton.down {
+   background: #ddd;
+   border-left: solid 1px #555;
+   border-top: solid 1px #555;
+   border-right: solid 1px #555;
+   border-bottom: solid 1px #555;
+}
+
+.keySectionButtonDiv {
+   position: relative;
+   top: 2px;
+   left: 1px;
+   margin: 0px;
+   padding: 0px;
+   height: 12px;
+   width: 12px;
+}
+
+#keyButtonContainer {
+   margin: 0 1px 20px 2px;
+   padding:0px;
+}
+#keySectionTextContainer {
+   float: left;
+   width: 60px;
+   margin: 0 1px 0 5px;
+   padding:0px;
+}
+#keySectionTextSpacer {
+   position: relative;
+   float: left;
+   top: 3px;
+   width: 10px;
+   margin: 0px;
+   padding:0px;
+}
+#keySectionText {
+   float: left;
+   position: relative;
+   top: 4px;
+   left: 2px;
+   margin: 0px;
+   padding:0px;
+   text-align: center;
+}
+
+
+
