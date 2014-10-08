@@ -88,12 +88,12 @@ emouseatlas.emap.tiledImagePointClick = function() {
    var ALLOW_CLOSEST_MARKERS = true; // more permanent (from checkbox)
    var SHOW_MARKER_TXT = true;
    var MOVING = false;
-   var imgDir = "../../images/";
-   var srcSelected = imgDir + "mapIconSelected.png";
-   var srcClosest = imgDir + "mapIconClosest.png";
-   var srcHighlighted = imgDir + "mapIconHighlighted.png";
-   var srcClose = imgDir + "close_10x8.png";
-   var srcClose2 = imgDir + "close2_10x8.png";
+   var imgDir;
+   var srcSelected;
+   var srcClosest;
+   var srcHighlighted;
+   var srcClose;
+   var srcClose2;
    var CONTEXT_MENU = false;
    var SHOWING_ALL_MARKERS = false;
    var stagedOntologyUrl;
@@ -132,6 +132,13 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       model.register(this);
       view.register(this);
+
+      imgDir = model.getInterfaceImageDir();
+      srcSelected = imgDir + "mapIconSelected.png";
+      srcClosest = imgDir + "mapIconClosest.png";
+      srcHighlighted = imgDir + "mapIconHighlighted.png";
+      srcClose = imgDir + "close_10x8.png";
+      srcClose2 = imgDir + "close2_10x8.png";
 
       pointClickImgData = model.getPointClickImgData();
       if(_debug) console.log("pointClickImgData ",pointClickImgData);
@@ -400,6 +407,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 	 if(titleInfo[i].plate === subplate) {
 	    infoDetails = titleInfo[i];
 	    found = true;
+	    //console.log(infoDetails);
 	    break;
 	 }
       }
@@ -535,7 +543,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // setViewerTitle:
 
    //---------------------------------------------------------------
-   var updateViewerTitle = function (indx) {
+   var updateViewerTitle = function (multiple, indx) {
 
       var plate;
       var subplate;
@@ -559,6 +567,8 @@ emouseatlas.emap.tiledImagePointClick = function() {
          return false;
       }
 
+      //console.log(titleInfo);
+
       plate = pointClickImgData.plate;
       subplate = pointClickImgData.subplate;
       subplateAlpha = subplate.replace(/\d+/g, '');
@@ -579,17 +589,36 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       if(!found) return false;
 
+      //console.log(info);
+
       dpc = info.dpc;
-      if(indx > -1) {
+      if(multiple) {
 	 stray = dpc.split(';');
-	 dpc = stray[indx];
+	 if(plate === "03") {
+	    if(indx === 0) {
+	       dpc = stray[0];
+	    } else {
+	       dpc = stray[1];
+	    }
+	 } else {
+	    dpc = stray[0];
+	 }
       }
       title += " (" + dpc + " dpc)";
 
       theiler = info.stage;
-      if(indx > -1) {
+      if(multiple) {
 	 stray = theiler.split(';');
-	 theiler = stray[indx];
+	 theiler = stray[0];
+	 if(plate === "03") {
+	    if(indx === 0) {
+	       theiler = stray[0];
+	    } else {
+	       theiler = stray[1];
+	    }
+	 } else {
+	    theiler = stray[0];
+	 }
       }
       title += " TS " + theiler;
 
@@ -601,7 +630,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // updateViewerTitle:
 
    //---------------------------------------------------------------
-   var updateInfoIFrame = function (indx) {
+   var updateInfoIFrame = function (multiple, indx) {
 
       var details;
       var plate;
@@ -611,14 +640,17 @@ emouseatlas.emap.tiledImagePointClick = function() {
       var infoDetails;
       var infoDetailsTrimmed = {};
       var stray;
+      var dpc;
+      var theiler;
+      var carnegie;
+      var witschi;
+      var desc;
+      var indx1;
+      var indx2;
+      var indx3;
       var str;
       var titleIFrame;
       var found = false;
-
-      //console.log("indx ", indx);
-      if(indx === undefined) {
-         return false;
-      }
 
       plate = pointClickImgData.plate;
       subplate = pointClickImgData.subplate;
@@ -638,10 +670,26 @@ emouseatlas.emap.tiledImagePointClick = function() {
          return false;
       }
 
-      //console.log("setInfoIFrame infoDetails: ",infoDetails);
-
       infoDetailsTrimmed.crLength = infoDetails.crLength;
-      infoDetailsTrimmed.description = infoDetails.description;
+
+      // plate 03 is split across two embryos but has three 'cartoons'
+      if(plate === "03") {
+         //assumes the description is ...
+	 //a—e Advanced egg cylinder stage embryo; f—j,k—o Two advanced egg cylinder/early primitive streak stage embryos. These embryos all sectioned transversely from the region of the ectoplacental cone towards the distal region of the embryonic pole.
+	 indx1 = infoDetails.description.indexOf("; f");
+	 indx1 += 1.0;
+	 indx2 = infoDetails.description.indexOf("These embryos");
+
+         if(indx === 0) {
+            desc = infoDetails.description.slice(0, indx1) + "<br>" + infoDetails.description.slice(indx2);
+         } else {
+            desc = infoDetails.description.slice(indx1, indx2) + '<br>' + infoDetails.description.slice(indx2);
+         }
+      } else {
+         desc = infoDetails.description;
+      }
+      infoDetailsTrimmed.description = desc;
+
       infoDetailsTrimmed.plate = infoDetails.plate;
       infoDetailsTrimmed.sectionType = infoDetails.sectionType;
 
@@ -652,23 +700,55 @@ emouseatlas.emap.tiledImagePointClick = function() {
       }
 
       stray = infoDetails.stage.split(';');
-      //console.log("stage: ",stray);
-      infoDetailsTrimmed.stage = stray[indx];
+      // plate 03 is split across two embryos
+      if(plate === "03") {
+         if(indx === 0) {
+            theiler = stray[0];
+         } else {
+            theiler = stray[1];
+         }
+      } else {
+         theiler = stray[0];
+      }
+      infoDetailsTrimmed.stage = theiler;
 
       stray = infoDetails.dpc.split(';');
-      //console.log("dpc: ",stray);
-      infoDetailsTrimmed.dpc = stray[indx];
+      if(plate === "03") {
+         if(indx === 0) {
+            dpc = stray[0];
+         } else {
+            dpc = stray[1];
+         }
+      } else {
+         dpc = stray[0];
+      }
+      infoDetailsTrimmed.dpc = dpc;
 
       stray = infoDetails.carnegie.split(';');
-      //console.log("carnegie: ",stray);
-      infoDetailsTrimmed.carnegie = stray[indx];
+      if(plate === "03") {
+         if(indx === 0) {
+            carnegie = stray[0];
+         } else {
+            carnegie = stray[1];
+         }
+      } else {
+         carnegie = stray[0];
+      }
+      infoDetailsTrimmed.carnegie = carnegie;
 
       stray = infoDetails.witschi.split(';');
-      //console.log("witschi: ",stray);
-      infoDetailsTrimmed.witschi = stray[indx];
+      if(plate === "03") {
+         if(indx === 0) {
+            witschi = stray[0];
+         } else {
+            witschi = stray[1];
+         }
+      } else {
+         witschi = stray[0];
+      }
+      infoDetailsTrimmed.witschi = witschi;
 
       details = {plate:plate, subplate:subplate, info:infoDetailsTrimmed};
-      //console.log("updateInfoIFrame infoDetailsTrimmed: ",infoDetailsTrimmed);
 
       // set up info frame
       emouseatlas.emap.titleInfo.initialise({
@@ -817,6 +897,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
          return false;
       }
       if(_debug) console.log("getPlateDataCallback json ",json);
+      //console.log("getPlateDataCallback json ",json);
 
       subplateNames = storeSubplateNames(json);
       //if(_debug) console.log(subplateNames," ",subplateImgNames);
@@ -1112,6 +1193,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
          return undefined;
       }
 
+      //console.log(plate);
       return plate.images;
 
    };  // getSubplateData
@@ -1153,6 +1235,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
       for(i=0; i<len; i++) {
          key = keys[i];
 	 //console.log("setMarkerTable key ", key);
+	 //console.log(subplateMarkerDetails[key]);
          descr = subplateMarkerDetails[key].descr;
 	    // set up the table
 	    var row = new Element("tr", {
@@ -1223,6 +1306,11 @@ emouseatlas.emap.tiledImagePointClick = function() {
       len = subplateData.length;
 
       for(i=0; i<len; i++) {
+	 /*
+	 if(i === 0) {
+	    console.log(subplateData);
+	 }
+	 */
          imageData = subplateData[i];
          //if(_debug) console.log(imageData);
 	 locations = imageData.locations;
@@ -1380,7 +1468,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 	          smallLabel = makeMarkerSmallLabel(term);
 	          //bigLabel = makeMarkerBigLabel(term);
 	          flag = makeMarkerFlag(term, flags.length);
-	          subplateMarkerDetails[key].EmapId = term.externalRef.source;
+	          subplateMarkerDetails[key].EmapId = term.externalRef.emap;
 	          subplateMarkerDetails[key].EmapaId = term.externalRef.emapa;
 	          subplateMarkerDetails[key].descr = term.description;
 	          subplateMarkerDetails[key].smallLabel = smallLabel;
@@ -1797,7 +1885,10 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       var plate;
       var subplate;
+      var reg;
       var infoDetails;
+      var stage;
+      var stageArr = [];
       var key;
       var multiple;
       var len;
@@ -1813,6 +1904,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       plate = pointClickImgData.plate;
       subplate = pointClickImgData.subplate;
+      //console.log("%s, %s",plate, subplate);
 
       len = titleInfo.length;
       for(i=0; i<len; i++) {
@@ -1826,6 +1918,25 @@ emouseatlas.emap.tiledImagePointClick = function() {
          stage = infoDetails.stage;
       } else {
          return false;
+      }
+
+      // some plates span stages, we just use the earliest.
+      stageArr = utils.extractNumbersFromString(stage, "doTableLink");
+      //console.log(stage);
+      //console.log(stageArr);
+
+      // deal with the fact that plate 03 covers 2 embryos
+      if(subplate === "03") {
+         reg = /03[a-e]/;
+         if(currentImg.match(reg)) {
+            //console.log("First Embryo");
+	    stage = stageArr[0];
+	 } else {
+            //console.log("Second or third Embryo");
+	    stage = stageArr[1];
+	 }
+      } else {
+	 stage = stageArr[0];
       }
 
       multiple = (selectedRowKeys.length > 1) ? true : false;
@@ -4160,8 +4271,10 @@ emouseatlas.emap.tiledImagePointClick = function() {
       var zsel;
       var entry;
       var num;
-      var indx = undefined;
-      var multiple = false;
+      var multiple;
+      var indx;
+
+      multiple = false;
 
       //console.log("enter doDistChanged");
       wlzToStackOffset = model.getWlzToStackOffset();
@@ -4170,25 +4283,27 @@ emouseatlas.emap.tiledImagePointClick = function() {
       zsel = model.getZSelectorInfo();
       //console.log("doDistChanged zsel ",zsel);
       if(zsel.imgRange && zsel.imgRange.length > 1) {
+	 multiple = true;
          num = zsel.imgRange.length;
 	 distance = model.getDistance();
 	 cur = distance.cur;
 	 cur2 = (model.isArrayStartsFrom0()) ? cur : cur - 1;
 	 cur3 = cur2 + wlzToStackOffset;
 	 //console.log("d %d, imgRange ",cur3,zsel.imgRange);
+	 //console.log("d %d",cur3);
 	 for(i=0; i<num; i++) {
 	    entry = zsel.imgRange[i];
 	    if(cur3 >= entry.min && cur3 <= entry.max) {
+	       //console.log("i %d, entry.min %d, entry.max %d",i,entry.min,entry.max);
 	       //aspectRatio = entry.aspectRatio;
 	       indx = i;
-	       multiple = true;
 	       break;
 	    }
 	 }
       }
 
-      updateViewerTitle(indx);
-      updateInfoIFrame(indx); 
+      updateViewerTitle(multiple, indx);
+      updateInfoIFrame(multiple, indx); 
 
    }; // doDistChanged
    

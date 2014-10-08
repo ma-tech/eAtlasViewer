@@ -399,7 +399,7 @@ var tiledImage3DFeedback = new Class ({
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges, from) {
 
-      if(modelChanges.sectionChanged === true) {
+      if(modelChanges.locator === true) {
          //console.log("tiledImage3DFeedback sectionChanged:");
          this.setNewPos();
       }

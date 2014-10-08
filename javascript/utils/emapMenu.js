@@ -217,8 +217,8 @@ emouseatlas.emap.EmapMenu = function() {
 
       addRightMouseDownHandler();
       buildMenus();
-      emouseatlas.emap.utilities.addEvent(document, 'mouseup', doMouseUp, false);
-      emouseatlas.emap.utilities.addEvent(document, 'mousedown', doMouseDown, false);
+      emouseatlas.emap.utilities.addEvent(document, 'mouseup', doMouseUp_menu, false);
+      emouseatlas.emap.utilities.addEvent(document, 'mousedown', doMouseDown_menu, false);
 
    };
 
@@ -278,14 +278,18 @@ emouseatlas.emap.EmapMenu = function() {
 
    //---------------------------------------------------------
    var rightMouseDownHandler = function (e) {
-      if(e.preventDefault) {
-         e.preventDefault();
-      }
-      if(e.stopPropagation) {
-         e.stopPropagation();
-      }
+
+      var evt;
 
       evt = e || window.event;
+
+      if(evt.preventDefault) {
+         evt.preventDefault();
+      }
+      if(evt.stopPropagation) {
+         evt.stopPropagation();
+      }
+
       target = emouseatlas.emap.utilities.getTarget(evt);
       X = emouseatlas.emap.utilities.getMouseX(evt);
       Y = emouseatlas.emap.utilities.getMouseY(evt);
@@ -387,8 +391,9 @@ emouseatlas.emap.EmapMenu = function() {
 
 
    //---------------------------------------------------------
-   var doMouseDown = function (e) {
+   var doMouseDown_menu = function (e) {
 
+      var evt;
       var buttons;
       var modifiers;
       var target;
@@ -397,22 +402,22 @@ emouseatlas.emap.EmapMenu = function() {
       var id;
       var klass;
       var type;
-      var evt;
       var isForContext = false;
       var highestLevel;
       var targetWithMenu;
 
-      buttons = emouseatlas.emap.utilities.whichMouseButtons(e);
-      modifiers = emouseatlas.emap.utilities.whichModifierKeys(e);
-      target = emouseatlas.emap.utilities.getTarget(e);
-      //console.log("doMouseDown target ",target);
-      X = emouseatlas.emap.utilities.getMouseX(e);
-      Y = emouseatlas.emap.utilities.getMouseY(e);
-      position = {x:X, y:Y};
       evt = e || window.event;
+
+      buttons = emouseatlas.emap.utilities.whichMouseButtons(evt);
+      modifiers = emouseatlas.emap.utilities.whichModifierKeys(evt);
+      target = emouseatlas.emap.utilities.getTarget(evt);
+      //console.log("doMouseDown_menu target ",target);
+      X = emouseatlas.emap.utilities.getMouseX(evt);
+      Y = emouseatlas.emap.utilities.getMouseY(evt);
+      position = {x:X, y:Y};
       targetWithMenu = getTargetWithMenu(target);
 
-      //console.log("emapMenu.doMouseDown %s, target %s",menuName,target.id);
+      //console.log("emapMenu.doMouseDown_menu %s, target %s",menuName,target.id);
       if(targetWithMenu === undefined) {
          //console.log("targetWithMenu === undefined %s",menuName);
          return;
@@ -426,44 +431,48 @@ emouseatlas.emap.EmapMenu = function() {
       klass = targetWithMenu.className;
       type = getMenuType(id);
 
-      //console.log("emapMenu.doMouseDown %s, targetWithMenu %s, class %s, type %s",menuName,id,klass,type);
+      //console.log("emapMenu.doMouseDown_menu %s, targetWithMenu %s, class %s, type %s",menuName,id,klass,type);
 
       highestLevel = getHighestMenuLevel(id);
       targetWithMenu = $(id);
       isForContext = false;
 
-      if(e.preventDefault) {
-         e.preventDefault();
+      if(evt.preventDefault) {
+         evt.preventDefault();
       }
-      if(e.stopPropagation) {
-         e.stopPropagation();
+      if(evt.stopPropagation) {
+         evt.stopPropagation();
       }
 
       return false;
    };
 
    //---------------------------------------------------------
-   var doMouseUp = function (e) {
+   var doMouseUp_menu = function (e) {
     
-      //console.log("doMouseUp %s",menuName);
+      //console.log("doMouseUp_menu %s",menuName);
+      var evt;
 
-      if(e.preventDefault) {
-         e.preventDefault();
-      }
-      if(e.stopPropagation) {
-         e.stopPropagation();
+      evt = e || window.event;
+
+      // don't do evt.stopPropagation ...
+      // it causes html5 sliders
+      // to jump to previous value on mouse move
+
+      if(evt.stopPropagation) {
+         evt.stopPropagation();
       }
 
-      var target = emouseatlas.emap.utilities.getTarget(e);
+      var target = emouseatlas.emap.utilities.getTarget(evt);
       var id = target.id;
       if(id === undefined || id === null || id === "") {
-         //console.log("doMouseUp %s, no target.id",menuName);
+         //console.log("doMouseUp_menu %s, no target.id",menuName);
          hideMenus(-1);
          return;
       }
       var type = getMenuType(id);
       if(type === undefined) {
-         //console.log("doMouseUp %s, type undefined",menuName);
+         //console.log("doMouseUp_menu %s, type undefined",menuName);
          //hideMenus(-1);
          return;
       }
@@ -733,7 +742,7 @@ emouseatlas.emap.EmapMenu = function() {
 		       "class": "emapMenuItem chkbx",
 		     });
 		  chkbx.inject(menuItem, 'inside');
-		  emouseatlas.emap.utilities.addEvent(chkbx, 'mouseup', doMouseUp, false);
+		  emouseatlas.emap.utilities.addEvent(chkbx, 'mouseup', doMouseUp_menu, false);
 	       }
 	       if(content[contentIndx].radio) {
 	          //console.log("buildMenuItems %s chk ",content[contentIndx].name[0],chk);
@@ -748,7 +757,7 @@ emouseatlas.emap.EmapMenu = function() {
 		       "class": "emapMenuItem radio",
 		     });
 		  radio.inject(menuItem, 'inside');
-		  emouseatlas.emap.utilities.addEvent(radio, 'mouseup', doMouseUp, false);
+		  emouseatlas.emap.utilities.addEvent(radio, 'mouseup', doMouseUp_menu, false);
 	       }
 	    } else {
 	       moreImg = new Element('img', {
@@ -879,7 +888,7 @@ emouseatlas.emap.EmapMenu = function() {
 		       "class": "emapMenuItem chkbx",
 		     });
 		  chkbx.inject(menuItem, 'inside');
-		  emouseatlas.emap.utilities.addEvent(chkbx, 'mouseup', doMouseUp, false);
+		  emouseatlas.emap.utilities.addEvent(chkbx, 'mouseup', doMouseUp_menu, false);
 	       }
 	       if(content[contentIndx].radio) {
 		  chk = content[contentIndx].checked;
@@ -893,7 +902,7 @@ emouseatlas.emap.EmapMenu = function() {
 		       "class": "emapMenuItem radio",
 		     });
 		  radio.inject(menuItem, 'inside');
-		  emouseatlas.emap.utilities.addEvent(radio, 'mouseup', doMouseUp, false);
+		  emouseatlas.emap.utilities.addEvent(radio, 'mouseup', doMouseUp_menu, false);
 	       }
 	    } else {
 	       moreImg = new Element('img', {
@@ -947,13 +956,7 @@ emouseatlas.emap.EmapMenu = function() {
    //---------------------------------------------------------
    var doMouseOverItem = function (e) {
 
-      if(e.preventDefault) {
-         e.preventDefault();
-      }
-      if(e.stopPropagation) {
-         e.stopPropagation();
-      }
-
+      var evt;
       var target;
       var id;
       var item;
@@ -970,8 +973,16 @@ emouseatlas.emap.EmapMenu = function() {
       var subMenuTop;
       var subMenuLeft;
 
+      evt = e || window.event;
 
-      target = emouseatlas.emap.utilities.getTarget(e);
+      if(evt.preventDefault) {
+         evt.preventDefault();
+      }
+      if(evt.stopPropagation) {
+         evt.stopPropagation();
+      }
+
+      target = emouseatlas.emap.utilities.getTarget(evt);
       id = target.id;
       item = $(id);
       itemParent = item.parentNode;

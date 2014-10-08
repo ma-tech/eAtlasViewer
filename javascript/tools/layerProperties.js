@@ -48,26 +48,31 @@ emouseatlas.emap.layerProperties = function() {
    var view;
    var util;
    var trgt;
-   var project;
    var currentLayer;
    var prevLayer;
+   var nLayers;
    var opacitySlider;
    var redSlider;
    var greenSlider;
    var blueSlider;
-   var opacityValText;
-   var redValText;
-   var greenValText;
-   var blueValText;
+   var opacityNumber;
+   var redNumber;
+   var greenNumber;
+   var blueNumber;
    var layerPropsTitleTextDiv;
    var layerPropsDragContainerId;
    var isVisible;
+   var height;
+   var x_left;
+   var y_top;
    var H_OPACITY;
    var H_OPACITY_FILTER;
    var H_OPACITY_RENDERMODE;
    var H_OPACITY_FILTER_RENDERMODE;
-   var height;
    var MOUSE_DOWN;
+   var EXT_CHANGE;
+   var NUMBER_CHANGE;
+   var EXISTS;
    var _debug;
 
    //---------------------------------------------------------
@@ -77,12 +82,19 @@ emouseatlas.emap.layerProperties = function() {
 
       var targetId;
       var target;
+      var layerData;
+      var layer;
+      var currentLayerName;
       var sliderLength;
       var isHorizontal;
       var layerPropsDragContainer;
       var layerPropsContainer;
+      var layerPropsToolContainer;
       var layerPropsTitleTextContainer;
-      var layerPropsForm;
+      var imgPath;
+      var closeImg1;
+      var closeImg2;
+      //var layerPropsForm;
       var fs1;
       var fs2;
       var fs3;
@@ -90,19 +102,14 @@ emouseatlas.emap.layerProperties = function() {
       var legend2;
       var legend3;
       //------------------------
-      var sectionRadioLabel;
-      var shadowRadioLabel;
-      var domintRadioLabel;
-      var voxintRadioLabel;
-      var sectionRadio;
-      var shadowRadio;
-      var domintRadio;
-      var voxintRadio;
+      var renderModeSelect;
+      var renderModes;
+      //------------------------
 
       targetId = model.getProjectDivId();
       target = $(targetId);
 
-      layerPropsDragContainer = $("layerPropsDragContainer");
+      layerPropsDragContainer = $(layerPropsDragContainerId);
 
       if(layerPropsDragContainer) {
          layerPropsDragContainer.parentNode.removeChild(layerPropsDragContainer);
@@ -114,9 +121,14 @@ emouseatlas.emap.layerProperties = function() {
       // the drag container
       //----------------------------------------
       layerPropsDragContainer = new Element('div', {
-         'id': 'layerPropsDragContainer'
+         'id': layerPropsDragContainerId
       });
-      layerPropsDragContainer.setStyle('height', height);
+
+      layerPropsDragContainer.setStyles({
+         "height": height,
+         "top": y_top + "px",
+         "left": x_left + "px"
+      });
 
       //----------------------------------------
       // the slider & checkbox container
@@ -135,16 +147,52 @@ emouseatlas.emap.layerProperties = function() {
       });
       layerPropsTitleTextDiv.set('text', 'layer properties');
 
-      layerPropsForm = new Element('form', {
-         'id': 'layerPropsForm',
-	 'name': 'layerPropsForm'
+      //---------------------------------------------------------
+      // the close button
+      //---------------------------------------------------------
+      imgPath = model.getInterfaceImageDir();
+      closeImg1 = imgPath + "close_10x8.png";
+      closeImg2 = imgPath + "close2_10x8.png";
+
+      closeButton = new Element('div', {
+	 'id': 'layerPropsCloseButton',
+	 'class': 'closeButton layerProps'
       });
+
+      closeImg = new Element( 'img', {
+	 'id': 'layerPropsCloseImg',
+	 'class': 'closeButtonImg',
+	 'src': closeImg1
+      });
+
+      //----------------------------------------
+      // add the elements
+      //----------------------------------------
 
       layerPropsDragContainer.inject(target, 'inside');
       layerPropsToolContainer.inject(layerPropsDragContainer, 'inside');
       layerPropsTitleTextContainer.inject(layerPropsDragContainer, 'inside');
       layerPropsTitleTextDiv.inject(layerPropsTitleTextContainer, 'inside');
-      layerPropsForm.inject(layerPropsToolContainer, 'inside');
+
+      closeImg.inject(closeButton, 'inside');
+      closeButton.inject(layerPropsTitleTextContainer, 'inside');
+
+      emouseatlas.emap.utilities.addButtonStyle('layerPropsCloseButton');
+
+      //--------------------------------
+      // add event handlers
+      //--------------------------------
+      closeButton.addEvent('mouseup', function(event){
+	 doClosed();
+      }); 
+
+      closeImg.addEvent('mouseover', function(){
+	 closeImg.set('src', closeImg2);
+      }); 
+      
+      closeImg.addEvent('mouseout', function(){
+	 closeImg.set('src', closeImg1);
+      }); 
 
       //-------------------------------------------------------------------------------
       if(hasOpacity) {
@@ -166,25 +214,27 @@ emouseatlas.emap.layerProperties = function() {
 	    'name': 'opacitySlider',
 	    'class': 'opacity',
 	    'type': 'range',
-	    'min': 0,
-	    'max': 255
+	    'min': '0.0',
+	    'max': '255.0'
 	 });
+	 //opacitySlider.setCustomValidity("");
+	 //opacitySlider.setAttribute("formnovalidate", "");
 
-	 opacityValText = new Element('input', {
-	    'id': 'opacityValText',
-	    'class': 'layerProps opacity',
-	    'type': 'text',
-	    'readOnly': 'readonly'
+	 opacityNumber = new Element('input', {
+	    'id': 'opacityNumber',
+	    'class': 'layerProps',
+	    'type': 'number',
+	    'min': '0.0',
+	    'max': '255.0'
 	 });
-	 opacityValText.set('value', "178");
 
 	 //--------------------------------
 	 // add the elements
 	 //--------------------------------
-	 fs1.inject(layerPropsForm, 'inside');
+	 fs1.inject(layerPropsToolContainer, 'inside');
 	 legend1.inject(fs1, 'inside');
 	 opacitySlider.inject(fs1, 'inside');
-	 opacityValText.inject(fs1, 'inside');
+	 opacityNumber.inject(fs1, 'inside');
 
 	 //--------------------------------
 	 // add event handlers
@@ -193,14 +243,15 @@ emouseatlas.emap.layerProperties = function() {
 	 opacitySlider.addEvent('input',function(e) {
 	    doLayerPropsSliderChanged(e);
 	 });
-	 opacitySlider.addEvent('mousemove',function(e) {
-	    doLayerPropsSliderMouseMoved(e);
-	 });
 	 opacitySlider.addEvent('mousedown',function(e) {
 	    enableDrag(e);
 	 });
 	 opacitySlider.addEvent('mouseup',function(e) {
 	    enableDrag(e);
+	 });
+      
+	 opacityNumber.addEvent('change',function(e) {
+	    doLayerPropsNumberChanged(e);
 	 });
 
       } // opacity
@@ -249,38 +300,41 @@ emouseatlas.emap.layerProperties = function() {
 	    'max': 255
 	 });
 
-	 redValText = new Element('input', {
-	    'id': 'redValText',
-	    'class': 'layerProps red',
-	    'type': 'text',
-	    'readOnly': 'readonly'
+	 redNumber = new Element('input', {
+	    'id': 'redNumber',
+	    'class': 'layerProps',
+	    'type': 'number',
+	    'min': 0,
+	    'max': 255
 	 });
 
-	 greenValText = new Element('input', {
-	    'id': 'greenValText',
-	    'class': 'layerProps green',
-	    'type': 'text',
-	    'readOnly': 'readonly'
+	 greenNumber = new Element('input', {
+	    'id': 'greenNumber',
+	    'class': 'layerProps',
+	    'type': 'number',
+	    'min': 0,
+	    'max': 255
 	 });
 
-	 blueValText = new Element('input', {
-	    'id': 'blueValText',
-	    'class': 'layerProps blue',
-	    'type': 'text',
-	    'readOnly': 'readonly'
+	 blueNumber = new Element('input', {
+	    'id': 'blueNumber',
+	    'class': 'layerProps',
+	    'type': 'number',
+	    'min': 0,
+	    'max': 255
 	 });
 
 	 //--------------------------------
 	 // add the elements
 	 //--------------------------------
-	 fs2.inject(layerPropsForm, 'inside');
+	 fs2.inject(layerPropsToolContainer, 'inside');
 	 legend2.inject(fs2, 'inside');
 	 redSlider.inject(fs2, 'inside');
-	 redValText.inject(fs2, 'inside');
+	 redNumber.inject(fs2, 'inside');
 	 greenSlider.inject(fs2, 'inside');
-	 greenValText.inject(fs2, 'inside');
+	 greenNumber.inject(fs2, 'inside');
 	 blueSlider.inject(fs2, 'inside');
-	 blueValText.inject(fs2, 'inside');
+	 blueNumber.inject(fs2, 'inside');
 
 	 //--------------------------------
 	 // add event handlers
@@ -291,9 +345,6 @@ emouseatlas.emap.layerProperties = function() {
 	 redSlider.addEvent('mousedown',function(e) {
 	    enableDrag(e);
 	 });
-	 redSlider.addEvent('mousemove',function(e) {
-	    doLayerPropsSliderMouseMoved(e);
-	 });
 	 redSlider.addEvent('mouseup',function(e) {
 	    enableDrag(e);
 	 });
@@ -302,9 +353,6 @@ emouseatlas.emap.layerProperties = function() {
 	 });
 	 greenSlider.addEvent('mousedown',function(e) {
 	    enableDrag(e);
-	 });
-	 greenSlider.addEvent('mousemove',function(e) {
-	    doLayerPropsSliderMouseMoved(e);
 	 });
 	 greenSlider.addEvent('mouseup',function(e) {
 	    enableDrag(e);
@@ -315,11 +363,18 @@ emouseatlas.emap.layerProperties = function() {
 	 blueSlider.addEvent('mousedown',function(e) {
 	    enableDrag(e);
 	 });
-	 blueSlider.addEvent('mousemove',function(e) {
-	    doLayerPropsSliderMouseMoved(e);
-	 });
 	 blueSlider.addEvent('mouseup',function(e) {
 	    enableDrag(e);
+	 });
+      
+	 redNumber.addEvent('change',function(e) {
+	    doLayerPropsNumberChanged(e);
+	 });
+	 greenNumber.addEvent('change',function(e) {
+	    doLayerPropsNumberChanged(e);
+	 });
+	 blueNumber.addEvent('change',function(e) {
+	    doLayerPropsNumberChanged(e);
 	 });
 
       } // filter
@@ -343,99 +398,78 @@ emouseatlas.emap.layerProperties = function() {
 	 });
 	 legend3.set('text', 'render mode');
 
-         sectionRadioLabel = new Element('label', {
-   	 'id': 'layerPropsSectionRadioLabel',
-   	 'class':'renderMode section',
-   	 'for': 'render_mode'
-         });
-         sectionRadio = new Element('input', {
-   	 'id': 'layerPropsSectionRadio',
-   	 'class':'renderMode section',
-   	 'type': 'radio',
-   	 'value': 'sect',
-   	 'name': 'renderMode',
-   	 'checked': 'true'
-         });
-   
-         shadowRadioLabel = new Element('label', {
-   	 'id': 'layerPropsShadowRadioLabel',
-   	 'class':'renderMode shadow',
-   	 'for': 'render_mode'
-         });
-         shadowRadio = new Element('input', {
-   	 'id': 'layerPropsShadowRadio',
-   	 'class':'renderMode shadow',
-   	 'type': 'radio',
-   	 'value': 'prjn',
-   	 'name': 'renderMode',
-         });
-   
-         domintRadioLabel = new Element('label', {
-   	 'id': 'layerPropsDomintRadioLabel',
-   	 'class':'renderMode domint',
-   	 'for': 'render_mode'
-         });
-         domintRadio = new Element('input', {
-   	 'id': 'layerPropsDomintRadio',
-   	 'class':'renderMode domint',
-   	 'type': 'radio',
-   	 'value': 'prjd',
-   	 'name': 'renderMode',
-   	 'checked': 'true'
-         });
-   
-         voxintRadioLabel = new Element('label', {
-   	 'id': 'layerPropsVoxintRadioLabel',
-   	 'class':'renderMode voxint',
-   	 'for': 'render_mode'
-         });
-         voxintRadio = new Element('input', {
-   	 'id': 'layerPropsVoxintRadio',
-   	 'class':'renderMode voxint',
-   	 'type': 'radio',
-   	 'value': 'prjv',
-   	 'name': 'renderMode',
-         });
-   
-         sectionRadioLabel.set('text', 'section');
-         shadowRadioLabel.set('text', 'shadow');
-         domintRadioLabel.set('text', 'domint');
-         voxintRadioLabel.set('text', 'voxint');
+	 renderModeSelect = new Element('select', {
+	    'id': 'renderModeSelect',
+	    'name': 'renderModeSelect',
+	    'class': 'renderMode'
+	 });
+
+         currentLayerName = view.getCurrentLayer();
+         layerData = model.getLayerData();
+	 layer = layerData[currentLayerName];
+	 renderModes = layer.props.renderModes;
+	 //console.log("currentLayerName %s renderModes ",currentLayerName, renderModes);
+
+	 option1 = new Element('option', {
+	    'id': 'option1',
+	    'class': 'renderMode',
+	    'value': 'sect'
+	 });
+	 option1.set('text', 'section');
+
+	 option2 = new Element('option', {
+	    'id': 'option2',
+	    'class': 'renderMode',
+	    'value': 'prjn'
+	 });
+	 option2.set('text', 'projection');
+
+	 option3 = new Element('option', {
+	    'id': 'option3',
+	    'class': 'renderMode',
+	    'value': 'prjv'
+	 });
+	 option3.set('text', 'pseudo 3d');
+
+	 option4 = new Element('option', {
+	    'id': 'option4',
+	    'class': 'renderMode',
+	    'value': 'prjd'
+	 });
+	 option4.set('text', 'pseudo 3d');
 
 	 //--------------------------------
 	 // add the elements
 	 //--------------------------------
-	 fs3.inject(layerPropsForm, 'inside');
+	 fs3.inject(layerPropsToolContainer, 'inside');
 	 legend3.inject(fs3, 'inside');
-         sectionRadioLabel.inject(fs3, 'inside');
-         shadowRadioLabel.inject(fs3, 'inside');
-         domintRadioLabel.inject(fs3, 'inside');
-         voxintRadioLabel.inject(fs3, 'inside');
-         sectionRadio.inject(sectionRadioLabel, 'inside');
-         shadowRadio.inject(shadowRadioLabel, 'inside');
-         domintRadio.inject(domintRadioLabel, 'inside');
-         voxintRadio.inject(voxintRadioLabel, 'inside');
-   
-   
+	 renderModeSelect.inject(fs3, 'inside');
+	 len = renderModes.length;
+	 for(i=0; i<len; i++) {
+	    switch(renderModes[i]) {
+	       case "sect":
+		  option1.inject(renderModeSelect, 'inside');
+	       break;
+	       case "prjn":
+		  option2.inject(renderModeSelect, 'inside');
+	       break;
+	       case "prjv":
+		  option3.inject(renderModeSelect, 'inside');
+	       break;
+	       case "prjd":
+		  option4.inject(renderModeSelect, 'inside');
+	       break;
+	    }
+	 }
 
 	 //--------------------------------
 	 // add event handlers
 	 //--------------------------------
-         sectionRadio.addEvent('click',function(e) {
-            doClickRadio(e);
-         });
-   
-         shadowRadio.addEvent('click',function(e) {
-            doClickRadio(e);
-         });
-   
-         domintRadio.addEvent('click',function(e) {
-            doClickRadio(e);
-         });
-   
-         voxintRadio.addEvent('click',function(e) {
-            doClickRadio(e);
-         });
+
+	 renderModeSelect.addEvent('change',function(e) {
+	    doRenderModeChanged(e);
+	 });
+
 
       } // renderMode
 
@@ -449,7 +483,7 @@ emouseatlas.emap.layerProperties = function() {
       var val;
       var indx;
       var prefix;
-      var textIp;
+      var numb;
       var opacityVal;
       var colVal;
       var params;
@@ -474,8 +508,8 @@ emouseatlas.emap.layerProperties = function() {
 
       indx = id.indexOf("Slider");
       prefix = id.substring(0,indx);
-      textIp = $(prefix + "ValText");
-      textIp.set('value', val);
+      numb = $(prefix + "Number");
+      numb.set('value', val);
 
       switch(prefix) {
          case "opacity":
@@ -489,16 +523,73 @@ emouseatlas.emap.layerProperties = function() {
          case "blue":
 	    colVal = Number(val);
 	    params = {type: prefix, value: colVal, fromSlider: true};
-	    view.setFilter(params);
+	    //console.log("doLayerPropsSliderChanged",params);
+	    view.setFilter(params, "doLayerPropsSliderChanged");
 	    break;
       }
    };
 
    //---------------------------------------------------------
-   var doLayerPropsSliderMouseMoved = function (e) {
+   var doLayerPropsNumberChanged = function (e) {
 
       var target;
       var id;
+      var indx;
+      var prefix;
+      var numb;
+      var val;
+      var opacityVal;
+      var colVal;
+      var params;
+
+      if(EXT_CHANGE) {
+         return false;
+      }
+
+      if(e.preventDefault) {
+	 e.preventDefault();
+      }
+      if(e.stopPropagation) {
+	 e.stopPropagation();
+      }
+
+      target = emouseatlas.emap.utilities.getTarget(e);
+      id = target.id;
+      val = target.value;
+
+      indx = id.indexOf("Number");
+      prefix = id.substring(0,indx);
+
+      NUMBER_CHANGE = true;
+
+      switch(prefix) {
+         case "opacity":
+	    val = validateInput(val);
+	    opacityVal = val / 255;
+	    opacityVal = opacityVal.toFixed(4);
+            //console.log("number changed to %d for %s",val,prefix);
+	    params = {value:opacityVal, fromSlider: true};
+	    view.setOpacity(params);
+	    break;
+         case "red":
+         case "green":
+         case "blue":
+	    colVal = validateInput(val);
+	    params = {type: prefix, value: colVal, fromSlider: true};
+	    //console.log("doLayerPropsSliderChanged",params);
+	    view.setFilter(params, "doLayerPropsSliderChanged");
+	    break;
+      }
+
+      return false;
+   };
+
+   //---------------------------------------------------------
+   var doRenderModeChanged = function (e) {
+
+      var target;
+      var id;
+      var mode;
 
       if(e.preventDefault) {
 	 e.preventDefault();
@@ -511,13 +602,29 @@ emouseatlas.emap.layerProperties = function() {
 
       id = target.id;
       if(id === undefined || id === null || id === "") {
-	 //console.log("doLayerPropsSliderChanged no target.id");
+	 console.log("doLayerPropsSliderChanged no target.id");
 	 return;
       }
-      if(!MOUSE_DOWN) {
-         target.blur();
-      }
 
+      mode = target.value;
+      console.log("doRenderModeChanged target.id %s value %s",id, mode);
+
+      currentLayer = view.getCurrentLayer();
+      view.setLayerRenderMode({layer:currentLayer, mode:mode});
+
+      return false;
+   };
+
+   //---------------------------------------------------------
+   var validateInput = function (val) {
+
+      var sane;
+
+      sane = isNaN(val) ? 0 : val;
+      sane = (sane < 0) ? 0 : sane;
+      sane = (sane > 255) ? 255 : sane;
+
+      return sane;
    };
 
    //---------------------------------------------------------
@@ -526,14 +633,14 @@ emouseatlas.emap.layerProperties = function() {
       var target;
       var dragContainer;
       //console.log(e);
-      dragContainer = $("layerPropsDragContainer");
+      dragContainer = $(layerPropsDragContainerId);
       target = emouseatlas.emap.utilities.getTarget(e);
       if(target === undefined) {
          return false;
       }
       //console.log("enableDrag target.id ",target.id);
 
-      dragContainer = $("layerPropsDragContainer");
+      dragContainer = $(layerPropsDragContainerId);
 
       if(e.type.toLowerCase() === "mousedown") {
          MOUSE_DOWN = true;
@@ -551,11 +658,6 @@ emouseatlas.emap.layerProperties = function() {
       //console.log("Focus");
    };
 
-   //---------------------------------------------------------
-   var doLayerPropsSliderFormChange = function (e) {
-      //console.log("Form");
-   };
-
    //---------------------------------------------------------------
    var setLayerProperties = function () {
 
@@ -569,9 +671,11 @@ emouseatlas.emap.layerProperties = function() {
       layer = layers[currentLayerName];
       props = layer.props;
 
+      //console.log(props);
+
       hasOpacity = props.opacity;
       hasFilter = props.filter;
-      hasRenderMode = props.renderMode;
+      hasRenderMode = (props.renderModes === undefined || props.renderModes === "false") ? false : true;
 
       if(hasOpacity && !hasFilter && !hasRenderMode) {
          height = H_OPACITY;
@@ -614,12 +718,13 @@ emouseatlas.emap.layerProperties = function() {
    var setToCurrentLayer = function () {
 
       var currentLayerName;
+      var layerData;
+      var layer;
       var val;
       var opacity;
       var filter;
-      var renderMode;
+      var renderModes;
       var mode;
-      var radios;
       var i;
 
       currentLayerName = view.getCurrentLayer();
@@ -634,53 +739,45 @@ emouseatlas.emap.layerProperties = function() {
 	 //console.log("layerProperties.setToCurrentLayer opacity ",opacity);
 	 val = Math.round(opacity * 255);
 	 opacitySlider.set('value', val);
-	 opacityValText.set('value', (val));
+	 opacityNumber.set('value', val);
       }
 
       if(hasFilter) {
 	 filter = view.getFilter(currentLayerName);
 	 val = parseInt(filter.red, 10);
 	 redSlider.set('value', val);
-	 redValText.set('value', val);
+	 redNumber.set('value', val);
 
 	 val = parseInt(filter.green, 10);
 	 greenSlider.set('value', val);
-	 greenValText.set('value', val);
+	 greenNumber.set('value', val);
 
 	 val = parseInt(filter.blue, 10);
 	 blueSlider.set('value', val);
-	 blueValText.set('value', val);
+	 blueNumber.set('value', val);
       }
 
       if(hasRenderMode) {
 	 renderMode = view.getLayerRenderMode(currentLayerName);
-	 mode = renderMode.mode.toLowerCase();
-	 radios = document.getElementsByName("renderMode");
-	 for( i = 0; i < radios.length; i++ ) {
-	    radio = radios[i];
-	    if(radio.value === mode) {
-	       radio.checked = true;
-	    }
-	 }
-	 //console.log("setToCurrentLayer layer %s, renderMode ",currentLayerName,mode);
-         view.setLayerRenderMode({layer:currentLayerName, mode:mode});
+	 //console.log("renderMode: ",renderMode);
+	 renderModeSelect.set('value', renderMode.mode);
       }
    };   // setToCurrentLayer
 
    //---------------------------------------------------------------
    var doClosed = function() {
       //console.log("%s doClosed:",name);
-      setPropertiesVisible(false);
+      setPropertiesVisible(false, "doClosed");
+      isVisible = false;
    };
 
    //---------------------------------------------------------------
-   var setPropertiesVisible = function(show) {
-      //console.log("properties setPropertiesVisible: ",show);
-      var props = $("layerPropsDragContainer");
+   var setPropertiesVisible = function(show, from) {
+      //console.log("setPropertiesVisible: %s, from %s",show, from);
+      var props = $(layerPropsDragContainerId);
       var viz = show ? "visible" : "hidden";
       props.setStyle("visibility", viz);
    };
-
 
    //---------------------------------------------------------
    //   public methods
@@ -697,23 +794,31 @@ emouseatlas.emap.layerProperties = function() {
 
       _debug = false;
 
-      project = (params.project === undefined) ? "emap" : params.project;
-
       dropTargetId = model.getProjectDivId();
+
+      nLayers = model.getLayerNames().length;
+      //console.log("nLayers ",nLayers);
+
+      x_left = params.x; 
+      y_top = params.y; 
 
       layerPropsDragContainerId = "layerPropsDragContainer";
 
       H_OPACITY = 30;
       H_OPACITY_FILTER = 100;
-      H_OPACITY_RENDERMODE = 124;
-      H_OPACITY_FILTER_RENDERMODE = 190;
+      H_OPACITY_RENDERMODE = 68;
+      H_OPACITY_FILTER_RENDERMODE = 133;
 
       MOUSE_DOWN = false;
+
+      EXISTS = false;
+
+      EXT_CHANGE = false;
+      NUMBER_CHANGE = false;
 
       emouseatlas.emap.drag.register({drag:layerPropsDragContainerId, drop:dropTargetId});
 
       prevLayer = undefined;
-      isVisible = false;
 
    }; // initialise
 
@@ -741,24 +846,32 @@ emouseatlas.emap.layerProperties = function() {
       //...................................
       if(viewChanges.showProperties === true) {
 
+	 //console.log("props: viewChanges.showProperties %s",viewChanges.showProperties);
+
 	 if (prevLayer === undefined) {
-	    setPropertiesVisible(true);
-	    isVisible = !isVisible;
+	    isVisible = true;
 	    prevLayer = currentLayer;
 	 } else if (currentLayer === prevLayer) {
 	    isVisible = !isVisible;
-	    setPropertiesVisible(isVisible);
 	 } else {
-	    setPropertiesVisible(true);
 	    isVisible = true;
 	    prevLayer = currentLayer;
 	 }
+
+	 EXISTS = true;
+	 setPropertiesVisible(isVisible, "viewChanges.showProperties");
       }
 
       //...................................
       if(viewChanges.layer === true) {
 
          var XY;
+
+	 //console.log("props: viewChanges.layer %s, EXISTS %s",viewChanges.layer, EXISTS);
+
+	 if(nLayers === 1 && EXISTS) {
+	    return false;
+	 }
 
 	 currentLayer = view.getCurrentLayer();
          createElements();
@@ -770,9 +883,43 @@ emouseatlas.emap.layerProperties = function() {
 	    $(layerPropsDragContainerId).setStyle("left", XY.x + 'px');
 	    $(layerPropsDragContainerId).setStyle("top", XY.y + 'px');
 	 }
+
       }
 
-      //console.log("exit tiledImagePropertiesTool viewUpdate:");
+      //...................................
+      if(viewChanges.opacity === true) {
+
+	 currentLayer = view.getCurrentLayer();
+	 opacity = view.getOpacity(currentLayer);
+	 //console.log("viewChanges.opacity  for layer %s to %d",currentLayer,opacity);
+	 if(NUMBER_CHANGE) {
+	    EXT_CHANGE = true;
+	       opacitySlider.value = opacity * 255;
+	       opacityNumber.value = Math.round(opacity * 255);
+	    EXT_CHANGE = false;
+            NUMBER_CHANGE = false;
+	 }
+      }
+
+      //...................................
+      if(viewChanges.filter === true) {
+
+	 currentLayer = view.getCurrentLayer();
+	 filter = view.getFilter(currentLayer);
+	 //console.log("viewChanges.filter  for layer %s to ",currentLayer,filter);
+	 if(NUMBER_CHANGE) {
+	    EXT_CHANGE = true;
+	       redSlider.value = filter.red;
+	       redNumber.value = filter.red;
+	       greenSlider.value = filter.green;
+	       greenNumber.value = filter.green;
+	       blueSlider.value = filter.blue;
+	       blueNumber.value = filter.blue;
+	    EXT_CHANGE = false;
+            NUMBER_CHANGE = false;
+	 }
+      }
+
    }; // viewUpdate
 
    //---------------------------------------------------------------

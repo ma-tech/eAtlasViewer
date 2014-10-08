@@ -257,6 +257,7 @@ var DraggableWindow = new Class ({
 	 y = (y > vpHeight - this.height) ? (vpHeight - (this.height + (3 * this.edgeWidth))) : y;
 
 	 //console.log("vpw %d, thisW %d, x %d, %d",vpWidth,this.width,x,(x+this.width));
+
 	 this.setPosition(x,y);
 	 this.distToEdge = this.calcDistToEdges("handleDrag");
 	 if(this.distToEdge) {
@@ -372,13 +373,14 @@ var DraggableWindow = new Class ({
    //--------------------------------------------------------------
    setPosition: function(x,y) {
 
-      // console.log("enter DraggableWindow.setPosition:",this.initiator.name,x,y);
+      //console.log("enter DraggableWindow.setPosition:",this.initiator.name,x,y);
       this.x = x;
       this.y = y;
 
-      if(this.initiator.name === "colChooser") {
-         //console.log("enter DraggableWindow.setPosition:",this.initiator.name,x,y);
-      }
+      //if(this.initiator.name === "colChooser") {
+      //if(this.initiator.name === "Locator") {
+       //  console.log("enter DraggableWindow.setPosition: %s",this.toBottom);
+      //}
       
       if(this.toRight) {
          this.container.style.right = this.x + 'px';

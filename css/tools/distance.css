@@ -18,17 +18,53 @@
  * Boston, MA  02110-1301, USA.
  *
  */
-/* style for distanceTool */
+/* style for magnification  */
 
-.distanceArrows {
+#distDragContainer {
    position: absolute;
-   top: 1px;
-   border: none;
-   padding: 0px;
+   left: 10px;
+   top: 357px;
+   width: 130px;
    margin: 0px;
-   color: #000;
-   width: 30px;
-   height: 18px;
-   border: solid 1px #f00;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
+   visibility: hidden;
+   z-index: 10;
+}
+
+#distSliderContainer {
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
    border: none;
 }
+
+fieldset.dist {
+}
+
+legend.dist {
+   float: left;
+   position: relative;
+   left: 2px;
+   top: 0px;
+}
+
+input[type='text'].dist {
+   width: 35px;
+   height: 14px;
+}
+
+input[type='range'].dist {
+   top: -2px;
+   left: 2px;
+   width: 125px;
+}
+
+input[type='number'].dist {
+   top: 0px;
+   left: 6px;
+   width: 36px;
+}
+

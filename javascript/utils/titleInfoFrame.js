@@ -82,6 +82,8 @@ emouseatlas.emap.titleInfo = function () {
       var subplate;
       var info;
 
+      //console.log(params);
+
       _debug = false;
       targetId = params.targetId;
       target = document.getElementById(params.targetId);
@@ -139,7 +141,8 @@ emouseatlas.emap.titleInfo = function () {
       var emdash = '—';
 
 
-      rowLabels = ["Age", "Description", "Section orientation", "Crown—rump length", "Theiler Stage", "rat, Witschi Stage", "human, Carnegie Stage"];
+//      rowLabels = ["Age", "Description", "Section orientation", "Crown—rump length", "Theiler Stage", "rat, Witschi Stage", "human, Carnegie Stage"];
+      rowLabels = ["Age", "Description", "Section orientation", "Crown\u2014rump length", "Theiler Stage", "rat, Witschi Stage", "human, Carnegie Stage"];
 
       dpcTxt = info.dpc;
       dpcTxt += " days p.c.";
@@ -166,18 +169,22 @@ emouseatlas.emap.titleInfo = function () {
       var iframeContainer;
       var stage;
       var bottomDiv;
-      var theilerBookA;
+      var stageDefDiv;
+      var emapStageDefA;
       var emapAnatomyA;
-      var url_theilerBook;
+      var url_emapStageDef;
       var url_emapAnatomy;
 
       stage = info.stage;
+      //console.log("stage %d",stage);
       // replaces leading non-digits with nothing
       stage = stage.replace( /^\D+/g, '');
+      //console.log("stage %d",stage);
       stage = parseInt(stage);
       //console.log("stage %d",stage);
+      //console.log("stage %d",stage);
 
-      url_theilerBook = "http://testwww.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
+      url_emapStageDef = "http://testwww.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
       url_emapAnatomy = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
 
       mainContainer = mydocument.getElementById("titleInfoMainContainer");
@@ -199,17 +206,17 @@ emouseatlas.emap.titleInfo = function () {
       });
       bottomTxt2 = new Element('text', {
          'id': 'wlzIIPViewerTitleIFrameBottomTxt2',
-	 'text': ' pages '
+	 'text': ' page'
       });
 
-      theilerDiv = new Element('div', {
-         'id': 'wlzIIPViewerTitleIFrameTheilerDiv'
+      stageDefDiv = new Element('div', {
+         'id': 'wlzIIPViewerTitleIFrameStageDefDiv'
       });
 
-      theilerBookA = new Element('a', {
-         'id': 'theilerBookAnchor',
-	 'text':'Theiler Book',
-	 'href':url_theilerBook,
+      emapStageDefA = new Element('a', {
+         'id': 'emapStageDefAnchor',
+	 'text':'Theiler Stage Criteria',
+	 'href':url_emapStageDef,
 	 'target': '_parent'
       });
 
@@ -226,10 +233,10 @@ emouseatlas.emap.titleInfo = function () {
       });
 
       bottomDiv.inject(mainContainer, 'inside');
-      theilerDiv.inject(bottomDiv, 'inside');
-      bottomTxt.inject(theilerDiv, 'before');
+      stageDefDiv.inject(bottomDiv, 'inside');
+      bottomTxt.inject(stageDefDiv, 'before');
       emapADiv.inject(bottomDiv, 'inside');
-      theilerBookA.inject(theilerDiv, 'inside');
+      emapStageDefA.inject(stageDefDiv, 'inside');
       emapAnatomyA.inject(emapADiv, 'inside');
       bottomTxt2.inject(emapADiv, 'after');
    };
@@ -318,8 +325,9 @@ emouseatlas.emap.titleInfo = function () {
       klass = "";
       nrows = rowLabels.length;
       project = model.getProject();
+      //console.log(project);
 
-      iframe.className = "wlzIIPViewerIFrame titleInfo "+ project;
+      iframe.className = "wlzIIPViewerIFrame titleInfo " + project;
       iframeContainer.className = "wlzIIPViewerIFrameContainer titleInfo " + project;
 
       infoTable = doc.createElement('table');

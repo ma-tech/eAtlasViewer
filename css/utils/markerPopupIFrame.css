@@ -149,16 +149,16 @@ tr.markerPopup {
 }
 .popupBalloonImg {
    position: relative;
-   top: -5px;
+   top: -2px;
    left: 0px;
    width: 110%;
-   height: 30px;
+   height: 24px;
    padding: 0px;
    margin: 0px;
 }
 .popupBalloonTxt {
    position: absolute;
-   top: -1px;
+   top: 1px;
    padding: 0px;
    margin: 0px;
    text-align: left;

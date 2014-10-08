@@ -346,7 +346,7 @@
 
 .markerLabelDiv {
    position: absolute;
-   width: 90px;
+   max-width: 115px;
    padding: 2px 4px;
    margin: 0px;
    color: #111;

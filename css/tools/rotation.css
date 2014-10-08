@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2010 Medical research Council, UK.
  *
- * This program is free software; you can redistribute it and/or
+ * This program is free software; you can rerotribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be
+ * This program is rotributed in the hope that it will be
  * useful but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
  * PURPOSE.  See the GNU General Public License for more
@@ -18,23 +18,113 @@
  * Boston, MA  02110-1301, USA.
  *
  */
-/* style for tiledImageRotationTool */
+/* style for rotation controls  */
 
-#orthogonalContainer {
+.rotTitleTextContainer {
    position: absolute;
-   left: 2px;
-   top: 60px;
+   top: -12px;
    padding: 0px;
    margin: 0px;
+   border: none;
    color: #000;
-   height: 20px;
-   border: solid 1px #aaa;
+}
+
+.rotTitleTextDiv {
+   border: none;
+   padding: 0px;
+   margin: 0px;
+   font-size: 9px;
+}
+
+#rotDragContainer {
+   position: absolute;
+   left: 10px;
+   top: 133px;
+   width: 130px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
+   visibility: hidden;
+   z-index: 10;
+}
+
+#rotToolContainer {
+   position: relative;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   height: 95px;
+}
+
+#rotSliderContainer {
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
    border: none;
 }
 
-.orthogonalButtonDiv {
+fieldset.rot {
    position: relative;
-   top: 5px;
+}
+fieldset.rot.pitch {
+   top: 0px;
+}
+fieldset.rot.yaw {
+   top: -4px;
+}
+fieldset.rot.roll {
+   top: -8px;
+}
+fieldset.rot.button {
+   top: -11px;
+}
+
+legend.rot {
+   float: left;
+   position: relative;
+   left: 2px;
+   top: 0px;
+}
+legend.rot.pitch {
+}
+legend.rot.yaw {
+}
+legend.rot.roll {
+}
+legend.rot.buttons {
+}
+
+input[type='range'].rot {
+   background: #fff;
+   top: -4px;
+   left: 2px;
+   width: 125px;
+}
+input[type='range'].rot.pitch {
+}
+input[type='range'].rot.yaw {
+}
+input[type='range'].rot.roll {
+}
+
+input[type='number'].rot {
+   top: 0px;
+   left: 6px;
+   width: 35px;
+}
+input[type='number'].rot.pitch {
+}
+input[type='number'].rot.yaw {
+}
+input[type='number'].rot.roll {
+}
+
+.orthogonalDiv {
+   position: relative;
+   top: 0px;
+   left: 2px;
    float: left;
    padding: 0 1px 0 1px;
    margin: 0;
@@ -47,13 +137,13 @@
    background: #eee;
 }
 
-.orthogonalButtonDiv.over {
+.orthogonalDiv.over {
    background: #ddd;
 }
-.orthogonalButtonDiv.out {
+.orthogonalDiv.out {
    background: #eee;
 }
-.orthogonalButtonDiv.down {
+.orthogonalDiv.down {
    background: #ddd;
    border-left: solid 1px #555;
    border-top: solid 1px #555;
@@ -61,7 +151,7 @@
    border-bottom: solid 1px #555;
 }
 
-.orthogonalButtonText {
+.orthogonalText {
    position: relative;
    top: 2px;
    padding: 0px;
@@ -71,27 +161,27 @@
    text-align: center;
 }
 /*-----------------------------------*/
-.fixedPointButtonDiv {
+.fixedPointDiv {
    position: absolute;
    right: 2px;
-   top: 64px;
+   top: 0px;
    padding: 0;
    margin: 0;
    width: 28px;
-   height: 16px;
+   height: 15px;
    border-left: solid 1px #fff;
    border-top: solid 1px #fff;
    border-right: solid 1px #999;
    border-bottom: solid 1px #999;
    background: #eee;
 }
-.fixedPointButtonDiv.over {
+.fixedPointDiv.over {
    background: #ddd;
 }
-.fixedPointButtonDiv.out {
+.fixedPointDiv.out {
    background: #eee;
 }
-.fixedPointButtonDiv.down {
+.fixedPointDiv.down {
    background: #ddd;
    border-left: solid 1px #555;
    border-top: solid 1px #555;
@@ -99,7 +189,7 @@
    border-bottom: solid 1px #555;
 }
 
-.fixedPointButtonText {
+.fixedPointText {
    position: relative;
    top: 3px;
    padding: 0px;
@@ -107,114 +197,4 @@
    font-size: 9px;
    color: #000;
    text-align: center;
-}
-/*-----------------------------------*/
-
-.sliderTextContainer_rotation {
-   position: relative;
-   top: -1px;
-   padding: 0px;
-   margin: 0px;
-   border: none;
-   float: left;
-}
-
-.sliderTextDiv_rotation {
-   border: none;
-   padding: 0px;
-   margin: 0px 4px 0px 4px;
-   color: #000;
-   font-size: 9px;
-}
-
-.controls_rotation {
-   position: relative;
-   left: 217px;
-   border: none;
-   padding: 0px;
-   margin: 0px;
-   color: #000;
-   width: 30px;
-   height: 18px;
-   border: solid 1px #f00;
-}
-
-.sliderDiv_rotation {
-   border: none;
-   padding: 0px;
-   margin: 0px;
-   color: #000;
-   width: 180px;
-   height: 20px;
-   border: solid 1px #f00;
-}
-
-.arrowsDiv {
-   position: absolute;
-   top: 1px;
-   border: none;
-   padding: 0px;
-   margin: 0px;
-   color: #000;
-   width: 30px;
-   height: 18px;
-   border: solid 1px #f00;
-   border: none;
-}
-
-.incDiv {
-   position: absolute;
-   top: -2px;
-   left: 20px;
-   border: none;
-   padding: 0px;
-   margin: 0px;
-   color: #000;
-}
-
-.decDiv {
-   position: absolute;
-   top: -2px;
-   left: 5px;
-   border: none;
-   padding: 0px;
-   margin: 0px;
-   color: #000;
-}
-
-/* --------------------------- */
-#pitchControlsDiv {
-   top: -15px;
-}
-
-#pitch_sliderContainer {
-   height: 20px;
-}
-
-#pitchArrowsDiv {
-   height: 10px;
-}
-/* --------------------------- */
-#yawControlsDiv {
-   top: -35px;
-}
-
-#yaw_sliderContainer {
-   height: 20px;
-}
-
-#yawArrowsDiv {
-   height: 10px;
-}
-/* --------------------------- */
-#rollControlsDiv {
-   top: -55px;
-}
-
-#roll_sliderContainer {
-   height: 20px;
-}
-
-#rollArrowsDiv {
-   height: 10px;
 }

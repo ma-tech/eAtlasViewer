@@ -18,25 +18,12 @@
  * Boston, MA  02110-1301, USA.
  *
  */
-/* style for noddy test page  */
-
-body {
-   margin: 0px;
-   padding: 0px;
-   font-family: "Arial", sans-serif;
-   color: gray;
-   background: #fff;
-}
-
-/* try to prevent firefox putting a dooted border round things */
-div::-moz-focus-inner, input[type='range']::-moz-focus-inner {
-   border: 0;
-   outline: 0;
-}
+/* style for layer properties  */
 
 .layerPropsTitleTextContainer {
    position: absolute;
    top: -12px;
+   width: 136px;
    padding: 0px;
    margin: 0px;
    border: none;
@@ -44,17 +31,22 @@ div::-moz-focus-inner, input[type='range']::-moz-focus-inner {
 }
 
 .layerPropsTitleTextDiv {
+   position: relative;
+   left: 0px;
+   top: -2px;
    border: none;
-   padding: 0px;
+   padding: 0px 0px 0px 2px;
    margin: 0px;
+   height:13px;
    font-size: 9px;
+   background: #eeeeee;
 }
 
 #layerPropsDragContainer {
    position: absolute;
    left: 170px;
    top: 100px;
-   width: 150px;
+   width: 135px;
    margin: 0px;
    padding: 0px;
    border: none;
@@ -65,7 +57,7 @@ div::-moz-focus-inner, input[type='range']::-moz-focus-inner {
 
 #layerPropsToolContainer {
    position: relative;
-   left: 6px;
+   left: 0px;
    top: 2px;
    overflow: hidden;
    margin: 0px;
@@ -73,44 +65,23 @@ div::-moz-focus-inner, input[type='range']::-moz-focus-inner {
    border: none;
 }
 
-form {
-}
-
-fieldset {
-   margin: 0px;
-   padding: 0px;
-   border: none;
-   width: 145px;
-   color: #555;
-   font-size: 12px;
-}
 fieldset.opacity {
    height: 32px;
+   margin: 0px 2px;
 }
 fieldset.filter {
    height: 65px;
+   margin: 0px 2px;
 }
 fieldset.renderMode {
-   height: 85px;
-   width: 130px;
+   position: relative;
+   left: 0px;
+   top: 0px;
+   height: 32px;
+   margin: 0px 2px;
    background: #fafaff;
 }
 
-legend {
-   margin: 0 0 4px 0;
-   padding: 0px;
-   font-size: 10px;
-}
-
-input[type='range'] {
-   position: relative;
-   float: left;
-   margin: 0px;
-   padding: 0px;
-   width: 100px;
-   height: 14px;
-   background: #fff;
-}
 input[type='range'].opacity {
    background: #fff;
    top: -4px;
@@ -129,53 +100,46 @@ input[type='range'].blue {
 }
 
 input[type='text'].layerProps {
-   position: relative;
-   left: 4px;
    float: left;
-   margin: 0px;
-   padding: 0px;
+   left: 4px;
    width: 35px;
-   border: dotted 1px #eee;
-   background: #fff;
 }
-input[type='text'].layerProps.opacity {
+input[type='number'].layerProps {
    top: -4px;
+   left: 4px;
+   width: 25px;
 }
-input[type='text'].layerProps.red {
-   top: -5px;
-}
-input[type='text'].layerProps.green {
-   top: -5px;
-}
-input[type='text'].layerProps.blue {
-   top: -5px;
+
+input[type='radio'].renderMode {
+   top: -4px;
 }
 
 /* --------------------------- */
 label.renderMode {
    clear: both;
-   float: left;
-   position: relative;
    left: 4px;
-   margin: 0px;
-   padding: 0px;
    width: 120px;
-   border: none;
-   background: none;
-   font-size: 10px;
 }
 label.renderMode.section {
 }
 label.renderMode.shadow {
 }
+/* --------------------------- */
 
-input[type='radio'].renderMode {
-   position: relative;
-   top: -4px;
-   float: right;
+select.renderMode {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   width: 131px;
    margin: 0px;
    padding: 0px;
    border: none;
-   background: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
 }
-/* --------------------------- */
+
+.closeButton.layerProps {
+   top: -15px;
+   right: 0px;
+}
+

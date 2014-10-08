@@ -127,6 +127,7 @@ emouseatlas.emap.tiledImageView = function() {
    var endx;
    var endy;
    var mouseDownInImage = false;
+   var RIGHT_CLICK = false;
    var mousewheelIsSupported = false;
    var keepViewerHelpFrame = false;
    var keepViewerInfoFrame = false;
@@ -191,7 +192,7 @@ emouseatlas.emap.tiledImageView = function() {
    var mouseMoveTimeStamp;
    var mouseMoveTimeout;
    var mouseMoveDelay = 200;
-   var imgLabels_enabled = true;
+   var imgLabels_enabled;
    //var indexDataToolTip;
    //var indexDataToolTipText;
 
@@ -246,6 +247,7 @@ emouseatlas.emap.tiledImageView = function() {
       for(i=0; i<numLayers; i++) {
 	 if(typeof(layerData[layerNames[i]]) !== 'undefined') {
 	    data = layerData[layerNames[i]];
+	    //console.log(data);
 	    // make the tileFrameContainer
 	    tileFrameContainer = document.createElement("div");
 	    tileFrameContainer.id = layerNames[i] + "_tileFrameContainer";
@@ -269,7 +271,7 @@ emouseatlas.emap.tiledImageView = function() {
 	       if(data.props.filter) {
 		  setInitialFilter(layerNames[i], data.props.initialFilter);
 	       }
-	       if(data.props.renderMode) {
+	       if(data.props.initialRenderMode) {
 		  setInitialRenderMode(layerNames[i], data.props.initialRenderMode);
 	       }
 	    }
@@ -433,7 +435,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 } else {
 	    layerFilter[layer].filter = {filter:filter};
 	 }
-	 setFilter(filter);
+	 //setFilter(filter, "setInitialFilter");
       }
    };
 
@@ -808,7 +810,8 @@ emouseatlas.emap.tiledImageView = function() {
 	  selectedIndexes = selectedIndexes+"&sel=5,0,255,255,255";
       }
 
-      if(layer.props.renderMode) {
+      if(layer.props.initialRenderMode) {
+         //console.log("layerName ",layerName);
          renderMode = getLayerRenderMode(layerName).mode;
 	 if(layer.map && (renderMode == "prjd" || renderMode == "prjv")) {
 	    map = "&map=" + layer.map;
@@ -1246,6 +1249,10 @@ emouseatlas.emap.tiledImageView = function() {
       indexName = false;
       contextMenu = false;
       movingPCPoint = false;
+
+      if(RIGHT_CLICK) {
+         return false;
+      }
 
       if(params.measuringOrigin) {
          measuringOrigin = true;
@@ -2240,6 +2247,7 @@ emouseatlas.emap.tiledImageView = function() {
 
       // if we have right-clicked for context menu
       if(buttons.right || (buttons.left && modifiers.ctrl)) {
+         RIGHT_CLICK = true;
 	 getDataAtMouse(evt, {
             addQueryTerm:false,
             contextMenu:true,
@@ -2254,6 +2262,7 @@ emouseatlas.emap.tiledImageView = function() {
             pointClick:false,
             tooltip:false
 	 });
+         RIGHT_CLICK = false;
          return false;
       }
 
@@ -2588,7 +2597,7 @@ emouseatlas.emap.tiledImageView = function() {
       var evt = e || window.event;
       var modename;
       
-      //console.log("doMouseMove mouseDownInImage ",mouseDownInImage);
+      //console.log("doMouseMove mouseDownInImage = %s",mouseDownInImage);
       
       if(!mouseDownInImage) {
          var timeStamp = e.timeStamp;
@@ -2802,7 +2811,7 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   // This is the minimum scale (as a power of 2) that will allow image to fit within window
+   // This is the maximum scale (as a power of 2) that will allow image to fit within window
    //---------------------------------------------------------
    var setWinMinScale = function (from) {
       if(_debug) console.log("enter view.setWinMinScale from %s",from);
@@ -3094,6 +3103,16 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   var setInitialImageLabels = function() {
+      var initialState = model.getInitialState();
+      //console.log("view.setInitialImageLabels ",initialState);
+
+      imgLabels_enabled = (initialState.imgLabels === undefined) ? 'true' : initialState.imgLabels;
+      imgLabels_enabled = (imgLabels_enabled === 'true' || imgLabels_enabled === true) ? true : false;
+      //console.log("imgLabels_enabled ",imgLabels_enabled);
+   };
+
+   //---------------------------------------------------------
    /**
    * A set of functions that convert between
    * focalPoint (i.e.  a value between 0 and 1 expressing
@@ -3105,7 +3124,7 @@ emouseatlas.emap.tiledImageView = function() {
    var getViewportLeftEdge = function() {
       //console.log("getViewportLeftEdge focalPoint.x %d, image.width %d, viewport.width %d",focalPoint.x,image.width,viewport.width);
       var ret = focalPoint.x * image.width - viewport.width/2;
-      //console.log("getViewportLeftEdge %d",ret);
+      //console.log("getViewportLeftEdge ",ret);
       return ret;
    };
    //---------------------------------------------------------
@@ -3114,7 +3133,7 @@ emouseatlas.emap.tiledImageView = function() {
       //console.log("getViewportTopEdge focalPoint.y %d, image.height %d, viewport.height %d",focalPoint.y,image.height,viewport.height);
       var ret = focalPoint.y * image.height - viewport.height/2
       //console.log("getViewportTopEdge returning %d",ret);
-      //console.log("getViewportTopEdge %d",ret);
+      //console.log("getViewportTopEdge ",ret);
       return ret;
    };
    //---------------------------------------------------------
@@ -3159,7 +3178,8 @@ emouseatlas.emap.tiledImageView = function() {
       var imgToViewport_x = getViewportLeftEdge();
       var imgToViewport_y = getViewportTopEdge();
       //console.log("getMousePositionInImage: mouse %d,%d viewport %d,%d  imgToViewport %d,%d  scale %d",mousePos.x,mousePos.y,viewport_x,viewport_y,imgToViewport_x,imgToViewport_y,scale.cur);
-      var fudgeFactor = {x:-3, y:-8};
+      //var fudgeFactor = {x:-3, y:-8};
+      var fudgeFactor = {x:0, y:0};
       var x = mousePos.x - getViewerContainerPos().x + getViewportLeftEdge() + fudgeFactor.x;
       var y = mousePos.y - getViewerContainerPos().y + getViewportTopEdge() + fudgeFactor.x;
       ret = {x:x, y:y};
@@ -3170,22 +3190,39 @@ emouseatlas.emap.tiledImageView = function() {
 
    //---------------------------------------------------------
    // get the screen position given the coords in the image.
+   // NOTE: This isn't working !
+   //---------------------------------------------------------
+   /*
    var getDisplayPositionGivenImgCoords = function(imgCoords) {
       var viewport_x = getViewerContainerPos().x;
       var viewport_y = getViewerContainerPos().y;
       var imgToViewport_x = getViewportLeftEdge();
       var imgToViewport_y = getViewportTopEdge();
-      //console.log("getDisplayPositionGivenImgCoords: imgCoords %d,%d viewport %d,%d  imgToViewport %d,%d  scale %d",imgCoords.x,imgCoords.y,viewport_x,viewport_y,imgToViewport_x,imgToViewport_y,scale.cur);
-      var fudgeFactor = {x:-3, y:-8};
-      //var x = Number(imgCoords.x) + Number(getViewerContainerPos().x) - Number(getViewportLeftEdge()) - Number(fudgeFactor.x);
-      //var y = Number(imgCoords.y) + Number(getViewerContainerPos().y) - Number(getViewportTopEdge()) - Number(fudgeFactor.x);
-      var x = Number(imgCoords.x) - Number(fudgeFactor.x);
-      var y = Number(imgCoords.y) - Number(fudgeFactor.x);
+
+      printViewerInfo();
+
+      if(isNaN(viewport_x) || isNaN(viewport_y)) {
+         console.log("plain NaN");
+	 return undefined;
+      //} else {
+       //  console.log("viewport_x %d, viewport_y %d",viewport_x,viewport_y);
+      }
+      if(isNaN(imgToViewport_x) || isNaN(imgToViewport_y)) {
+         console.log("peshwari NaN");
+	 return undefined;
+      } else {
+         console.log("imgToViewport_x %d, imgToViewport_y %d",imgToViewport_x,imgToViewport_y);
+      }
+
+      console.log("getDisplayPositionGivenImgCoords: imgCoords %d,%d scale %d",imgCoords.x,imgCoords.y,scale.cur);
+      var x = (Number(imgCoords.x) * scale.cur) - Number(getViewportLeftEdge());
+      var y = (Number(imgCoords.y) * scale.cur) - Number(getViewportTopEdge());
       ret = {x:x, y:y};
 
-      //console.log("getDisplayPositionGivenImgCoords ",ret);
+      console.log("getDisplayPositionGivenImgCoords ",ret);
       return ret;
    };
+   */
 
    //---------------------------------------------------------
    var completeInitialisation = function () {
@@ -3264,6 +3301,7 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    var printViewerInfo = function(click) {
 
+      //console.log("printViewerInfo");
       if(!allowViewerInfo) {
          return false;
       }
@@ -3295,6 +3333,8 @@ emouseatlas.emap.tiledImageView = function() {
 	     "</p>";
 
       debugDiv.innerHTML = info;
+
+      //console.log("exit viewerInfo");
 
    };
 
@@ -3442,6 +3482,7 @@ emouseatlas.emap.tiledImageView = function() {
              contentUrl: menuData.contentUrl,
    	     imagePath: interfaceImagePath
          }
+	 //console.log("image");
          imageContextMenu.initialise(imageParams);
       }
 
@@ -3455,6 +3496,7 @@ emouseatlas.emap.tiledImageView = function() {
              contentUrl: menuData.tableContentUrl,
    	     imagePath: interfaceImagePath
          }
+	 //console.log("table");
          tableContextMenu.initialise(tableParams);
       }
 
@@ -3468,6 +3510,7 @@ emouseatlas.emap.tiledImageView = function() {
              contentUrl: menuData.treeContentUrl,
    	     imagePath: interfaceImagePath
          }
+	 //console.log("tree");
          treeContextMenu.initialise(treeParams);
       }
    };
@@ -3480,6 +3523,7 @@ emouseatlas.emap.tiledImageView = function() {
       //console.log("enter view.setInitialState");
       setInitialScale();
       setFocalPoint({x:0.5, y:0.5},"initialState");
+      setInitialImageLabels();
       model.setInitialState();
       //console.log("exit view.setInitialState");
    };
@@ -3582,6 +3626,100 @@ emouseatlas.emap.tiledImageView = function() {
       var view = emouseatlas.emap.tiledImageView;
       var query = emouseatlas.emap.tiledImageQuery;
       var pointClick = emouseatlas.emap.tiledImagePointClick;
+      var params;
+
+      if(typeof(tools.layerProperties) !== 'undefined') {
+         params = {
+	    targetId:toolData.layerProperties.targetId,
+	    x:toolData.layerProperties.x,
+	    y:toolData.layerProperties.y
+         }
+         if(emouseatlas.emap.layerProperties) {
+            emouseatlas.emap.layerProperties.initialise(params);
+         }
+      }
+
+      if(typeof(tools.magnification) !== 'undefined') {
+         params = {
+	    targetId:toolData.magnification.targetId,
+	    x:toolData.magnification.x,
+	    y:toolData.magnification.y,
+	    width:toolData.magnification.width
+         }
+         if(emouseatlas.emap.magnification) {
+            emouseatlas.emap.magnification.initialise(params);
+         }
+      }
+
+      if(typeof(tools.distance) !== 'undefined') {
+         params = {
+	    targetId:toolData.distance.targetId,
+	    x:toolData.distance.x,
+	    y:toolData.distance.y
+         }
+         if(emouseatlas.emap.distance) {
+            emouseatlas.emap.distance.initialise(params);
+         }
+      }
+
+      if(typeof(tools.comboDistance) !== 'undefined') {
+         params = {
+	    targetId:toolData.comboDistance.targetId,
+	    x:toolData.comboDistance.x,
+	    y:toolData.comboDistance.y
+         }
+         if(emouseatlas.emap.comboDistance) {
+            emouseatlas.emap.comboDistance.initialise(params);
+         }
+      }
+
+      if(typeof(tools.scale) !== 'undefined') {
+	 new tiledImageScaleTool({
+            model:model,
+            view:view,
+            params:{targetId:toolData.scale.targetId,
+               drag:toolData.scale.draggable,
+               width:toolData.scale.width,
+               height:toolData.scale.height,
+               x:toolData.scale.x,
+               y:toolData.scale.y,
+               isHorizontal:toolData.scale.isHorizontal}
+         });
+      }
+
+      if(typeof(tools.sectionSelector) !== 'undefined') {
+         params = {
+	    targetId:toolData.sectionSelector.targetId,
+	    x:toolData.sectionSelector.x,
+	    y:toolData.sectionSelector.y,
+            maxdim:toolData.sectionSelector.maxdim,
+         }
+         if(emouseatlas.emap.sectionSelector) {
+            emouseatlas.emap.sectionSelector.initialise(params);
+         }
+      }
+
+      if(typeof(tools.rotation) !== 'undefined') {
+         params = {
+	    targetId:toolData.rotation.targetId,
+	    x:toolData.rotation.x,
+	    y:toolData.rotation.y
+         }
+         if(emouseatlas.emap.rotation) {
+            emouseatlas.emap.rotation.initialise(params);
+         }
+      }
+
+      if(typeof(tools.fixedPoint) !== 'undefined') {
+         params = {
+	    targetId:toolData.fixedPoint.targetId,
+	    x:toolData.fixedPoint.x,
+	    y:toolData.fixedPoint.y
+         }
+         if(emouseatlas.emap.fixedPoint) {
+            emouseatlas.emap.fixedPoint.initialise(params);
+         }
+      }
 
       if(typeof(tools.locator) !== 'undefined') {
 	 new tiledImageLocatorTool({
@@ -3657,80 +3795,6 @@ emouseatlas.emap.tiledImageView = function() {
 		    gap:toolData.pitchYaw.gap,
 		    navImage:toolData.pitchYaw.navImage
 		   }
-	 });
-      }
-
-      if(typeof(tools.rotation) !== 'undefined') {
-	 new tiledImageRotationTool({
-	    model:model,
-	    view:view,
-	    params:{
-	            targetId:toolData.rotation.targetId,
-	            drag:toolData.rotation.draggable,
-	            width:toolData.rotation.width,
-		    height:toolData.rotation.height,
-		    x:toolData.rotation.x,
-		    y:toolData.rotation.y,
-		    isHorizontal:toolData.rotation.isHorizontal
-		   }
-	 });
-      }
-
-      if(typeof(tools.distance) !== 'undefined') {
-	 new tiledImageDistanceTool({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.distance.targetId,
-	            drag:toolData.distance.draggable,
-	            width:toolData.distance.width,
-		    height:toolData.distance.height,
-		    x:toolData.distance.x,
-		    y:toolData.distance.y,
-		    isHorizontal:toolData.distance.isHorizontal}
-	 });
-      }
-
-      if(typeof(tools.scale) !== 'undefined') {
-	 new tiledImageScaleTool({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.scale.targetId,
-	            drag:toolData.scale.draggable,
-		    width:toolData.scale.width,
-		    height:toolData.scale.height,
-		    x:toolData.scale.x,
-		    y:toolData.scale.y,
-		    isHorizontal:toolData.scale.isHorizontal}
-	 });
-      }
-
-      if(typeof(tools.properties) !== 'undefined') {
-	 new tiledImagePropertiesTool({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.properties.targetId,
-	            drag:toolData.properties.draggable,
-	            width:toolData.properties.width,
-	            height:toolData.properties.height,
-		    x:toolData.properties.x,
-		    y:toolData.properties.y,
-		    allowClose: true,
-		    isHorizontal:toolData.properties.isHorizontal}
-	 });
-      }
-
-      if(typeof(tools.fixedPoint) !== 'undefined') {
-	 new tiledImageFixedPointTool({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.fixedPoint.targetId,
-	            drag:toolData.fixedPoint.draggable,
-	            width:toolData.fixedPoint.width,
-	            height:toolData.fixedPoint.height,
-		    x:toolData.fixedPoint.x,
-		    y:toolData.fixedPoint.y,
-		    allowClose: true,
-		    isHorizontal:toolData.fixedPoint.isHorizontal}
 	 });
       }
 
@@ -4071,10 +4135,6 @@ emouseatlas.emap.tiledImageView = function() {
 
       if(emouseatlas.emap.scalebar) {
          emouseatlas.emap.scalebar.initialise();
-      }
-
-      if(emouseatlas.emap.layerProperties) {
-         emouseatlas.emap.layerProperties.initialise({project:"emap"});
       }
 
       if(emouseatlas.emap.newQueryTool) {
@@ -4765,12 +4825,13 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   var setFilter = function(params) {
+   var setFilter = function(params, from) {
 
       var type;
       var val;
       var fromSlider;
 
+      //console.log("setFilter from %s",from);
       //console.log(params);
       type = params.type;
       val = parseInt(params.value, 10);
@@ -4781,13 +4842,13 @@ emouseatlas.emap.tiledImageView = function() {
       val = (val > 255) ? 255 : val;
 
       if(type === 'red') {
-      layerFilter[currentLayer].filter.red = val;
+         layerFilter[currentLayer].filter.red = val;
       }
       if(type === 'green') {
-      layerFilter[currentLayer].filter.green = val;
+         layerFilter[currentLayer].filter.green = val;
       }
       if(type === 'blue') {
-      layerFilter[currentLayer].filter.blue = val;
+         layerFilter[currentLayer].filter.blue = val;
       }
 
       setTimeout("emouseatlas.emap.tiledImageView.requestImages('setFilter')", 10);
@@ -4950,6 +5011,7 @@ emouseatlas.emap.tiledImageView = function() {
 
    //---------------------------------------------------------
    var setCurrentLayer = function (layer) {
+      //console.log("view.setCurrentLayer");
       currentLayer = layer;
       //setResolutionData('setCurrentLayer');
       //setLocatorData('setCurrentLayer');
@@ -5421,16 +5483,23 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   // for Kaufman point and click we need to adjust the position of the locator for plates 3 & 4
+   // Hack: for Kaufman point and click we need to adjust the position of the locator for plates 3 & 4
+   // and we will also need to adjust image drop-down position
    // when a different embryo is displayed.
    var updateLocatorPosition = function (toppx, imgH) {
       var locator = $('locator-container');
+      var dropdown = $('image-dropDownContainer');
       var loctop;
+      var droptop;
 
       loctop = Number(toppx) + Number(imgH) + Number(30) + 'px';
+      droptop = Number(toppx) + Number(imgH) + Number(10) + 'px';
 
       if(locator) {
          locator.setStyle('top', loctop);
+      }
+      if(dropdown) {
+         dropdown.setStyle('top', droptop);
       }
    };
 
@@ -5516,7 +5585,7 @@ emouseatlas.emap.tiledImageView = function() {
       getInitialPointClickPoint: getInitialPointClickPoint,
       getDataAtMouse: getDataAtMouse,
       getDebugPoint: getDebugPoint,
-      getDisplayPositionGivenImgCoords: getDisplayPositionGivenImgCoords,
+      //getDisplayPositionGivenImgCoords: getDisplayPositionGivenImgCoords,
       getMousePositionInImage: getMousePositionInImage,
       getCompObjIndxArr: getCompObjIndxArr,
       testCoordSystem: testCoordSystem,

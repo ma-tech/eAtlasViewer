@@ -309,7 +309,7 @@ li.IIP3DViewerHelp.level3 {
    top: 0px;
    left: 0px;
    padding: 0px;
-   margin: 0px;
+   margin: 0;
 }
 #wlzIIPViewerTitleIFrameBottomTxt2 {
    float: left;
@@ -319,13 +319,13 @@ li.IIP3DViewerHelp.level3 {
    padding: 0px;
    margin: 0px;
 }
-#wlzIIPViewerTitleIFrameTheilerDiv {
+#wlzIIPViewerTitleIFrameStageDefDiv {
    float: left;
    position: relative;
    top: 0px;
    left: 0px;
    padding: 0px;
-   margin: 0px;
+   margin: 0 3px;
 }
 #wlzIIPViewerTitleIFrameEmapADiv {
    float: left;

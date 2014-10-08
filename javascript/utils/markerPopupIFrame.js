@@ -78,7 +78,7 @@ emouseatlas.emap.markerPopup = function () {
    var emageUrl;
    var mgiUrl;
    var linkToTheHouseMouse;
-   var emdash = '—';
+   var emdash;
 
    //---------------------------------------------------------
    // event handlers
@@ -106,7 +106,8 @@ emouseatlas.emap.markerPopup = function () {
       pointClick = emouseatlas.emap.tiledImagePointClick;
       pointClick.register(this);
 
-      emdash = '—';
+      //emdash = '—';
+      emdash = '\u2014';
 
       utils = emouseatlas.emap.utilities;
 
@@ -155,9 +156,11 @@ emouseatlas.emap.markerPopup = function () {
       var kdesc;
       var extRef;
       var url; 
+      var img;
+      var reg;
       var emapdesc;
       var stageArr;
-      var model;
+      var stage;
       var abstrct;
       var linkToStagedOntology;
       var linkToAbstractOntology;
@@ -166,17 +169,21 @@ emouseatlas.emap.markerPopup = function () {
       var mgiSearchStr;
       var wikiName;
 
+      img = pointClick.getCurrentImg();
+      //console.log(img);
+
       //console.log("updateTableContent stage %s",info.stage);
       termDets = info.termDets;
       // to deal with '13—14' and 'advanced 10—early 11'
       stageArr = utils.extractNumbersFromString(info.stage, "updateTableContent");
       //console.log("updateTableContent stageArr ",stageArr);
+      //console.log("info ",info);
       extRef = termDets.externalRef;
       stageLinkStr = makeStageLink(stageArr);
 
       linkToEMAPmodel = makeLinkToEmapModel(stageArr);
 
-      linkToStagedOntology = makeLinkToStagedOntology(extRef.source, stageArr);
+      linkToStagedOntology = makeLinkToStagedOntology(extRef.emap, stageArr);
 
       linkToAbstractOntology = makeLinkToAbstractOntology(extRef.emapa);
       abstrct = (extRef.emapa === "") ? "" : "  (abstract " + linkToAbstractOntology + ")";
@@ -184,12 +191,28 @@ emouseatlas.emap.markerPopup = function () {
       anatomyRowContent = [];
       anatomyRowContent[0] = [termDets.name, termDets.description];
       anatomyRowContent[1] = linkToStagedOntology + abstrct;
-      anatomyRowContent[2] = extRef.description;
+      anatomyRowContent[2] = extRef.emap_name;
       anatomyRowContent[3] = stageLinkStr + "  as defined in " + linkToTheHouseMouse;
       anatomyRowContent[4] = linkToEMAPmodel;
 
-      emageSearchStr = makeEmageSearchStr(extRef, stageArr[0]);
-      mgiSearchStr = makeMGISearchStr(extRef, stageArr[0]);
+      // deal with the fact that plate 03 covers 2 embryos
+      reg = /03[a-o]/;
+      if(img.match(reg)) {
+         //console.log("PLATE 3 !!!");
+         reg = /03[a-e]/;
+         if(img.match(reg)) {
+            //console.log("First Embryo");
+	    stage = stageArr[0];
+	 } else {
+            //console.log("Second or third Embryo");
+	    stage = stageArr[1];
+	 }
+      } else {
+	 stage = stageArr[0];
+      }
+
+      emageSearchStr = makeEmageSearchStr(extRef, stage);
+      mgiSearchStr = makeMGISearchStr(extRef, stage);
 
       searchRowContent = [];
       searchRowContent[0] = emageSearchStr;
@@ -616,6 +639,15 @@ emouseatlas.emap.markerPopup = function () {
       indx++;
       name = url.substr(indx);
 
+      // deal with %27 which denotes ' in url, i.e. Meckel%27s_cartilage
+      name = name.replace(/%27/, "'");
+
+      // deal with %28 which denotes ( in url,
+      name = name.replace(/%28/, "(");
+
+      // deal with %29 which denotes ) in url,
+      name = name.replace(/%29/, ")");
+
       return name;
    };
 
@@ -727,7 +759,7 @@ emouseatlas.emap.markerPopup = function () {
 
       urlParams = '&exactmatchstructures=true&includestructuresynonyms=true';
 
-      emap = extRef.source;
+      emap = extRef.emap;
       if(emap.toLowerCase().indexOf("emap") !== -1) {
          hasEmapId = true;
       }
@@ -738,13 +770,13 @@ emouseatlas.emap.markerPopup = function () {
       }
 
       if(hasEmapId) {
-         emapLink = "<a target='_blank' href='" + emageUrl + emap + urlParams + "'>stage " + stage + "</a> only" + emdash;
+         emapLink = "<a target='_blank' href='" + emageUrl + emap + urlParams + "'>stage " + stage + "</a> only";
       } else {
          emapLink = "";
       }
 
       if(hasEmapaId) {
-         emapaLink = "<a target='_blank' href='" + emageUrl + emapa + urlParams + "'>all stages</a>";
+         emapaLink = "<a target='_blank' href='" + emageUrl + emapa + urlParams + "'>" + emdash + "all stages</a>";
       } else {
          emapaLink = "";
       }

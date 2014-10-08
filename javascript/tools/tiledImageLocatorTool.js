@@ -155,7 +155,7 @@ var tiledImageLocatorTool = new Class ({
       //......................................................
       //console.log("tiledImageLocator modelUpdate:");
       if(modelChanges.sectionChanged === true) {
-	//console.log("tiledImageLocator.modelUpdate: dst | locator");
+	 //console.log("tiledImageLocator.modelUpdate: dst | locator");
 	 this.setNavDims();
 	 this.window.setDimensions(this.navwidth + 4,this.navheight + 4);
 	 this.setLocatorImage('modelUpdate.sectionChanged');
@@ -417,7 +417,7 @@ var tiledImageLocatorTool = new Class ({
 
    //---------------------------------------------------------------
    doExpanded: function() {
-      //console.log("%s doExpanded:",this.name);
+      console.log("%s doExpanded:",this.name);
       this.isCollapsed = false;
       var left = $(this.shortName + '-container').getPosition().x + this.navwidth + 10;
       var top = $(this.shortName + '-container').getPosition().y - 5;

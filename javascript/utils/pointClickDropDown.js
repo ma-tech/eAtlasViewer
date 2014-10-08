@@ -101,7 +101,7 @@ emouseatlas.emap.pointClickDropDown = function() {
       nOptionsBeforeSelectScroll = (params.noptions === undefined) ? 20 : params.noptions;
 
       // at the moment we don't have the first 4 plates in the Kaufman book
-      skipEarlyPlates = 4;
+      skipEarlyPlates = 3;
 
 
    }; // initialise
@@ -199,6 +199,7 @@ emouseatlas.emap.pointClickDropDown = function() {
 
       select.inject(dropDownDiv, 'inside');
       dropDownDiv.inject(dropDownContainer, 'inside');
+      util.addEvent(select, 'mouseup', doDropDownMouseUp, false);
       util.addEvent(select, 'mousedown', doDropDownMouseDown, false);
       util.addEvent(select, 'blur', closeScrollbar, false);
 
@@ -229,6 +230,46 @@ emouseatlas.emap.pointClickDropDown = function() {
       //console.log(this.pointClickImgData);
       return labelArr;
    };
+
+   //---------------------------------------------------------------
+   // this is needed to scroll to selected option
+   //---------------------------------------------------------------
+   var doDropDownMouseUp = function(e) {
+
+      var target;
+      var regexp;
+      var pattern;
+      var sindex;
+      var selectedLmnt;
+
+      //console.log("doDropDownMouseUp");
+      target = emouseatlas.emap.utilities.getTarget(e);
+      pattern = target.className;
+
+      //console.log("doDropDownMouseDown %s %s",target.id, pattern);
+      //console.log("doDropDownMouseDown ",target.scrollTop);
+
+      //target.scrollTo(target.scrollTop);
+      //target.setAttribute("scrollTop", 150);
+
+      //target.parentNode.scrollTop = target.offsetTop;
+      //target.parentNode.scrollTop = target.offsetTop - target.parentNode.offsetTop;
+
+      regexp = new RegExp("pointClickSelect plate", 'i')
+      if(pattern.match(regexp) != null) {
+	 // when an option is selected the target is the option rather than the select object
+         if(target.options && target.options.length > nOptionsBeforeSelectScroll) {
+	    sindex = target.options.selectedIndex;
+	    selectedLmnt = target.options[sindex];
+	    //console.log(selectedLmnt);
+	    //selectedLmnt.scrollIntoView(true);
+            //selectedLmnt.setAttribute("scrollTop", 150);
+	 }
+      }
+
+      return false;
+
+   }; // doDropDownMouseDown
 
    //---------------------------------------------------------------
    // this is needed to set the size of the select which provokes a scroll bar
@@ -314,17 +355,19 @@ emouseatlas.emap.pointClickDropDown = function() {
       if(dropDownId.match(regexp) != null) {
 	 webserver = model.getWebServer();
 	 metadata = model.getMetadataRoot();
-	 console.log("metadata %s",metadata);
+	 //console.log("metadata %s",metadata);
 	 pindx = metadata.lastIndexOf("plate");
 	 metadata = metadata.substring(0, pindx);
-	 //indx = ddown.selectedIndex;
+	 // start temporary hack for beta release of Kaufman Atlas
+	 //metadata = metadata.replace("ka", "ema");
+	 // finish temporary hack for beta release of Kaufman Atlas
 	 val = ddown.options[indx].text;
 	 ival = parseInt(val);
 	 if(ival < 10) {
 	    val = "0" + val;
 	 }
-	 //console.log("%s%s%s.php",webserver,metadata,val);
-	 url = webserver + metadata + "plate" + val + ".php";
+	 console.log("%s%s%s.php",webserver,metadata,val);
+	 url = webserver + metadata + "plate_" + val + ".php";
 	 console.log("doDropDownChanged plate url %s",url);
 	 window.location.href = url;
 	 return false;
@@ -403,31 +446,6 @@ emouseatlas.emap.pointClickDropDown = function() {
 
       return false;
    };
-
-   //---------------------------------------------------------------
-/*
-   var initImageDropDown = function() {
-
-      var img;
-      var indx;
-      var len;
-      var i;
-
-      img = pointClickImgData;
-      console.log(img);
-
-      len = plateArr.length;
-      for(i=0; i<len; i++) {
-         if(subplate === plateArr[i]) {
-	    indx = i - skipEarlyPlates;
-	    select.selectedIndex = indx;
-	    break;
-	 }
-      }
-
-      return false;
-   };
-*/
 
    //---------------------------------------------------------------
    var getName = function() {

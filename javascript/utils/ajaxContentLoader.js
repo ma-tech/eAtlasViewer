@@ -134,6 +134,8 @@ emouseatlas.emap.ajaxContentLoader = function () {
 	 }
       }
 
+      //console.log("loadResponse url ",url);
+
       if(window.XMLHttpRequest) {
          req = new XMLHttpRequest();
       } else if(window.ActiveXObject) {

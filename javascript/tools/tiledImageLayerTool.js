@@ -186,7 +186,7 @@ var tiledImageLayerTool = new Class ({
 	 });
 
 	 layerTextDiv.set('text', layerNames[i]);
-	 layerTextDiv.setStyle('width',txtwid+'px');
+	 //layerTextDiv.setStyle('width',txtwid+'px');
 
 	 /*
 	 var layerForm = new Element( 'form', {
@@ -314,52 +314,59 @@ var tiledImageLayerTool = new Class ({
    //---------------------------------------------------------------
    doLayerClicked: function(e) {
 
+      var layerNames;
+      var numlayers;
+      var target;
+      var e;
+      var i;
+
       if (!e) {
-	 var e = window.event;
+	 e = window.event;
       }
-      var target = emouseatlas.emap.utilities.getTarget(e);
-      //var type = emouseatlas.emap.utilities.getEventType(e);
+
+      layerNames = this.model.getLayerNames();
+      numlayers = layerNames.length;
+      target = emouseatlas.emap.utilities.getTarget(e);
       // the checkbox is in the layer div so ignore checkbox events
       if(target.id.indexOf("_layerText") === -1) {
 	 //console.log("doLayerClicked returning: event not from text ",target.id);
 	 return;
       }
 
-      var layerNames = this.model.getLayerNames();
-      var numlayers = layerNames.length;
-      var i;
-
       for(i=0; i<numlayers; i++) {
-	 //if($(layerNames[i] + '_layerTextDiv') === target) {
-	 if(target.id.indexOf(layerNames[i]) !== -1) {
+	 if($(layerNames[i] + '_layerTextDiv') === target) {
 	    this.view.setCurrentLayer(layerNames[i]);
+	    this.view.showLayerProperties(layerNames[i]);
 	 }
       }
    },
 
    //---------------------------------------------------------------
    // If propertiesDiv is clicked a 'properties' dialogue is opened.
-   // It also becomes the current layer.
+   // It also becomes the current layer (blue).
    //---------------------------------------------------------------
    doPropertiesDivClicked: function(e) {
 
-      //this.pttchain.clearChain();
-      //this.showPropertiesToolTip(false);
-
-      if (!e) {
-	 var e = window.event;
-      }
-      var target = emouseatlas.emap.utilities.getTarget(e);
-      //console.log("doPropertiesDivClicked: target ",target);
-      //var type = emouseatlas.emap.utilities.getEventType(e);
-
-      var layerNames = this.model.getLayerNames();
+      var target;
+      var layerNames;
       var layer;
-      var layerData = this.model.getLayerData();
-      var numlayers = layerNames.length;
+      var layerData;
+      var numLayers;
+      var e;
       var i;
 
-      for(i=0; i<numlayers; i++) {
+      if (!e) {
+	 e = window.event;
+      }
+      target = emouseatlas.emap.utilities.getTarget(e);
+      //console.log("doPropertiesDivClicked: target ",target);
+      //type = emouseatlas.emap.utilities.getEventType(e);
+
+      layerNames = this.model.getLayerNames();
+      layerData = this.model.getLayerData();
+      numLayers = layerNames.length;
+
+      for(i=0; i<numLayers; i++) {
 	 if($(layerNames[i] + '_propertiesText') === target) {
 	    //console.log("doPropertiesDivClicked: layer %s",layerNames[i]);
 	    layer = layerData[layerNames[i]];
@@ -372,12 +379,6 @@ var tiledImageLayerTool = new Class ({
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {
 
-      //console.log("enter tiledImageOpacityTool modelUpdate:",modelChanges);
-
-      //if(modelChanges.initial === true) {
-      //}
-
-      //console.log("exit tiledImageOpacityTool modelUpdate:");
    }, // modelUpdate
 
    //---------------------------------------------------------------
@@ -391,6 +392,9 @@ var tiledImageLayerTool = new Class ({
       }
 
       if(viewChanges.layer === true) {
+
+         //console.log("layer: viewChanges.layer %s",viewChanges.layer);
+
 	 var layerNames = this.model.getLayerNames();
 	 var numlayers = layerNames.length;
 	 var i;

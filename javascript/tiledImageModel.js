@@ -398,7 +398,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	    props = {
 	       opacity:false,
 	       filter:false,
-	       renderMode:false,
+	       renderModes:undefined,
 	       initialOpacity:undefined,
 	       initialFilter:undefined,
 	       initialRenderMode:undefined
@@ -672,6 +672,9 @@ emouseatlas.emap.tiledImageModel = function() {
 	   initialState.fxp = state.fixedPoint;
 	   //console.log("initialState.fxp ",initialState.fxp);
 	 }
+	 if(state.imgLabels != undefined) {
+	   initialState.imgLabels = state.imgLabels;
+	 }
 
 	 //console.log("initialState ",initialState);
 
@@ -903,7 +906,7 @@ emouseatlas.emap.tiledImageModel = function() {
       var properties = undefined;
       var opacity;
       var filter;
-      var renderMode;
+      var renderModes;
       var initialOpacity;
       var initialFilter;
       var initialRenderMode;
@@ -929,17 +932,20 @@ emouseatlas.emap.tiledImageModel = function() {
 	 }
       }
 
-      renderMode = (props.renderMode === undefined) ? false : props.renderMode;
-      renderMode = (renderMode === true || renderMode === "true") ? true : false;
-      if(renderMode) {
-         initialRenderMode = (props.initialRenderMode === undefined) ? "sect" : props.initialRenderMode;
-         //console.log("getPropsFromJson set initial renderMode %s",initialRenderMode);
-      }
+      //-------------------
+      // use this if you want to be able to NOT show a render mode drop-down
+      renderModes = props.renderModes;
+      initialRenderMode = props.initialRenderMode;
+      //-------------------
+      // use this if you want to always have a default render mode drop-down
+      //renderModes = (props.renderModes === undefined) ? ["sect"] : props.renderModes;
+      //initialRenderMode = (props.initialRenderMode === undefined) ? "sect" : props.initialRenderMode;
+      //-------------------
 
       properties = {
          opacity:opacity,
 	 filter:filter,
-	 renderMode:renderMode,
+	 renderModes:renderModes,
 	 initialOpacity:initialOpacity,
 	 initialFilter:initialFilter,
 	 initialRenderMode:initialRenderMode
@@ -1202,6 +1208,13 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getMetadata = function() {
 
+      var tdebug = _debug;
+      var layer;
+      var assayPath;
+      var len;
+      var pattern;
+      var postn;
+
       //_debug = true;
       if(_debug) {
          console.log("enter getMetadata");
@@ -1220,33 +1233,31 @@ emouseatlas.emap.tiledImageModel = function() {
 	 }
 	 return false;
       } else {
-	 var layer = layerData[layerNames[0]];
-	 var assayPath = getAssayPath();
+	 layer = layerData[layerNames[0]];
+	 assayPath = getAssayPath();
 
 	 ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
 	 if (isEurexpress) {
   	     fullDataPath = metadataRoot + "linksToFullSizeImages_original/"+assayPath + stackMetadataFilename;
          } else if(isSinglePyrTiff) {
             fullDataPath = layer.imageDir + layer.imageName;
-	    console.log("getMetadata: fullDataPath %s",fullDataPath);
+	    //console.log("getMetadata: fullDataPath %s",fullDataPath);
          } else {
          ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress dat
             fullDataPath = layer.imageDir + assayPath + stackMetadataFilename;
          }
-
 	 //console.log("fullDataPath ",fullDataPath);
+
 	 // we now have to deal with legacy filename formats ...
 
-	 var len = fullDataPath.length;
-	 var pattern;
-	 var postn;
+	 len = fullDataPath.length;
 
 	 pattern = /\.tif\.js/i;  // case insensitive regexp for ".tif.js"
 	 postn = fullDataPath.search(pattern);   
 	 if(postn === len - 7) {
 	    get2DMetadata();
 	    if(_debug) {
-	       console.log("exit getMetadata");
+	       console.log("exit getMetadata (.tif.js)");
 	    }
 	    return false;
 	 }
@@ -1256,7 +1267,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 if(postn === len - 4) {
 	    get2DMetadata();
 	    if(_debug) {
-	       console.log("exit getMetadata");
+	       console.log("exit getMetadata (.tif)");
 	    }
 	    return false;
 	 }
@@ -1266,17 +1277,18 @@ emouseatlas.emap.tiledImageModel = function() {
 	 if(postn === len - 5) {
 	    get2DMetadata();
 	    if(_debug) {
-	       console.log("exit getMetadata");
+	       console.log("exit getMetadata (.tiff)");
 	    }
 	    return false;
 	 }
 
+	 // this is for EMAP high-res sections and kaufman
 	 pattern = /\.jso/i;
 	 postn = fullDataPath.search(pattern);   
 	 if(postn === len - 4) {
 	    getStackMetadata();
 	    if(_debug) {
-	       console.log("exit getMetadata");
+	       console.log("exit getMetadata (.jso)");
 	    }
 	    return false;
 	 }
@@ -1286,13 +1298,14 @@ emouseatlas.emap.tiledImageModel = function() {
 	 if(postn === len - 3) {
 	    getStackMetadata();
 	    if(_debug) {
-	       console.log("exit getMetadata");
+	       console.log("exit getMetadata (.js)");
 	    }
 	    return false;
 	 }
       }
-      //_debug = false;
-   };
+      _debug = tdebug;
+
+   };  // getMetadata
 
    //---------------------------------------------------------
    var getWlzMetadata = function() {
@@ -1336,8 +1349,10 @@ emouseatlas.emap.tiledImageModel = function() {
 
       // If *.tif, get metadata from IIP server
       isWlz = false;
+      /* commented out by nickb 08052014
       scale.max = 1;
       scale.min = 0.00390625;
+      */
       getIIPMetadata();
 
       if(_debug) {
@@ -2110,92 +2125,6 @@ emouseatlas.emap.tiledImageModel = function() {
       }
    };
 
-/*
-   //---------------------------------------------------------
-   var setXValue = function(newX)  {
-     if (newX !== undefined &&
-	 threeDInfo.fxp.x !== newX) {
-       threeDInfo.fxp.x = 1 * newX; 
-       return 1;
-     }
-     return 0;
-   };
-
-   //---------------------------------------------------------
-   var setYValue = function(newY)  {
-     if (newY !== undefined &&
-	 threeDInfo.fxp.y !== newY) {
-       threeDInfo.fxp.y = 1 * newY; 
-       return 1;
-     }
-     return 0;
-   };
-
-   //---------------------------------------------------------
-   var setZValue = function(newZ)  {
-     if (newZ !== undefined &&
-	 threeDInfo.fxp.z !== newZ) {
-       threeDInfo.fxp.z = 1 * newZ; 
-       return 1;
-     }
-     return 0;
-   };
-
-   //---------------------------------------------------------
-   var setPitchValue = function(newPitch)  {
-     if (newPitch !== undefined &&
-	 threeDInfo.pitch.cur !== newPitch) {
-       var val = 1* newPitch;
-       if  (val > threeDInfo.pitch.max)
-	 threeDInfo.pitch.cur = threeDInfo.pitch.max;
-       else {
-	 if (val < threeDInfo.pitch.min)
-	   threeDInfo.pitch.cur = threeDInfo.pitch.min;
-	 else
-	   threeDInfo.pitch.cur = val;
-       }
-       return 1;
-     }
-     return 0;
-   };
-
-   //---------------------------------------------------------
-   var setYawValue = function(newYaw)  {
-     if (newYaw !== undefined &&
-	 threeDInfo.yaw.cur !== newYaw) {
-       var val = 1* newYaw;
-       if  (val > threeDInfo.yaw.max)
-	 threeDInfo.yaw.cur = threeDInfo.yaw.max;
-       else {
-	 if (val < threeDInfo.yaw.min)
-	   threeDInfo.yaw.cur = threeDInfo.yaw.min;
-	 else
-	   threeDInfo.yaw.cur = val;
-       }
-       return 1;
-     }
-     return 0;
-   };
-
-   //---------------------------------------------------------
-   var setRollValue = function(newRoll)  {
-     if (newRoll !== undefined &&
-	 threeDInfo.roll.cur !== newRoll) {
-       var val = 1* newRoll;
-       if  (val > threeDInfo.roll.max)
-	 threeDInfo.roll.cur = threeDInfo.roll.max;
-       else {
-	 if (val < threeDInfo.roll.min)
-	   threeDInfo.roll.cur = threeDInfo.roll.min;
-	 else
-	   threeDInfo.roll.cur = val;
-       }
-       return 1;
-     }
-     return 0;
-   };
-*/
-
    //---------------------------------------------------------
    var setXValue = function(newVal, from)  {
 
@@ -2688,8 +2617,6 @@ emouseatlas.emap.tiledImageModel = function() {
       setCurrentSection("modifyOrientationCallback");
       resetModelChanges();
       modelChanges.locator = true;
-      modelChanges.distanceRange = true;
-      modelChanges.sectionChanged = true;
       notify("modifyOrientationCallback");
    };
 
@@ -3065,6 +2992,7 @@ emouseatlas.emap.tiledImageModel = function() {
         yaw: threeDInfo.yaw.cur, 
         rol: threeDInfo.roll.cur 
       }
+      //console.log("setCurrentSection: ",currentSection);
 
    };
 
@@ -3117,6 +3045,7 @@ emouseatlas.emap.tiledImageModel = function() {
          ret = emouseatlas.emap.utilities.constructURL(webServer, name);
       }
 
+      //console.log(ret);
       return ret;
    };
 
@@ -3241,7 +3170,7 @@ emouseatlas.emap.tiledImageModel = function() {
 
 	 for(var node in structure) {
 	    if(typeof(structure[node]) === 'undefined') {
-	       console.log("getTreeData returning early");
+	       //console.log("getTreeData returning early");
 	       return undefined;
 	    } else {
 	       structureNode = structure[node];

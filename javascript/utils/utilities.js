@@ -65,6 +65,8 @@ if(!emouseatlas.emap.utilities) {
 	 }
 	 if(e.keyCode) {
 	    code = e.keyCode;
+	 } else if(e.code) {
+	    code = e.code;
 	 } else if(e.which) {
 	    code = e.which;
 	 }
@@ -1140,6 +1142,8 @@ if(!emouseatlas.emap.utilities) {
       */
       getDragOpts: function (container, updateDelay, bind, handle) {
 
+         //console.log("getDragOpts: bind ",bind);
+
 	 return {
 	    container: container,
 	    snap: 0,
@@ -1457,7 +1461,7 @@ if(!emouseatlas.emap.utilities) {
 
 	      return String.fromCharCode(first) + String.fromCharCode(second);
 	  }
-      }
+      },
 
    }; // emouseatlas.emap.utilities
 

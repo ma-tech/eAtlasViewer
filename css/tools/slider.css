@@ -82,7 +82,7 @@
 }
 
 .knob {
-   position: relative;
+   position: absolute;
    left: 0px;
    top: 2px;
    padding: 0px;

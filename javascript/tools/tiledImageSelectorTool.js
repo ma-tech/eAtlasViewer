@@ -177,6 +177,7 @@ var tiledImageSelectorTool = new Class ({
 
       this.incImg = new Element( 'img', {
 	 'id': 'selector-incImg',
+	 'class': 'selector-image',
 	 'src': uparr
       });
 
@@ -195,7 +196,8 @@ var tiledImageSelectorTool = new Class ({
 	 'id': 'selector-decDiv'
       });
       this.decImg = new Element( 'img', {
-	 'id': 'selector-incImg',
+	 'id': 'selector-decImg',
+	 'class': 'selector-image',
 	 'src': downarr
       });
 
@@ -229,6 +231,7 @@ var tiledImageSelectorTool = new Class ({
    doMouseUp: function(e) {
 
       var target = emouseatlas.emap.utilities.getTarget(e);
+      //console.log("selector mouseup target.id %s",target.id);
       var klass = target.get('class');
       var pattern = /(selector-cursor|selector-image|edge)/i;
       if(klass.match(pattern) != null) {

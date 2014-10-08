@@ -249,7 +249,7 @@ var pointClickSelector = new Class ({
       this.model.modifyDistance(newDist);
       */
    },
-   
+
    //---------------------------------------------------------------
    doMouseUp: function(e) {
 
@@ -273,10 +273,10 @@ var pointClickSelector = new Class ({
       var klass = target.get('class');
       var pattern = /(selector-dropDown)/i;
       var indx;
+      var lmnt;
 
       if(klass.match(pattern) != null) {
 	 indx = target.selectedIndex;
-	 //console.log("pointClickSelector: %s dropDown changed to indx %d",klass,indx);
 	 this.model.setDistance(indx);
       } else {
 	 //console.log("pointClickSelector: some other dropDown changed ");
