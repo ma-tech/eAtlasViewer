@@ -62,6 +62,7 @@ var queryTermTool = new Class ({
 
       this.baseHeight = 0;
       this.heightOfOneTerm = 15;
+      this.maxHeight = 300;
 
       this.bgc = "#EAEAEA";
 
@@ -110,11 +111,10 @@ var queryTermTool = new Class ({
    createElements: function(termData) {
 
       var container;
-      var leftedge;
-      var rightedge;
       var handle;
       var win;
       var topEdge;
+      var maxH;
       var reverseData;
       var term;
       var name;
@@ -137,24 +137,11 @@ var queryTermTool = new Class ({
       //------------------------------------
       // give the term tool a maximum height
       //------------------------------------
+      maxH = Number(this.maxHeight + 4) + 'px'
       container = $(this.shortName + '-container');
       container.setStyles({
-	 'max-height': '304px'
+	 'max-height': maxH
       });
-      /*
-      leftedge = $(this.shortName + '-leftedge');
-      leftedge.setStyles({
-	 'max-height': '302px'
-      });
-      rightedge = $(this.shortName + '-rightedge');
-      rightedge.setStyles({
-	 'max-height': '302px'
-      });
-      handle = $(this.shortName + '-handle');
-      handle.setStyles({
-	 'max-height': '312px'
-      });
-      */
 
       win = $(this.shortName + '-win');
       // make sure existing elements are removed.
@@ -294,6 +281,7 @@ var queryTermTool = new Class ({
    //---------------------------------------------------------------
    adjustTermHeight: function() {
 
+      var ret;
       var termDivs;
       var termDiv;
       var termH;
@@ -313,7 +301,8 @@ var queryTermTool = new Class ({
          //console.log("totalH for %s ",termDiv.id,totalH);
       }
 
-      return totalH;
+      ret = (totalH > this.maxHeight) ? this.maxHeight : totalH;
+      return ret;
 
    },
 
