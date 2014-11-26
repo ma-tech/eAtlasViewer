@@ -4104,6 +4104,11 @@ emouseatlas.emap.tiledImageView = function() {
 //	 subPlateDropDown = new emouseatlas.emap.pointClickDropDown();
 	 imageDropDown = new emouseatlas.emap.pointClickDropDown();
       }
+      if(typeof(tools.supplementDropDown) !== 'undefined') {
+	 plateDropDown = new emouseatlas.emap.supplementDropDown();
+//	 subPlateDropDown = new emouseatlas.emap.pointClickDropDown();
+	 imageDropDown = new emouseatlas.emap.supplementDropDown();
+      }
       if(plateDropDown) {
 	 params = { targetId: "toolContainerDiv", type: "Plate", noptions: 15};
          plateDropDown.initialise(params);
@@ -4141,8 +4146,8 @@ emouseatlas.emap.tiledImageView = function() {
          emouseatlas.emap.newQueryTool.initialise({project:"emap"});
       }
 
-      if(emouseatlas.emap.chooseItem) {
-         emouseatlas.emap.chooseItem.initialise({project:"emap"});
+      if(emouseatlas.emap.chooseItemMGI) {
+         emouseatlas.emap.chooseItemMGI.initialise({project:"emap"});
       }
 
       if(emouseatlas.emap.chooseKaufmanItem) {
@@ -4452,7 +4457,12 @@ emouseatlas.emap.tiledImageView = function() {
    */
    var requestImages = function(caller) {
 
+     //console.log("enter requestImages, caller %s", caller);
+
      var isWlz = model.isWlzData();
+     var _deb = _debug;
+
+     //_debug = true;
 
      if (isWlz) {
        /* !!!!! at the moment, the initialization cycle calls
@@ -4473,14 +4483,8 @@ emouseatlas.emap.tiledImageView = function() {
 	 return false;
      }
 
-     //var _debug = false;
-
      //console.log("enter view.requestImages called by %s",caller);
       //console.log("sampleRate %d, image %s",resolutionData.sampleRate,resolutionData.imageName);
-
-      if(_debug) {
-	 console.log("enter view.requestImages");
-      }
 
       model.updateBusyIndicator({isBusy:true, message:"loading tiled image", x:20, y:600});
 
@@ -4541,7 +4545,8 @@ emouseatlas.emap.tiledImageView = function() {
       /*
          If the floating point calculation of xtiles or ytiles is just more than an integer, then taking the Math.ceil gives the wrong value.
       */
-      var tol = 0.997;
+      //var tol = 0.997;
+      var tol = 0.996;
       var xtilesFP;
       var xtilesCeil;
       var xtilesDiff;
@@ -4552,6 +4557,10 @@ emouseatlas.emap.tiledImageView = function() {
       // ideally we should get W & H from the image at each resolution (it is an integer).
       // currently it is calculated from the full size image (generally not an integer result).
 
+      if(_debug) {
+	 console.log("tol %f",tol);
+      }
+
       xtilesFP = image.width / tileSize.width;
       xtilesCeil = Math.ceil(xtilesFP);
       xtilesDiff = xtilesCeil - xtilesFP;
@@ -4560,23 +4569,32 @@ emouseatlas.emap.tiledImageView = function() {
       ytilesCeil = Math.ceil(ytilesFP);
       ytilesDiff = ytilesCeil - ytilesFP;
 
+      if(_debug) {
+	 console.log("-------");
+	 console.log("xtilesFP %f ",xtilesFP);
+	 console.log("xtilesCeil %f ",xtilesCeil);
+	 console.log("xtilesDiff %f ",xtilesDiff);
+	 console.log("...........");
+	 console.log("ytilesFP %f ",ytilesFP);
+	 console.log("ytilesCeil %f ",ytilesCeil);
+	 console.log("ytilesDiff %f ",ytilesDiff);
+	 console.log("-------");
+      }
       ytiles = Math.ceil(image.height / tileSize.height);
       if(xtilesDiff > tol) {
-         //console.log("adjusting xtiles, diff %d",xtilesDiff);
+         //console.log("adjusting xtiles, tol %f, diff %f",tol,xtilesDiff);
          xtiles = xtilesCeil - 1;
       } else {
          xtiles = xtilesCeil;
       }
       if(ytilesDiff > tol) {
-         //console.log("adjusting ytiles, diff %d",ytilesDiff);
+         //console.log("adjusting ytiles, tol %f, diff %f",tol,ytilesDiff);
          ytiles = ytilesCeil - 1;
       } else {
          ytiles = ytilesCeil;
       }
 
       if(_debug) {
-	 console.log("image.width ",image.width);
-	 console.log("image.height ",image.height);
 	 console.log("xtiles ",xtiles);
 	 console.log("ytiles ",ytiles);
 	 console.log("---------------------------------------------");
@@ -4591,10 +4609,12 @@ emouseatlas.emap.tiledImageView = function() {
       model.updateBusyIndicator({isBusy:false});
 
       if(_debug) {
-	 console.log("exit view.requestImages");
+         console.log("exit requestImages, caller %s\n", caller);
       }
 
-      //console.log("exit view.requestImages called by %s",caller);
+     _debug = _deb;
+
+
    }; // requestImages
 
    //---------------------------------------------------------
