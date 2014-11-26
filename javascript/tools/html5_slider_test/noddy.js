@@ -155,8 +155,9 @@ emouseatlas.emap.noddy = function() {
       blueValText.set('value', "100");
 
       //--------------------------------
-      // add the elements
+      // add the elements, with form
       //--------------------------------
+      /*
       dragContainer.inject(targetDiv, 'inside');
       sliderContainer.inject(dragContainer, 'inside');
       sliderForm.inject(sliderContainer, 'inside');
@@ -165,6 +166,25 @@ emouseatlas.emap.noddy = function() {
       opacitySlider.inject(fs1, 'inside');
       opacityValText.inject(fs1, 'inside');
       fs2.inject(sliderForm, 'inside');
+      legend2.inject(fs2, 'inside');
+      redSlider.inject(fs2, 'inside');
+      redValText.inject(fs2, 'inside');
+      greenSlider.inject(fs2, 'inside');
+      greenValText.inject(fs2, 'inside');
+      blueSlider.inject(fs2, 'inside');
+      blueValText.inject(fs2, 'inside');
+      */
+
+      //--------------------------------
+      // add the elements, no form
+      //--------------------------------
+      dragContainer.inject(targetDiv, 'inside');
+      sliderContainer.inject(dragContainer, 'inside');
+      fs1.inject(sliderContainer, 'inside');
+      legend1.inject(fs1, 'inside');
+      opacitySlider.inject(fs1, 'inside');
+      opacityValText.inject(fs1, 'inside');
+      fs2.inject(sliderContainer, 'inside');
       legend2.inject(fs2, 'inside');
       redSlider.inject(fs2, 'inside');
       redValText.inject(fs2, 'inside');
@@ -212,6 +232,53 @@ emouseatlas.emap.noddy = function() {
       });
       blueSlider.addEvent('mouseup',function(e) {
          enableDrag(e);
+      });
+
+      // and some to try and break the sliders
+      var big = $("bigContainer");
+      big.addEvent('mousemove',function(e) {
+
+         //console.log("big move");
+
+/*
+	 if(e.preventDefault) {
+	    e.preventDefault();
+	 }
+	 if(e.stopPropagation) {
+	    e.stopPropagation();
+	 }
+*/
+
+      });
+      var big = $("bigContainer");
+      big.addEvent('mouseup',function(e) {
+
+         //console.log("big up");
+
+	 if(e.preventDefault) {
+	    e.preventDefault();
+	 }
+/*
+	 if(e.stopPropagation) {
+	    e.stopPropagation();
+	 }
+*/
+
+      });
+      var big = $("bigContainer");
+      big.addEvent('mousedown',function(e) {
+
+         //console.log("big down");
+
+/*
+	 if(e.preventDefault) {
+	    e.preventDefault();
+	 }
+	 if(e.stopPropagation) {
+	    e.stopPropagation();
+	 }
+*/
+
       });
 
    };

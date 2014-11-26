@@ -355,7 +355,7 @@ emouseatlas.emap.pointClickDropDown = function() {
       if(dropDownId.match(regexp) != null) {
 	 webserver = model.getWebServer();
 	 metadata = model.getMetadataRoot();
-	 //console.log("metadata %s",metadata);
+	 //console.log("webserver %s, metadata %s",webserver,metadata);
 	 pindx = metadata.lastIndexOf("plate");
 	 metadata = metadata.substring(0, pindx);
 	 // start temporary hack for beta release of Kaufman Atlas

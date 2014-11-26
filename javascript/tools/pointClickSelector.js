@@ -109,6 +109,8 @@ var pointClickSelector = new Class ({
 
       this.zsel = this.model.getZSelectorInfo();
 
+      //console.log(this.zsel);
+
       this.createElements();
 
       this.setToolTip(this.toolTipText);

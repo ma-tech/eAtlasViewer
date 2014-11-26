@@ -198,7 +198,7 @@ var tiledImageSectionChooser = new Class ({
 
 	 var trashIcon = new Element( 'img', {
 	    'id': sectionNames[i] + '_trash',
-	    'src': '/eAtlasViewer_dev/images/trash_canfull.png',
+	    'src': '/eAtlasViewer_test/images/trash_canfull.png',
 	    'class': 'trashIcon'
 	 });
 

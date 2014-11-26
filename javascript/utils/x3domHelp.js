@@ -27,7 +27,6 @@ var x3domHelp = new Class ({
       this.target = $(params.targetId);
 
       this.helpIFrame = $(this.type + "IFrame");
-      //console.log(this.type + "IFrame");
 
       this.hideOK = false;
 

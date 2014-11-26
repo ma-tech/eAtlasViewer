@@ -1141,8 +1141,8 @@ emouseatlas.emap.newQueryTool = function() {
 	 if(project.toLowerCase() === "gudmap") {
 	    url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=';
 	 } else {
-	    //url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
-	    url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	    url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	    //url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
 	 }
 	 first = true;
 

@@ -127,16 +127,13 @@ emouseatlas.emap.viewerInfo = function () {
       } else {
          json = emouseatlas.JSON.parse(response);
       }
-      if(!json) {
-         return false;
-      }
 
       modelInfo = json;
       if(modelInfo === undefined) {
          infoReadOK = false;
       } else {
          infoReadOK = true;
-	 //console.log(modelInfo["ts21"]);
+	 //console.log(modelInfo["ts23"]);
 	 //console.log(modelInfo);
       }
 
