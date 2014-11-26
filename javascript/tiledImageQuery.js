@@ -63,12 +63,13 @@ emouseatlas.emap.tiledImageQuery = function() {
    var currentQueryTermName;
    var querySectionNames = [];
    var querySectionToRemove;
-   var queryTermData = [];
+   var queryTermData = {};
    var querySection = {}; // this must be an object, not an array
-   var queryTerm = {}; // this must be an object, not an array
-   var stageData = {}; // this must be an object, not an array
+   var anatomyQueryDetails = [];
+   //var queryTerm = {}; // this must be an object, not an array
+   //var stageData = {}; // this must be an object, not an array
    var spatialQuery = [];
-   var termQuery = [];
+   //var termQuery = [];
    var queryTypes = [];
    var queryType;
    var dbToQuery = {};
@@ -246,6 +247,11 @@ emouseatlas.emap.tiledImageQuery = function() {
    };
 
    //---------------------------------------------------------
+   var getAnatomyQueryDetails = function () {
+      return anatomyQueryDetails;
+   };
+
+   //---------------------------------------------------------
    var setQueryTermData = function (termData) {
       //console.log("setQueryTermData ",termData);
       queryTermData = termData;
@@ -292,7 +298,40 @@ emouseatlas.emap.tiledImageQuery = function() {
    };
 
    //---------------------------------------------------------
-   var chooseItem = function () {
+   // this routine relies on the fact that data & names have matching elements
+   // apart from the last element of data which is stage.
+   // the length of data is 1 more than the length of names
+   //---------------------------------------------------------
+   var chooseItem = function (data, names) {
+
+      var key;
+      var term;
+      var len;
+      var i;
+
+      len = names.length;
+      anatomyQueryDetails = [];
+
+      for(key in queryTermData) {
+
+	 if(!queryTermData.hasOwnProperty(key)) {
+	    continue;
+	 }
+
+	 term = queryTermData[key];
+         for(i=0; i<len; i++) {
+	    if(names[i] == term.name) {
+	       anatomyQueryDetails[anatomyQueryDetails.length] = {name:term.name, emap:term.fbId[0], emapa:data[i]};
+	       break;
+	    }
+         }
+      }
+
+      // now add the stage
+      anatomyQueryDetails[anatomyQueryDetails.length] = {stage:data[len]};
+
+     // console.log("anatomyQueryDetails ",anatomyQueryDetails);
+
       queryChanges.chooseItem = true;
       notify("chooseItem");
    };
@@ -758,6 +797,7 @@ emouseatlas.emap.tiledImageQuery = function() {
       getIndexOfQuerySectionName: getIndexOfQuerySectionName,
       getQueryTermName: getQueryTermName,
       getQueryTermData: getQueryTermData,
+      getAnatomyQueryDetails: getAnatomyQueryDetails,
       setQueryTermData: setQueryTermData,
       selectQuerySection: selectQuerySection,
       //getAllQueryTermNames: getAllQueryTermNames,
