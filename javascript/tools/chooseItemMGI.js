@@ -39,7 +39,7 @@ if(!emouseatlas.emap) {
 
 //---------------------------------------------------------
 //---------------------------------------------------------
-emouseatlas.emap.chooseItem = function() {
+emouseatlas.emap.chooseItemMGI = function() {
 
    //---------------------------------------------------------
    // modules
@@ -479,7 +479,6 @@ emouseatlas.emap.chooseItem = function() {
       }
 
       klass = target.className.split(" ")[0];
-      //console.log("doMouseUp %s",klass);
       if(klass.toLowerCase() === baseKlass.toLowerCase()) {
          //if(CHOSEN) {
 	    clearAll();
@@ -560,13 +559,46 @@ emouseatlas.emap.chooseItem = function() {
    //---------------------------------------------------------------
    // this will query mgi
    var doOKButtonClicked = function() {
+
       if(CHOSEN) {
 	 setVisible(false);
-	 //view.setMode('move');
 	 CHOSEN = false;
+	 doMGIQuery();
       } else {
          alert("You haven't chosen an item to query on");
       }
+   };
+
+   //---------------------------------------------------------------
+   var doMGIQuery = function() {
+
+      var details;
+      var len;
+      var i;
+      var emaps;
+      var stage;
+      var queryStr;
+      var url;
+
+      url = "http://www.informatics.jax.org/gxd/structure/";
+
+      details = query.getAnatomyQueryDetails();
+
+      len = details.length;
+      for(i=0; i<len-1; i++) {
+         if(choice === details[i].name) {
+	    emaps = details[i].emapa.replace("EMAPA", "EMAPS");
+	    stage = details[len-1].stage.replace("TS", "");
+	    break;
+	 }
+      }
+
+      url = url + emaps + stage;
+
+      //console.log("doMGIQuery choice %s url %s",choice,url);
+
+      window.open(url);
+
    };
 
    //---------------------------------------------------------------
