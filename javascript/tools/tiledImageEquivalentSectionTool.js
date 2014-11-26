@@ -343,21 +343,40 @@ var tiledImageEquivalentSectionTool = new Class ({
 
    //--------------------------------------------------------------
    getSectionUrl: function () {
-      var metadataRoot = this.model.getMetadataRoot();
-      var webServer = this.model.getWebServer();
-      var reg = /data/;  // case sensitive regexp for "data"
-      var path1 = metadataRoot.replace(reg, 'php');
+      var metadataRoot;
+      var webServer;
+      var reg;
+      var path1;
+      var path2;
+      var indx;
+      var len;
+      var url;
+
+      metadataRoot = this.model.getMetadataRoot();
+      webServer = this.model.getWebServer();
+
+      // deprecated  04112014 ----- remove soon
+      //reg = /data/;  // case sensitive regexp for "data"
+      //path1 = metadataRoot.replace(reg, 'php');
+      // deprecated ----- remove soon
+
+      // deal with 3D anatomy files which have _3D (or anything) in their name before the /
+      reg = /(^.*)(EMA[0-9][0-9]*).*(\/)/;  // case sensitive regexp for which remembers 3 groups
+      path1 = metadataRoot.replace(reg, '$1$2$3');
+
       //console.log("getSectionUrl: path1 ",path1);
+
       // hack to sort out equivalent section problem with anatomy models
       if(path1.indexOf("/anatomy/")) {
          reg = /anatomy/;
       } else {
          reg = /wlz/;
       }
-      var path2 = path1.replace(reg, 'sections');
-      var indx = path2.lastIndexOf('/');
-      var len = path2.length;
-      var url = webServer + path2.substring(0,len-1) + '.php';
+      path2 = path1.replace(reg, 'sections');
+      indx = path2.lastIndexOf('/');
+      len = path2.length;
+      url = webServer + path2.substring(0,len-1) + '.php';
+
       //console.log(url);
       return url;
    },
