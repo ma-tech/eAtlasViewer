@@ -363,10 +363,10 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       for(i=0; i<numItems; i++) {
 	 key = selectedRowKeys[i];
 	 termDets = pointClick.getTermDetsForKey(key);
-         //console.log(termDets);
+         //console.log("addItems: ",termDets);
 
 	 descr = termDets.description;
-	 emap = termDets.externalRef.source;
+	 emap = termDets.externalRef.emap;
 	 emapa = termDets.externalRef.emapa;
 	 wiki = termDets.externalRef.wiki;
 	 queryData[queryData.length] = {key: key, descr: descr, emap: emap, emapa:emapa, wiki: wiki};
@@ -623,7 +623,7 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       var i;
       var dets;
       var descr;
-      var emapa;
+      var emap;
       var wiki;
       var found = false;
       var url;
@@ -635,28 +635,117 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       for(i=0; i<len; i++) {
          dets = queryData[i];
 	 descr = dets.descr;
+	 //console.log(descr);
 	 if(descr === choice) {
 	    found = true;
-	    emapa = dets.emapa;
+	    emap = dets.emap;
 	    wiki = dets.wiki;
 	    break;
 	 }
       }
+      //console.log("emap %s",emap);
 
       if(found) {
 	 switch (queryType.toLowerCase()) {
 	    case 'mgi':
-               url = mgiUrl + emapa;
+               //url = mgiUrl + emapa;
+	       getEmapaForEmap(emap);
 	       break;
 	    case 'wiki':
                url = wiki;
+	       window.open(url);
 	       break;
 	    default:
 	 }
-	 //console.log(url);
-	 window.open(url);
       }
    };
+
+   //---------------------------------------------------------------
+   var doQuery2 = function(queryData) {
+
+      var emaps;
+      var stage;
+      var url;
+
+      //console.log("choice %s",choice);
+      //console.log("doQuery2 ",queryData);
+
+      emaps = queryData[0].replace("EMAPA", "EMAPS");
+      stage = queryData[1].replace("TS", "");
+      url = mgiUrl + emaps + stage;
+
+      window.open(url);
+
+   };
+
+   //---------------------------------------------------------------
+   var getEmapaForEmap = function (emap) {
+
+      var arr = [];
+      var len;
+      var jsonArr;
+      var i;
+
+      arr[0] = emap;
+
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         jsonArr = JSON.stringify(arr);
+      } else {
+         jsonArr = emouseatlas.JSON.stringify(arr);
+      }
+      if(!jsonArr) {
+         return false;
+      }
+      //console.log(jsonArr);
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      url = '/ontologywebapp/GetEMAPA';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"emap_ids=" + jsonArr + "&cbf=doQuery",
+	 callback:getEmapaForEmapCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // getEmapaForEmap
+
+   //---------------------------------------------------------------
+   var getEmapaForEmapCallback = function (response, urlParams) {
+
+      var json;
+      var params;
+      var len;
+      var callback;
+      var database;
+      var arr;
+
+      json = JSON.parse(response);
+
+      params = urlParams.split("&");
+      //console.log("params ",params);
+
+      callback = (params[1].split("="))[1];
+      //database = (params[2].split("="))[1];
+      
+      switch (callback) {
+         case "doQuery":
+	    doQuery2(json);
+	    break;
+	 default:
+	    return;
+      }
+
+   }; // getEmapaForEmapCallback
+
 
    //---------------------------------------------------------------
    var getName = function() {

@@ -66,6 +66,7 @@ emouseatlas.emap.markerPopup = function () {
    var anatomyRowLabels;
    var searchRowLabels;
    var anatomyRowContent;
+   var searchRowContent;
    var ajax;
    var ajaxParams;
    var utils;
@@ -77,6 +78,7 @@ emouseatlas.emap.markerPopup = function () {
    var emapUrl;
    var emageUrl;
    var mgiUrl;
+   var ontologyInfo = {};
    var linkToTheHouseMouse;
    var emdash;
 
@@ -109,6 +111,8 @@ emouseatlas.emap.markerPopup = function () {
       //emdash = '—';
       emdash = '\u2014';
 
+      imgDir = model.getInterfaceImageDir();
+
       utils = emouseatlas.emap.utilities;
 
       //console.log("IFrame: details ",details);
@@ -126,17 +130,17 @@ emouseatlas.emap.markerPopup = function () {
       hideOK = false;
       infoGeneratedOK = false;
 
-      theilerLink = ["http://testwww.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/Theiler/ts", "%20%20from%20Theiler.pdf"];
+      theilerLink = ["http://www.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/Theiler/ts", "%20%20from%20Theiler.pdf"];
 
       anatomyRowLabels = ["Kaufman term", "EMAP id", "EMAP term", "Theiler", "3D viewer"];
       searchRowLabels = ["EMAGE", "MGI / GXD"];
       miscRowLabels = ["Wikipedia"];
       //setTableContent(info);
 
-      stagedOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=";
-      abstractOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/abstract.html"
-      theHouseMouseUrl = "http://testwww.emouseatlas.org/emap/ema/theiler_stages/house_mouse/book.html"
-      emapUrl = "http://testwww.emouseatlas.org/emap/ema/home.php";
+      stagedOntologyUrl = "http://www.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=";
+      abstractOntologyUrl = "http://www.emouseatlas.org/emap/ema/DAOAnatomyJSP/abstract.html"
+      theHouseMouseUrl = "http://www.emouseatlas.org/emap/ema/theiler_stages/house_mouse/book.html"
+      emapUrl = "http://www.emouseatlas.org/emap/ema/home.php";
       emageUrl = "http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=";
       mgiUrl = "http://www.informatics.jax.org/gxd/structure/"
 
@@ -161,7 +165,7 @@ emouseatlas.emap.markerPopup = function () {
       var emapdesc;
       var stageArr;
       var stage;
-      var abstrct;
+      //var abstrct;
       var linkToStagedOntology;
       var linkToAbstractOntology;
       var linkToEMAPmodel;
@@ -186,11 +190,12 @@ emouseatlas.emap.markerPopup = function () {
       linkToStagedOntology = makeLinkToStagedOntology(extRef.emap, stageArr);
 
       linkToAbstractOntology = makeLinkToAbstractOntology(extRef.emapa);
-      abstrct = (extRef.emapa === "") ? "" : "  (abstract " + linkToAbstractOntology + ")";
+      //abstrct = (extRef.emapa === "") ? "" : "  (abstract " + linkToAbstractOntology + ")";
 
       anatomyRowContent = [];
       anatomyRowContent[0] = [termDets.name, termDets.description];
-      anatomyRowContent[1] = linkToStagedOntology + abstrct;
+      //anatomyRowContent[1] = linkToStagedOntology + abstrct;
+      anatomyRowContent[1] = linkToAbstractOntology;
       anatomyRowContent[2] = extRef.emap_name;
       anatomyRowContent[3] = stageLinkStr + "  as defined in " + linkToTheHouseMouse;
       anatomyRowContent[4] = linkToEMAPmodel;
@@ -211,13 +216,6 @@ emouseatlas.emap.markerPopup = function () {
 	 stage = stageArr[0];
       }
 
-      emageSearchStr = makeEmageSearchStr(extRef, stage);
-      mgiSearchStr = makeMGISearchStr(extRef, stage);
-
-      searchRowContent = [];
-      searchRowContent[0] = emageSearchStr;
-      searchRowContent[1] = mgiSearchStr;
-
       wikiName = extractWikiNameFromUrl(extRef.wiki);
       
       miscRowContent = [];
@@ -230,7 +228,26 @@ emouseatlas.emap.markerPopup = function () {
          miscRowContent[0] = "<a target='_blank' href='" + extRef.wiki + "'>" + wikiName + "</a>";
       }
 
+      getEmapaForEmap(extRef.emap, stage);
+
    }; //updateTableContent
+   
+   //---------------------------------------------------------------
+   var updateTableContent2 = function (queryData) {
+
+      //console.log("updateTableContent2: queryData ",queryData);
+
+      emageSearchStr = makeEmageSearchStr(queryData);
+      //console.log("emageSearchStr %s",emageSearchStr);
+      mgiSearchStr = makeMGISearchStr(queryData);
+
+      searchRowContent = [];
+      searchRowContent[0] = emageSearchStr;
+      searchRowContent[1] = mgiSearchStr;
+
+      generateMarkerPopupPage();
+
+   }; //updateTableContent2
    
    //---------------------------------------------------------------
    var generateMarkerPopupPage = function () {
@@ -258,6 +275,8 @@ emouseatlas.emap.markerPopup = function () {
       var anatomyTable;
       var searchTable;
       var tableSpacer;
+
+      //console.log("generateMarkerPopupPage");
 
 
       closeDiv = myparent.document.getElementById("markerPopupIFrameCloseDiv");
@@ -455,6 +474,7 @@ emouseatlas.emap.markerPopup = function () {
       var balloonTxt;
       var strlen;
       var klass;
+      var src;
 
       strlen = term.length;
       switch (strlen) {
@@ -474,10 +494,12 @@ emouseatlas.emap.markerPopup = function () {
          'class': 'popupBalloonDiv'
       });
 
+      src = imgDir + "/mapIconSelected.png";
+
       balloonImg = new Element('img', {
          'id': 'popupBalloonImg',
          'class': 'popupBalloonImg',
-	 'src': "/eAtlasViewer_dev/images/mapIconSelected.png"
+	 'src': src
       });
 
       balloonTxt = new Element('textNode', {
@@ -500,6 +522,7 @@ emouseatlas.emap.markerPopup = function () {
       var parser;
 
       if(_debug) console.log("enter addRowData ",trgt);
+      //console.log("addRowData ",htmlString);
 
       prnt = trgt;
       lmntArr = [];
@@ -515,6 +538,57 @@ emouseatlas.emap.markerPopup = function () {
       if(_debug) console.log("exit addRowData");
       _debug = deb;
    };
+
+/*
+   //---------------------------------------------------------
+   // we need to do ajax calls so flow of control is different
+   // from other addRowData cases
+   //---------------------------------------------------------
+   var addSearchRowData = function (trgt) {
+
+      var deb = _debug;
+      var parser;
+
+      if(_debug) console.log("enter addRowData ",trgt);
+
+      prnt = trgt;
+      lmntArr = [];
+      lmntArr[0] = trgt;
+
+      HTMLParser(htmlString, {
+         start: function(tag, attrs, unary) {doStart(tag, attrs, unary)},
+         end: function(tag) {doEnd(tag, trgt)},
+         chars: function(text) {doChars(text)},
+         comment: function(text) {doComment(text)}
+      });
+
+      if(_debug) console.log("exit addRowData");
+      _debug = deb;
+   };
+
+   //---------------------------------------------------------
+   var addSearchRowData2 = function (trgt) {
+
+      var deb = _debug;
+      var parser;
+
+      if(_debug) console.log("enter addRowData ",trgt);
+
+      prnt = trgt;
+      lmntArr = [];
+      lmntArr[0] = trgt;
+
+      HTMLParser(htmlString, {
+         start: function(tag, attrs, unary) {doStart(tag, attrs, unary)},
+         end: function(tag) {doEnd(tag, trgt)},
+         chars: function(text) {doChars(text)},
+         comment: function(text) {doComment(text)}
+      });
+
+      if(_debug) console.log("exit addRowData");
+      _debug = deb;
+   };
+   */
 
    //---------------------------------------------------------
    var doStart = function (tag, attrs, unary) {
@@ -743,83 +817,130 @@ emouseatlas.emap.markerPopup = function () {
    };
 
    //---------------------------------------------------------------
-   var makeEmageSearchStr = function (extRef, stage) {
+   var getEmapaForEmap = function (emap, titleStage) {
 
-      var ret;
+      var arr = [];
+      var len;
+      var jsonArr;
+      var i;
+
+      arr[0] = emap;
+
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         jsonArr = JSON.stringify(arr);
+      } else {
+         jsonArr = emouseatlas.JSON.stringify(arr);
+      }
+      if(!jsonArr) {
+         return false;
+      }
+      //console.log(jsonArr);
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      url = '/ontologywebapp/GetEMAPA';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"emap_ids=" + jsonArr + "&cbf=updateTableContent",
+	 callback:getEmapaForEmapCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // getEmapaForEmap
+
+   //---------------------------------------------------------------
+   var getEmapaForEmapCallback = function (response, urlParams) {
+
+      var json;
+      var params;
+      var len;
+      var callback;
+      var database;
+      var arr;
+
+      json = JSON.parse(response);
+
+      params = urlParams.split("&");
+
+      callback = (params[1].split("="))[1];
+      //database = (params[2].split("="))[1];
+      
+      switch (callback) {
+         case "updateTableContent":
+	    updateTableContent2(json);
+	    break;
+	 default:
+	    return;
+      }
+
+   }; // getEmapaForEmapCallback
+
+   //---------------------------------------------------------------
+   var makeEmageSearchStr = function (queryData) {
+
       var urlParams;
-      var emap;
-      var emapa;
-      var hasEmapId;
-      var hasEmapaId;
-      var emapLink;
-      var emapaLink;
-
-      hasEmapId = false;
-      hasEmapaId = false;
+      var stageName;
+      var len;
+      var i;
+      var emageSearchStr;
+      var abstr;
+      var timed;
 
       urlParams = '&exactmatchstructures=true&includestructuresynonyms=true';
 
-      emap = extRef.emap;
-      if(emap.toLowerCase().indexOf("emap") !== -1) {
-         hasEmapId = true;
-      }
+      len = queryData.length; // it should be 2, an EMAPA:id and a stagename
 
-      emapa = extRef.emapa;
-      if(emapa.toLowerCase().indexOf("emapa") !== -1) {
-         hasEmapaId = true;
-      }
-
-      if(hasEmapId) {
-         emapLink = "<a target='_blank' href='" + emageUrl + emap + urlParams + "'>stage " + stage + "</a> only";
+      if(len > 1 && queryData[0] !== undefined && queryData[0] !== "") {
+         stageName = queryData[1];
+         timed = "<a target='_blank' href='" + emageUrl + queryData[0] + "&stages=" + stageName + urlParams + "'>stage " + stageName + "</a> only";
+         abstr = "<a target='_blank' href='" + emageUrl + queryData[0] + urlParams + "'>all relevant stages</a>";
       } else {
-         emapLink = "";
+         emageSearchStr = "";
       }
 
-      if(hasEmapaId) {
-         emapaLink = "<a target='_blank' href='" + emageUrl + emapa + urlParams + "'>" + emdash + "all stages</a>";
-      } else {
-         emapaLink = "";
-      }
+      emageSearchStr = timed + ", " + abstr;;
+      //console.log("emageSearchStr %s",emageSearchStr);
 
-      ret = emapLink + emapaLink;
-
-      return ret;
+      return emageSearchStr;
    }; // makeEmageSearchStr
 
    //---------------------------------------------------------------
-   var makeMGISearchStr = function (extRef, stage) {
+   var makeMGISearchStr = function (queryData) {
 
-      var ret;
-      var emapa;
-      var emaps;
-      var digitArr;
-      var hasEmapaId;
-      var emapaLink;
-      var emapsLink;
+      var urlParams;
+      var stageName;
+      var stage;
+      var emaps
+      var len;
+      var i;
+      var MGISearchStr;
+      var abstr;
+      var timed;
 
-      hasEmapId = false;
-      hasEmapaId = false;
+      len = queryData.length; // it should be 2, an EMAPA:id and a stagename
 
-      emapa = extRef.emapa;
-      if(emapa.toLowerCase().indexOf("emapa") !== -1) {
-         hasEmapaId = true;
-	 digitArr = utils.extractNumbersFromString(emapa, "makeMGISearchStr");
-	 emaps = "EMAPS:" + digitArr[0].toString();
-      }
-
-      //console.log("%s, %s", emapa, emaps);
-
-      if(hasEmapaId) {
-         emapsLink = "<a target='_blank' href='" + mgiUrl + emaps + stage + "'>stage " + stage + "</a> only" + emdash;
-         emapaLink = "<a target='_blank' href='" + mgiUrl + emapa + "'>all stages</a>";
+      if(len > 1 && queryData[0] !== undefined && queryData[0] !== "") {
+         emaps = queryData[0].replace("EMAPA", "EMAPS");
+         stageName = queryData[1];
+         stage = stageName.replace("TS", "");;
+         timed = "<a target='_blank' href='" + mgiUrl + emaps + stage + "'>stage " + stageName + "</a> only";
+         abstr = "<a target='_blank' href='" + mgiUrl + queryData[0] + "'>all relevant stages</a>";
       } else {
-         emapsLink = "";
-         emapaLink = "N/A";
+         MGISearchStr = "";
       }
 
-      ret = emapsLink + emapaLink;
+      MGISearchStr = timed + ", " + abstr;;
+      //console.log("MGISearchStr %s",MGISearchStr);
 
-      return ret;
+      return MGISearchStr;
    }; // makeMGISearchStr
 
    //---------------------------------------------------------------

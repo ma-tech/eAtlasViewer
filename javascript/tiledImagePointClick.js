@@ -100,6 +100,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
    var abstractOntologyUrl;
    var emageUrl;
    var mgiUrl;
+   var ontologyInfo = {};
    //......................
    var registry = [];
    var pointClickChanges = { 
@@ -156,9 +157,14 @@ emouseatlas.emap.tiledImagePointClick = function() {
       maxCloseMarkersToShow = 3;
 
       markerContainerId = 'histology_tileFrame';
-      stagedOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
-      abstractOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/abstract.html";
+      //stagedOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
+      //abstractOntologyUrl = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/abstract.html";
       emageUrl = "http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=";
+      stagedOntologyUrl = "http://www.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
+      abstractOntologyUrl = "http://www.emouseatlas.org/emap/ema/DAOAnatomyJSP/abstract.html";
+      //stagedOntologyUrl = "http://drumguish-new.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
+      //abstractOntologyUrl = "http://drumguish-new.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/abstract.html";
+      //emageUrl = "http://drumguish-new.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures=";
       mgiUrl = "http://www.informatics.jax.org/gxd/structure/"; 
 
 
@@ -385,6 +391,67 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // getTitleInfoCallback:
 
    //---------------------------------------------------------------
+   var getOntologyInfo = function () {
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      var url;
+      var ajax;
+      var ajaxParams;
+
+      url = '/ontologywebapp/GetEMAPA';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"",
+         callback:getOntologyInfoCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // getOntologyInfo
+
+   //---------------------------------------------------------------
+   var getOntologyInfoCallback = function (response) {
+
+      //if(_debug) console.log("getListOfPlatesCallback: \n" + urlParams);
+      //console.log("getListOfPlatesCallback:");
+      //console.log("getListOfPlatesCallback: response ",response);
+      var json;
+      
+      // get Title info via ajax
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         if(_debug) console.log("getOntologyInfoCallback returning: response null");
+         return false;
+      } else {
+         //if(_debug) console.log(response);
+      }
+      
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         json = JSON.parse(response);
+      } else {
+         json = emouseatlas.JSON.parse(response);
+      }
+      if(!json) {
+         if(_debug) console.log("getOntologyInfoCallback returning: json null");
+         return false;
+      }
+      if(_debug) console.log("getOntologyInfoCallback json ",json);
+
+     ontologyInfo = json;
+
+   }; // getOntologyInfoCallback:
+
+
+   //---------------------------------------------------------------
    var setInfoIFrame = function () {
 
       var details;
@@ -527,7 +594,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       titleInfoImg = new Element('img', {
          'id': 'titleInfoIconImg',
-	 'src': '/eAtlasViewer_dev/images/info-26.png'
+	 'src': imgDir + 'info-26.png'
       });
 
       titleInfoImg.inject(titleInfoIconDiv, 'inside');
@@ -1060,11 +1127,16 @@ emouseatlas.emap.tiledImagePointClick = function() {
    var doDownloadImageDataCallback = function (response, urlParams) {
 
       //if(_debug) console.log("doDownloadImageDataCallback: \n" + urlParams);
+      var webServer;
+      var project;
       var url;
       var div;
       var len;
       var i;
       
+      webServer = model.getWebServer();
+      //console.log("webServer %s",webServer);
+
       // get model data via ajax
       //----------------
       response = emouseatlas.emap.utilities.trimString(response);
@@ -1075,7 +1147,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
          //if(_debug) console.log(response);
       }
       
-      url = response;
+      url = webServer + "/" + response;
       //if(_debug) console.log("updatePlateDataCallback url ",url);
 
       window.open(url);
@@ -1468,8 +1540,20 @@ emouseatlas.emap.tiledImagePointClick = function() {
 	          smallLabel = makeMarkerSmallLabel(term);
 	          //bigLabel = makeMarkerBigLabel(term);
 	          flag = makeMarkerFlag(term, flags.length);
+
+		  /*
+		  ontologyInfo = getOntologyInfo(term.externalRef.emap);
+	          subplateMarkerDetails[key].EmapaId = ontologyInfo.emapa;
+	          subplateMarkerDetails[key].stage = ontologyInfo.stage;
+
+                  if(ontologyInfo.emapa != term.externalRef.emapa) {
+		     console.log("ontologyInfo.emapa %s, term.externalRef.emapa %s",ontologyInfo.emapa,term.externalRef.emapa);
+		  }
+		  */
+
 	          subplateMarkerDetails[key].EmapId = term.externalRef.emap;
 	          subplateMarkerDetails[key].EmapaId = term.externalRef.emapa;
+
 	          subplateMarkerDetails[key].descr = term.description;
 	          subplateMarkerDetails[key].smallLabel = smallLabel;
 	          //subplateMarkerDetails[key].bigLabel = bigLabel;
@@ -1502,19 +1586,78 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // getLocationsForKey
 
    //---------------------------------------------------------------
-   var getEmapIdForKey = function (key) {
+   var getEmapaForKeys = function (keys, database) {
 
       var markerDetails;
-      var ret = [];
+      var arr = [];
+      var len;
+      var jsonArr;
+      var i;
 
-      //console.log("getEmapIdForKey subplateMarkerDetails ",subplateMarkerDetails);
-      markerDetails = subplateMarkerDetails[key];
-      ret[0] = markerDetails.EmapId;
-      ret[1] = markerDetails.EmapaId;
+      len = keys.length;
+      for(i=0; i<len; i++) {
+         //console.log("getEmapIdForKey subplateMarkerDetails ",subplateMarkerDetails);
+         markerDetails = subplateMarkerDetails[keys[i]];
+         arr[i] = markerDetails.EmapId;
+      }
 
-      return ret;
 
-   }; // getEmapIdForKey
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         jsonArr = JSON.stringify(arr);
+      } else {
+         jsonArr = emouseatlas.JSON.stringify(arr);
+      }
+      if(!jsonArr) {
+         return false;
+      }
+      //console.log("getEmapaForKeys: ",jsonArr);
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      url = '/ontologywebapp/GetEMAPA';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"emap_ids=" + jsonArr + "&cbf=doTableQuery" + "&db=" + database,
+	 callback:getEmapaForKeysCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // getEmapaForKeys
+
+   //---------------------------------------------------------------
+   var getEmapaForKeysCallback = function (response, urlParams) {
+
+      var json;
+      var params;
+      var len;
+      var callback;
+      var database;
+      var arr;
+
+      json = JSON.parse(response);
+
+      params = urlParams.split("&");
+
+      callback = (params[1].split("="))[1];
+      database = (params[2].split("="))[1];
+      
+      switch (callback) {
+         case "doTableQuery":
+	    doTableQuery2(json, database);
+	    break;
+	 default:
+	    return;
+      }
+
+   }; // getEmapaForKeysCallback
 
    //---------------------------------------------------------------
    var makeMarkerFlag = function (term, num) {
@@ -1808,19 +1951,11 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // selectThisTerm
 
    //---------------------------------------------------------------
+   // from right-click menu on anatomy terms in list / table at RHS
+   //---------------------------------------------------------------
    var doTableQuery = function (database) {
 
-      var dbLC;
       var keys;
-      var len;
-      var i;
-      var EmapIdArr;
-      var queryData = [];
-      var queryIds; // a comma separated list
-      var abstractQueryIds; // a comma separated list
-      var EMAGE = "emage";
-      var MGI = "mgi";
-      var url;
 
       //console.log("doTableQuery");
       keys = getSelectedRowKeys();
@@ -1829,55 +1964,75 @@ emouseatlas.emap.tiledImagePointClick = function() {
          return false;
       }
 
-      //console.log("doTableEmageQuery keys ",keys);
-      len = keys.length;
-      for(i=0; i<len; i++) {
-         EmapIdArr = getEmapIdForKey(keys[i]);
-	 if(EmapIdArr === undefined || EmapIdArr === null || EmapIdArr.length === 0 || EmapIdArr[0].toLowerCase() === "not allocated") {
-	    continue;
-	 }
-	 queryData[queryData.length] = {key: keys[i], id: EmapIdArr[0], ida: EmapIdArr[1]};
-      }
+      getEmapaForKeys(keys, database)
+
+   }; // doTableQuery
+
+   //--------------------------------------------------------------------
+   // we need to get emapa + stage from mouse011 on the fly so we have to 
+   // come here after the ajax call
+   //--------------------------------------------------------------------
+   var doTableQuery2 = function (queryData, database) {
+
+      var dbLC;
+      var keys;
+      var len;
+      var i;
+      var comma;
+      var queryStr; // a comma separated list of emapa ids followed by stage
+      var EMAGE = "emage";
+      var MGI = "mgi";
+      var url;
+      var stage;
+      var emaps;
+
+      //console.log("doTableQuery2: queryData ",queryData);
+      //console.log("database ",database);
 
       len = queryData.length;
-      //console.log("doTableEmageQuery query data ",queryData);
-      if(len <= 0) {
+      // the last element of queryData is stage
+      if(len <= 1) {
          alert("Sorry:  there were no selected terms with an EMAP id");
 	 return false;
       }
 
-      if(len > 1 &&  database.toLowerCase() === MGI) {
+      // the last element of queryData is stage
+      if(len > 2 &&  database.toLowerCase() === MGI) {
          //alert("MGI / GXD will only accept one search term: using term #" + queryData[0].key + " with EMAP id + " + queryData[0].id);
 	 pointClickChanges.mgiChoice = true;
 	 notify("doTableQuery MGI");
 	 return;
       }
 
-      queryIds = queryData[0].id;
-      abstractQueryIds = queryData[0].ida;
-      for(i=1; i<len; i++) {
-         queryIds = queryIds + "," + queryData[i].id;
-         abstractQueryIds = abstractQueryIds + "," + queryData[i].ida;
-      }
+      queryStr = "";
+      //console.log("queryStr %s",queryStr);
 
       //console.log(queryIds);
       dbLC = database.toLowerCase();
 
       switch(dbLC) {
          case EMAGE:
-            url = emageUrl + queryIds + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+            for(i=0; i<len-1; i++) {
+               comma = (i===0) ? "" : ",";
+               queryStr = queryStr + comma + queryData[i];
+            }
+            queryStr = queryStr + "&stages=" + stage;
+            url = emageUrl + queryStr + '&exactmatchstructures=true&includestructuresynonyms=true'; 
 	    break;
          case MGI:
-            url = mgiUrl + abstractQueryIds;
+            //queryStr = queryStr + comma + queryData[i];
+	    emaps = queryData[0].replace("EMAPA", "EMAPS");
+	    stage = queryData[1].replace("TS", "");
+            url = mgiUrl + emaps + stage;
 	    break;
 	 default:
 	    break;
       }
 
-      //console.log(url);
+      //console.log("database %s, url %s",database,url);
       window.open(url);
 
-   };
+   }; // doTableQuery2
 
    //---------------------------------------------------------------
    var doTableLink = function (trgt) {
@@ -3851,7 +4006,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       emouseatlas.emap.markerPopup.showIFrame(true);
       emouseatlas.emap.markerPopup.updateTableContent({termDets:termDets, stage:stage});
-      emouseatlas.emap.markerPopup.generateMarkerPopupPage();
+      //emouseatlas.emap.markerPopup.generateMarkerPopupPage();
 
    };
 
@@ -4893,8 +5048,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
          'id': 'markerPopupIFrame',
          'class': 'markerPopupIFrame',
          'name': 'markerPopupIFrame',
-	 'src': "../../html/markerPopupIFrame.html",
-	 'scrolling': "no"
+	 'src': "../../html/markerPopupIFrame.html"
       });
 
       //........................

@@ -38,9 +38,9 @@
 //emouseatlas.emap.queryTool = new Class ({
 var queryTool = new Class ({
 
-   that: this,
-
    initialize: function(params) {
+
+      that = this;
 
       //console.log("enter queryTool.initialize: ",params);
       this.model = params.model;
@@ -702,8 +702,8 @@ var queryTool = new Class ({
                url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20' + anatStr + '%20';
 	       */
 	    } else {
-               //url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
-               url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+               url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+               //url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
 	    }
 	 } else if(type === 1) {
 	    emapIdNum = emapId.substring(5);
@@ -925,10 +925,12 @@ var queryTool = new Class ({
    //---------------------------------------------------------------
    doAnatomyQuery: function() {
 
-      var emage_cb;
-      var mgi_cb;
       var termData;
       var reverseData;
+      var id_arr;
+      var name_arr;
+      var json_id_arr;
+      var json_name_arr;
       var len;
       var key;
       var term;
@@ -938,7 +940,51 @@ var queryTool = new Class ({
       var url;
       var first;
 
+      termData = this.query.getQueryTermData();
+      reverseData = emouseatlas.emap.utilities.reverseObject(termData);
+
+      id_arr = [];
+      name_arr = [];
+
+      for(key in reverseData) {
+      
+         if(!reverseData.hasOwnProperty(key)) {
+            continue;
+         }
+         
+         term = reverseData[key];
+         name = reverseData[key].name;
+         id = term.fbId[0];
+         //console.log("term  %s, %s",name,id);
+
+	 id_arr[id_arr.length] = id;
+	 name_arr[name_arr.length] = name;
+      }
+
+      this.getEmapaForEmap({emap_ids:id_arr, names:name_arr, cbf:"doAnatomyQuery2"});
+
+   },  // doAnatomyQuery
+
+   //---------------------------------------------------------------
+   doAnatomyQuery2: function(queryData, terms) {
+
+      var emage_cb;
+      var mgi_cb;
+      var all_stages;
+      var query_str;
+      var termArr;
+      var emaps;
+      var stage;
+      var comma;
+      var len;
+      var i;
+
+      //console.log("doAnatomyQuery2: ",queryData);
+
+      all_stages = false;
+
       emage_cb = $("dbChkbx_emage").checked;
+      //mgi_cb = $("dbChkbx_emage").checked;
 
       if(this.project.toLowerCase() === "gudmap") {
 	 if(!emage_cb) {
@@ -951,80 +997,140 @@ var queryTool = new Class ({
 	    alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
 	    return false;
 	 }
+	 if(mgi_cb) {
+	    //console.log("mgi_cb");
+	 }
       }
 
-      termData = this.query.getQueryTermData();
-      reverseData = emouseatlas.emap.utilities.reverseObject(termData);
+      len = queryData.length;
 
       if(emage_cb) {
 	 if(this.project.toLowerCase() === "gudmap") {
 	    url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=';
 	 } else {
-	    //url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
-	    url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
-	 }
-	 first = true;
-
-	 for(key in reverseData) {
-   
-	    if(!reverseData.hasOwnProperty(key)) {
-	       continue;
-	    }
-   
-	    term = reverseData[key];
-	    name = reverseData[key].name;
-	    id = term.fbId[0];
-	    //console.log("term ",term);
-	    //console.log("term  %s, %s",name,id);
-   
-
-	    if(this.project.toLowerCase() === "gudmap") {
-	       if(!first) {
-		  url += '%20';
-	       }
-	       url += '%22' + name + '%22';
-	    } else {
-	       if(!first) {
-		  url += ',';
-	       }
-	       url += id;
-	    }
-	    first = false;
+	    url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	    //url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
 	 }
 
-	 if(this.project.toLowerCase() !== "gudmap") {
-	    url += '&exactmatchstructures=true&includestructuresynonyms=true';
+	 queryStr = "";
+	 for (i=0; i<len-1; i++) {
+	    comma = (i===0) ? "" : ",";
+	    queryStr = queryStr + comma + queryData[i];
+	 }
+
+	 if(!all_stages) {
+	    queryStr += "&stages=" + queryData[len-1];
+	 }
+
+	 if(this.project.toLowerCase() === "gudmap") {
+	    url += queryStr;
+	 } else {
+	    url += queryStr + '&exactmatchstructures=true&includestructuresynonyms=true';
 	 }
 	 //console.log(url);
+
 	 this.view.getQueryResults(url);
       }
-      
-      // we are only able to use 1 term for an MGI query
-      // so we use the first one.
-      if(mgi_cb) {
-         url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
 
-         for(key in reverseData) {
-   
-            if(!reverseData.hasOwnProperty(key)) {
-               continue;
-            }
-   
-            term = reverseData[key];
-            name = reverseData[key].name;
-            id = term.fbId[0];
-	    idnum = id.substring(5);
-            //console.log("term ",term);
-            //console.log("term  %s, %s, %s",name,id,idnum);
-   
-            url += idnum;
-	    break;
-         }
-         url += '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
-         //console.log(url);
-         this.view.getQueryResults(url);
+      // we are only able to use 1 term for an MGI query
+      // so we ask the user to choose if there is more than 1 term
+      if(mgi_cb) {
+	 url = "http://www.informatics.jax.org/gxd/structure/";
+
+	 //terms has been stringified, we need to get it back as an array.
+	 termArr = emouseatlas.JSON.parse(terms);
+
+	 if(len > 2) {
+	    this.query.chooseItem(queryData, termArr);
+	 } else {
+
+            emaps = queryData[0].replace("EMAPA", "EMAPS");
+            stage = queryData[1].replace("TS", "");
+            
+            url = url + emaps + stage;
+            this.view.getQueryResults(url);
+	 }
+
       }
-   },  // doAnatomyQuery
+
+   },  // doAnatomyQuery2
+
+
+   //---------------------------------------------------------------
+   getEmapaForEmap: function (obj) {
+
+      var id_arr = [];
+      var name_arr = [];
+      var json_id_arr;
+      var json_name_arr;
+      var cbf;
+      var i;
+
+      //console.log("getEmapaForEmap: obj ",obj);
+      id_arr = obj.emap_ids;
+      name_arr = obj.names;
+      cbf = obj.cbf;
+
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         json_id_arr = JSON.stringify(id_arr);
+         json_name_arr = JSON.stringify(name_arr);
+      } else {
+         json_id_arr = emouseatlas.JSON.stringify(id_arr);
+         json_name_arr = emouseatlas.JSON.stringify(name_arr);
+      }
+
+
+      //console.log("getEmapaForEmap: ",json_id_arr);
+      //console.log("getEmapaForEmap: ",json_name_arr);
+      //console.log("getEmapaForEmap: ",cbf);
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      url = '/ontologywebapp/GetEMAPA';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"emap_ids=" + json_id_arr + "&cbf=" + cbf + "&names=" + json_name_arr,
+	 callback:this.getEmapaForEmapCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }, // getEmapaForEmap
+
+   //---------------------------------------------------------------
+   getEmapaForEmapCallback: function (response, urlParams) {
+
+      var json;
+      var params;
+      var callback;
+
+      //console.log("getEmapaForEmapCallback: response \n",response);
+      //console.log("getEmapaForEmapCallback: urlParams \n",urlParams);
+
+      json = JSON.parse(response);
+      //console.log("getEmapaForEmapCallback: json ",json);
+
+      params = urlParams.split("&");
+      callback = (params[1].split("="))[1];
+      names = (params[2].split("="))[1];
+      //console.log("getEmapaForEmapCallback: names ",names);
+      
+      switch (callback) {
+         case "doAnatomyQuery2":
+	    that.doAnatomyQuery2(json, names);
+	    break;
+	 default:
+	    return;
+      }
+
+   }, // getEmapaForEmapCallback
 
    //---------------------------------------------------------------
    // Spatial query
@@ -1150,7 +1256,7 @@ var queryTool = new Class ({
       x = valArr[4];
       y = valArr[2];
       z = valArr[0];
-      console.log("getTransformedBoundingBoxCallback origin x %d, y %d, z %d",x,y,z);
+      //console.log("getTransformedBoundingBoxCallback origin x %d, y %d, z %d",x,y,z);
 
       if(this.transformedOrigins[name] === undefined) {
          this.transformedOrigins[name] = {sectionName:name, x:x , y:y , z:z };
@@ -1271,9 +1377,9 @@ var queryTool = new Class ({
       }
 
       this.dummyInputView.value = iipUrl;
-      console.log("iipUrl ",iipUrl);
+      //console.log("iipUrl ",iipUrl);
       this.dummyInputDrawing.value = queryStr;
-      console.log(queryStr);
+      //console.log(queryStr);
       this.dummyQueryExport.value = queryStr;
 
       // If you do a form.submit, the servlet has to re-draw the page, the call is from the web-page.
