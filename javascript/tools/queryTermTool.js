@@ -414,8 +414,9 @@ var queryTermTool = new Class ({
       }
 
       if(viewChanges.toolbox === true) {
+	mode = this.view.getMode();
 	viz = this.view.toolboxVisible();
-	if(viz === true) {
+	if(viz && mode.name === "query") {
 	   this.window.setVisible(true);
         } else if(viz === false) {
 	   this.window.setVisible(false);

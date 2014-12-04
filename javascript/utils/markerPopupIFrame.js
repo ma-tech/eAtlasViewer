@@ -134,7 +134,7 @@ emouseatlas.emap.markerPopup = function () {
 
       anatomyRowLabels = ["Kaufman term", "EMAP id", "EMAP term", "Theiler", "3D viewer"];
       searchRowLabels = ["EMAGE", "MGI / GXD"];
-      miscRowLabels = ["Wikipedia"];
+      miscRowLabels = ["Wikipedia", "Kaufman Atlas"];
       //setTableContent(info);
 
       stagedOntologyUrl = "http://www.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=";
@@ -227,6 +227,7 @@ emouseatlas.emap.markerPopup = function () {
       } else {
          miscRowContent[0] = "<a target='_blank' href='" + extRef.wiki + "'>" + wikiName + "</a>";
       }
+      miscRowContent[1] = "Academic Press / Elsevier";
 
       getEmapaForEmap(extRef.emap, stage);
 
@@ -443,6 +444,11 @@ emouseatlas.emap.markerPopup = function () {
 	    klass = "rowData disabled";
 	 } else {
 	    klass = "rowData";
+	 }
+
+	 // fudge for Elsevier until we get a proper target
+	 if(i === 1) {
+	    klass = "rowData disabled";
 	 }
 
 	 header = doc.createElement('td');

@@ -424,14 +424,17 @@ var querySectionTool = new Class ({
    //---------------------------------------------------------------
    viewUpdate: function(viewChanges, from) {
 
-      var queryModes;
+      var mode;
+      var queryModes;  // by anatomy term, by drawing
+      var type;        // 0 ==> emage or gudmap, 1 ==> MGI/GXD
+      var viz;
 
       if(viewChanges.initial === true) {
 	 this.window.setVisible(false);
       }
 
       if(viewChanges.mode === true) {
-	 var mode = this.view.getMode();
+	 mode = this.view.getMode();
          //console.log("mode.name ",mode.name);
 	 queryModes = this.model.getQueryModes();
          //console.log(queryModes);
@@ -443,8 +446,11 @@ var querySectionTool = new Class ({
       }
 
       if(viewChanges.toolbox === true) {
-	var viz = this.view.toolboxVisible();
-	if(viz === true) {
+	mode = this.view.getMode();
+	type = this.query.getQueryType();
+	//console.log("queryTerm viewUpdate: mode %s, type %s",mode.name,type);
+	viz = this.view.toolboxVisible();
+	if(viz && mode.name === "query") {
 	   this.window.setVisible(true);
         } else if(viz === false) {
 	   this.window.setVisible(false);

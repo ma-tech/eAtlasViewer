@@ -2052,6 +2052,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
       var EMAP = "emap";
       var EMAPA = "emapa";
       var WIKI = "wiki";
+      var ELSEVIER = "elsevier";
       var url;
 
       //console.log("doTableLink %s",trgt);
@@ -2116,12 +2117,17 @@ emouseatlas.emap.tiledImagePointClick = function() {
                return false;
 	    }
 	    break;
+         case ELSEVIER:
+            url = undefined;
+	    break;
 	 default:
 	    break;
       }
 
       //console.log(url);
-      window.open(url);
+      if(url) {
+         window.open(url);
+      }
    };
 
    //---------------------------------------------------------------

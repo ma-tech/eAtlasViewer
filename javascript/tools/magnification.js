@@ -443,6 +443,15 @@ emouseatlas.emap.magnification = function() {
 	 }
       }
 
+      //.................................
+      if(viewChanges.toolbox === true) {
+	if(view.toolboxVisible()) {
+           setMagVisible(true);
+        } else {
+           setMagVisible(false);
+	}
+      }
+
    }; // viewUpdate
 
    //---------------------------------------------------------------
