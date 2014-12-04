@@ -665,6 +665,7 @@ var queryTool = new Class ({
       var url;
       var selections;
       var indxArr;
+      var viz;
 
       type = this.view.getModeSubType();
 
@@ -727,6 +728,16 @@ var queryTool = new Class ({
 	    this.termData = this.getTermDataFromTree(indxArr);
 	    this.query.setQueryTermData(this.termData);
 	 }
+      }
+
+      if(viewChanges.toolbox === true) {
+	mode = this.view.getMode();
+	viz = this.view.toolboxVisible();
+	if(viz && mode.name === "query") {
+	   this.window.setVisible(true);
+        } else if(viz === false) {
+	   this.window.setVisible(false);
+	}
       }
 
    }, // viewUpdate

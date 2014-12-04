@@ -158,6 +158,17 @@ var tiledImageScalebar = new Class ({
 	 txt = scalebarLen / scale.cur;
          this.scalebarTextDiv.set('text', txt + this.mu);
       }
+
+      //.................................
+      if(viewChanges.toolbox === true) {
+	var viz = this.view.toolboxVisible();
+	var sbar = $("scalebarContainer");
+	if(viz === true) {
+	   sbar.setStyle("visibility", "visible");
+        } else if(viz === false) {
+	   sbar.setStyle("visibility", "hidden");
+	}
+      }
    },
 
    //---------------------------------------------------------------

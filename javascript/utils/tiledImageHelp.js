@@ -57,12 +57,12 @@ var tiledImageHelp = new Class ({
 
    //---------------------------------------------------------------
    doMouseOver: function(e) {
-      console.log("over");
+      //console.log("over");
    },
 
    //---------------------------------------------------------------
    doMouseOut: function(e) {
-      console.log("out");
+      //console.log("out");
    },
 
    //---------------------------------------------------------------

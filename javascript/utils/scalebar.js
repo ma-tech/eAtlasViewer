@@ -151,6 +151,16 @@ emouseatlas.emap.scalebar = function() {
 	 txt = scalebarLen / scale.cur;
          scalebarTextDiv.set('text', txt + mu);
       }
+
+      //.................................
+      if(viewChanges.toolbox === true) {
+         if(view.toolboxVisible()) {
+   	 $("scalebarContainer").setStyle("visibility","visible");
+         } else {
+   	 $("scalebarContainer").setStyle("visibility","hidden");
+         }
+      }
+
    };
 
    /*

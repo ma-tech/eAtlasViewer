@@ -358,6 +358,7 @@ var tiledImageDrawingTool = new Class ({
       var mode;
       var queryModes;
       var currentLayer;
+      var viz;
 
       currentLayer = this.view.getCurrentLayer();
 
@@ -377,8 +378,9 @@ var tiledImageDrawingTool = new Class ({
       }
 
       if(viewChanges.toolbox === true) {
-	var viz = this.view.toolboxVisible();
-	if(viz === true) {
+	mode = this.view.getMode();
+	viz = this.view.toolboxVisible();
+	if(viz && mode.name === "query") {
 	   this.window.setVisible(true);
         } else if(viz === false) {
 	   this.window.setVisible(false);

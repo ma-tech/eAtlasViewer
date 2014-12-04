@@ -542,6 +542,15 @@ emouseatlas.emap.distance = function() {
          setDistVisible(true);
       }
 
+      //.................................
+      if(viewChanges.toolbox === true) {
+	if(view.toolboxVisible()) {
+           setDistVisible(true);
+        } else {
+           setDistVisible(false);
+	}
+      }
+
    }; // viewUpdate
 
    //---------------------------------------------------------------

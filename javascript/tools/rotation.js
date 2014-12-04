@@ -810,6 +810,15 @@ emouseatlas.emap.rotation = function() {
 	 setInitialConditions();
       }
 
+      //.................................
+      if(viewChanges.toolbox === true) {
+	if(view.toolboxVisible()) {
+           setRotVisible(true);
+        } else {
+           setRotVisible(false);
+	}
+      }
+
    }; // viewUpdate
 
    //---------------------------------------------------------------

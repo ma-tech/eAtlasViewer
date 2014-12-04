@@ -392,6 +392,15 @@ emouseatlas.emap.pointClickDropDown = function() {
    //---------------------------------------------------------------
    var viewUpdate = function(viewChanges) {
 
+      //.................................
+      if(viewChanges.toolbox === true) {
+	if(view.toolboxVisible()) {
+           setDropdownVisible(true);
+        } else {
+           setDropdownVisible(false);
+	}
+      }
+
    }; // viewUpdate
 
    //---------------------------------------------------------------
@@ -445,6 +454,12 @@ emouseatlas.emap.pointClickDropDown = function() {
       emouseatlas.emap.drag.register({drag: dropDownContainer.id, drop:dropTargetId});
 
       return false;
+   };
+
+   //---------------------------------------------------------------
+   var setDropdownVisible = function(show) {
+      var viz = show ? "visible" : "hidden";
+      dropDownContainer.setStyle("visibility", viz);
    };
 
    //---------------------------------------------------------------
