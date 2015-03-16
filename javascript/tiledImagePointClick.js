@@ -457,6 +457,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
       var details;
       var plate;
       var subplate;
+      var found = false;
       var len;
       var i;
       var infoDetails;
@@ -2054,6 +2055,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
       var WIKI = "wiki";
       var ELSEVIER = "elsevier";
       var url;
+      var found = false;
 
       //console.log("doTableLink %s",trgt);
       trgtLC = trgt.toLowerCase();

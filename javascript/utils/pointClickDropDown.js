@@ -366,9 +366,9 @@ emouseatlas.emap.pointClickDropDown = function() {
 	 if(ival < 10) {
 	    val = "0" + val;
 	 }
-	 console.log("%s%s%s.php",webserver,metadata,val);
+	 //console.log("%s%s%s.php",webserver,metadata,val);
 	 url = webserver + metadata + "plate_" + val + ".php";
-	 console.log("doDropDownChanged plate url %s",url);
+	 //console.log("doDropDownChanged plate url %s",url);
 	 window.location.href = url;
 	 return false;
       }

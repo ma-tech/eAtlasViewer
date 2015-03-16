@@ -59,6 +59,8 @@ var tiledImage3DFeedback = new Class ({
       this.toRad = Math.PI / 180.0;
 
       this.targetId = params.params.targetId;
+      this.isWlz = this.model.isWlzData();
+      this.isKeySection = this.model.getKeySections().length > 0 ? true : false;
 
       this.name = "3DFeedback";
       this.shortName = this.name.toLowerCase().split(" ").join("");
@@ -104,6 +106,7 @@ var tiledImage3DFeedback = new Class ({
       this.x3domHelpIconImg;
       this.keepX3domHelpFrame = false;
 
+      this.vp_arr = [];
       this.createElements();
 
    },
@@ -113,57 +116,58 @@ var tiledImage3DFeedback = new Class ({
 
       var win;
       var topEdge;
-      var threeDInfo;
-      var x3dInfo;
       var x3d;
       var scene;
       var param;
-      var group_disc;
-      var group_embryo;
-      var transform_fix;
-      var transform_scl;
-      var transform_xsi;
-      var transform_eta;
-      var transform_zet;
-      var transform_dst;
-      var transform_sec;
-      var shape;
-      var appearance;
-      var material;
-      var transform;
-      var inline;
-      var viewpointData;
-      var viewpointArr;
-      var nViews;
-      var vp;
-      var vpDescription;
-      var vpJump;
-      var vpFOV;
-      var vpTrans;
-      var vpOrient;
-      var background;
-      var fxp;
+
+      var x3dInfo;
       var fxpTrans;
-      var initTrans;  // sets the centre of rotation
-      var embryoPositionTrans;
-      var disc;
-      var discColour;
-      var discHeight;
-      var discRadius;
-      var discRot;
-      var discTrans;
-      var discTransparency;
-      var url;
-      var bgCol;
+      var initTrans;
+
+      /*
+      var axes_inline;
+      var axes_url;
+      var axes_transform;
+      */
+
+      var embryo_group;
+      var embryo_transform;
+      var embryo_inline;
+      var embryo_initial_orient;
+      var embryo_initial_trans;
+      var embryo_url;
+
+      var disc_data;
+      var disc_colour;
+      var disc_transparency;
+      var disc_height;
+      var disc_radius;
+      var disc_group;
+      var disc_transform_fix;
+      var disc_transform_scl;
+      var disc_transform_xsi;
+      var disc_transform_eta;
+      var disc_transform_zet;
+      var disc_transform_dst;
+      var disc_initial_orient;
+      var disc_initial_trans;
+      var disc_shape;
+      var disc_cylinder;
+      var disc_appearance;
+      var disc_material;
+
+      var background;
+      var bgc_obj;
+      var bgc_css;
+      var vp;
+      var vp_count;
       var styl;
-      var stylBorder;
-      var stylFloat;
-      var stylHeight;
-      var stylWidth;
-      var stylX;
-      var stylY;
-      var bgc;
-      var bgCol;
+      var styl_border;
+      var styl_float;
+      var styl_height;
+      var styl_width;
+      var styl_x;
+      var styl_y;
       var i;
 
       //.................................................
@@ -171,65 +175,44 @@ var tiledImage3DFeedback = new Class ({
       topEdge = $(this.shortName + '-topedge');
 
       x3dInfo = this.model.getX3dInfo();
-      threeDInfo = this.model.getThreeDInfo();
-
-      fxp = threeDInfo.fxp.x + " " + threeDInfo.fxp.y + " " + threeDInfo.fxp.z;
-
+      //console.log("x3dInfo ",x3dInfo);
       fxpTrans = x3dInfo.fxpTrans.x + " " + x3dInfo.fxpTrans.y + " " + x3dInfo.fxpTrans.z;
       initTrans = x3dInfo.initTrans.x + " " + x3dInfo.initTrans.y + " " + x3dInfo.initTrans.z;
-      embryoPositionTrans = x3dInfo.embryoPositionTrans.x + " " + x3dInfo.embryoPositionTrans.y + " " + x3dInfo.embryoPositionTrans.z;
 
-      disc = x3dInfo.disc;
-      discColour = disc.colour.r + " " + disc.colour.g + " " + disc.colour.b;
-      discHeight = disc.height;
-      discRadius = disc.radius;
-      discRot = disc.rot.xsi + " " + disc.rot.eta + " " + disc.rot.zeta + " " + disc.rot.rad;
-      discTrans = disc.trans.x + " " + disc.trans.y + " " + disc.trans.z;
-      discTransparency = disc.transparency;
+      threeDInfo = this.model.getThreeDInfo();
 
-      url = x3dInfo.url;
+      disc_data = x3dInfo.disc;
+      disc_colour = disc_data.colour.r + " " + disc_data.colour.g + " " + disc_data.colour.b;
+      disc_height = disc_data.height;
+      disc_radius = disc_data.radius;
+      disc_transparency = disc_data.transparency;
+      disc_initial_orient = disc_data.rot.xsi + " " + disc_data.rot.eta + " " + disc_data.rot.zeta + " " + disc_data.rot.rad;
+      disc_initial_trans = disc_data.trans.x + " " + disc_data.trans.y + " " + disc_data.trans.z;
+
+      embryo_url = x3dInfo.url;
+
+      embryo_data = x3dInfo.embryo;
+      //console.log("embryo_data ",embryo_data);
+      if(embryo_data.rot) {
+         embryo_initial_orient = embryo_data.rot.xsi + " " + embryo_data.rot.eta + " " + embryo_data.rot.zeta + " " + embryo_data.rot.rad;
+      }
+      if(embryo_data.trans) {
+         embryo_initial_trans = embryo_data.trans.x + " " + embryo_data.trans.y + " " + embryo_data.trans.z;
+      }
 
       styl = x3dInfo.style;
-      stylBorder = styl.border;
-      stylFloat = styl.float;
-      stylHeight = styl.height;
-      stylWidth = styl.width;
-      stylX = styl.x;
-      stylY = styl.y;
+      styl_border = styl.border;
+      styl_float = styl.float;
+      styl_height = styl.height;
+      styl_width = styl.width;
+      styl_x = styl.x;
+      styl_y = styl.y;
 
-      viewpointData = x3dInfo.viewpoints;
-      nViews = viewpointData.length;
-      viewpointArr = [];
+      this.vp_arr = [];
+      vp_count = x3dInfo.viewpoints.length;
 
-      bgc = x3dInfo.bgCol;
-      bgCol = bgc.r + " " + bgc.g + " " + bgc.b;
-
-      if(this._debug) {
-         console.log("==================================================================");
-         console.log("fxp", fxp);
-         console.log("fxpTrans ", fxpTrans);
-         console.log("initTrans ", initTrans);
-         console.log("discColour ", discColour);
-         console.log("discHeight ", discHeight);
-         console.log("discRadius ", discRadius);
-         console.log("discRot ", discRot);
-         console.log("discTrans ", discTrans);
-         console.log("discTransparency ", discTransparency);
-         console.log(url);
-         console.log("stylBorder ",stylBorder);
-         console.log("stylFloat ",stylFloat);
-         console.log("stylHeight ",stylHeight);
-         console.log("stylWidth ",stylWidth);
-         console.log("stylX ",stylX);
-         console.log("stylY ",stylY);
-         console.log("vpDescription ",vpDescription);
-         console.log("vpJump ",vpJump);
-         console.log("vpFOV ",vpFOV);
-         console.log("vpTrans ",vpTrans);
-         console.log("vpOrient ",vpOrient);
-         console.log("bgCol ",bgCol);
-         console.log("==================================================================");
-      }
+      bgc_obj = x3dInfo.bgCol;
+      bgc_css = bgc_obj.r + " " + bgc_obj.g + " " + bgc_obj.b;
 
       //.................................................
       x3d = document.createElement('X3D');
@@ -237,103 +220,112 @@ var tiledImage3DFeedback = new Class ({
       x3d.setAttribute('xmlns', 'http://www.web3d.org/specifications/x3d-namespace');
       x3d.setAttribute('showlog', 'false');
       x3d.setAttribute('showStat', 'false');
-      x3d.setAttribute('width', stylWidth);  // required for flash fallback case
-      x3d.setAttribute('height', stylHeight);  // required for flash fallback case
-      x3d.setStyle('x', stylX);
-      x3d.setStyle('y', stylY);
-      x3d.setStyle('width', stylWidth);
-      x3d.setStyle('height', stylHeight);
-      x3d.setStyle('border', stylBorder);
-      x3d.style.float = stylFloat;
+      x3d.setAttribute('width', styl_width);  // required for flash fallback case
+      x3d.setAttribute('height', styl_height);  // required for flash fallback case
+      x3d.setStyle('x', styl_x);
+      x3d.setStyle('y', styl_y);
+      x3d.setStyle('width', styl_width);
+      x3d.setStyle('height', styl_height);
+      x3d.setStyle('border', styl_border);
+      x3d.style.float = styl_float;
 
+      //................
+      //set value to true for debugging
       scene = document.createElement('Scene');
       scene.setAttribute('DEF', 'scene');
-
-      //................ set value to true for debugging
       param = document.createElement('param');
       param.setAttribute('name', 'showLog');
       param.setAttribute('value', 'false');
-      //................ for debugging
 
-      group_disc = document.createElement('Group');
+      //................
+      /*
+      axes_transform = document.createElement('Transform');
+      axes_transform.setAttribute('id', 'axes_trans');
+      axes_transform.setAttribute('DEF', 'axes_trans');
 
-      transform_fix = document.createElement('Transform');
-      transform_fix.setAttribute('id', 'fixTr');
-      transform_fix.setAttribute('translation', fxpTrans);
+      axes_url = "x3d/CoordinateAxes.x3d";
+      axes_inline = document.createElement('Inline');
+      axes_inline.setAttribute('url', axes_url);
+      */
 
-      transform_scl = document.createElement('Transform');
-      transform_scl.setAttribute('id', 'sclTr');
-      transform_scl.setAttribute('scale', '1.0 1.0 1.0');
+      //................
 
-      transform_xsi = document.createElement('Transform');
-      transform_xsi.setAttribute('id', 'xsiTr');
-      transform_xsi.setAttribute('rotation', '0 0 1 0.0');
-      transform_xsi.setAttribute('center', initTrans);
+      disc_group = document.createElement('Group');
+      //---------------------------------------------
+      //console.log("fxpTrans ",fxpTrans);
+      disc_transform_fix = document.createElement('Transform');
+      disc_transform_fix.setAttribute('id', 'fixTr');
+      disc_transform_fix.setAttribute('translation', fxpTrans);
 
-      transform_eta = document.createElement('Transform');
-      transform_eta.setAttribute('id', 'etaTr');
-      transform_eta.setAttribute('rotation', '0 1 0 0.0');
-      transform_eta.setAttribute('center', initTrans);
+      disc_transform_scl = document.createElement('Transform');
+      disc_transform_scl.setAttribute('id', 'sclTr');
+      disc_transform_scl.setAttribute('scale', '1.0 1.0 1.0');
 
-      transform_zet = document.createElement('Transform');
-      transform_zet.setAttribute('id', 'zetTr');
-      transform_zet.setAttribute('rotation', '1 0 0 0.0');
-      transform_zet.setAttribute('center', initTrans);
+      disc_transform_xsi = document.createElement('Transform');
+      disc_transform_xsi.setAttribute('id', 'xsiTr');
+      disc_transform_xsi.setAttribute('rotation', '0 0 1 0.0');
+      disc_transform_xsi.setAttribute('center', initTrans);
 
-      transform_dst = document.createElement('Transform');
-      transform_dst.setAttribute('id', 'dstTr');
-      transform_dst.setAttribute('translation', initTrans);
-      //console.log("this.transform_dst ",this.transform_dst);
+      disc_transform_eta = document.createElement('Transform');
+      disc_transform_eta.setAttribute('id', 'etaTr');
+      disc_transform_eta.setAttribute('rotation', '0 1 0 0.0');
+      disc_transform_eta.setAttribute('center', initTrans);
 
-      transform_sec = document.createElement('Transform');
-      transform_sec.setAttribute('id', 'secTr');
-      transform_sec.setAttribute('translation', discTrans);
-      transform_sec.setAttribute('rotation', discRot);
+      disc_transform_zet = document.createElement('Transform');
+      disc_transform_zet.setAttribute('id', 'zetTr');
+      disc_transform_zet.setAttribute('rotation', '1 0 0 0.0');
+      disc_transform_zet.setAttribute('center', initTrans);
 
-      shape = document.createElement('Shape');
+      disc_transform_dst = document.createElement('Transform');
+      disc_transform_dst.setAttribute('id', 'dstTr');
+      disc_transform_dst.setAttribute('translation', initTrans);
 
-      appearance = document.createElement('Appearance');
+      //console.log("disc_initial_trans ",disc_initial_trans);
+      disc_transform = document.createElement('Transform');
+      disc_transform.setAttribute('id', 'discTr');
+      disc_transform.setAttribute('translation', disc_initial_trans);
+      disc_transform.setAttribute('rotation', disc_initial_orient);
 
-      material = document.createElement('Material');
-      material.setAttribute('id', 'secMat');
-      material.setAttribute('diffuseColor', discColour);
-      material.setAttribute('transparency', discTransparency);
+      //---------------------------------------------
+      disc_shape = document.createElement('Shape');
+      disc_appearance = document.createElement('Appearance');
 
-      cylinder = document.createElement('Cylinder');
-      cylinder.setAttribute('id', 'section');
-      cylinder.setAttribute('radius', discRadius);
-      cylinder.setAttribute('height', discHeight);
+      disc_material = document.createElement('Material');
+      disc_material.setAttribute('id', 'secMat');
+      disc_material.setAttribute('diffuseColor', disc_colour);
+      disc_material.setAttribute('transparency', disc_transparency);
 
-      group_embryo = document.createElement('Group');
+      disc_cylinder = document.createElement('Cylinder');
+      disc_cylinder.setAttribute('id', 'section');
+      disc_cylinder.setAttribute('radius', disc_radius);
+      disc_cylinder.setAttribute('height', disc_height);
 
-      transform = document.createElement('Transform');
-      transform.setAttribute('id', 'embryoPosition');
-      transform.setAttribute('translation', embryoPositionTrans);
-
-      inline = document.createElement('Inline');
-      inline.setAttribute('DEF', 'embryonic');
-      //inline.setAttribute('url', 'obj/embryonicvs111gml.x3d');
-      inline.setAttribute('url', url);
-
-      for(i=0; i<nViews; i++) {
-         vp = viewpointData[i];
-         vpFOV = vp.fov;
-         vpTrans = vp.trans.x + " " + vp.trans.y + " " + vp.trans.z;
-         vpOrient = vp.orient.xsi + " " + vp.orient.eta + " " + vp.orient.zeta + " " + vp.orient.rad;
-         vpDescription = vp.description;
-         vpJump = vp.jump;
-         viewpointArr[i] = document.createElement('Viewpoint');
-         viewpointArr[i].setAttribute('fieldOfView', vpFOV);
-         viewpointArr[i].setAttribute('position', vpTrans);
-         viewpointArr[i].setAttribute('orientation', vpOrient);
-         viewpointArr[i].setAttribute('centerOfRotation', fxp);
-         viewpointArr[i].setAttribute('description', vpDescription);
-         viewpointArr[i].setAttribute('jump', vpJump);
+      //................
+      embryo_group = document.createElement('Group');
+      //---------------------------------------------
+      embryo_transform = document.createElement('Transform');
+      embryo_transform.setAttribute('id', 'embTr');
+      if(embryo_initial_trans !== undefined) {
+         embryo_transform.setAttribute('translation', embryo_initial_trans);
+      }
+      if(embryo_initial_orient !== undefined) {
+         embryo_transform.setAttribute('rotation', embryo_initial_orient);
       }
 
-      background = document.createElement('Background');
-      background.setAttribute('skyColor', bgCol);
+      embryo_inline = document.createElement('Inline');
+      embryo_inline.setAttribute('url', embryo_url);
+      embryo_inline.setAttribute('DEF', 'embryonic');
 
+      //................
+      background = document.createElement('Background');
+      background.setAttribute('skyColor', bgc_css);
+
+      //................
+      for(i=0; i < vp_count; i++) {
+         this.vp_arr[i] = document.createElement('Viewpoint');
+      }
+
+      //................
       // help icon for x3dom feedback
       this.x3domHelpIconContainer = new Element( 'div', {
          'id': 'x3domHelpFrameIconContainer',
@@ -359,48 +351,58 @@ var tiledImage3DFeedback = new Class ({
       }.bind(this));
 
       //------------------------------------------------------------------
+      // Note: innermost transforms are executed first
+      // Apply rotations in the correct order
+      //------------------------------------------------------------------
       win.appendChild(x3d);
       win.appendChild(this.x3domHelpIconContainer);
 
+      //.............
       x3d.appendChild(scene);
       x3d.appendChild(param);
 
-      for(i=0; i<nViews; i++) {
-         scene.appendChild(viewpointArr[i]);
+      //.............
+      //scene.appendChild(axes_transform);
+      //axes_transform.appendChild(axes_inline);
+
+      //.............
+      for(i=0; i<vp_count; i++) {
+         scene.appendChild(this.vp_arr[i]);
       }
       scene.appendChild(background);
-      scene.appendChild(group_disc);
-      scene.appendChild(group_embryo);
+      scene.appendChild(disc_group);
+      scene.appendChild(embryo_group);
 
-      group_disc.appendChild(transform_fix);
-      transform_fix.appendChild(transform_scl);
-      transform_scl.appendChild(transform_xsi);
-      transform_xsi.appendChild(transform_eta);
-      transform_eta.appendChild(transform_zet);
-      transform_zet.appendChild(transform_dst);
-      transform_dst.appendChild(transform_sec);
+      //.............
+      disc_group.appendChild(disc_transform_fix);
+      disc_transform_fix.appendChild(disc_transform_scl);
+      disc_transform_scl.appendChild(disc_transform_xsi);
+      disc_transform_xsi.appendChild(disc_transform_eta);
+      disc_transform_eta.appendChild(disc_transform_zet);
+      disc_transform_zet.appendChild(disc_transform_dst);
+      disc_transform_dst.appendChild(disc_transform);
+      //.............
+      // the disc
+      disc_transform.appendChild(disc_shape);
+      disc_shape.appendChild(disc_appearance);
+      disc_shape.appendChild(disc_cylinder);
+      disc_appearance.appendChild(disc_material);
 
-      transform_sec.appendChild(shape);
+      //.............
+      // the embryo
+      embryo_group.appendChild(embryo_transform);
+      embryo_transform.appendChild(embryo_inline);
+      //........................................................................................................
 
-      shape.appendChild(appearance);
-      shape.appendChild(cylinder);
-
-      appearance.appendChild(material);
-
-      group_embryo.appendChild(transform);
-
-      transform.appendChild(inline);
-
-      //------------------------------------------------------------------
       //console.log("finished creating x3d elements");
       return false;
+
    }, // createElements
 
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges, from) {
 
       if(modelChanges.locator === true) {
-         //console.log("tiledImage3DFeedback sectionChanged:");
          this.setNewPos();
       }
 
@@ -416,7 +418,6 @@ var tiledImage3DFeedback = new Class ({
       // do the setting up stuff
       if(viewChanges.initial === true) {
 	 //console.log("locator: viewChanges.initial %s",viewChanges.initial);
-	 this.isWlz = this.model.isWlzData();
 	 this.window.setVisible(true);
 	 this.window.setDimensions(this.width,this.height);
 	 
@@ -432,10 +433,10 @@ var tiledImage3DFeedback = new Class ({
          x3dom.reload();
 
          // trying out some runtime stuff
+	 /*
          feedback = document.getElementById(this.x3d_id);
 	 feedback.runtime.debug(false);
 	 feedback.runtime.statistics(false);
-	 /*
 	 tmp = feedback.runtime.navigationType();
 	 //console.log("navigationType initially %s",tmp);
 	 //feedback.runtime.lookAt();
@@ -450,7 +451,7 @@ var tiledImage3DFeedback = new Class ({
 	 console.log("speed now %s",tmp);
 	 */
 
-         this.setInitialPos();
+         this.setViewpoints();
       }; // viewChanges.initial
 
       if(viewChanges.toolbox === true) {
@@ -465,24 +466,100 @@ var tiledImage3DFeedback = new Class ({
    }, // viewUpdate
 
    //---------------------------------------------------------------
-   setInitialPos: function () {
+   // the embryo starts out centred at the fixed point (initially the centre of the bounding box but generally offset from 0,0,0)
+   // the disc starts out centred at 0,0,0  of the x3d scene.
+   // You can either move the embryo to 0,0,0 (makes life complicated, especially if fixed point is changed)
+   // or move the disc to be centred at the fixed point, which is what we shall do.
+   // The fixed point must be scaled by the normalised voxel values.
+   // Note: in x3d the centre of rotation is a property of the viewpoint. Rotation of an object in local coordinates requires
+   // the transform object to have an offset from world coordinates (the 'center' property of the transform object).
+   //---------------------------------------------------------------
+   setViewpoints: function () {
 
-      //console.log("setInitialPos");
-      // Section transform parameters
-      var sDstV = 0;
-      var sPitV = 0;
-      var sYawV = 0;
-      var sRolV = 0;
-      var sSclV = 1;
-      var sFxxV = 0;
-      var sFxyV = 0;
-      var sFxzV = 0;
-      var sModV = WlzThreeDViewMode.WLZ_UP_IS_UP_MODE;
+      var vp;
+      var vp_data;
+      var vp_count;
+      var vp_fov;
+      var vp_jump;
+      var vp_description;
+      var vp_trans;
+      var vp_orient;
+      var default_vp;
+      var embryo_fxp;
+      var tr_x;
+      var tr_y;
+      var tr_z;
+      var x3dInfo;
+      var threeDInfo;
+      var bbox;
+      var bbox_extent_x;
+      var bbox_extent_y;
+      var bbox_extent_z;
+      var bbox_max_dim;
+      var zofs;
+      var i;
 
-      this.secTransformSet(sModV, sDstV, sPitV, sYawV, sRolV, sSclV,
-	    sFxxV, sFxyV, sFxzV);
+      x3dInfo = this.model.getX3dInfo();
+      threeDInfo = this.model.getThreeDInfo();
+      bbox = this.model.getBoundingBox();
 
-   }, // setInitialPos
+      //......................................
+      // viewpoint setup
+      //......................................
+      bbox_extent_x = bbox.x.max - bbox.x.min;
+      bbox_extent_y = bbox.y.max - bbox.y.min;
+      bbox_extent_z = bbox.z.max - bbox.z.min;
+
+      bbox_max_dim = bbox_extent_x;
+      bbox_max_dim = (bbox_extent_y > bbox_max_dim) ? bbox_extent_y  : bbox_max_dim;
+      bbox_max_dim = (bbox_extent_z > bbox_max_dim) ? bbox_extent_y  : bbox_max_dim;
+
+      if(this.isKeySection) {
+         embryo_fxp = {};
+	 embryo_fxp.x = x3dInfo.embryo.origFxp.x;
+	 embryo_fxp.y = x3dInfo.embryo.origFxp.y;
+	 embryo_fxp.z = x3dInfo.embryo.origFxp.z;
+         zofs = (3 * 794) + embryo_fxp.z;
+      } else {
+         embryo_fxp = threeDInfo.scaledFxp;
+         zofs = (3 * bbox_max_dim) + embryo_fxp.z;
+      }
+
+      //console.log("embryo_fxp ",embryo_fxp);
+      //console.log("bbox ",bbox);
+
+      default_vp = {};
+      default_vp.fov = 0.35;
+      default_vp.jump = false;
+      default_vp.description = 'default viewpoint';
+      default_vp.trans =  embryo_fxp.x + ' ' + embryo_fxp.y + ' ' + zofs;
+      default_vp.orient = '0 1 0 0.0';
+      default_vp.center = embryo_fxp.x + ' ' + embryo_fxp.y + ' ' + embryo_fxp.z;
+
+      vp_data = x3dInfo.viewpoints;
+      vp_count = vp_data.length;
+
+      for(i=0; i < vp_count; i++) {
+         vp = vp_data[i];
+	 //console.log("vp ",vp);
+
+         vp_fov = (vp.fov === undefined) ? default_vp.fov : vp.fov;
+         vp_jump = (vp.jump === undefined) ? default_vp.jump : vp.jump;
+         vp_description = (vp.description === undefined) ? default_vp.description : vp.description;
+         vp_trans = (vp.trans === undefined) ? default_vp.trans : vp.trans.x + " " + vp.trans.y + " " + vp.trans.z;
+         vp_orient = (vp.orient == undefined) ? default_vp.orient : vp.orient.xsi + " " + vp.orient.eta + " " + vp.orient.zeta + " " + vp.orient.rad;
+
+         this.vp_arr[i].setAttribute('fieldOfView', vp_fov);
+         this.vp_arr[i].setAttribute('jump', vp_jump);
+         this.vp_arr[i].setAttribute('description', vp_description);
+         this.vp_arr[i].setAttribute('position', vp_trans);
+         this.vp_arr[i].setAttribute('orientation', vp_orient);
+         this.vp_arr[i].setAttribute('centerOfRotation', default_vp.center);
+      }
+
+      this.vp_arr[0].setAttribute('set_bind','true')
+      
+   }, // setViewpoints
 
    //---------------------------------------------------------------
    setNewPos: function() {
@@ -501,6 +578,7 @@ var tiledImage3DFeedback = new Class ({
       var mod = WlzThreeDViewMode.WLZ_UP_IS_UP_MODE;
 
       threeD = this.model.getThreeDInfo();
+      //console.log("setNewPos: threeD ",threeD);
       //scl = this.view.getScale().cur;
       
       dst = threeD.dst.cur;
@@ -508,9 +586,9 @@ var tiledImage3DFeedback = new Class ({
       yaw = threeD.yaw.cur * this.toRad;
       rol = threeD.roll.cur * this.toRad;
 
-      fpx = threeD.fxp.x;
-      fpy = threeD.fxp.y;
-      fpz = threeD.fxp.z;
+      fpx = threeD.scaledFxp.x;
+      fpy = threeD.scaledFxp.y;
+      fpz = threeD.scaledFxp.z;
 
       //console.log("setting: mod %d, dst %d, pit %d, yaw %d, rol %d, scl %d",mod,dst,pit,yaw,rol,scl);
       
@@ -529,8 +607,9 @@ var tiledImage3DFeedback = new Class ({
       var xTr = document.getElementById('xsiTr');
       var sTr = document.getElementById('sclTr');
       var fTr = document.getElementById('fixTr');
-      //fxx = 223; fxy = 136; fxz = 152; // Bad HACK!
       var tr = new WlzThreeDViewStruct();
+      var ks_dst;
+
       tr.setViewMode(mod);
       tr.setDist(dst)
       tr.setTheta(yaw);
@@ -539,13 +618,21 @@ var tiledImage3DFeedback = new Class ({
       tr.setScale([scl, scl, scl]);
       tr.setFixed([fxx, fxy, fxz]);
       tr.computeAngles();
+
+      if(this.isKeySection) {
+         ks_dst = tr.dist * 1.55 - 373;
+         dTr.setAttribute('translation', '0 0 ' + ks_dst);
+         //console.log("secTransformSet: key section");
+	 return;
+      }
       dTr.setAttribute('translation', '0 0 ' + tr.dist);
       xTr.setAttribute('rotation',    '0 0 1 ' + tr.xsi);
       eTr.setAttribute('rotation',    '0 1 0 ' + tr.eta);
       zTr.setAttribute('rotation',    '0 0 1 ' + tr.zeta);
       sTr.setAttribute('scale',       1.0 / tr.scale[0] + ' ' + 1.0 / tr.scale[1] + ' ' + 1.0 / tr.scale[2]);
       fTr.setAttribute('translation', tr.fixed[0] + ' ' + tr.fixed[1] + ' ' + tr.fixed[2]);
-   }, // setInitialPos
+
+   }, // secTransformSet
 
    //---------------------------------------------------------------
    // called when help icon clicked

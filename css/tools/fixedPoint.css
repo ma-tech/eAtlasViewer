@@ -191,16 +191,3 @@ fieldset.fpfs {
    margin-top: 8px;
    margin-bottom: 1px;
 }
-#debugDiv {
-   position: absolute;
-   top: 400px;
-   left: 400px;
-   height: 100px;
-   width: 200px;
-   margin: 0px 4px;
-   font-size: 9px;
-   color: #000;
-   background: #eeeeee;
-   visibility: visible;
-   z-index: 100;
-}

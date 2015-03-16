@@ -58,6 +58,8 @@ WlzThreeDViewStruct = function () {
   this.setFixedLineAngle = function(fixedLineAngle) {
     this.fixedLineAngle = fixedLineAngle;
   }
+
+  // modifies zeta depending upon WlzThreeDViewMode.
   this.computeAngles = function()
   {
     this.xsi = this.theta;

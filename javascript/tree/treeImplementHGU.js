@@ -55,8 +55,6 @@ Mif.Tree.implement({
 	processCheck: function(nodeId, checked){
 		var node;
 
-		//console.log("processCheck: nodeId %s, checked %s",nodeId,checked);
-
 		node = this.root.getNodeById(nodeId.replace(/cb_/,''));
 		node.state.checked = checked;
 		this.root.checkChildren(nodeId, checked);
@@ -91,7 +89,6 @@ Mif.Tree.implement({
       var checked;
 
       if(this.showSystems) {
-         //console.log("showSelected: ",nodeId);
          node = this.root.getNodeById(nodeId.replace(/cb_/,''));
 	 checked = node.state.checked;
          this.root.showSelectedSystems(nodeId, checked);
@@ -116,14 +113,12 @@ Mif.Tree.implement({
       var i;
 
       if(!checked) {
-	 //console.log("not showing %s system",nodeId);
 	 this.removeSystem(nodeId);
          return false;
       }
 
       bare_id = nodeId.replace(/cb_/,'');
       el = this.root.getNodeById(bare_id);
-      //console.log("addSystem: ",el.id);
       nodes.push(el);
       if (el.hasChildren()){ 
          children = el.getDescendants([]);
@@ -131,11 +126,9 @@ Mif.Tree.implement({
       }
 
       num = nodes.length;
-      //console.log("nodes is %d long",num);
       for (i=0; i<num; i++) {
          id = nodes[i].id;
          idArr.push(id);
-         //console.log("%s, %s",item.id,item.name);
          if ($("cb_" + id)){
             $("cb_" + id).checked = checked;
          }
@@ -144,7 +137,6 @@ Mif.Tree.implement({
 
       this.sysArr.push({family:idArr, col:el.color, name:el.name});
 
-      //console.log("sysArr after adding ",this.sysArr);
 
       return false;
 
@@ -165,11 +157,9 @@ Mif.Tree.implement({
       bare_id = nodeId.replace(/cb_/,'');
 
       len = this.sysArr.length;
-      //console.log("removeSystem: %s from %d length array",bare_id,len);
 
       while(this.sysArr.length > 0) {
 	 tmp = this.sysArr.pop();
-         //console.log("tmp.family: ",tmp.family);
 	 if(tmp.family[0] === bare_id) {
 	    removed = tmp;
 	 } else {
@@ -177,19 +167,14 @@ Mif.Tree.implement({
 	 }
       }
 
-      //console.log("after remove: ",tmpArr);
-      //console.log("   removed: ",removed);
-      //console.log("-----------------------");
 
       this.sysArr = [];
-      //console.log("   removeSystem: tmpArr: ",tmpArr);
       while(tmpArr.length > 0) {
 	 this.sysArr.push(tmpArr.pop());
       }
 
       tmpArr = [];
 
-      //console.log("   removeSystem: returning: ",this.sysArr);
 
       return this.sysArr;
    },
@@ -206,7 +191,6 @@ Mif.Tree.implement({
       var len;
       var i;
 
-      //console.log("calling filterKids: with %s, at %d in ", el,indx,arr);
 
       len = arr.length;
       if(len <= 0) return false;
@@ -216,9 +200,6 @@ Mif.Tree.implement({
       }
       arrCopy.splice(indx,1);
 
-      //console.log("arr ",arr);
-      //console.log("--------------------------");
-      //console.log("%s arrCopy ",el,arrCopy);
 
       test = this.root.getNodeById(el);
       if(test.hasChildren()) {
@@ -227,11 +208,9 @@ Mif.Tree.implement({
          for(i=0; i<len; i++) {
             childIds.push(children[i].id);
          }
-         //console.log("children ",childIds);
 	 // see if any of the children of el appear in arr
 	 // and if they do include them in a list of elements to remove
       } else {
-         //console.log("no children");
 	 return ret;
       }
 
@@ -243,7 +222,6 @@ Mif.Tree.implement({
 	 }
       }
 
-      //console.log("returning ",ret);
       return ret;
    },
 
@@ -259,12 +237,10 @@ Mif.Tree.implement({
       var i,j,k;
 
       id = ids[0];
-      //console.log("enter removeChildren: %s ",id,ids);
 
       len = ids.length;
       for(i=0; i<len; i++) {
          toRemove = this.filterKidsFromArr(id, i, ids);
-         //console.log("to remove ",toRemove);
 
 	 len2 = toRemove.length;
 	 if(len2 > 0) {
@@ -277,7 +253,6 @@ Mif.Tree.implement({
          this.removeChildren(reducedIds);
       }
 
-      //console.log("exit removeChildren: %s ",reducedIds);
       return reducedIds;
    },
 
@@ -308,20 +283,16 @@ Mif.Tree.implement({
       for(i=0; i<len; i++) {
       	 selIds.push(selected[i].id);
       }
-      //console.log("findSystems ",selIds);
 
       // now we have a list of selected ids, remove any children.
       test = this.root.getNodeById(selIds[0]);
       if(!test.hasChildren()) {
          removed = selIds.shift();
-         //console.log("removing childless %s",removed);
       }
 
       reducedIds = this.removeChildren(selIds);
-      //console.log("findSystems *** ",reducedIds);
 
       while(reducedIds.length > 0 && reducedIds.length > sysIds.length) {
-	 //console.log(reducedIds);
 	 if(reducedIds && reducedIds.length > 0) {
             sysIds.push(reducedIds.shift());
             reducedIds = this.removeChildren(reducedIds);
@@ -331,7 +302,6 @@ Mif.Tree.implement({
       if(reducedIds && reducedIds.length > 0) {
          sysIds.push(reducedIds.shift());
       }
-      //console.log("findSystems returning ",sysIds);
 
       return sysIds;
    },
@@ -354,7 +324,6 @@ Mif.Tree.implement({
 	      }
 	      len = sysIds.length;
 	      if(len > 0) {
-  	         //console.log("sysIds ",sysIds);
   	         this.root.clearAll();
   	         for(i=0; i<len; i++) {
 		    this.addSystem("cb_"+sysIds[i], true);
@@ -440,8 +409,11 @@ All project-specific additions should be implemented here, instead of the main M
  */
 
 Mif.Tree.Draw.getHTML = function(node,html){
-                //console.log("Mif.Tree.Draw.getHTML node ",node);
+
 		var prefix = node.tree.DOMidPrefix;
+		//emouseatlas.emap.utilities.debugOutput(prefix);
+
+		//emouseatlas.emap.utilities.debugOutput(node.name);
 
 		var alf
 	        // the alpha value required by css background: rgba(...) is from 0 to 1
@@ -450,8 +422,6 @@ Mif.Tree.Draw.getHTML = function(node,html){
 		   node.color = [240,240,240,255];
 	        }
 		alf = parseFloat(node.color[3] / 255);
-		//console.log("alf ",alf);
-		//console.log("Mif.Tree.Draw.getHTML  domainId %s",node.domainId);
 		var bg = 'rgba(' + node.color[0] + ', ' + node.color[1] + ', ' + node.color[2] + ', ' + alf + ')';
 		if(node.state.checked !== undefined){
 			if (!node.hasCheckbox) node.state.checked=false;
@@ -469,8 +439,8 @@ Mif.Tree.Draw.getHTML = function(node,html){
 			   bg = 'rgba(255,255,255,255)';
 			}
 			*/
-			var colorPic = '<input class="pick" type="text" id="pic_'+ node.id + '"style="background:'+ bg +'" title="' + titl + '"' + ' ' + isDisabled + '/>' ;
-			var checkbox='<input class="mif-tree-checkbox mif-tree-node-' + node.state.checked + '" type="checkbox" name="'+node.name + '" id="cb_'+ node.id + '" UID='+ node.id + '" style="vertical-align:middle;"' + isDisabled + '/>';
+			var colorPic = '<input class="pick" type="text" id="pic_'+ node.id + ' "style="background:'+ bg +'" title="' + titl + '"' + ' ' + isDisabled + '/>' ;
+			var checkbox='<input class="mif-tree-checkbox mif-tree-node-' + node.state.checked + '" type="checkbox" name="'+node.name + '" id="cb_'+ node.id + '" UID='+ node.id + ' style="vertical-align:middle"' + isDisabled + '/>';
 		}else{
 			var checkbox = '';
 		}
@@ -555,7 +525,6 @@ Mif.Tree.Node.implement({
             // we are only interested in selected (checked) elements.
             if ($("cb_" + el.id)){
                if($("cb_" + el.id).checked) {
-                  //console.log("%s is selected",el.id);
                   if (el.domainId !== undefined && el.domainId != ""){
                      values = values + "&sel=" + el.domainId + "," + el.color;
                   }
@@ -615,7 +584,6 @@ Mif.Tree.Node.implement({
                   }
   	       }
 	    }
-            //console.log("systems values: ",values);
 	 }
 
          this.tree.view.setSelections(values);
@@ -638,18 +606,15 @@ Mif.Tree.Node.implement({
 		var num;
 		var i;
 
-                //console.log("checkChildren: nodeId %s, %s",nodeId,checked);
                 bare_id = nodeId.replace(/cb_/,'');
                 node = $(nodeId);
                 el = this.tree.root.getNodeById(bare_id);
-                //console.log("showChildren: ",el.id);
                 if (el.hasChildren()){ 
                    descendants = el.getDescendants([]);
 		   num = descendants.length;
 		   for(i=0; i<num; i++) {
 		      item = descendants[i];
 		      //if(item.domainId !== undefined) {
-                         //console.log("%s, %s",item.id,item.name);
                          if ($("cb_" + item.id)){
                             $("cb_" + item.id).checked = checked;
                          }
@@ -671,10 +636,8 @@ Mif.Tree.Node.implement({
             var cols;
             var alf;
 
-	    //console.log("changeImageElementColour: -->%s<-- ",id,rgba);
             
             node = this.tree.root.getNodeById(id);
-	    //console.log("changeImageElementColour: node ",node);
 	    if(node) {
 	       // deal with the very top node
 	       if(id === "0") {
@@ -767,7 +730,6 @@ Mif.Tree.Node.implement({
 	// Returns the list of all selected (checked) children nodes of a node
 	//---------------------------------------------------------
 	getSelectedNodes: function (allChildren) {
-	   //console.log("getSelectedNodes "+ this.id + " : "+ this.domainId);  
 		if (this.state.checked) {
 			allChildren.include(this);
 		}
@@ -781,7 +743,6 @@ Mif.Tree.Node.implement({
 	// Returns the list of all children nodes of a node
 	//---------------------------------------------------------
 	getDescendants: function (children) {
-	   //console.log("getDescendants "+ this.id + " : "+ this.domainId);  
 		var list = this.getChildren();//list of all child checkboxes
 		children.combine(list);
 		this.children.each(function(node){
@@ -795,7 +756,6 @@ Mif.Tree.Node.implement({
 	// are significant, ie id is not empty and is defined
 	//---------------------------------------------------------
 	getSignificantNodes: function (allChildren) {
-	   //console.log("getSignificantNodes: "+ this.id + " : "+ this.domainId);  
 		var list = this.getChildren();//list of all child checkboxes
 		list.each(function(item){
 			if (item.domainId !== undefined && item.domainId != "") {
@@ -812,16 +772,13 @@ Mif.Tree.Node.implement({
 	// Returns a node by id
 	//---------------------------------------------------------
 	getNodeById: function (nodeId) {    	
-	   //console.log("getNodeById: ",nodeId);  
 		var foundNode = null;
 		if (this.id == nodeId) {
 			foundNode = this;
 			return foundNode;
 		}
 		var list =this.getChildren();   
-		//console.log("getNodeById: list ",list);
 		list.each(function(node){
-		        //console.log("getNodeById: node ",node);
 			var tmp = node.getNodeById(nodeId);
 			if (tmp) {
 				foundNode = tmp;
@@ -835,7 +792,6 @@ Mif.Tree.Node.implement({
 	 *  Displays annotation info for the node in the annotation div. 
 	 */
 	processSelection: function (){
-	   //console.log("processSelection: external id ",this.fbId);  
 	   //emouseatlas.emap.contextMenuActions.setExternalId(this.fbId);
            //$('annotation').load('ontology.php',{fbId:this.fbId});
 	},

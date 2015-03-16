@@ -84,7 +84,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var x3dInfo = {};
    var pointClickImgData = {};
    var undelineatedRGBA = {r:240, g:240, b:240, a:255};
-   var pixelResolution = {x:1, y:1, z:1, units:["\u03BC\u006D", "\u006D\u006D"]}; // default values
+   var voxelSize = {x:1, y:1, z:1, units:["\u03BC\u006D", "\u006D\u006D"]}; // default values
    var layerNames = []; // read in with initModelCallback()
    var layerData = {}; // this must be an object, not an array
    var numberOfTrees = 0;
@@ -153,12 +153,16 @@ emouseatlas.emap.tiledImageModel = function() {
       wlzMode: "",
       defaultFxp: {x:0, y:0, z:0},
       fxp: {x:0, y:0, z:0},
-      dst: {},
+      scaledFxp: {x:0, y:0, z:0},
+      dst: {min:0, max:0, cur:0},
+      dstRange: {min:0, max:0},
+      voxel: undefined,
+      normVoxel: undefined,
       pitch: {min:0, max:180, cur:0},
       yaw: {min:0, max:360, cur:0},
       roll: {min:0, max:360, cur:0}
    }
-   var dst = {};
+   var dst = {}; // for 2D images such as pyramidal tiff
    var qlt = {min:0, max:100, cur:80};
    var roi = {x:0.5, y:0.5};
    //......................
@@ -219,6 +223,7 @@ emouseatlas.emap.tiledImageModel = function() {
       var numlayers;
       var json;
       var dataType;
+      var scaling;
       var wlzToStackOffsetStr;
       var equivSectionOffsetStr;
       var numlayers;
@@ -242,7 +247,6 @@ emouseatlas.emap.tiledImageModel = function() {
       var state;
       var x3d;
       var kd;
-      var pixres;
       var zselInfo;
       var map;
       var props;
@@ -546,25 +550,24 @@ emouseatlas.emap.tiledImageModel = function() {
             pointClickImgData.comps = kd.comps;
          }
       }
-
       //console.log("pointClickImgData kd ",kd);
 
-      if(json.pixelResolution !== undefined) {
-         pixres = json.pixelResolution;
-	 if(pixres.x) {
-	    pixelResolution.x = parseFloat(pixres.x);
+      if(json.voxelSize !== undefined) {
+         voxel = json.voxelSize;
+	 if(voxel.x) {
+	    voxelSize.x = parseFloat(voxel.x);
 	 }
-	 if(pixres.y) {
-	    pixelResolution.y = parseFloat(pixres.y);
+	 if(voxel.y) {
+	    voxelSize.y = parseFloat(voxel.y);
 	 }
-	 if(pixres.z) {
-	    pixelResolution.z = parseFloat(pixres.z);
+	 if(voxel.z) {
+	    voxelSize.z = parseFloat(voxel.z);
 	 }
-	 if(pixres.units) {
-	    pixelResolution.units = pixres.units;
+	 if(voxel.units) {
+	    voxelSize.units = voxel.units;
 	 }
       }
-      //console.log(pixelResolution);
+      //console.log("read in voxelSize ",voxelSize);
 
       if(json.wlzMode !== undefined) {
 	 threeDInfo.wlzMode = json.wlzMode;
@@ -689,83 +692,72 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(x3d.url) {
          x3dInfo.url = x3d.url;
-      } else {
-         x3dInfo.url = undefined; 
       }
 
+      //..............................
       if(x3d.fxpTrans) {
          x3dInfo.fxpTrans = {};
 	 x3dInfo.fxpTrans.x = parseInt(x3d.fxpTrans.x);
 	 x3dInfo.fxpTrans.y = parseInt(x3d.fxpTrans.y);
 	 x3dInfo.fxpTrans.z = parseInt(x3d.fxpTrans.z);
-      } else {
-         x3dInfo.fxpTrans = undefined; 
       }
 
+      //console.log("getX3dFromJson: x3dInfo.fxpTrans ",x3dInfo.fxpTrans);
+
+      //..............................
       if(x3d.initTrans) {
          x3dInfo.initTrans = {};
 	 x3dInfo.initTrans.x = parseInt(x3d.initTrans.x);
 	 x3dInfo.initTrans.y = parseInt(x3d.initTrans.y);
 	 x3dInfo.initTrans.z = parseInt(x3d.initTrans.z);
-      } else {
-         x3dInfo.initTrans = {x:0, y:0, z:0}; 
       }
 
-      if(x3d.embryoPositionTrans) {
-         x3dInfo.embryoPositionTrans = {};
-	 x3dInfo.embryoPositionTrans.x = parseInt(x3d.embryoPositionTrans.x);
-	 x3dInfo.embryoPositionTrans.y = parseInt(x3d.embryoPositionTrans.y);
-	 x3dInfo.embryoPositionTrans.z = parseInt(x3d.embryoPositionTrans.z);
-      } else {
-         x3dInfo.embryoPositionTrans = {x:0, y:0, z:0}; 
-      }
-
+      //..............................
       x3dInfo.disc = {};
       if(x3d.disc) {
          if(x3d.disc.height) {
 	    x3dInfo.disc.height = parseInt(x3d.disc.height);
-	 } else {
-	    x3dInfo.disc.height = Number(1);
 	 }
 	 //..........
          if(x3d.disc.radius) {
 	    x3dInfo.disc.radius = parseFloat(x3d.disc.radius);
-	 } else {
-	    x3dInfo.disc.radius = Number(200.0);
 	 }
 	 //..........
          if(x3d.disc.rot) {
 	    x3dInfo.disc.rot = {xsi:parseInt(x3d.disc.rot.xsi), eta:parseInt(x3d.disc.rot.eta), zeta:parseInt(x3d.disc.rot.zeta), rad:parseFloat(x3d.disc.rot.rad)};
-	 } else {
-	    x3dInfo.disc.rot = {xsi:Number(0), eta:Number(0), zeta:Number(0), rad:Number(1.570795)};
 	 }
 	 //..........
          if(x3d.disc.trans) {
 	    x3dInfo.disc.trans = {x:parseInt(x3d.disc.trans.x), y:parseInt(x3d.disc.trans.y), z:parseInt(x3d.disc.trans.z)};
-	 } else {
-	    x3dInfo.disc.trans = {x:Number(0), y:Number(0), z:Number(0)};
 	 }
 	 //..........
          if(x3d.disc.colour) {
 	    x3dInfo.disc.colour = {r:parseFloat(x3d.disc.colour.r), g:parseFloat(x3d.disc.colour.g), b:parseFloat(x3d.disc.colour.b)};
-	 } else {
-	    x3dInfo.disc.colour = {r:Number(0.2), g:Number(0.5), b:Number(0.3)};
 	 }
 	 //..........
          if(x3d.disc.transparency) {
 	    x3dInfo.disc.transparency = parseFloat(x3d.disc.transparency);
-	 } else {
-	    x3dInfo.disc.transparency = Number(0.5);
 	 }
-      } else {
-	 x3dInfo.disc.height = Number(1);
-	 x3dInfo.disc.radius = Number(200.0);
-	 x3dInfo.disc.rot = {xsi:Number(1), eta:Number(0), zeta:Number(0), rad:Number(1.570795)},
-	 x3dInfo.disc.trans = {x:Number(0), y:Number(0), z:Number(0)},
-	 x3dInfo.disc.colour = {r:Number(0.2), g:Number(0.5), b:Number(0.3)},
-	 x3dInfo.disc.transparency = Number(0.5)
       }
 
+      //..............................
+      x3dInfo.embryo = {};
+      if(x3d.embryo) {
+	 //..........
+         if(x3d.embryo.rot) {
+	    x3dInfo.embryo.rot = {xsi:parseInt(x3d.embryo.rot.xsi), eta:parseInt(x3d.embryo.rot.eta), zeta:parseInt(x3d.embryo.rot.zeta), rad:parseFloat(x3d.embryo.rot.rad)};
+	 }
+	 //..........
+         if(x3d.embryo.trans) {
+	    x3dInfo.embryo.trans = {x:parseInt(x3d.embryo.trans.x), y:parseInt(x3d.embryo.trans.y), z:parseInt(x3d.embryo.trans.z)};
+	 }
+	 //..........
+         if(x3d.embryo.origFxp) {
+	    x3dInfo.embryo.origFxp = {x:parseInt(x3d.embryo.origFxp.x), y:parseInt(x3d.embryo.origFxp.y), z:parseInt(x3d.embryo.origFxp.z)};
+	 }
+      }
+
+      //..............................
       x3dInfo.style = {};
       if(x3d.style) {
 	 x3dInfo.style.x = parseInt(x3d.style.x) + "px";
@@ -774,15 +766,9 @@ emouseatlas.emap.tiledImageModel = function() {
 	 x3dInfo.style.height = parseInt(x3d.style.height) + "px";
 	 x3dInfo.style.float = x3d.style.float;
 	 x3dInfo.style.border = x3d.style.border;
-      } else {
-	 x3dInfo.style.x = "0px";
-	 x3dInfo.style.y = "0px";
-	 x3dInfo.style.width = "150px";
-	 x3dInfo.style.height = "150px";
-	 x3dInfo.style.float = "left";
-	 x3dInfo.style.border = "none";
       }
 
+      //..............................
       x3dInfo.viewpoints = [];
       if(x3d.viewpoints) {
 	 num = x3d.viewpoints.length;
@@ -790,46 +776,31 @@ emouseatlas.emap.tiledImageModel = function() {
             x3dInfo.viewpoints[i] = {};
 	    if(x3d.viewpoints[i].description) {
                x3dInfo.viewpoints[i].description = x3d.viewpoints[i].description;
-	    } else {
-               x3dInfo.viewpoints[i].description = "Default View";
 	    }
 	    //..........
 	    if(x3d.viewpoints[i].fov) {
                x3dInfo.viewpoints[i].fov = parseFloat(x3d.viewpoints[i].fov);
-	    } else {
-               x3dInfo.viewpoints[i].fov = Number(0.35);
 	    }
 	    //..........
 	    if(x3d.viewpoints[i].trans) {
                x3dInfo.viewpoints[i].trans = {x:parseInt(x3d.viewpoints[i].trans.x), y:parseInt(x3d.viewpoints[i].trans.y), z:parseInt(x3d.viewpoints[i].trans.z)};
-	    } else {
-	       x3dInfo.viewpoints[i].trans = {x:Number(0), y:Number(0), z:Number(0)};
 	    }
 	    //..........
 	    if(x3d.viewpoints[i].orient) {
 	       x3dInfo.viewpoints[i].orient = {
-	            xsi:parseInt(x3d.viewpoints[i].orient.xsi),
-		    eta:parseInt(x3d.viewpoints[i].orient.eta),
-		    zeta:parseInt(x3d.viewpoints[i].orient.zeta),
+	            xsi:parseFloat(x3d.viewpoints[i].orient.xsi),
+		    eta:parseFloat(x3d.viewpoints[i].orient.eta),
+		    zeta:parseFloat(x3d.viewpoints[i].orient.zeta),
 		    rad:parseFloat(x3d.viewpoints[i].orient.rad)
                };
-	    } else {
-               x3dInfo.viewpoints[i].orient = {xsi:Number(0), eta:Number(0), zeta:Number(1), rad:Number(0.0)};
 	    }
 	    //..........
 	 }
-      } else {
-         x3dInfo.viewpoints[0] = {
-	    description: "Default View",
-	    fov: Number(0.35),
-	    orient: {xsi:Number(0), eta:Number(0), zeta:Number(1), rad:Number(0.0)}
-	 };
       }
 
+      //..............................
       if(x3d.bgCol) {
 	 x3dInfo.bgCol = {r:parseFloat(x3d.bgCol.r), g:parseFloat(x3d.bgCol.g), b:parseFloat(x3d.bgCol.b)};
-      } else {
-	 x3dInfo.bgCol = {r:Number(0.99), g:Number(0.0), b:Number(0.0)};
       }
       //console.log("x3dInfo: ",x3dInfo);
 
@@ -1610,7 +1581,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if (isWlz) {
 	 // Need to get bounding box first so that we can
 	 // set our fixed point
-	 getObjects(["Wlz-3d-bounding-box"], getIIPMetadataCallback_2, true);
+	 getObjects(["Wlz-3d-bounding-box", "Wlz-true-voxel-size"], getIIPMetadataCallback_2, true);
       } else {
 	 getObjects(["Max-size", "Resolution-number"], getIIPMetadataCallback_3, true);
       }
@@ -1622,7 +1593,7 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    /**
-    *   Callback function for 'getIIPMetadata' for ["Wlz-3d-bounding-box"] objects.
+    *   Callback function for 'getIIPMetadata' for ["Wlz-3d-bounding-box", "Wlz-true-voxel-size"] objects.
     */
    var getIIPMetadataCallback_2 = function () {
 
@@ -1634,43 +1605,60 @@ emouseatlas.emap.tiledImageModel = function() {
       var x;
       var y;
       var z;
-      
-      if(initialState.fxp) {
-         if(initialState.fxp.x) {
-            threeDInfo.fxp.x = initialState.fxp.x;
-         }
-         if(initialState.fxp.y) {
-            threeDInfo.fxp.y = initialState.fxp.y;
-         }
-         if(initialState.fxp.z) {
-            threeDInfo.fxp.z = initialState.fxp.z;
-         }
+      var smallest;
+      var fixed;
+
+      // the 'Wlz-true-voxel-size' function is not implemented yet
+      // but we may have read voxel size from json file (tiledImageModelData.jso),
+      // but if not just use the default values.
+      if(threeDInfo.voxel === undefined) {
+         if(voxelSize) {
+	    threeDInfo.voxel = {};
+            threeDInfo.voxel.x  = parseFloat(voxelSize.x);
+            threeDInfo.voxel.y  = parseFloat(voxelSize.y);
+            threeDInfo.voxel.z  = parseFloat(voxelSize.z);
+            threeDInfo.voxel.units  = voxelSize.units;
+	    // and normalise
+	    threeDInfo.normVoxel = {};
+	    smallest = threeDInfo.voxel.z;
+	    smallest = (threeDInfo.voxel.x < smallest) ? threeDInfo.voxel.x : smallest;
+	    smallest = (threeDInfo.voxel.y < smallest) ? threeDInfo.voxel.y : smallest;
+	    fixed = 3;
+            threeDInfo.normVoxel.x  = emouseatlas.emap.utilities.trimDecimal(parseFloat(voxelSize.x / smallest), fixed);
+            threeDInfo.normVoxel.y  = emouseatlas.emap.utilities.trimDecimal(parseFloat(voxelSize.y / smallest), fixed);
+            threeDInfo.normVoxel.z  = emouseatlas.emap.utilities.trimDecimal(parseFloat(voxelSize.z / smallest), fixed);
+            threeDInfo.normVoxel.units  = voxelSize.units;
+	 }
+         //console.log("getIIPMetadataCallback_2: ",threeDInfo);
       }
+      //console.log("threeDInfo.voxel ",threeDInfo.voxel);
+
       //initial status
       if (expressionSectionName !== undefined && expressionSectionName.length > 0) {
          // if it has expression sections, use its first section as initial section
-         setXValue(expressionSection[expressionSectionName[0]].x, "getIIPMetadataCallback_2");
-         setYValue(expressionSection[expressionSectionName[0]].y, "getIIPMetadataCallback_2");
-         setZValue(expressionSection[expressionSectionName[0]].z, "getIIPMetadataCallback_2");
+         setFxpXValue(expressionSection[expressionSectionName[0]].x, "getIIPMetadataCallback_2");
+         setFxpYValue(expressionSection[expressionSectionName[0]].y, "getIIPMetadataCallback_2");
+         setFxpZValue(expressionSection[expressionSectionName[0]].z, "getIIPMetadataCallback_2");
       } else {
          // set the fixed point to the centre of the object
          x = Math.round(fullWlzObject.x.min + (fullWlzObject.x.max - fullWlzObject.x.min) / 2);
-         setXValue(x, "getIIPMetadataCallback_2");
+         setFxpXValue(x, "getIIPMetadataCallback_2");
          y = Math.round(fullWlzObject.y.min + (fullWlzObject.y.max - fullWlzObject.y.min) / 2);
-         setYValue(y, "getIIPMetadataCallback_2");
+         setFxpYValue(y, "getIIPMetadataCallback_2");
          z = Math.round(fullWlzObject.z.min + (fullWlzObject.z.max - fullWlzObject.z.min) / 2);
-         setZValue(z, "getIIPMetadataCallback_2");
+         setFxpZValue(z, "getIIPMetadataCallback_2");
+
          // but if there is an initial fixed point in config file, use it
          if (initialState.fxp !== undefined) {
             fxp = initialState.fxp;
             if(!isNaN(fxp.x)) {
-               setXValue(fxp.x, "getIIPMetadataCallback_2");
+               setFxpXValue(fxp.x, "getIIPMetadataCallback_2");
             }
             if(!isNaN(fxp.y)) {
-               setYValue(fxp.y, "getIIPMetadataCallback_2");
+               setFxpYValue(fxp.y, "getIIPMetadataCallback_2");
             }
             if(!isNaN(fxp.z)) {
-               setZValue(fxp.z, "getIIPMetadataCallback_2");
+               setFxpZValue(fxp.z, "getIIPMetadataCallback_2");
             }
          }
       }
@@ -1679,7 +1667,10 @@ emouseatlas.emap.tiledImageModel = function() {
       threeDInfo.defaultFxp.y = threeDInfo.fxp.y;
       threeDInfo.defaultFxp.z = threeDInfo.fxp.z;
       //console.log("getIIPMetadataCallback_2 threeDInfo.fxp ",threeDInfo.fxp);
-      
+
+      // we also need a scaled fxp for use with x3d feedback
+      scaleFxpToVoxelSize();
+
       getObjects(["Max-size", "Wlz-distance-range"], getIIPMetadataCallback_3, true);
       
       if(_debug) {
@@ -1839,6 +1830,7 @@ emouseatlas.emap.tiledImageModel = function() {
       var dstRange;
       var bbox;
       var tSize;
+      var voxSize;
       var i;
 
       // get model data via ajax
@@ -1849,6 +1841,7 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       //console.log("getObjectsCallback response = ",response);
+      //console.log("getObjectsCallback objs = ",objs);
 
       vals = [objs.length];
       vals[0] = response.split(objs[0]+":")[1];
@@ -1888,10 +1881,13 @@ emouseatlas.emap.tiledImageModel = function() {
 	       break;
 	    case "Wlz-distance-range":
 	       dstRange = vals[i].split(" ");
+	       //console.log("getObjectsCallback Wlz-distance-range ",dstRange);
 	       if(keySections && keySections.length > 0) {
 	          threeDInfo.dst.min = 1;
 	          threeDInfo.dst.max = Math.round(dstRange[1] - dstRange[0] + 1*1);
 	       } else {
+	          threeDInfo.dstRange.min = dstRange[0];  // for debugging x3d disc position
+	          threeDInfo.dstRange.max = dstRange[1];  // for debugging x3d disc position
 	          threeDInfo.dst.min = Math.round(dstRange[0]);
 	          threeDInfo.dst.max = Math.round(dstRange[1]);
 	       }
@@ -1904,7 +1900,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	       if (threeDInfo.dst.cur > threeDInfo.dst.max) {
 		  threeDInfo.dst.cur = threeDInfo.dst.max;
 	       }
-	       //console.log("threeDInfo.dst: now, ",threeDInfo.dst);
+	       //console.log("threeDInfo.dstRange: ",threeDInfo.dstRange);
 	       break;
 	    case "Wlz-3d-bounding-box":
 	       //console.log("getObjectsCallback Wlz-3d-bounding-box");
@@ -1929,6 +1925,24 @@ emouseatlas.emap.tiledImageModel = function() {
 	       tileSize.width  = parseInt(tSize[0]);
 	       tileSize.height = parseInt(tSize[1]);
 	       break;
+	    case "Wlz-true-voxel-size":
+	       //console.log("getObjectsCallback Wlz-true-voxel-size");
+	       //console.log("i %d, vals[i] %s",i,vals[i]);
+	       if(vals[i]) {
+		  voxSize = vals[i].split(" ");
+		  threeDInfo.voxel.x  = parseInt(voxSize[0]);
+		  threeDInfo.voxel.y  = parseInt(voxSize[1]);
+		  threeDInfo.voxel.z  = parseInt(voxSize[2]);
+		  // and normalise
+		  var smallest = threeDInfo.voxel.z;
+		  smallest = (threeDInfo.voxel.x < smallest) ? threeDInfo.voxel.x : smallest;
+		  smallest = (threeDInfo.voxel.y < smallest) ? threeDInfo.voxel.y : smallest;
+		  threeDInfo.normVoxel.x  = parseFloat(voxelSize.x / smallest);
+		  threeDInfo.normVoxel.y  = parseFloat(voxelSize.y / smallest);
+		  threeDInfo.normVoxel.z  = parseFloat(voxelSize.z / smallest);
+		  console.log("threeDInfo.voxel: ",threeDInfo.voxel);
+	       }
+	       break;
 	 } // switch
       } // for
 
@@ -1942,6 +1956,29 @@ emouseatlas.emap.tiledImageModel = function() {
       //_debug = false;
 
    }; // getObjectsCallback
+
+   //---------------------------------------------------------
+   //  The fixed point for x3d feedback needs to be scaled by
+   //  the (normalised) voxel sizes.
+   //---------------------------------------------------------
+   var scaleFxpToVoxelSize = function () {
+
+      var voxel;
+      var fxp;
+
+      voxel = threeDInfo.normVoxel;
+      fxp = threeDInfo.fxp;
+
+      if(voxel === undefined) {
+         return false;
+      }
+
+      threeDInfo.scaledFxp.x = parseInt(threeDInfo.fxp.x * voxel.x);
+      threeDInfo.scaledFxp.y = parseInt(threeDInfo.fxp.y * voxel.y);
+      threeDInfo.scaledFxp.z = parseInt(threeDInfo.fxp.z * voxel.z);
+
+   }; // scaleFxpToVoxelSize
+
 
    // It might take a long time to load very big trees and we have to
    // make sure they are loaded before initialising tiledImageView.
@@ -1968,7 +2005,8 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    var initView = function () {
-      emouseatlas.emap.tiledImageView.initialise(emouseatlas.emap.tiledImageModel, emouseatlas.emap.tiledImageQuery, emouseatlas.emap.tiledImagePointClick);
+      //emouseatlas.emap.tiledImageView.initialise(emouseatlas.emap.tiledImageModel, emouseatlas.emap.tiledImageQuery, emouseatlas.emap.tiledImagePointClick);
+      emouseatlas.emap.tiledImageView.initialise();
    }
 
    //---------------------------------------------------------
@@ -2126,53 +2164,53 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
-   var setXValue = function(newVal, from)  {
+   var setFxpXValue = function(newVal, from)  {
 
       var val;
       var ret = 0;
 
       val = (1 * newVal);
 
-      //console.log("enter setXValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
+      //console.log("enter setFxpXValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
       if (newVal !== undefined && threeDInfo.fxp.x !== newVal) {
-	 threeDInfo.fxp.x = val; 
-	 ret = 1;
+         threeDInfo.fxp.x = val; 
+         ret = 1;
       }
-      //console.log("exit setXValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
+      //console.log("exit setFxpXValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
       return ret;
    };
 
    //---------------------------------------------------------
-   var setYValue = function(newVal, from)  {
+   var setFxpYValue = function(newVal, from)  {
 
       var val;
       var ret = 0;
 
       val = (1 * newVal);
 
-      //console.log("enter setYValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
+      //console.log("enter setFxpYValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
       if (newVal !== undefined && threeDInfo.fxp.y !== newVal) {
-	 threeDInfo.fxp.y = val; 
-	 ret = 1;
+         threeDInfo.fxp.y = val; 
+         ret = 1;
       }
-      //console.log("exit setYValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
+      //console.log("exit setFxpYValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
       return ret;
    };
 
    //---------------------------------------------------------
-   var setZValue = function(newVal, from)  {
+   var setFxpZValue = function(newVal, from)  {
 
       var val;
       var ret = 0;
 
       val = (1 * newVal);
 
-      //console.log("enter setZValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
+      //console.log("enter setFxpZValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
       if (newVal !== undefined && threeDInfo.fxp.z !== newVal) {
-	 threeDInfo.fxp.z = val; 
-	 ret = 1;
+         threeDInfo.fxp.z = val; 
+         ret = 1;
       }
-      //console.log("exit setZValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
+      //console.log("exit setFxpZValue from %s, threeDInfo.fxp ",from,threeDInfo.fxp);
       return ret;
    };
 
@@ -2617,6 +2655,7 @@ emouseatlas.emap.tiledImageModel = function() {
       setCurrentSection("modifyOrientationCallback");
       resetModelChanges();
       modelChanges.locator = true;
+      modelChanges.sectionChanged = true;
       notify("modifyOrientationCallback");
    };
 
@@ -2656,13 +2695,17 @@ emouseatlas.emap.tiledImageModel = function() {
          var y = Math.round(val.y);
          var z = Math.round(val.z);
 	 //console.log("setFixedPoint %d, %d, %d",x,y,z);
-	 var ret1 = setXValue(x, "setFixedPoint");
-	 var ret2 = setYValue(y, "setFixedPoint");
-	 var ret3 = setZValue(z, "setFixedPoint");
+	 var ret1 = setFxpXValue(x, "setFixedPoint");
+	 var ret2 = setFxpYValue(y, "setFixedPoint");
+	 var ret3 = setFxpZValue(z, "setFixedPoint");
+
 	 // fixed point change will affect distance range
+	 // we also need to update the scaled fxp for x3d feedback
 	 if (ret1||ret2||ret3) {
-	   modelChanges.distanceRange = true;
+	   modelChanges.distanceRange = true;  // what is the point of doing this when modelChanges are reset in the callback?
+	   scaleFxpToVoxelSize();
 	 }
+
 	 var A = threeDInfo.defaultFxp;
 	 if(A.x === x && A.y === y && A.z === z) {
 	    setDistance(0);
@@ -2672,7 +2715,7 @@ emouseatlas.emap.tiledImageModel = function() {
       } else {
          return false;
       }
-      modelChanges.fxp = true;
+      modelChanges.fxp = true;  // what is the point of doing this when modelChanges are reset in the callback?
       getObjects(["Max-size", "Wlz-distance-range"],setFixedPointCallback,true);
    };
 
@@ -2769,13 +2812,16 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var setSection = function(newX, newY, newZ, newPitch, newYaw, newRoll, newDst) {
      //console.log("setSection");
-     var ret1 = setXValue(newX, "setSection");
-     var ret2 = setYValue(newY, "setSection");
-     var ret3 = setZValue(newZ, "setSection");
+     var ret1 = setFxpXValue(newX, "setSection");
+     var ret2 = setFxpYValue(newY, "setSection");
+     var ret3 = setFxpZValue(newZ, "setSection");
      var ret4 = setPitchValue(newPitch, "setSection");
      var ret5 = setYawValue(newYaw, "setSection");
      var ret6 = setRollValue(newRoll, "setSection");
      var ret7 = setDstValue(newDst, "setSection");
+
+     // this is needed if we use x3d feedback
+     scaleFxpToVoxelSize();
 
      if (ret1||ret2||ret3||ret4||ret5||ret6||ret7);
      getObjects(["Max-size", "Wlz-distance-range"],setSectionCallback,true);
@@ -2833,14 +2879,15 @@ emouseatlas.emap.tiledImageModel = function() {
    };
    //---------------------------------------------------------
    var setBoundingBoxCallback = function () {
-      //resetModelChanges();
-      //modelChanges.boundingBox = true;
-      //notify("setBoundingBoxCallback");
+      setFixedPoint();
    };
    //---------------------------------------------------------
    var getBoundingBox = function () {
       return fullWlzObject;
    };
+
+   //---------------------------------------------------------
+   //  bounding box of the transformed section (2D)
    //---------------------------------------------------------
    var getTransformedBoundingBox = function (transformedBoundingBoxUrl) {
 
@@ -2957,15 +3004,6 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    var getThreeDInfo = function() {
-   /*
-      console.log("getThreeDInfo: ");
-      console.log(threeDInfo.wlzMode);
-      console.log(threeDInfo.fxp);
-      console.log(threeDInfo.dst);
-      console.log(threeDInfo.pitch);
-      console.log(threeDInfo.yaw);
-      console.log(threeDInfo.roll);
-   */
       return threeDInfo;
    };
 
@@ -3278,9 +3316,21 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
-   // Get the pixel resolution for the image.
-   var getPixelResolution = function () {
-      return pixelResolution;
+   // Get the voxel resolution for the image.
+   var getVoxelSize = function (norm) {
+
+      var ret;
+
+      if(threeDInfo.voxel === undefined) {
+         return voxelSize; // as read in from json file
+      }
+
+      if(norm) {
+         ret = threeDInfo.normVoxel;
+      } else {
+         ret = threeDInfo.voxel;
+      }
+      return ret;
    };
 
    //---------------------------------------------------------
@@ -3440,7 +3490,7 @@ emouseatlas.emap.tiledImageModel = function() {
       setInitialState: setInitialState,
       getPointClickImgData: getPointClickImgData,
       getPointClickImg: getPointClickImg,
-      getPixelResolution: getPixelResolution,
+      getVoxelSize: getVoxelSize,
       getWlzToStackOffset: getWlzToStackOffset,
       getEquivSectionOffset: getEquivSectionOffset,
       getSectionOrderReversed: getSectionOrderReversed,

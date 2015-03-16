@@ -96,7 +96,7 @@ emouseatlas.emap.markerPopup = function () {
       var subplate;
       var info;
 
-      _debug = false;
+      _debug = true;
       targetId = params.targetId;
       target = document.getElementById(params.targetId);
       //details = params.details;
@@ -1012,6 +1012,9 @@ emouseatlas.emap.markerPopup = function () {
    var showIFrame = function (yes) {
 
       //console.log("showIFrame: %S",yes);
+      if(!markerIFrame) {
+         return;
+      }
 
       if(yes) {
          markerIFrame.setStyle('visibility', 'visible');

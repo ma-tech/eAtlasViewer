@@ -503,7 +503,6 @@ var pointClickSelector = new Class ({
    //---------------------------------------------------------------
    viewUpdate: function(viewChanges) {
 
-      //console.log("enter Selector viewUpdate:",viewChanges);
       var distance;
       var dcur;
       var layerNames;
@@ -516,7 +515,10 @@ var pointClickSelector = new Class ({
       var cur3;
       var viz;
 
+      //console.log("enter Selector viewUpdate:",viewChanges);
+
       if(viewChanges.initial) {
+         //console.log("Selector viewUpdate: %s",viewChanges.initial);
 	 distance = this.model.getDistance();
 	 dcur = distance.cur;
          this.setSelectorImage();
@@ -525,12 +527,12 @@ var pointClickSelector = new Class ({
       } // initial
 
       if(viewChanges.locator) {
+         //console.log("Selector viewUpdate: %s",viewChanges.locator);
 	 distance = this.model.getDistance();
 	 dcur = distance.cur;
          this.setSelectorImage();
 	 this.fitSelectorImage(dcur);
       } // locator
-      //console.log("exit Selector viewUpdate:");
 
       if(viewChanges.toolbox === true) {
 	viz = this.view.toolboxVisible();
@@ -540,6 +542,8 @@ var pointClickSelector = new Class ({
 	   this.window.setVisible(false);
 	}
       }
+
+      //console.log("exit Selector viewUpdate:");
 
    }, // viewUpdate
 
@@ -564,6 +568,8 @@ var pointClickSelector = new Class ({
       var controlDivHeight;
       var imageContainerLeftOffset;
 
+      //console.log("fitSelectorImage", this.zsel);
+
       if(!this.getSelectorName()) {
          return false;
       }
@@ -577,6 +583,7 @@ var pointClickSelector = new Class ({
 	 //console.log("d %d, imgRange ",cur3,this.zsel.imgRange);
 	 for(i=0; i<num; i++) {
 	    entry = this.zsel.imgRange[i];
+	    //console.log("imgRange[%d]  ",i,this.zsel.imgRange);
 	    if(cur3 >= entry.min && cur3 <= entry.max) {
 	       //console.log("using %s",entry.name);
 	       aspectRatio = entry.aspectRatio;
@@ -587,13 +594,19 @@ var pointClickSelector = new Class ({
          aspectRatio = this.zsel.aspectRatio; 
       }
 
-      //console.log("fitSelectorImage: aspectRatio %f",aspectRatio);
+      //console.log("fitSelectorImage: aspectRatio ",aspectRatio);
 
       imgWStr = window.getComputedStyle(this.image, null).getPropertyValue("width");
+      //console.log("fitSelectorImage: imgWStr %s",imgWStr);
       indx = imgWStr.indexOf("px");
       imgW = Number(imgWStr.substring(0,indx));
+      //console.log("fitSelectorImage: imgW %d",imgW);
 
-      imgH = parseInt(imgW / aspectRatio);
+      var XXX = (Number(imgW) / Number(aspectRatio));
+      //console.log("fitSelectorImage: XXX ",XXX);
+
+      imgH = parseInt(imgW / aspectRatio, 10);
+      //console.log("hey! imgH %d",imgH);
       this.controlDiv.style.top = Number(imgH) + Number(10) + 'px';
 
       // for Kaufman point and click we need to adjust the position of the locator for plates 3 & 4

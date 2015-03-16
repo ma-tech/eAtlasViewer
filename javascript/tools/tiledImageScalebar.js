@@ -40,6 +40,10 @@ var tiledImageScalebar = new Class ({
 
       this.view = params.view;
       this.model = params.model;
+
+      this.model.register(this);
+      this.view.register(this);
+
       this.name = "Scalebar";
       this.shortName = this.name.toLowerCase().split(" ").join("");
       this.toolTipText = this.shortName;
@@ -92,11 +96,10 @@ var tiledImageScalebar = new Class ({
       }.bind(this));
       */
 
+      this.voxel = this.model.getVoxelSize(false);
+
       this.mu = ' \u03BCm';
       this.createElements();
-
-      this.model.register(this);
-      this.view.register(this);
 
    }, // initialize
 
@@ -142,16 +145,14 @@ var tiledImageScalebar = new Class ({
    viewUpdate: function (viewChanges) {
 
          var scale;
-         var pixres;
 	 var scalebarLen;
 	 var numpix;
 	 var txt;
 	 
       if(viewChanges.initial === true || viewChanges.scale === true) {
          scale = this.view.getScale();
-         pixres = this.model.getPixelResolution();
          scalebarLen = this.model.getScalebarLen();
-	 numpix = scalebarLen / pixres.x;
+	 numpix = scalebarLen / this.voxel.x;
          $("scalebarDiv").setStyle("width",numpix + "px");
 	 this.width = numpix + 20;
          this.window.setDimensions(this.width, this.height);

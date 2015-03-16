@@ -55,7 +55,7 @@ emouseatlas.emap.tiledImageView = function() {
 
    // private members
 
-   var _debug = false;
+   var _debug = false; // if true send lots of info to console
    var that = this;
    var registry = []; // allows the view to notify observers of changes to layer, viewport size etc.
    var viewChanges = { 
@@ -65,11 +65,13 @@ emouseatlas.emap.tiledImageView = function() {
       toolbox: false,
       scale: false,
       focalPoint: false,
+      locatorMoved: false,
       layer: false,
       showProperties: false,
       mode: false,
       selectFixedPoint: false,
       debugPoint: false,
+      debugWindow: false,
       measuringTool: false,
       measuringOrigin: false,
       measuringTarget: false,
@@ -82,6 +84,8 @@ emouseatlas.emap.tiledImageView = function() {
       startDrawing: false,
       draw: false,
       endDrawing: false,
+      endPCDrag: false,
+      deleteMarkerLocation: false,
       addQueryTerm: false,
       visibility: false,
       opacity: false,
@@ -105,8 +109,10 @@ emouseatlas.emap.tiledImageView = function() {
    };
    var targetContainer;
    var model;
+   var view;
    var query;
    var pointClick;
+   var supplementPointClick;
    var eventCapturingContainer;
    var tileFrameContainers = {};
    var image = {};
@@ -142,6 +148,8 @@ emouseatlas.emap.tiledImageView = function() {
    var indexName = false;
    var overlay = false;
    var pointClickEditor = false;
+   var debugWindow = false;
+   var gettingDebugPoint = false;
    var contextMenu = false;
    var allowViewerInfo = false;
    var initialMousePoint;
@@ -175,8 +183,8 @@ emouseatlas.emap.tiledImageView = function() {
                 HRSection:{name:'HRSection', cursor:'pointer'},
                 fixedPoint:{name:'fixedPoint', cursor:'crosshair'},
                 pointClick:{name:'pointClick', cursor:'pointer'},
-                query:{name:'query', cursor:'pointer'},
-                debug:{name:'debug', cursor:'pointer'},
+                query:{name:'query', cursor:'pointer'}
+                //debug:{name:'debug', cursor:'pointer'},
 	       }
    //var mode = {name:'move', cursor:'pointer'};
    var mode = {};
@@ -1100,7 +1108,6 @@ emouseatlas.emap.tiledImageView = function() {
       var i;
       var name;
       //console.log("enter tiledImageView.notify ",from);
-      //printViewChanges();
 
       for (i = 0; i < registry.length; i++) {
          if(registry[i].getName) {
@@ -1127,12 +1134,14 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.toolbox) console.log("viewChanges.toolbox ",viewChanges.toolbox);
       if(viewChanges.scale) console.log("viewChanges.scale ",viewChanges.scale);
       if(viewChanges.focalPoint) console.log("viewChanges.focalPoint ",viewChanges.focalPoint);
+      if(viewChanges.locatorMoved) console.log("viewChanges.locatorMoved ",viewChanges.locatorMoved);
       if(viewChanges.layer) console.log("viewChanges.layer ",viewChanges.layer);
       if(viewChanges.showProperties) console.log("viewChanges.showProperties ",viewChanges.showProperties);
       if(viewChanges.mode) console.log("viewChanges.mode ",viewChanges.mode);
       if(viewChanges.addQueryTermAnatomy) console.log("viewChanges.addQueryTermAnatomy ",viewChanges.addQueryTermAnatomy);
       if(viewChanges.selectFixedPoint) console.log("viewChanges.selectFixedPoint ",viewChanges.selectFixedPoint);
       if(viewChanges.debugPoint) console.log("viewChanges.debugPoint ",viewChanges.debugPoint);
+      if(viewChanges.debugWindow) console.log("viewChanges.debugWindow ",viewChanges.debugWindow);
       if(viewChanges.measuringOrigin) console.log("viewChanges.measuringOrigin ",viewChanges.measuringOrigin);
       if(viewChanges.measuringTarget) console.log("viewChanges.measuringTarget ",viewChanges.measuringTarget);
       if(viewChanges.measuring) console.log("viewChanges.measuring",viewChanges.measuring);
@@ -1144,6 +1153,8 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.startDrawing) console.log("viewChanges.startDrawing ",viewChanges.startDrawing);
       if(viewChanges.draw) console.log("viewChanges.draw ",viewChanges.draw);
       if(viewChanges.endDrawing) console.log("viewChanges.endDrawing ",viewChanges.endDrawing);
+      if(viewChanges.endPCDrag) console.log("viewChanges.endPCDrag ",viewChanges.endPCDrag);
+      if(viewChanges.deleteMarkerLocation) console.log("viewChanges.deleteMarkerLocation ",viewChanges.deleteMarkerLocation);
       if(viewChanges.visibility) console.log("viewChanges.visibility ",viewChanges.visibility);
       if(viewChanges.opacity) console.log("viewChanges.opacity ",viewChanges.opacity);
       if(viewChanges.colour) console.log("viewChanges.colour ",viewChanges.colour);
@@ -1177,12 +1188,14 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.toolbox =  false;
       viewChanges.scale =  false;
       viewChanges.focalPoint =  false;
+      viewChanges.locatorMoved =  false;
       viewChanges.layer =  false;
       viewChanges.showProperties =  false;
       viewChanges.mode =  false;
       viewChanges.addQueryTermAnatomy =  false;
       viewChanges.selectFixedPoint =  false;
       viewChanges.debugPoint =  false;
+      viewChanges.debugWindow =  false;
       viewChanges.measuringOrigin =  false;
       viewChanges.measuringTarget =  false;
       viewChanges.measuring =  false;
@@ -1194,6 +1207,8 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.startDrawing = false;
       viewChanges.draw = false;
       viewChanges.endDrawing = false;
+      viewChanges.endPCDrag = false;
+      viewChanges.deleteMarkerLocation = false;
       viewChanges.visibility =  false;
       viewChanges.opacity =  false;
       viewChanges.colour =  false;
@@ -1319,7 +1334,8 @@ emouseatlas.emap.tiledImageView = function() {
             mode === "fixedPoint" ||
 	    mode === "measuring" ||
 	    mode === "HRSection" ||
-	    (mode === "debug" && !contextMenu) ||
+	    //(mode === "debug" && !contextMenu) ||
+	    (debugWindow && !contextMenu) ||
             (mode === "pointClick" && pointClickEditor) ||
 	    (mode === "query" && query.getQueryType() === "anatomy")) {
 	    obj += "&obj=Wlz-coordinate-3D";
@@ -1338,9 +1354,6 @@ emouseatlas.emap.tiledImageView = function() {
 	 + "&prl=-1,"
 	 + X + "," + Y
 	 + obj
-	 //+ "&obj=Wlz-foreground-objects";
-	 //+ "&obj=Wlz-grey-value";
-	 //+ "&obj=Wlz-coordinate-3D";
 
          //console.log("url ",url);
 	 
@@ -1381,7 +1394,6 @@ emouseatlas.emap.tiledImageView = function() {
 	    } else {
 	       viewChanges.pointClick = true;
 	    }
-	    printViewerInfo({name:"point_click", point:pointClickPoint}); 
 	 } else if(mode === "query" && query.getQueryType() === "spatial" && mouseDownInImage) {
 	    viewChanges.draw = true;
             drawPoint = getMousePositionInImage({x:docX, y:docY});
@@ -1439,7 +1451,8 @@ emouseatlas.emap.tiledImageView = function() {
          mode === "measuring" ||
          mode === "HRSection" ||
          mode === "query" ||
-         mode === "debug" ||
+         //mode === "debug" ||
+         debugWindow ||
          mode === "pointClick") {
 
 	 if(respArr[1]) {
@@ -1478,8 +1491,9 @@ emouseatlas.emap.tiledImageView = function() {
             } else if(mode === "pointClick") {
 	       pointClickPoint = {x:pArr[0], y:pArr[1], z:pArr[2]};
 	       viewChanges.editorPointClick = true;
-	       notify("getDataAtMouseCallback fixedPoint");
-            } else if(mode === "debug") {
+	       notify("getDataAtMouseCallback pointClick");
+            //} else if(mode === "debug") {
+            } else if(debugWindow && mouseDownInImage) {
 	       debugPoint = {x:pArr[0], y:pArr[1], z:pArr[2]};
 	       viewChanges.debugPoint = true;
 	       notify("getDataAtMouseCallback debugPoint");
@@ -1617,6 +1631,7 @@ emouseatlas.emap.tiledImageView = function() {
       //console.log("showImgLabel imgLabels_enabled %s",imgLabels_enabled);
       //console.log("emouseatlas.emap.imgLabel ",emouseatlas.emap.imgLabel);
 
+      //if(emouseatlas.emap.imgLabel && imgLabels_enabled && !gettingDebugPoint) {
       if(emouseatlas.emap.imgLabel && imgLabels_enabled) {
          getDataAtMouse(evt, {
             addQueryTerm:false,
@@ -2208,7 +2223,6 @@ emouseatlas.emap.tiledImageView = function() {
 	 return false;
       }
       viewChanges.viewport = true;
-      printViewerInfo();
       notify("setViewportSize");
       if(_debug) console.log("exit setViewportSize from %s",from);
    };
@@ -2217,8 +2231,6 @@ emouseatlas.emap.tiledImageView = function() {
    // Mouse down event on tileFrame
    //---------------------------------------------------------
    var doMouseDownInImage = function (e) {
-
-      //console.log("enter doMouseDownInImage");
 
       var evt;
       var buttons;
@@ -2246,14 +2258,15 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       // if we have right-clicked for context menu
-      if(buttons.right || (buttons.left && modifiers.ctrl)) {
+      if(buttons.right || (buttons.left && modifiers.ctrl && !modifiers.alt)) {
+         //console.log("we have right-clicked for context menu");
          RIGHT_CLICK = true;
 	 getDataAtMouse(evt, {
             addQueryTerm:false,
             contextMenu:true,
             draw:false,
             fixedPoint:false,
-            debug:false,
+            debugWindow:false,
             HRSection:false,
             measuring:false,
             measuringOrigin: false,
@@ -2276,7 +2289,7 @@ emouseatlas.emap.tiledImageView = function() {
             contextMenu:false,
             draw:false,
             fixedPoint:true,
-            debug:false,
+            debugWindow:false,
             HRSection:false,
             measuring:false,
             measuringOrigin: false,
@@ -2289,16 +2302,17 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       // if we are in 'debug' mode
-      if(mode.name.toLowerCase() === "debug") {
+      //if(mode.name.toLowerCase() === "debug") {
+      if(debugWindow) {
          //console.log("mouse down in debug mode");
+	 mouseDownInImage = true;
          getDataAtMouse(evt, {
             addQueryTerm:false,
             contextMenu:false,
             draw:false,
             fixedPoint:false,
-            debug:true,
+            debugWindow:true,
             HRSection:false,
-            debug:true,
             measuring:false,
             measuringOrigin: false,
             measuringTarget: false,
@@ -2317,7 +2331,7 @@ emouseatlas.emap.tiledImageView = function() {
                contextMenu:false,
                draw:false,
                fixedPoint:false,
-               debug:false,
+               debugWindow:false,
                HRSection:false,
                measuring:false,
                measuringOrigin: false,
@@ -2333,7 +2347,7 @@ emouseatlas.emap.tiledImageView = function() {
                contextMenu:false,
                draw:false,
                fixedPoint:false,
-               debug:false,
+               debugWindow:false,
                HRSection:false,
                measuring:false,
                measuringOrigin: true,
@@ -2355,7 +2369,7 @@ emouseatlas.emap.tiledImageView = function() {
             contextMenu:false,
             draw:false,
             fixedPoint:false,
-            debug:false,
+            debugWindow:false,
             HRSection:true,
             measuring:false,
             measuringOrigin: false,
@@ -2378,7 +2392,7 @@ emouseatlas.emap.tiledImageView = function() {
             contextMenu:false,
             draw:false,
             fixedPoint:false,
-            debug:false,
+            debugWindow:false,
             HRSection:false,
             measuring:false,
             measuringOrigin: false,
@@ -2427,10 +2441,12 @@ emouseatlas.emap.tiledImageView = function() {
 
       // if we are in 'pointClick' mode as editor
       if(mode.name.toLowerCase() === "pointclick" && pointClickEditor) {
-         // and are editing a point (press shift + alt + left mouse)
-         if(buttons.left && modifiers.shift && modifiers.alt) {
+         //console.log("pointclick && pointClickEditor");
+         // and are about to drag a point (press shift + alt + left mouse)
+         //if(buttons.left && modifiers.shift && modifiers.alt) {
+         if(buttons.left && modifiers.shift) {
+	    //console.log("mouse down in image as point click editor, alt-shift pressed");
 	    addMouseDragHandlers(e);
-	    //console.log("Hey You Can't Do THAT !!!");
 
 	    x = emouseatlas.emap.utilities.getMouseX(evt);
 	    y = emouseatlas.emap.utilities.getMouseY(evt);
@@ -2443,7 +2459,7 @@ emouseatlas.emap.tiledImageView = function() {
                contextMenu:false,
                draw:false,
                fixedPoint:false,
-               debug:false,
+               debugWindow:false,
                HRSection:false,
                measuring:false,
                measuringOrigin: false,
@@ -2454,7 +2470,12 @@ emouseatlas.emap.tiledImageView = function() {
                tooltip:false
             });
             return false;
+         //} else if(buttons.left && modifiers.ctrl && modifiers.alt) {
+         } else if(buttons.left && modifiers.shift && modifiers.alt) {
+	    //console.log("doMouseDownInImage: about to delete marker");
+            return false;
 	 } else {
+	    //console.log("mouse down in image as point click editor");
             tileFrameContainerId = layer + "_tileFrameContainer";
             if(document.getElementById(tileFrameContainerId) !== 'undefined' && document.getElementById(tileFrameContainerId) !== null) {
                //tileFrameContainer = document.getElementById(tileFrameContainerId);
@@ -2464,7 +2485,7 @@ emouseatlas.emap.tiledImageView = function() {
                   contextMenu:false,
                   draw:false,
                   fixedPoint:false,
-                  debug:false,
+                  debugWindow:false,
                   HRSection:false,
                   measuring:false,
                   measuringOrigin: false,
@@ -2479,21 +2500,45 @@ emouseatlas.emap.tiledImageView = function() {
          }
       }
       return false;
+
    }; // doMouseDownInImage
 
    //---------------------------------------------------------
    var doMouseUpInImage = function (e) {
+
+      var buttons;
+      var modifiers;
 
       //console.log("doMouseUpInImage");
       if(e) {
          removeMouseDragHandlers(e);
       }
       mouseDownInImage = false;
-      movingPCPoint = false;
+
+      buttons = emouseatlas.emap.utilities.whichMouseButtons(e);
+      modifiers = emouseatlas.emap.utilities.whichModifierKeys(e);
 
       if(mode.name.toLowerCase() === "query" && query.getQueryType() === "spatial") {
          viewChanges.endDrawing = true;
          notify("mouseUpInImage");
+         return false;
+      }
+
+      //console.log("doMouseUpInImage: mode.name.toLowerCase %s", mode.name.toLowerCase());
+      //console.log("doMouseUpInImage: movingPCPoint %s,  pointClickEditor %s", movingPCPoint,pointClickEditor);
+      if(mode.name.toLowerCase() === "pointclick" && pointClickEditor) {
+
+         // this combination is used to delete a marker location.
+         //if(buttons.left && modifiers.ctrl && modifiers.alt) {
+         if(buttons.left && modifiers.shift && modifiers.alt) {
+            //console.log("doMouseUpInImage: ", modifiers);
+            viewChanges.deleteMarkerLocation = true;
+            notify("mouseUpInImage");
+            return false;
+	 }
+         viewChanges.endPCDrag = true;
+         notify("mouseUpInImage");
+         movingPCPoint = false;
          return false;
       }
 
@@ -2693,12 +2738,12 @@ emouseatlas.emap.tiledImageView = function() {
       if(mode.name.toLowerCase() === "pointclick" &&
 	    pointClickEditor &&
 	    buttons.left &&
-	    modifiers.shift &&
-	    modifiers.alt) {
+	    modifiers.shift) {
+	    //modifiers.shift &&
+	    //modifiers.alt) {
 	 //pointClickPoint = {x:mouseX, y:mouseY};
 	 pointClickPoint = getMousePositionInImage({x:mouseX, y:mouseY});
 	 //console.log("doMouseDrag pointClickPoint ",pointClickPoint);
-	 printViewerInfo({name:"movingPCPoint", point:pointClickPoint});
 	 viewChanges.movingPCPoint = true;
 	 notify("doMouseDrag");
 	 return false;
@@ -2993,7 +3038,6 @@ emouseatlas.emap.tiledImageView = function() {
 	 setTileFramePosition("handleScaleChange");
       }
 
-      printViewerInfo();
       viewChanges.scale = true;
       notify("handleScaleChange ");
 
@@ -3090,9 +3134,11 @@ emouseatlas.emap.tiledImageView = function() {
          } else if(newmode === 'query') {
             mode = modes[newmode];
             setModeNum(5);
+	    /*
          } else if(newmode === 'debug') {
             mode = modes[newmode];
             setModeNum(6);
+	    */
          } else {
             return false;
          }
@@ -3199,8 +3245,6 @@ emouseatlas.emap.tiledImageView = function() {
       var imgToViewport_x = getViewportLeftEdge();
       var imgToViewport_y = getViewportTopEdge();
 
-      printViewerInfo();
-
       if(isNaN(viewport_x) || isNaN(viewport_y)) {
          console.log("plain NaN");
 	 return undefined;
@@ -3285,6 +3329,11 @@ emouseatlas.emap.tiledImageView = function() {
          pointClick.initialise(getName());
       }
 
+      // initialise supplementPointClick
+      if(supplementPointClick) {
+         supplementPointClick.initialise(getName());
+      }
+
       //dropListenerId = model.getProjectDivId();
       dropListenerId = "emapIIPViewerDiv";
       dropListener = $(dropListenerId);
@@ -3297,46 +3346,6 @@ emouseatlas.emap.tiledImageView = function() {
       _debug = deb;
 
    }; // completeInitialisation
-
-   //---------------------------------------------------------
-   var printViewerInfo = function(click) {
-
-      //console.log("printViewerInfo");
-      if(!allowViewerInfo) {
-         return false;
-      }
-
-      var debugDiv = document.getElementById("debugDiv");
-      var ViewerContPos = getViewerContainerPos();
-      var VPLeftEdge = getViewportLeftEdge().toFixed(1);
-      var VPTopEdge = getViewportTopEdge().toFixed(1);
-      var TFCont = tileFrameContainers[layerNames[0]];
-      var imgSize = model.getFullImgDims();
-      var pointName;
-      var point;
-      var clickInfo = "";
-      var info = "";
-
-      if(click) {
-         pointName = click.name;
-	 point = click.point;
-	 clickInfo = pointName + ": x " + point.x + ", y " + point.y;
-      }
-
-      //info = "<h4>Viewer Info</h4>" +
-      info = info +
-             "<p class='viewerInfo'>" +
-             "Image size: W " + imgSize.width  + " H " + imgSize.height +
-             "<br>Viewer container: x " + ViewerContPos.x + ", y " + ViewerContPos.y +
-             "<br> Img to container Left " + VPLeftEdge  + " Top " + VPTopEdge +
-             "<br>" + clickInfo +
-	     "</p>";
-
-      debugDiv.innerHTML = info;
-
-      //console.log("exit viewerInfo");
-
-   };
 
    //---------------------------------------------------------
    /**
@@ -3532,18 +3541,28 @@ emouseatlas.emap.tiledImageView = function() {
    //   public methods
    //---------------------------------------------------------
 
-   var initialise = function (tiledImageModel, tiledImageQuery, tiledImagePointClick) {
+   //var initialise = function (tiledImageModel, tiledImageQuery, tiledImagePointClick) {
+   var initialise = function () {
 
       if(_debug) console.log("View: initialise");
-      model = tiledImageModel;
+
+      view = emouseatlas.emap.tiledImageView;
+      model = emouseatlas.emap.tiledImageModel;
+      query = emouseatlas.emap.tiledImageQuery;
+      pointClick = emouseatlas.emap.tiledImagePointClick;
+      supplementPointClick = emouseatlas.emap.supplementPointClick;
+
       model.register(emouseatlas.emap.tiledImageView);
-      query = tiledImageQuery;
+
       if(query) {
          query.register(emouseatlas.emap.tiledImageView);
       }
-      pointClick = tiledImagePointClick;
+
       if(pointClick) {
          pointClick.register(emouseatlas.emap.tiledImageView);
+      }
+      if(supplementPointClick) {
+         supplementPointClick.register(emouseatlas.emap.tiledImageView);
       }
        
       // this is a hack to fix the TPR demo
@@ -3622,10 +3641,6 @@ emouseatlas.emap.tiledImageView = function() {
 
       //console.log("enter constructComponents");
 
-      var model = emouseatlas.emap.tiledImageModel;
-      var view = emouseatlas.emap.tiledImageView;
-      var query = emouseatlas.emap.tiledImageQuery;
-      var pointClick = emouseatlas.emap.tiledImagePointClick;
       var params;
 
       if(typeof(tools.layerProperties) !== 'undefined') {
@@ -3950,12 +3965,6 @@ emouseatlas.emap.tiledImageView = function() {
 	 });
       }
 
-      /*
-      if(typeof(tools.pointClick) !== 'undefined') {
-         emouseatlas.emap.pointClick.initialize();
-      }
-      */
-
       if(typeof(tools.tprPointClick) !== 'undefined') {
          emouseatlas.emap.tprPointClick.initialize();
       }
@@ -4064,7 +4073,7 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       if(typeof(tools.debug) !== 'undefined') {
-	 new debugTool({
+	 new debugUtil({
 	    model:model,
 	    view:view,
 	    query:query,
@@ -4101,22 +4110,17 @@ emouseatlas.emap.tiledImageView = function() {
       var params = {};
       if(typeof(tools.pointClickDropDown) !== 'undefined') {
 	 plateDropDown = new emouseatlas.emap.pointClickDropDown();
-//	 subPlateDropDown = new emouseatlas.emap.pointClickDropDown();
 	 imageDropDown = new emouseatlas.emap.pointClickDropDown();
       }
       if(typeof(tools.supplementDropDown) !== 'undefined') {
 	 plateDropDown = new emouseatlas.emap.supplementDropDown();
-//	 subPlateDropDown = new emouseatlas.emap.pointClickDropDown();
 	 imageDropDown = new emouseatlas.emap.supplementDropDown();
       }
+
       if(plateDropDown) {
 	 params = { targetId: "toolContainerDiv", type: "Plate", noptions: 15};
          plateDropDown.initialise(params);
       }
-//      if(subPlateDropDown) {
-//	 params = { targetId: "toolContainerDiv", type: "subPlate"};
-//         subPlateDropDown.initialise(params);
-//      }
       if(imageDropDown) {
 	 params = { targetId: "toolContainerDiv", type: "Image"};
          imageDropDown.initialise(params);
@@ -4130,9 +4134,6 @@ emouseatlas.emap.tiledImageView = function() {
    var constructUtils = function () {
 
       //console.log("enter constructUtils");
-
-      var model = emouseatlas.emap.tiledImageModel;
-      var view = emouseatlas.emap.tiledImageView;
 
       if(emouseatlas.emap.imgLabel) {
          emouseatlas.emap.imgLabel.initialise();
@@ -4444,7 +4445,6 @@ emouseatlas.emap.tiledImageView = function() {
    var updateWlzLocator = function() {
       //console.log("view.updateWlzLocator");
       resetViewChanges();
-      printViewerInfo();
       viewChanges.locator = true;
       notify("updateWlzLocator");
    };
@@ -4681,11 +4681,14 @@ emouseatlas.emap.tiledImageView = function() {
       focalPoint.y = vals.y;
       getDraggedTiles();
       setTileFramePosition("setFocalPoint");
+      resetViewChanges();
       if(from !== "locator") {
          viewChanges.focalPoint = true;
          notify("setFocalPoint ");
+      } else {
+         viewChanges.locatorMoved = true;
+         notify("setFocalPoint ");
       }
-      printViewerInfo();
    };
 
    //---------------------------------------------------------
@@ -5179,8 +5182,36 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   var showDebugWindow = function () {
+      debugWindow = !debugWindow;
+      viewChanges.debugWindow = true;
+      notify("showDebugWindow");
+   };
+
+   //---------------------------------------------------------
+   var getDebugWindow = function () {
+      return debugWindow;
+   };
+
+   //---------------------------------------------------------
    var cancelContextMenu = function () {
       // no op
+   };
+
+   //---------------------------------------------------------
+   var enableDebugDiv = function () {
+
+      var div = document.getElementById("debugDiv");
+
+      console.log("enableDebugDiv div ",div);
+
+      if(div == undefined) {
+         return false;
+      }
+
+      showTileBorders();
+      allowViewerInfo = !allowViewerInfo;
+
    };
 
    //---------------------------------------------------------
@@ -5402,9 +5433,11 @@ emouseatlas.emap.tiledImageView = function() {
          case 5:
 	    newmode = 'query';
 	    break;
+	 /*
          case 6:
 	    newmode = 'debug';
 	    break;
+	    */
 	 default:
 	    newmode = 'move';
       }
@@ -5613,6 +5646,8 @@ emouseatlas.emap.tiledImageView = function() {
       toolboxVisible: toolboxVisible,
       refreshImage: refreshImage,
       maximiseImage: maximiseImage,
+      getDebugWindow: getDebugWindow,
+      showDebugWindow: showDebugWindow,
       showTileBorders: showTileBorders,
       showViewerHelp: showViewerHelp,
       showX3domHelpFrame: showX3domHelpFrame,
@@ -5623,11 +5658,11 @@ emouseatlas.emap.tiledImageView = function() {
       getQueryResults: getQueryResults,
       getModeSubType: getModeSubType,
       cancelContextMenu: cancelContextMenu,
+      enableDebugDiv: enableDebugDiv,
       launchEquivalentSection: launchEquivalentSection,
       goToDownloadPage: goToDownloadPage,
       updateLocatorPosition: updateLocatorPosition,
-      contextMenuHighlight: contextMenuHighlight,
-      printViewerInfo: printViewerInfo
+      contextMenuHighlight: contextMenuHighlight
    };
 
 }(); // end of module tiledImageView

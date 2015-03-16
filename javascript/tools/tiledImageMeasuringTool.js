@@ -115,9 +115,9 @@ var tiledImageMeasuringTool = new Class ({
 
       this.layerNames = [];
 
-      var pixres = this.model.getPixelResolution();
-      this.mu = pixres.units;
-      //console.log("this.mu ",this.mu);
+      this.voxel = this.model.getVoxelSize(false);
+      //console.log("tiledImageMeasuringTool: voxel ",this.voxel);
+
       this.createElements();
 
       this.window.setDimensions(this.width, this.height);
@@ -160,7 +160,9 @@ var tiledImageMeasuringTool = new Class ({
       this.distValueText = new Element('div', {
 	 'class':'measuringToolValueText'
       });
-      this.distValueText.appendText('0 ' + this.mu[0]);
+      if(this.voxel !== undefined) {
+         this.distValueText.appendText('0 ' + this.voxel.units[0]);
+      }
 
       //----------------------------------------
       // add them to the tool
@@ -292,7 +294,6 @@ var tiledImageMeasuringTool = new Class ({
       }
 
       if(viewChanges.measuringOrigin) {
-	 var pixres = this.model.getPixelResolution();
          this.setOriginMarkerVisible(false);
          this.setTargetMarkerVisible(false);
          var clickPos = this.view.getMouseClickPosition();
@@ -302,12 +303,11 @@ var tiledImageMeasuringTool = new Class ({
 	 //console.log("clickPos.x %d, clickPos.y %d, viewerPos.x %d, viewerPos.y %d",clickPos.x,clickPos.y,viewerPos.x,viewerPos.y);
 	 this.originMarkerContainer.setStyles({'left': left, 'top': top});
          this.setOriginMarkerVisible(true);
-         this.distValueText.set('text', '0 ' + this.mu[0]);
+         this.distValueText.set('text', '0 ' + this.voxel.units[0]);
       }
 
       if(viewChanges.measuringTarget) {
 	 var isWlz = this.model.isWlzData();
-	 var pixres = this.model.getPixelResolution();
          var clickPos = this.view.getMouseClickPosition();
          var viewerPos = this.view.getViewerContainerPos();
 	 var left = clickPos.x - viewerPos.x - 12;
@@ -318,11 +318,11 @@ var tiledImageMeasuringTool = new Class ({
 	 origin = this.view.getMeasurementOrigin();
 	 point = this.view.getMeasurementTarget();
 	 if(isWlz) {
-	    dx = (point.x - origin.x) * pixres.x;
+	    dx = (point.x - origin.x) * this.voxel.x;
 	    dx = (Math.round(dx * 100))/100;
-	    dy = (point.y - origin.y) * pixres.y;
+	    dy = (point.y - origin.y) * this.voxel.y;
 	    dy = (Math.round(dy * 100))/100;
-	    dz = (point.z - origin.z) * pixres.z;
+	    dz = (point.z - origin.z) * this.voxel.z;
 	    dz = (Math.round(dz * 100))/100;
 	    dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
 	    dist = (Math.round(dist * 100))/100;
@@ -330,19 +330,19 @@ var tiledImageMeasuringTool = new Class ({
 	 } else {
 	    scale = this.view.getScale();
 	    dx = point.x - origin.x;
-	    dx = dx * pixres.x / scale.cur;
+	    dx = dx * this.voxel.x / scale.cur;
 	    dx = (Math.round(dx * 100))/100;
 	    dy = point.y - origin.y;
-	    dy = dy * pixres.y / scale.cur;
+	    dy = dy * this.voxel.y / scale.cur;
 	    dy = (Math.round(dy * 100))/100;
 	    dist = Math.sqrt(dx*dx + dy*dy);
 	    //dist = (Math.round(dist * 100))/100;
 	    dist = Math.round(dist);
 	 }
 	 if(dist < 1000) {
-	    unit = this.mu[0];
+	    unit = this.voxel.units[0];
 	 } else {
-	    unit = this.mu[1];
+	    unit = this.voxel.units[1];
 	    dist = (Math.round(dist / 10))/100;
 	 }
          this.distValueText.set('text', dist + ' ' + unit);
@@ -350,16 +350,15 @@ var tiledImageMeasuringTool = new Class ({
 
       if(viewChanges.measuring) {
 	 var isWlz = this.model.isWlzData();
-	 var pixres = this.model.getPixelResolution();
 	 origin = this.view.getMeasurementOrigin();
 	 point = this.view.getMeasurementPoint();
 	 if(isWlz) {
-	    dx = (point.x - origin.x) * pixres.x;
+	    dx = (point.x - origin.x) * this.voxel.x;
 	    dx = (Math.round(dx * 100))/100;
-	    dy = (point.y - origin.y) * pixres.y;
+	    dy = (point.y - origin.y) * this.voxel.y;
 	    dy = (Math.round(dy * 100))/100;
 	    dz = point.z - origin.z;
-	    dz = (point.z - origin.z) * pixres.z;
+	    dz = (point.z - origin.z) * this.voxel.z;
 	    dz = (Math.round(dz * 100))/100;
 	    //console.log("dx %d, dy %d, dz %d",dx,dy,dz);
 	    dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
@@ -367,19 +366,19 @@ var tiledImageMeasuringTool = new Class ({
 	 } else {
 	    scale = this.view.getScale();
 	    dx = point.x - origin.x;
-	    dx = dx * pixres.x / scale.cur;
+	    dx = dx * this.voxel.x / scale.cur;
 	    dx = (Math.round(dx * 100))/100;
 	    dy = point.y - origin.y;
-	    dy = dy * pixres.y / scale.cur;
+	    dy = dy * this.voxel.y / scale.cur;
 	    dy = (Math.round(dy * 100))/100;
 	    dist = Math.sqrt(dx*dx + dy*dy);
 	    //dist = (Math.round(dist * 100))/100;
 	    dist = Math.round(dist);
 	 }
 	 if(dist < 1000) {
-	    unit = this.mu[0];
+	    unit = this.voxel.units[0];
 	 } else {
-	    unit = this.mu[1];
+	    unit = this.voxel.units[1];
 	    dist = (Math.round(dist / 10))/100;
 	 }
          this.distValueText.set('text', dist + ' ' + unit);

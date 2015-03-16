@@ -110,8 +110,8 @@ var tiledImageTreeTool = new Class ({
 
       this.createElements();
 
-      //this.createMenu();
-      //this.cpInit();
+      //console.log($$('.pick'));
+
       this.addPatchEvent();
 
    }, // initialize
@@ -266,10 +266,6 @@ var tiledImageTreeTool = new Class ({
          this.treeComponent.setShowSystems(systemChkbx.checked);
       }.bind(this));
 
-      //this.createMenu();
-      //this.cpInit();
-      this.addPatchEvent();
-
    }, // createElements
 
    //---------------------------------------------------------------
@@ -387,6 +383,8 @@ var tiledImageTreeTool = new Class ({
       var i;
 
       patchArr = $$('.pick');
+      //patchArr = document.getElementsByClassName('pick');
+      //console.log(patchArr);
       num = patchArr.length;
       for(i=0; i<num; i++) {
 	 patch = patchArr[i];

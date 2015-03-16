@@ -1463,6 +1463,25 @@ if(!emouseatlas.emap.utilities) {
 	  }
       },
 
+      //--------------------------------------------------------------
+      trimDecimal: function (num, fixed) {
+
+         var ret;
+
+         ret = (Math.floor(num * 100) / 100).toFixed(fixed)
+         //console.log("trimDecimal: returning ",ret);
+         return ret;
+
+      }, // trimDecimal
+
+
+      //-----------------------------------------------------
+      //  allows debugging from 'closure' type functions
+      //-----------------------------------------------------
+      debugOutput: function (msg) {
+         console.log(msg);
+      }
+
    }; // emouseatlas.emap.utilities
 
 }

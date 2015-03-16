@@ -370,8 +370,6 @@ var tiledImageLocatorTool = new Class ({
       }
       //console.log("exit locator.setLocatorZone");
 
-      this.view.printViewerInfo();
-
    }, // setLocatorZone
 
    //--------------------------------------------------------------

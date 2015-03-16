@@ -80,7 +80,7 @@ emouseatlas.emap.supplementDropDown = function() {
 
       model = emouseatlas.emap.tiledImageModel;
       view = emouseatlas.emap.tiledImageView;
-      pointClick = emouseatlas.emap.tiledImagePointClick;
+      pointClick = emouseatlas.emap.supplementPointClick;
       util = emouseatlas.emap.utilities;
 
       //console.log(params);
@@ -93,6 +93,7 @@ emouseatlas.emap.supplementDropDown = function() {
       trgt = params.targetId;
 
       type = (params.type === undefined) ? "" : params.type;
+      //console.log("supplementDropDown.initialise type = ",type);
       typeLC = type.toLowerCase();
 
       pointClickImgData = model.getPointClickImgData();
@@ -101,7 +102,7 @@ emouseatlas.emap.supplementDropDown = function() {
       nOptionsBeforeSelectScroll = (params.noptions === undefined) ? 20 : params.noptions;
 
       // at the moment we don't have the first 4 plates in the Kaufman book
-      skipEarlyPlates = 3;
+      skipEarlyPlates = 0;
 
 
    }; // initialise
@@ -141,6 +142,8 @@ emouseatlas.emap.supplementDropDown = function() {
 	 dropDownContainer.setStyle("top", topstr);
       }
 
+      //console.log("supplementDropDown.createElements   locatorT %s",locatorT);
+
       //----------------------------------------
       // the text div
       //----------------------------------------
@@ -167,7 +170,8 @@ emouseatlas.emap.supplementDropDown = function() {
       });
 
 
-      //console.log("locator top %s",locatorT);
+      //console.log("supplementDropDown.createElements   typeLC %s",typeLC);
+
       switch (typeLC) {
          case "image":
 	    optionArr = getImageLabels();
@@ -182,9 +186,12 @@ emouseatlas.emap.supplementDropDown = function() {
       }
 
       len = optionArr.length;
+      //console.log("supplementDropDown.createElements   optionArr ",optionArr);
 
       for(i=start; i<len; i++) {
          optionTxt = optionArr[i];
+	 //console.log("typeof optionTxt = ",typeof optionTxt);
+	 //console.log("optionTxt = ",optionTxt);
          // strip off the leading 0 for plates below 10
 	 optionTxt = (optionTxt.substr(0,1) === "0") ? optionTxt.substring(1) : optionTxt;
          option = new Element('option', {
@@ -269,7 +276,7 @@ emouseatlas.emap.supplementDropDown = function() {
 
       return false;
 
-   }; // doDropDownMouseDown
+   }; // doDropDownMouseUp
 
    //---------------------------------------------------------------
    // this is needed to set the size of the select which provokes a scroll bar
@@ -312,16 +319,13 @@ emouseatlas.emap.supplementDropDown = function() {
       var pattern;
       var indx;
 
-      //console.log("doOptionMouseUp");
       target = emouseatlas.emap.utilities.getTarget(e);
       pattern = target.className;
-      //console.log("doOptionMouseUp %s, %s",target.id,pattern);
 
       regexp = new RegExp('pcDropDown', 'i')
       if(pattern.match(regexp) != null) {
          parentNode = target.parentNode;
 	 indx = parentNode.selectedIndex;
-	 //console.log("doOptionMouseUp selectedIndex %d",indx);
 	 doDropDownChanged(parentNode.id, indx);
       }
 
@@ -332,14 +336,15 @@ emouseatlas.emap.supplementDropDown = function() {
 
       var ddown;
       var regexp;
-      var webserver;
+      var webServer;
+      var iipViewerName;
       var metadata;
       var pindx;
+      var aindx;
       var val;
       var ival;
       var url;
 
-      //console.log("doDropDownChanged %s, %d", dropDownId, indx);
       ddown = $(dropDownId);
       if(!ddown) {
          return false;
@@ -353,22 +358,21 @@ emouseatlas.emap.supplementDropDown = function() {
 
       regexp = new RegExp("plate", 'i')
       if(dropDownId.match(regexp) != null) {
-	 webserver = model.getWebServer();
+	 webServer = model.getWebServer();
 	 metadata = model.getMetadataRoot();
-	 //console.log("webserver %s, metadata %s",webserver,metadata);
 	 pindx = metadata.lastIndexOf("plate");
-	 metadata = metadata.substring(0, pindx);
-	 // start temporary hack for beta release of Kaufman Atlas
-	 //metadata = metadata.replace("ka", "ema");
-	 // finish temporary hack for beta release of Kaufman Atlas
+	 aindx = metadata.indexOf("application");
+	 metadata = metadata.substring(aindx, pindx);
+	 // start temporary hack for Kaufman Supplement
+	 iipViewerName = "eAtlasViewer_demo"; // this will need to be read in from tileImageModelData
+	 // finish temporary hack for Kaufman Supplement
 	 val = ddown.options[indx].text;
 	 ival = parseInt(val);
-	 if(ival < 10) {
-	    val = "0" + val;
+	 //console.log("%s,%s,%s,%s",webServer,iipViewerName,metadata,val);
+	 url = webServer + "/" + iipViewerName + "/" + metadata + "plate_" + val + ".php";
+	 if(model.isEditor()) {
+	    url += "?editor";
 	 }
-	 console.log("%s%s%s.php",webserver,metadata,val);
-	 url = webserver + metadata + "plate_" + val + ".php";
-	 console.log("doDropDownChanged plate url %s",url);
 	 window.location.href = url;
 	 return false;
       }
@@ -386,19 +390,22 @@ emouseatlas.emap.supplementDropDown = function() {
 
    //---------------------------------------------------------------
    var modelUpdate = function(modelChanges) {
-
+      //console.log("modelUpdate");
    }; // modelUpdate
 
    //---------------------------------------------------------------
    var viewUpdate = function(viewChanges) {
-
+      //console.log("viewUpdate");
    }; // viewUpdate
 
    //---------------------------------------------------------------
    var pointClickUpdate = function(pointClickChanges) {
 
+      //console.log("pointClickUpdate pointClickChanges.plateList %s",pointClickChanges.plateList);
+
       if(pointClickChanges.plateList) {
          plateArr = pointClick.getPlateList();
+	 //console.log("supplementDropDown.pointClickUpdate plateArr ",plateArr);
          createElements();
          initDropDown()
       }
@@ -416,11 +423,14 @@ emouseatlas.emap.supplementDropDown = function() {
       var len;
       var i;
 
+      //console.log("initDropDown");
+
       if(typeLC === "plate") {
          data = pointClickImgData;
          subplate = data.subplate;
 	 len = plateArr.length;
 	 for(i=0; i<len; i++) {
+	    //console.log("subplate %s, plateArr[i] %s",subplate,plateArr[i]);
 	    if(subplate === plateArr[i]) {
 	       indx = i - skipEarlyPlates;
 	       select.selectedIndex = indx;

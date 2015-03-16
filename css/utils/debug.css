@@ -20,19 +20,42 @@
  */
 
 /* --------------------------- */
-.debugItem {
+#debug_top_div {
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   padding: 0px;
+   margin: 0px;
+   color: #f00;
+   width: 100%;
+   border: solid 1px #aaa;
+   border: none;
+   background: #eef;
+   font-size: 9px;
+   vertical-align: middle;
+}
+
+#debug_bottom_div {
+   position: absolute;
+   left: 0px;
+   top: 105px;
+   padding: 0px;
+   margin: 0px;
+   color: #f00;
+   width: 100%;
+   border: solid 1px #aaa;
+   border: none;
+   background: #fee;
+   font-size: 9px;
+   vertical-align: middle;
+}
+
+.debugItemContainer {
    position: absolute;
    left: 1px;
    padding: 0px;
    margin: 0px;
-   color: #000;
-   height: 20px;
-   width: 100%;
-   border: solid 1px #aaa;
    border: none;
-   background: #ddd;
-   font-size: 9px;
-   vertical-align: middle;
 }
 
 .debugItemLabel {
@@ -41,41 +64,42 @@
    top: 4px;
    padding: 0px 4px;
    margin: 0px;
-   width: 60px;
+   color: #00f;
 }
 
-.debugItemVal {
+.debugItemParamContainer {
    float: left;
    position: relative;
-   top: 4px;
-   padding: 0px 4px;
-   margin: 0px;
-   background: #faa;
-}
-
-.debugItemCoord {
-   position: relative;
-   float: left;
-   top: 0px;
-   height: 20px;
-   border: none;
+   left: 1px;
    padding: 0px;
    margin: 0px;
+   width: auto;
+   border: none;
 }
 
-.debugItemCoordLabel {
+.debugItemParamDiv {
+   float: left;
+   position: relative;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+}
+
+.debugItemParamLabel {
    float: left;
    position: relative;
    top: 4px;
    padding: 0px 4px;
    margin: 0px;
+   color: #f00;
 }
 
-.debugItemCoordVal {
+.debugItemParamVal {
    float: left;
    position: relative;
    top: 4px;
    padding: 0px 4px;
    margin: 0px;
-   background: #fba;
+   color: #000;
 }
+

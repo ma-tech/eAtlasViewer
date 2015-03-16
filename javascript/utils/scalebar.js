@@ -133,17 +133,19 @@ emouseatlas.emap.scalebar = function() {
    var viewUpdate = function (viewChanges) {
 
          var scale;
-         var pixres;
 	 var scalebarLen;
+	 var voxel;
 	 var numpix;
 	 var txt;
 	 var txtWidth;
 	 
       if(viewChanges.initial === true || viewChanges.scale === true) {
          scale = emouseatlas.emap.tiledImageView.getScale();
-         pixres = emouseatlas.emap.tiledImageModel.getPixelResolution();
          scalebarLen = emouseatlas.emap.tiledImageModel.getScalebarLen();
-	 numpix = scalebarLen / pixres.x;
+         voxel = model.getVoxelSize(false);
+         //console.log("voxel ",voxel);
+	 numpix = scalebarLen / voxel.x;
+
          $("scalebarDiv").setStyle("width",numpix + "px");
 	 width = numpix + 20;
 	 txtWidth = window.getComputedStyle($("scalebarTextContainer"), null).getPropertyValue("width");
