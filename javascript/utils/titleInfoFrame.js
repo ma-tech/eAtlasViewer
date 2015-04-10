@@ -184,8 +184,8 @@ emouseatlas.emap.titleInfo = function () {
       //console.log("stage %d",stage);
       //console.log("stage %d",stage);
 
-      url_emapStageDef = "http://testwww.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
-      url_emapAnatomy = "http://testwww.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
+      url_emapStageDef = "http://www.emouseatlas.org/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
+      url_emapAnatomy = "http://www.emouseatlas.org/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
 
       mainContainer = mydocument.getElementById("titleInfoMainContainer");
       if(mainContainer === undefined || mainContainer === null) {
