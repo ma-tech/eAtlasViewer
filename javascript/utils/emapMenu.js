@@ -31,6 +31,8 @@ emouseatlas.emap.EmapMenu = function() {
    var menuName;
    var menuStructureUrl;
    var menuContentUrl;
+   var emageUrl;
+   var emageUrl2;
    var menuTarget = [];
    var menuStructure = {};
    var menuContent = {};
@@ -64,12 +66,11 @@ emouseatlas.emap.EmapMenu = function() {
       imagePath = params.imagePath;
       menuStructureUrl = params.structureUrl;
       menuContentUrl = params.contentUrl;
+
+      emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true';
+
       readMenuStructure();
-      //console.log("emapMenu %s initialised, container %s",menuName,menuParent);
-      //window.open("http://www.hgu.mrc.ac.uk","test","");
-      //menuUtils = new emouseatlas.emap.contextMenuActions();
-      //menuUtils.initialize(menuParent);
-      //emouseatlas.emap.contextMenuActions.initialize(menuParent);
    };
 
    //---------------------------------------------------------
@@ -1531,10 +1532,7 @@ emouseatlas.emap.EmapMenu = function() {
          return false;
       }
 
-      url =
-         'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-         EmapId +
-	 '&exactmatchstructures=true&includestructuresynonyms=true'; 
+      url = emageUrl + EmapId + emageUrl2;
 
       //openQueryWindow(url);
       window.open("http://www.google.co.uk","test","");

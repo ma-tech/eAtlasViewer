@@ -72,6 +72,14 @@ emouseatlas.emap.tprPointClick = function() {
    var ALLOW_CLOSEST_MARKERS = true; // more permanent (from checkbox)
    var SHOW_MARKER_TXT = false;
    var imgPath;
+   var emageUrl;
+   var emageUrl2;
+   var mgiUrl;
+   var mgiUrl2;
+   var mgiUrl3;
+   var mgiUrl4;
+   var gudmapUrl;
+   var gudmapUrl2;
    var srcSelected;
    var srcClosest;
    var srcHighlighted;
@@ -104,6 +112,16 @@ emouseatlas.emap.tprPointClick = function() {
       funcs['markersrc'] = set3DMarkerSrc;
       funcs['label'] = position3DMarkerLabel;
       funcs['txt'] = position3DMarkerTxt;
+
+      emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true';
+      mgiUrl = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
+      mgiUrl2 = '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+      mgiUrl3 = "http://www.informatics.jax.org/gxd/structure/";
+      mgiUrl4 = '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
+      gudmapUrl = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20';
+      gudmapUrl2 = '%20';
+
+      emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
 
       createElements();
       getImageData();
@@ -169,7 +187,7 @@ emouseatlas.emap.tprPointClick = function() {
 
       resources = isWlz ? "tpr_demo_3d" : "tpr_demo";
       image = pointClickImgData.image;
-      url = '/tprwebapp/GetPlateDataSQL';
+      url = '/tprwebapp/GetPlateData';
       ajaxParams = {
          url:url,
          method:"POST",
@@ -240,7 +258,7 @@ emouseatlas.emap.tprPointClick = function() {
       urlParams = "image=" + image +"?resources=" + resources,
 
       //console.log("updateImageData image ",image);
-      url = '/tprwebapp/GetPlateDataSQL';
+      url = '/tprwebapp/GetPlateData';
       ajaxParams = {
          url:url,
          method:"POST",
@@ -970,14 +988,9 @@ emouseatlas.emap.tprPointClick = function() {
 
 
       if(target.id.toLowerCase().indexOf('emage') > -1) {
-         url =
-            'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-            EmapId +
-            '&exactmatchstructures=true&includestructuresynonyms=true';
+         url = emageUrl + EmapId + emageUrl2;
       } else if(target.id.toLowerCase().indexOf('gxdb') > -1) {
-         url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
-               edid +
-	       '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
+         url = mgiUrl + edid + mgiUrl4;
       }
 
       if(url) {
@@ -1097,10 +1110,7 @@ emouseatlas.emap.tprPointClick = function() {
       key = getKeyFromStr(target.id, false);
       EmapId = getEmapIdForKey(key);
 
-      url =
-         'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-         EmapId +
-	 '&exactmatchstructures=true&includestructuresynonyms=true'; 
+      url = emageUrl + EmapId + emageUrl2;
 
       window.open(url);
 
@@ -1121,9 +1131,7 @@ emouseatlas.emap.tprPointClick = function() {
       // strip off the 'EMAP:' part
       edid = EmapId.substr(5);
 
-      url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
-            edid +
-	    '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
+      url = mgiUrl + edid + mgiUrl4;
 
       window.open(url);
 
@@ -1139,10 +1147,7 @@ emouseatlas.emap.tprPointClick = function() {
       key = lastHighlightedKey;
       EmapId = getEmapIdForKey(key);
 
-      url =
-         'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' +
-         EmapId +
-	 '&exactmatchstructures=true&includestructuresynonyms=true'; 
+      url = emageUrl + EmapId + emageUrl2;
 
       window.open(url);
 
@@ -1159,9 +1164,7 @@ emouseatlas.emap.tprPointClick = function() {
       EmapId = getEmapIdForKey(key);
       edid = EmapId.substr(5);
 
-      url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' +
-            edid +
-	    '&sort=Gene%20symbol&returnType=assay%20results&substructures=substructures'; 
+      url = mgiUrl + edid + mgiUrl4;
 
       window.open(url);
 
@@ -2944,7 +2947,7 @@ emouseatlas.emap.tprPointClick = function() {
 
       urlParams = "markers=" + jsonStr + "&resources=" + resources,
 
-      url = '/tprwebapp/SaveMarkersSQL';
+      url = '/tprwebapp/SaveMarkers';
       ajaxParams = {
          url:url,
          method:"POST",
@@ -3020,7 +3023,7 @@ emouseatlas.emap.tprPointClick = function() {
 
       urlParams = "markers=" + jsonStr + "&resources=" + resources,
 
-      url = '/tprwebapp/SaveMarkersSQL';
+      url = '/tprwebapp/SaveMarkers';
       ajaxParams = {
          url:url,
          method:"POST",

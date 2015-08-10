@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>three.js webgl - loaders - stl loader</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<style>
+body {
+  font-family      : Monospace;
+  background-color : #000;
+  color            : #fff;
+  margin           : 0px;
+  overflow         : hidden;
+}
+#info {
+  color            : #fff;
+  position         : absolute;
+  top              : 10px;
+  width            : 100%;
+  text-align       : center;
+  z-index          : 100;
+  display          : block;
+}
+</style>
+</head>
+
+<body>
+<!--
+<div id="info">
+THREE.js stl Test
+</div>
+-->
+
+<script src="../javascript/thirdParty/MARender/three.min.js"></script>
+<script src="../javascript/thirdParty/MARender/TrackballControls.js"></script>
+<script src="../javascript/thirdParty/MARender/STLLoader.js"></script>
+<script src="../javascript/thirdParty/MARender/Detector.js"></script>
+<script src="../javascript/thirdParty/MARender/MARender.js"></script>
+
+<script>
+
+if(!(Detector.webgl)) {
+  Detector.addGetWebGLMessage();
+}
+
+var container;
+container = document.createElement('div');
+document.body.appendChild(container);
+
+var ren = new MARenderer(window, container);
+ren.init();
+ren.addModel({name:        'edloh',
+              path:
+	      '../application/ema/stl/models/epithelium_descending_portion_of_the_loop_of_Henle_f.stl',
+	      color:       0x40b010});
+ren.addModel({name:        'ealoh',
+              path:
+	      '../application/ema/stl/models/epithelium_of_ascending_portion_of_the_loop_of_Henle_f.stl',
+	      color:       0xb04010});
+ren.addModel({name:        'eocd',
+              path:
+	      '../application/ema/stl/models/epithelium_of_collecting_duct_f.stl',
+	      color:       0x4040b0,
+	      transparent: true,
+	      opacity:	   0.4});
+ren.addModel({name:        'eaodct',
+              path:
+	      '../application/ema/stl/models/epithelium_of_distal_convoluted_tubule_f.stl',
+	      color:       0x104010});
+ren.addModel({name:        'eaorpt',
+              path:
+	      '../application/ema/stl/models/epithelium_of_renal_proximal_tubule_f.stl',
+	      color:       0x401010});
+ren.addModel({name:        'egm',
+              path:
+	      '../application/ema/stl/models/extraglomerular_mesangium_f.stl',
+	      color:       0x101040});
+ren.addModel({name:        'ldploh',
+              path:
+	      '../application/ema/stl/models/lumen_descending_portion_of_the_loop_of_Henle_f.stl',
+	      color:       0x404010});
+ren.addModel({name:        'laploh',
+              path:
+	      '../application/ema/stl/models/lumen_of_ascending_portion_of_the_loop_of_Henle_f.stl',
+	      color:       0x104040});
+ren.addModel({name:        'lcd',
+              path:
+	      '../application/ema/stl/models/lumen_of_collecting_duct_f.stl',
+	      color:       0x404040});
+ren.addModel({name:        'ldct',
+              path: '../application/ema/stl/models/lumen_of_distal_convoluted_tubule_f.stl',
+	      color:       0xb0b0b0});
+ren.addModel({name:        'lrpt',
+              path: '../application/ema/stl/models/lumen_of_renal_proximal_tubule_f.stl',
+	      color:       0xb0b0b0});
+ren.addModel({name:        'md',
+              path: '../application/ema/stl/models/macula_densa_f.stl',
+	      color:       0xf01010});
+ren.addModel({name:        'mgt',
+              path: '../application/ema/stl/models/maturing_glomerular_tuft_f.stl',
+	      color:       0x10f010});
+ren.addModel({name:        'plbc',
+              path: '../application/ema/stl/models/parietal_layer_of_bowmans_capsule_f.stl',
+	      color:       0x10f010});
+ren.addModel({name:        'ub',
+              path: '../application/ema/stl/models/U_bend_f.stl',
+	      color:       0xf0f010});
+/*
+ren.addModel({name:        'ub',
+              path: '../application/ema/stl/models/ureter_EMAP12264_f.stl',
+	      color:       0xf0f010,
+	      transparent: true,
+	      opacity:	   0.4});
+*/
+ren.animate();
+
+</script>
+
+</body>
+</html>
+

@@ -54,6 +54,10 @@ emouseatlas.emap.emageExpression = function() {
 
    var DPC = {};
    var EMAGE_ENTRY_URL;
+   var emage_eurexpress_url;
+   var emage_iip_sub_url;
+   var emage_iip_exp_url;
+   var emage_iip_opt_url;
    var DISPLAY;
    var STAGE;
    var GENE;
@@ -91,9 +95,9 @@ emouseatlas.emap.emageExpression = function() {
       if (-1 != input.indexOf(".wlz")) {
          // expression 3D iip viewer
          if (ID === undefined || ID === "") 
-                rootSrc = "http://testwww.emouseatlas.org/emage_iipviewer/application/emageExpression/php/gene.php?greyImg=";
+                rootSrc = emage_iip_exp_url;
          else
-                rootSrc = "http://testwww.emouseatlas.org/emage_iipviewer/application/emageSub/php/submission.php?greyImg=";
+                rootSrc = emage_iip_sub_url;
  
          var token = input.split("|");
          ret = rootSrc+ token[0];
@@ -121,7 +125,7 @@ emouseatlas.emap.emageExpression = function() {
       
       if (-1 == input.indexOf(".wlz") && -1 == input.indexOf("euxassay")) {
          // opt iip viewer
-         rootSrc = "http://testwww.emouseatlas.org/emage_iipviewer/application/emageOpt/php/opt.php?greyImg=";
+         rootSrc = emage_iip_opt_url;
 	       TITLE = TITLE + " - EMAGE:" + ID;
          var segment = "";
          var num = "";
@@ -145,7 +149,7 @@ emouseatlas.emap.emageExpression = function() {
 
       if (-1 != input.indexOf("euxassay")) {
          // EurExpress iip viewer
-         rootSrc = "http://www.emouseatlas.org/eAtlasViewer/php/eurexpress.php?assay=";
+         rootSrc = emage_eurexpress_url;
          ret = rootSrc+input+"&section=100";
       //console.log("getUrl returning ",ret);
          return rootSrc+input+"&section=100";
@@ -200,7 +204,7 @@ emouseatlas.emap.emageExpression = function() {
    var getLinkToEntry = function (ID) {
 
      //console.log("getLinkToEntry %s",ID);
-     http://www.emouseatlas.org/emagewebapp/pages/emage_entry_page.jsf?id=EMAGE%3A70
+     //http://www.emouseatlas.org/emagewebapp/pages/emage_entry_page.jsf?id=EMAGE%3A70
 	var link = "<a href=" + EMAGE_ENTRY_URL + ID + ">EMAGE:" + ID + "</a>";
      //console.log("getLinkToEntry: %d %s",ID,link);
 
@@ -318,6 +322,11 @@ emouseatlas.emap.emageExpression = function() {
       };
 
       EMAGE_ENTRY_URL = "http://www.emouseatlas.org/emagewebapp/pages/emage_entry_page.jsf?id=EMAGE:";
+
+      emage_eurexpress_url = "http://drumguish.hgu.mrc.ac.uk/eAtlasViewer/php/eurexpress.php?assay=";
+      emage_iip_sub_url = "http://drumguish.hgu.mrc.ac.uk/emage_iipviewer/application/emageSub/php/submission.php?greyImg=";
+      emage_iip_exp_url = "http://drumguish.hgu.mrc.ac.uk/emage_iipviewer/application/emageExpression/php/gene.php?greyImg=";
+      emage_iip_opt_url = "http://drumguish.hgu.mrc.ac.uk/emage_iipviewer/application/emageOpt/php/opt.php?greyImg=";
 
       DISPLAY = params.display;
       STAGE = params.stage;

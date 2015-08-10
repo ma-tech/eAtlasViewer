@@ -1,0 +1,175 @@
+/*!*
+* \file         VTKLoader.js
+* \author       Bill Hill
+* \date         June 2015
+* \version      $Id$
+* \par
+* Address:
+*               MRC Human Genetics Unit,
+*               MRC Institute of Genetics and Molecular Medicine,
+*               University of Edinburgh,
+*               Western General Hospital,
+*               Edinburgh, EH4 2XU, UK.
+* \par
+* Copyright (C), [2015],
+* The University Court of the University of Edinburgh,
+* Old College, Edinburgh, UK.
+* 
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be
+* useful but WITHOUT ANY WARRANTY; without even the implied
+* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+* PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the Free
+* Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA  02110-1301, USA.
+* \brief	A VTK file loader for three.js. This is based on the VTK
+* 		loader by mrdoob. Differences from the original are:
+* 		* slightly more flexible parsing
+* 		* polygons are not required
+* 		* able to set color of materials attached to geometry
+*/
+
+THREE.VTKLoader = function(manager) {
+  this.manager = (manager !== undefined)? manager: THREE.DefaultLoadingManager;
+};
+
+THREE.VTKLoader.prototype = {
+  constructor: THREE.VTKLoader,
+
+  load: function(url, onLoad, onProgress, onError) {
+    var scope = this;
+    var loader = new THREE.XHRLoader(scope.manager);
+    loader.setCrossOrigin(this.crossOrigin);
+    loader.load(url,
+                function (text) {
+                  onLoad(scope.parse(text));
+		}, onProgress, onError);
+  },
+
+  parse: function(data) {
+   var idx, pattern, result;
+   var line = 0; n_points = 0, n_poly = 0; n_dpp = 0;
+   var colors;
+   var geometry = new THREE.Geometry();
+   /*
+    * expects to find a legacy format vtk file, such as:
+    * # vtk DataFile Version 1.0
+    * Some comment text
+    * ASCII
+    * DATASET POLYDATA
+    * POINTS 4 float
+    * 0 0 0
+    * 100 0 0
+    * 50 87 0
+    * 50 43 87
+    * POLYGONS 4 16
+    * 3 0 1 2
+    * 3 0 1 3
+    * 3 1 2 3
+    * 3 2 0 3
+    */
+   // # vtk DataFile Version 1.0
+   pattern = /#[\s]+vtk[\s]+DataFile[\s]+Version[\s]+1.0/g
+   result = pattern.exec(data);
+   if(result) {
+     // Some comment text
+     ++line;
+     // ASCII
+     ++line;
+     pattern = /ASCII/g
+       result = pattern.exec(data);
+   }
+   if(result) {
+     // DATASET POLYDATA
+     ++line;
+     pattern = /DATASET[\s]+POLYDATA/g
+     result = pattern.exec(data);
+   }
+   if(result) {
+     // POINTS 4 float
+     ++line;
+     pattern = /POINTS[\s]+([1-9]+[\d]*)[\s]+float/g
+     if((result = pattern.exec(data)) !== null) {
+       n_points = parseInt(result[1]);
+     }
+   }
+   if(n_points > 0) {
+     // <float> <float> <float>
+     pattern = /(([+-]?[\d]+[.]?[\d\+\-eE]*)[\s]+([+-]?[\d]+[.]?[\d\+\-eE]*)[\s]+([+-]?[\d]+[.]?[\d\+\-eE]*))/g
+     for(idx = 0; idx < n_points; ++idx) {
+       ++line;
+       result = pattern.exec(data);
+       if(!result) {
+	 break;
+       }
+       geometry.vertices.push(
+	   new THREE.Vector3(parseFloat(result[2]),
+			     parseFloat(result[3]),
+			     parseFloat(result[4])));
+     }
+   }
+   if((n_points > 0) && result) {
+     // POLYGONS <uint> <uint>
+     ++line;
+     pattern = /POLYGONS[\s]+([1-9]+[\d]*)[\s]+([1-9]+[\d]*)/g
+     if((result = pattern.exec(data)) !== null) {
+       n_poly = parseInt(result[1]);
+       var n_poly_points = parseInt(result[2]);
+       n_dpp = n_poly_points / n_poly;
+     } else {
+       result = true; // Allow points without elements
+     }
+   }
+   if((n_poly > 0) && result) {
+     if(n_dpp === 4) {
+       // 3 <uint> <uint> <uint>
+       pattern = /3[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)/g
+       for(idx = 0; idx < n_poly; ++idx) {
+	 ++line;
+	 if((result = pattern.exec(data)) === null) {
+	   break;
+	 }
+	 geometry.faces.push(
+	     new THREE.Face3(parseInt(result[1]),
+			     parseInt(result[2]),
+			     parseInt(result[3])));
+       }
+     } else if(n_dpp === 5) {
+       // 4 <uint> <uint> <uint> <uint>
+       pattern = /4[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)/g
+       for(idx = 0; idx < n_poly; ++idx) {
+	 ++line;
+	 if((result = pattern.exec(data)) === null) {
+	   break;
+	 }
+	 geometry.faces.push(
+	     new THREE.Face3(parseInt(result[1]),
+			     parseInt(result[2]),
+			     parseInt(result[4])));
+	 geometry.faces.push(
+	     new THREE.Face3(parseInt(result[2]),
+			     parseInt(result[3]),
+			     parseInt(result[4])));
+       }
+     }
+   }
+   if(result === null) {
+     geometry = null;
+   } else {
+     if(n_poly > 0) {
+       geometry.computeFaceNormals();
+     }
+     geometry.computeBoundingBox();
+     geometry.computeBoundingSphere();
+   }
+   return geometry;
+  }
+}

@@ -106,6 +106,12 @@ var queryAnatomy = new Class ({
 
       this.layerNames = [];
 
+      this.mgiUrl = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
+      this.mgiUrl2 = '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+
+      this.emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      this.emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true'; 
+
       this.createElements();
 
       this.window.setDimensions(this.width, this.height);
@@ -336,10 +342,10 @@ var queryAnatomy = new Class ({
 	 url;
 	 //console.log("mode sub type = ",type);
 	 if(type === 0) {
-            url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+            url = this.emageUrl + emapId + this.emageUrl2
 	 } else if(type === 1) {
 	    emapIdNum = emapId.substring(5);
-	    url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' + emapIdNum + '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+	    url = this.mgiUrl + emapIdNum + this.mgiUrl2
          } else {
 	    return false;
 	 }

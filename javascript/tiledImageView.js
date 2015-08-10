@@ -103,9 +103,12 @@ emouseatlas.emap.tiledImageView = function() {
       hideViewerInfo: false,
       showMarkerPopup: false,
       hideMarkerPopup: false,
+      threeD: false,
+      //hide3d: false,
       hideMenu: false,
       contextMenuOn: false,
-      contextMenuOff: false
+      contextMenuOff: false,
+      dontShowAgain: false
    };
    var targetContainer;
    var model;
@@ -113,6 +116,7 @@ emouseatlas.emap.tiledImageView = function() {
    var query;
    var pointClick;
    var supplementPointClick;
+   var gudmapPointClick;
    var eventCapturingContainer;
    var tileFrameContainers = {};
    var image = {};
@@ -174,9 +178,16 @@ emouseatlas.emap.tiledImageView = function() {
    var debugPoint = {};
    var pointClickPoint = {};
    var initialPointClickPoint = {};
+   var mouseDownTarget;
    var equivalentSectionId;
+   var threeDId;
    var queryType = 0;
    var openWindows = [];
+   var open3dWindows = [];
+   var threeDLoaded = false;
+   var max3dToShow;
+   var origMax3dToShow;
+   var SHOW_DONT_SHOW_AGAIN_DIALOG;
    var modes = {
                 move:{name:'move', cursor:'move'},
                 measuring:{name:'measuring', cursor:'pointer'},
@@ -1171,9 +1182,11 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.hideViewerInfo) console.log("viewChanges.hideViewerInfo ",viewChanges.hideViewerInfo);
       if(viewChanges.showMarkerPopup) console.log("viewChanges.showMarkerPopup ",viewChanges.showMarkerPopup);
       if(viewChanges.hideMarkerPopup) console.log("viewChanges.hideMarkerPopup ",viewChanges.hideMarkerPopup);
+      if(viewChanges.threeD) console.log("viewChanges.threeD ",viewChanges.threeD);
       if(viewChanges.hideMenu) console.log("viewChanges.hideMenu ",viewChanges.hideMenu);
       if(viewChanges.contextMenuOn) console.log("viewChanges.contextMenuOn ",viewChanges.contextMenuOn);
       if(viewChanges.contextMenuOff) console.log("viewChanges.contextMenuOff ",viewChanges.contextMenuOff);
+      if(viewChanges.dontShowAgainDialog) console.log("viewChanges.dontShowAgainDialog ",viewChanges.dontShowAgainDialog);
       console.log("++++++++++++++++++++++++++++++++++++++++++++");
    };
 
@@ -1225,9 +1238,11 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.hideViewerInfo =  false;
       viewChanges.showMarkerPopup =  false;
       viewChanges.hideMarkerPopup =  false;
+      viewChanges.threeD =  false;
       viewChanges.hideMenu =  false;
       viewChanges.contextMenuOn =  false;
       viewChanges.contextMenuOff =  false;
+      viewChanges.dontShowAgainDialog =  false;
    };
 
 
@@ -1386,6 +1401,7 @@ emouseatlas.emap.tiledImageView = function() {
 	    //console.log("pointClickPoint.x %d, pointClickPoint.y %d",pointClickPoint.x, pointClickPoint.y);
 	    pointClickPoint = getMousePositionInImage({x:docX, y:docY});
 	    if(pointClickEditor) {
+               //mouseDownTarget = emouseatlas.emap.utilities.getTarget(e);
 	       if(movingPCPoint) {
 	          viewChanges.movingPCPoint = true;
 	       } else {
@@ -2245,6 +2261,9 @@ emouseatlas.emap.tiledImageView = function() {
       evt = e || window.event;
       //console.log(evt);
 
+      mouseDownTarget = emouseatlas.emap.utilities.getTarget(evt);
+      //console.log("getDataAtMouse target ",mouseDownTarget);
+
       buttons = emouseatlas.emap.utilities.whichMouseButtons(e);
       modifiers = emouseatlas.emap.utilities.whichModifierKeys(e);
       layer = getTopVisibleLayer();
@@ -2273,6 +2292,7 @@ emouseatlas.emap.tiledImageView = function() {
             measuringTarget: false,
             overlay:false,
             pointClick:false,
+            movingPCPoint:false,
             tooltip:false
 	 });
          RIGHT_CLICK = false;
@@ -2296,6 +2316,7 @@ emouseatlas.emap.tiledImageView = function() {
             measuringTarget: false,
             overlay:false,
             pointClick:false,
+            movingPCPoint:false,
             tooltip:false
          });
 	 return false;
@@ -2318,6 +2339,7 @@ emouseatlas.emap.tiledImageView = function() {
             measuringTarget: false,
             overlay:false,
             pointClick:false,
+            movingPCPoint:false,
             tooltip:false
          });
 	 return false;
@@ -2338,6 +2360,7 @@ emouseatlas.emap.tiledImageView = function() {
                measuringTarget: true,
                overlay:false,
                pointClick:false,
+               movingPCPoint:false,
                tooltip:false
             });
 	    measuring = false;
@@ -2354,6 +2377,7 @@ emouseatlas.emap.tiledImageView = function() {
                measuringTarget: false,
                overlay:false,
                pointClick:false,
+               movingPCPoint:false,
                tooltip:false
             });
 	    measuring = true;
@@ -2376,6 +2400,7 @@ emouseatlas.emap.tiledImageView = function() {
             measuringTarget: false,
             overlay:false,
             pointClick:false,
+            movingPCPoint:false,
             tooltip:false
          });
 	 return false;
@@ -2442,10 +2467,9 @@ emouseatlas.emap.tiledImageView = function() {
       // if we are in 'pointClick' mode as editor
       if(mode.name.toLowerCase() === "pointclick" && pointClickEditor) {
          //console.log("pointclick && pointClickEditor");
-         // and are about to drag a point (press shift + alt + left mouse)
-         //if(buttons.left && modifiers.shift && modifiers.alt) {
-         if(buttons.left && modifiers.shift) {
-	    //console.log("mouse down in image as point click editor, alt-shift pressed");
+         if(buttons.left && modifiers.shift && !modifiers.alt) {
+            // and are about to drag a point (press shift + left mouse)
+	    //console.log("mouse down in image as point click editor, shift pressed, alt not pressed");
 	    addMouseDragHandlers(e);
 
 	    x = emouseatlas.emap.utilities.getMouseX(evt);
@@ -2465,17 +2489,17 @@ emouseatlas.emap.tiledImageView = function() {
                measuringOrigin: false,
                measuringTarget: false,
                overlay:false,
-               pointClick:true,
-               editingPoint:true,
+               pointClick:false,
+               movingPCPoint:true,
                tooltip:false
             });
             return false;
-         //} else if(buttons.left && modifiers.ctrl && modifiers.alt) {
          } else if(buttons.left && modifiers.shift && modifiers.alt) {
-	    //console.log("doMouseDownInImage: about to delete marker");
+	    //console.log("doMouseDownInImage: ready to delete marker");
             return false;
 	 } else {
-	    //console.log("mouse down in image as point click editor");
+	    //console.log("mouse down in image as point click editor. editorPointClick %s",viewChanges.editorPointClick);
+	    //console.log("mouse down in image as point click editor, shift NOT pressed, alt NOT pressed");
             tileFrameContainerId = layer + "_tileFrameContainer";
             if(document.getElementById(tileFrameContainerId) !== 'undefined' && document.getElementById(tileFrameContainerId) !== null) {
                //tileFrameContainer = document.getElementById(tileFrameContainerId);
@@ -2492,6 +2516,7 @@ emouseatlas.emap.tiledImageView = function() {
                   measuringTarget: false,
                   overlay:false,
                   pointClick:true,
+                  movingPCPoint:false,
                   tooltip:false
                });
                return false;
@@ -3334,6 +3359,11 @@ emouseatlas.emap.tiledImageView = function() {
          supplementPointClick.initialise(getName());
       }
 
+      // initialise gudmapPointClick
+      if(gudmapPointClick) {
+         gudmapPointClick.initialise(getName());
+      }
+
       //dropListenerId = model.getProjectDivId();
       dropListenerId = "emapIIPViewerDiv";
       dropListener = $(dropListenerId);
@@ -3341,6 +3371,7 @@ emouseatlas.emap.tiledImageView = function() {
          emouseatlas.emap.drag.register({drag:"wlzIIPViewerIFrameContainer", drop:dropListenerId});
          emouseatlas.emap.drag.register({drag:"wlzIIPViewerInfoIFrameContainer", drop:dropListenerId});
          emouseatlas.emap.drag.register({drag:"wlzIIPViewerX3domHelpIFrameContainer", drop:dropListenerId});
+         emouseatlas.emap.drag.register({drag:"wlzIIPViewer3DIFrameContainer", drop:dropListenerId});
       }
 
       _debug = deb;
@@ -3551,6 +3582,7 @@ emouseatlas.emap.tiledImageView = function() {
       query = emouseatlas.emap.tiledImageQuery;
       pointClick = emouseatlas.emap.tiledImagePointClick;
       supplementPointClick = emouseatlas.emap.supplementPointClick;
+      gudmapPointClick = emouseatlas.emap.gudmapPointClick;
 
       model.register(emouseatlas.emap.tiledImageView);
 
@@ -3564,15 +3596,21 @@ emouseatlas.emap.tiledImageView = function() {
       if(supplementPointClick) {
          supplementPointClick.register(emouseatlas.emap.tiledImageView);
       }
+      if(gudmapPointClick) {
+         gudmapPointClick.register(emouseatlas.emap.tiledImageView);
+      }
        
       // this is a hack to fix the TPR demo
       stackofs = model.getWlzToStackOffset();
       //console.log("stackofs = ",stackofs);
 
+      origMax3dToShow = 5;
+      max3dToShow = origMax3dToShow;
+      SHOW_DONT_SHOW_AGAIN_DIALOG = true;
+
       if(_debug) console.log("View: completeInitialisation");
       completeInitialisation();
       if(_debug) console.log("View: done");
-      //window.open("http://www.hgu.mrc.ac.uk","test","");
    };
 
    //---------------------------------------------------------
@@ -3642,6 +3680,7 @@ emouseatlas.emap.tiledImageView = function() {
       //console.log("enter constructComponents");
 
       var params;
+      var project;
 
       if(typeof(tools.layerProperties) !== 'undefined') {
          params = {
@@ -4117,12 +4156,15 @@ emouseatlas.emap.tiledImageView = function() {
 	 imageDropDown = new emouseatlas.emap.supplementDropDown();
       }
 
+      project = model.getProject();
+      //console.log("tiledImageView project %s",project);
+
       if(plateDropDown) {
-	 params = { targetId: "toolContainerDiv", type: "Plate", noptions: 15};
+	 params = { project:project, targetId: "toolContainerDiv", type: "Plate", noptions: 15};
          plateDropDown.initialise(params);
       }
       if(imageDropDown) {
-	 params = { targetId: "toolContainerDiv", type: "Image"};
+	 params = { project:project, targetId: "toolContainerDiv", type: "Image"};
          imageDropDown.initialise(params);
       }
 
@@ -4151,6 +4193,10 @@ emouseatlas.emap.tiledImageView = function() {
          emouseatlas.emap.chooseItemMGI.initialise({project:"emap"});
       }
 
+      if(emouseatlas.emap.dontShowAgain) {
+         emouseatlas.emap.dontShowAgain.initialise({project:"emap"});
+      }
+
       if(emouseatlas.emap.chooseKaufmanItem) {
          emouseatlas.emap.chooseKaufmanItem.initialise({project:"emap"});
       }
@@ -4176,6 +4222,10 @@ emouseatlas.emap.tiledImageView = function() {
    var handleImageSizeChange = function(caller) {
       image.width = fullImage.width * scale.cur;
       image.height = fullImage.height * scale.cur;
+
+      image.width = Math.floor(image.width); // to fix tiling problem
+      image.height = Math.floor(image.height); // to fix tiling problem
+
       viewable.width = (viewport.width < image.width) ? viewport.width : image.width;
       viewable.height = (viewport.height < image.height) ? viewport.height : image.height;
       xfits = (viewport.width > image.width);
@@ -4497,6 +4547,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 console.log("image.width  %f, image.height %f",image.width, image.height);
 	 console.log("viewport.width  %f, viewport.height %f",viewport.width, viewport.height);
       }
+
       if (image.width > viewport.width) {
 	 vpleft = getViewportLeftEdge();
       }
@@ -4546,7 +4597,8 @@ emouseatlas.emap.tiledImageView = function() {
          If the floating point calculation of xtiles or ytiles is just more than an integer, then taking the Math.ceil gives the wrong value.
       */
       //var tol = 0.997;
-      var tol = 0.996;
+      //var tol = 0.996; // plate_39b at 1:2 magnification breaks
+      var tol = 0.997;
       var xtilesFP;
       var xtilesCeil;
       var xtilesDiff;
@@ -4562,12 +4614,14 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       xtilesFP = image.width / tileSize.width;
-      xtilesCeil = Math.ceil(xtilesFP);
-      xtilesDiff = xtilesCeil - xtilesFP;
+      xtiles = Math.ceil(xtilesFP);
+      //xtilesCeil = Math.ceil(xtilesFP);
+      //xtilesDiff = xtilesCeil - xtilesFP;
 
       ytilesFP = image.height / tileSize.height;
-      ytilesCeil = Math.ceil(ytilesFP);
-      ytilesDiff = ytilesCeil - ytilesFP;
+      ytiles = Math.ceil(ytilesFP);
+      //ytilesCeil = Math.ceil(ytilesFP);
+      //ytilesDiff = ytilesCeil - ytilesFP;
 
       if(_debug) {
 	 console.log("-------");
@@ -4580,19 +4634,23 @@ emouseatlas.emap.tiledImageView = function() {
 	 console.log("ytilesDiff %f ",ytilesDiff);
 	 console.log("-------");
       }
-      ytiles = Math.ceil(image.height / tileSize.height);
+
+      /*
       if(xtilesDiff > tol) {
-         //console.log("adjusting xtiles, tol %f, diff %f",tol,xtilesDiff);
-         xtiles = xtilesCeil - 1;
+         console.log("adjusting xtiles, tol %f, diff %f",tol,xtilesDiff);
+         //xtiles = xtilesCeil - 1;
+         xtiles = xtilesCeil;
       } else {
          xtiles = xtilesCeil;
       }
       if(ytilesDiff > tol) {
-         //console.log("adjusting ytiles, tol %f, diff %f",tol,ytilesDiff);
-         ytiles = ytilesCeil - 1;
+         console.log("adjusting ytiles, tol %f, diff %f",tol,ytilesDiff);
+         //ytiles = ytilesCeil - 1;
+         ytiles = ytilesCeil;
       } else {
          ytiles = ytilesCeil;
       }
+      */
 
       if(_debug) {
 	 console.log("xtiles ",xtiles);
@@ -4737,13 +4795,10 @@ emouseatlas.emap.tiledImageView = function() {
    // Colour values are obtained from colChooser
    var colourChange = function(from) {
 
-      var col;
       var lmnt;
+      var col;
 
-      //console.log("colourChange from %s",from);
-      if(colourChooser) {
-         col = colourChooser.getRGBA();
-      }
+      col = getRGBA();
 
       // this changes the colour of the patch in the tree
       if(elementIdToColour) {
@@ -4752,10 +4807,22 @@ emouseatlas.emap.tiledImageView = function() {
 	 lmnt.setStyles({
 	    background: 'rgba(' + col.red + ', ' + col.green + ', ' + col.blue + ', ' + col.alpha + ')'
 	 });
+	 model.updateTreeNodeColour(elementIdToColour, col);
          viewChanges.colour = true;
          notify("colourChange");
       }
 
+   };
+
+   //---------------------------------------------------------
+   // Colour values are obtained from colChooser
+   var colourUpdated = function(updated) {
+
+      if(updated) {
+         console.log("colourUpdated");
+         viewChanges.colour = true;
+         notify("colourChange");
+      }
 
    };
 
@@ -4979,6 +5046,12 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   // returns the object that was subject to mouseDown in image
+   var getMouseDownTarget = function() {
+      return mouseDownTarget;
+   };
+
+   //---------------------------------------------------------
    // returns the index array of (anatomy) items at clicked point
    var getCompObjIndxArr = function() {
       return compObjIndxArr;
@@ -5087,10 +5160,14 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   var setSelections = function (vals) {
-      //console.log("view.setSelections ",vals);
+   var setSelections = function (vals, from) {
+
+      var clearParams;
+      var wlist;
+
+      //console.log("view.setSelections from %s, mode %s ",from,mode.name,vals);
       treeSelections = vals;
-      var clearParams = {scale: false, distance: false, rotation: false, layer: layerNames[numLayers - 1]};
+      clearParams = {scale: false, distance: false, rotation: false, layer: layerNames[numLayers - 1]};
       clearTiles(clearParams);
       setTimeout("emouseatlas.emap.tiledImageView.requestImages('setSelections')", 10);
       //console.log("**** %s ****",mode.name);
@@ -5099,6 +5176,344 @@ emouseatlas.emap.tiledImageView = function() {
          viewChanges.selections = true;
          notify("setSelections");
       }
+
+      wlist = get3dWindowList();
+      if(wlist.length > 0) {
+         update3d();
+      }
+   };
+
+   //---------------------------------------------------------
+   var okToProceed3d = function () {
+
+      var wlist;
+
+      wlist = get3dWindowList();
+      if(wlist.length > 0) {
+         okToProceedUpdate3d();
+      } else {
+         okToProceedNew3d();
+      }
+   };
+
+   //---------------------------------------------------------
+   var new3d = function () {
+
+      var vals;
+      var len;
+
+      vals = getSelections();
+      len = vals.split("&sel").length;
+      if(max3dToShow === undefined || len <= max3dToShow) {
+         okToProceedNew3d();
+      } else {
+         if(SHOW_DONT_SHOW_AGAIN_DIALOG === true) {
+            viewChanges.dontShowAgainDialog = true;
+	    notify("new3d");
+	 }
+      }
+   };
+
+   //---------------------------------------------------------
+   var okToProceedNew3d = function () {
+
+      var vals;
+      var limited;
+      var wind;
+      var url;
+      var urlParams;
+      var name;
+      var web;
+      var meta;
+      var pars;
+
+      vals = getSelections();
+      //console.log("okToProceedNew3d vals ",vals);
+      limited = limit3dToShow(vals);
+      name = getNext3dWindowName();
+      web = model.getWebServer();
+      meta = model.getMetadataRoot();
+
+      url = web + "/eAtlasViewer_ema/html/threeD.php";
+
+      urlParams = getUrlParams(limited);
+      url = url + urlParams;
+
+      pars = 'scrollbars=no,toolbar=no,menubar=no';
+
+      wind = window.open(url,name,pars);
+      emouseatlas.emap.utilities.addEvent(wind, 'beforeunload', threeDUnloading, false);
+      register3dWindow(wind);
+
+   };
+
+   //---------------------------------------------------------
+   var new3dCallback = function (loaded) {
+
+      threeDLoaded = loaded;
+      //console.log("new3dCallback threeDLoaded %s",threeDLoaded);
+
+   };
+
+   //---------------------------------------------------------
+   var threeDUnloading = function () {
+
+      var wind;
+
+      wind = open3dWindows[open3dWindows.length -1];
+      if(wind.emouseatlas.emap.threeDAnatomy) {
+         //console.log("threeDUnloading");
+	 wind.emouseatlas.emap.threeDAnatomy.closeMARenderer();
+      }
+
+      // now remove it from the list (at the moment we only allow one 3d window)
+      unregister3dWindow(wind);
+   };
+
+   //---------------------------------------------------------
+   var update3d = function () {
+
+      var vals;
+      var len;
+
+      //console.log("update3d max3dToShow ",max3dToShow);
+
+      vals = getSelections();
+      len = vals.split("&sel").length;
+      if(max3dToShow !== undefined && len <= max3dToShow) {
+         //console.log("update3d okToProceedUpdate3d, len = ",len);
+         okToProceedUpdate3d();
+      } else {
+         if(SHOW_DONT_SHOW_AGAIN_DIALOG === true) {
+            viewChanges.dontShowAgainDialog = true;
+	    notify("update3d");
+	 } else {
+            if(max3dToShow === undefined) {
+               okToProceedUpdate3d();
+	    }
+	 }
+      }
+   };
+
+   //---------------------------------------------------------
+   var okToProceedUpdate3d = function () {
+
+      var vals;
+      var limited;
+      var wlist;
+      var wind;
+      var url;
+      var urlParams;
+      var name;
+      var web;
+      var meta;
+      var pars;
+
+      vals = getSelections();
+      limited = limit3dToShow(vals);
+
+      urlParams = getUrlParams(limited);
+      //console.log("okToProceedUpdate3d urlParams ",urlParams);
+
+      wlist = get3dWindowList();
+      if(wlist === null || wlist === undefined || wlist.length === 0) {
+	 return false;
+      }
+
+      // there should only be one open 3d window
+      wind = wlist[wlist.length -1];
+
+      wind.emouseatlas.emap.threeDAnatomy.updateComponents(urlParams);
+
+   };
+
+   //---------------------------------------------------------
+   // a bit confusing I know, but if this is true
+   // the dialog is shown (if too many surfaces are about to be displayed)
+   //---------------------------------------------------------
+   var setShowDontShowAgainDialog = function (show) {
+
+      SHOW_DONT_SHOW_AGAIN_DIALOG = show;
+
+   };
+
+   //---------------------------------------------------------
+   var getShowDontShowAgainDialog = function () {
+
+      return SHOW_DONT_SHOW_AGAIN_DIALOG;
+
+   };
+
+   //---------------------------------------------------------
+   // until the interface supports setting the max number,
+   // just reset it to the original value.
+   //---------------------------------------------------------
+   var setMax3dToShow = function (max) {
+
+      max3dToShow = (max === undefined) ? max : origMax3dToShow;;
+      //console.log("setMax3dToShow ",max3dToShow);
+
+   };
+
+   //---------------------------------------------------------
+   var getMax3dToShow = function () {
+
+      return max3dToShow;
+
+   };
+
+   //---------------------------------------------------------
+   var getOrigMax3dToShow = function () {
+
+      return origMax3dToShow;
+
+   };
+
+   //---------------------------------------------------------
+   var limit3dToShow = function (vals) {
+
+      var valArr;
+      var tag;
+      var limited;
+      var num;
+
+      //console.log("limit3dToShow vals ",vals);
+
+      if(vals === "") {
+         return vals;
+      }
+
+      if(max3dToShow === undefined) {
+         //console.log("limit3dToShow returning as max3dToShow ",max3dToShow);
+         return vals;
+      }
+
+      valArr = vals.split(/&sel=/);
+      valArr.splice(0,1); // we don't want the empty string which is the first array element.
+      //console.log("limit3dToShow valArr ",valArr);
+
+      tag = "&sel=";
+      limited = "";
+
+      num = (valArr.length < max3dToShow) ? valArr.length : max3dToShow;
+
+      for(i=0; i<num; i++) {
+         limited += tag + valArr[i];
+      }
+
+      //console.log("limit3dToShow limited ",limited);
+      return limited;
+   };
+
+   //---------------------------------------------------------
+   //  we use EMAPA id to access anatomy info from database
+   //---------------------------------------------------------
+   var getUrlParams = function (vals) {
+
+      var urlParams;
+      var valArr;
+      var type;
+      var domainId;
+      var info;
+      var fbId;
+      var emapa;
+      var indx;
+      var id;
+      var entry;
+      var entryArr;
+      var len;
+      var len2;
+      var i,j;
+
+      urlParams = "?comps=";
+
+      valArr = vals.split(/&sel=/);
+      //console.log("getUrlParams vals %s, valArr ",vals,valArr);
+      valArr.splice(0,1); // we don't want the empty string which is the first array element.
+
+      len = valArr.length;
+      for(i=0; i<len; i++) {
+         entry = valArr[i];
+	 entryArr = entry.split(",");
+	 domainId = entryArr[0];
+	 info = getInfoFromTreeData(domainId);
+	 fbId = info.fbId;
+	 if(fbId.length > 1) {
+	    emapa = fbId[1];
+	 } else {
+	    continue;
+	 }
+
+	 indx = emapa.indexOf(":");
+         id = emapa.substr(indx + 1*1);
+	 urlParams += id;
+	 if(i < len-1) {
+	    urlParams += ",";
+	 }
+
+      }
+
+      //console.log("getUrlParams: ",urlParams);
+      return urlParams;
+
+   };
+
+   //---------------------------------------------------------------
+   var getInfoFromTreeData = function (key) {
+
+      var layer;
+      var treeData;
+      var resultNode;
+      var name;
+      var fbId;
+      var data;
+
+      layer = emouseatlas.emap.tiledImageView.getCurrentLayer();
+      treeData = emouseatlas.emap.tiledImageModel.getTreeData(layer);
+
+      resultNode = emouseatlas.emap.utilities.iterativeDeepeningDepthFirstSearch(treeData[0], key);
+      //console.log("resultNode ",resultNode);
+
+      if(resultNode === undefined) {
+	    alert("Sorry, I couldn't find data for domain ",key);
+         return undefined;
+      } else {
+         name = resultNode.property.name;
+         fbId = resultNode.property.fbId;
+         //console.log("name ",name);
+         //console.log("fbId ",fbId);
+         data = {name: name, fbId: fbId}
+      }
+      return data;
+   };
+
+   //---------------------------------------------------------
+   var register3dWindow = function (wind) {
+      //console.log(wind);
+      open3dWindows[open3dWindows.length] = wind;
+   };
+
+   //---------------------------------------------------------
+   // hopefully, this will be called when the window is closed
+   //---------------------------------------------------------
+   var unregister3dWindow = function (wind) {
+
+      var len;
+      var i;
+
+      len = open3dWindows.length;
+      for(i=0; i<len; i++) {
+         entry = open3dWindows[i];
+	 if(entry == wind) {
+            open3dWindows.splice(i, 1);
+	    break;
+	 }
+      }
+   };
+
+   //---------------------------------------------------------
+   var get3dWindowList = function () {
+      return open3dWindows;
    };
 
    //---------------------------------------------------------
@@ -5321,6 +5736,34 @@ emouseatlas.emap.tiledImageView = function() {
       notify("hideViewerHelp");
    };
 
+   /* we are not showing 3d in an IFrame (yet) but don't delete this
+   //---------------------------------------------------------
+   var show3d = function () {
+      //console.log("show3d");
+      var closeDiv = document.getElementById("wlzIIPViewer3dIFrameCloseDiv");
+      var div = document.getElementById("wlzIIPViewer3dIFrameContainer");
+      div.style.visibility = "visible";
+      if(closeDiv) {
+	 util.addEvent(closeDiv, 'click', hide3d, false);
+      }
+      viewChanges.show3d = true;
+      notify("show3d");
+   };
+   
+   //---------------------------------------------------------
+   var hide3d = function () {
+      //console.log("hide3d");
+      var closeDiv = document.getElementById("wlzIIPViewer3dIFrameCloseDiv");
+      var div = document.getElementById("wlzIIPViewer3dIFrameContainer");
+      div.style.visibility = "hidden";
+      if(closeDiv) {
+	 util.removeEvent(closeDiv, 'click', hide3d, false);
+      }
+      viewChanges.hide3d = true;
+      notify("hide3d");
+   };
+   */
+
    //---------------------------------------------------------
    var showX3domHelpFrame = function () {
       viewChanges.showX3domHelp = true;
@@ -5513,6 +5956,15 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
+   var getNext3dWindowName = function () {
+      if(threeDId === undefined) {
+         threeDId = 0;
+      }
+      threeDId = 1*threeDId + 1*1;
+      return "threeDPopup_" + threeDId;
+   };
+
+   //---------------------------------------------------------
    var getQueryResults = function (url) {
       var windowName = getNextWindowName();
       var windowPars = 'height=700,width=1030,scrollbars=yes,toolbar=yes,menubar=yes';
@@ -5589,6 +6041,7 @@ emouseatlas.emap.tiledImageView = function() {
       getOpacity: getOpacity,
       setOpacity: setOpacity,
       colourChange: colourChange,
+      colourUpdated: colourUpdated,
       setElementToColour: setElementToColour,
       getElementToColour: getElementToColour,
       getRGBA: getRGBA,
@@ -5607,6 +6060,7 @@ emouseatlas.emap.tiledImageView = function() {
       stopMeasuring: stopMeasuring,
       getSelections: getSelections,
       setSelections: setSelections,
+      new3d: new3d,
       getIndexArray: getIndexArray,
       setLayerVisibility: setLayerVisibility,
       getLayerVisibility: getLayerVisibility,
@@ -5636,6 +6090,7 @@ emouseatlas.emap.tiledImageView = function() {
       showMarkerPopupIFrame: showMarkerPopupIFrame,
       hideMarkerPopupIFrame: hideMarkerPopupIFrame,
       getInitialPointClickPoint: getInitialPointClickPoint,
+      getMouseDownTarget: getMouseDownTarget,
       getDataAtMouse: getDataAtMouse,
       getDebugPoint: getDebugPoint,
       //getDisplayPositionGivenImgCoords: getDisplayPositionGivenImgCoords,
@@ -5662,7 +6117,20 @@ emouseatlas.emap.tiledImageView = function() {
       launchEquivalentSection: launchEquivalentSection,
       goToDownloadPage: goToDownloadPage,
       updateLocatorPosition: updateLocatorPosition,
-      contextMenuHighlight: contextMenuHighlight
+      contextMenuHighlight: contextMenuHighlight,
+      getNextWindowName: getNextWindowName,
+      getNext3dWindowName: getNext3dWindowName,
+      register3dWindow: register3dWindow,
+      new3dCallback: new3dCallback,
+      okToProceed3d: okToProceed3d,
+      update3d: update3d,
+      setShowDontShowAgainDialog: setShowDontShowAgainDialog,
+      getShowDontShowAgainDialog: getShowDontShowAgainDialog,
+      getMax3dToShow: getMax3dToShow,
+      setMax3dToShow: setMax3dToShow,
+      getOrigMax3dToShow: getOrigMax3dToShow,
+      get3dWindowList: get3dWindowList,
+      resetViewChanges: resetViewChanges
    };
 
 }(); // end of module tiledImageView

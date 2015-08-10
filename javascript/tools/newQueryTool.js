@@ -85,6 +85,15 @@ emouseatlas.emap.newQueryTool = function() {
       dropTargetId = model.getProjectDivId();
       trgt = "emapIIPViewerDiv"; // doesn't allow dragging?
 
+      this.emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true';
+      this.mgiUrl = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
+      this.mgiUrl2 = '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+      this.mgiUrl3 = "http://www.informatics.jax.org/gxd/structure/";
+      this.gudmapUrl = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20';
+      this.gudmapUrl2 = '%20';
+
+      this.emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+
       mu = ' \u03BCm';
       createElements();
       emouseatlas.emap.drag.register({drag:"newQueryToolContainer", drop:dropTargetId});
@@ -878,14 +887,13 @@ emouseatlas.emap.newQueryTool = function() {
             if(this.project.toLowerCase() === "gudmap") {
 	       //anatStr = this.getAnatStr();
 	       //anatStr = "renal vesicle";
-               //url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20' + anatStr + '%20';
+               //url = this.gudmapUrl + anatStr + this.gudmapUrl2;
 	    } else {
-               //url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
-               url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+               url = this.emageUrl + emapid + this.emageUrl2; 
 	    }
 	 } else if(type === 1) {
 	    emapIdNum = emapId.substring(5);
-	    url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' + emapIdNum + '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+	    url = this.mgiUrl + emapIdNum + this.mgiUrl2;
          } else {
 	    return false;
 	 }
@@ -1139,10 +1147,9 @@ emouseatlas.emap.newQueryTool = function() {
 
       if(emage_cb) {
 	 if(project.toLowerCase() === "gudmap") {
-	    url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=';
+	    url = this.gudmapUrl;
 	 } else {
-	    url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
-	    //url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	    url = this.emageUrl;
 	 }
 	 first = true;
 
@@ -1174,7 +1181,7 @@ emouseatlas.emap.newQueryTool = function() {
 	 }
 
 	 if(project.toLowerCase() !== "gudmap") {
-	    url += '&exactmatchstructures=true&includestructuresynonyms=true';
+	    url += this.emageUrl2;
 	 }
 	 //console.log(url);
 	 view.getQueryResults(url);
@@ -1183,7 +1190,7 @@ emouseatlas.emap.newQueryTool = function() {
       // we are only able to use 1 term for an MGI query
       // so we get the user to choose which one to use
       if(mgi_cb) {
-         url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
+         url = this.mgiUrl;
 
 	 //setQueryToolVisible(false);
 	 query.chooseItem();
@@ -1206,7 +1213,7 @@ emouseatlas.emap.newQueryTool = function() {
 	    break;
          }
 */
-         //url += '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+         //url += this.mgiUrl2;
          //console.log(url);
          //view.getQueryResults(url);
       }

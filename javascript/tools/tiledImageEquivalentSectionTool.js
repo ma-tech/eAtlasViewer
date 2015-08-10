@@ -306,6 +306,7 @@ var tiledImageEquivalentSectionTool = new Class ({
       var section = this.calcEquivSection();
       var url = this.getSectionUrl();
       var fullUrl = url + '?section=' + section;
+      //console.log("tiledImageEquivalentSectionTool fullUrl %s",fullUrl);
       this.view.launchEquivalentSection(fullUrl);
    },
 
@@ -323,11 +324,9 @@ var tiledImageEquivalentSectionTool = new Class ({
       var section;
 
       offset = this.model.getEquivSectionOffset();
-      //console.log("calcEquivSection: offset ",offset);
       HRPoint = this.view.getHRSectionPoint();
       fxPt = this.model.getThreeDInfo().fxp;
       sectionOrderReversed = this.model.getSectionOrderReversed();
-      section;
 
       //console.log("calcEquivSection: HRPoint ",HRPoint);
       //console.log("calcEquivSection: fxPt ",fxPt);
@@ -337,7 +336,10 @@ var tiledImageEquivalentSectionTool = new Class ({
       } else {
          section = Math.abs(this.boundingBox.z.max - HRPoint.z + offset);
       }
-      //console.log("calcEquivSection: section ",section);
+
+      //console.log("calcEquivSection: offset ",offset);
+      //console.log("calcEquivSection: sectionOrderReversed %s",sectionOrderReversed);
+      //console.log("calcEquivSection: section  %d",section);
       return section;
    },
 
@@ -364,10 +366,10 @@ var tiledImageEquivalentSectionTool = new Class ({
       reg = /(^.*)(EMA[0-9][0-9]*).*(\/)/;  // case sensitive regexp for which remembers 3 groups
       path1 = metadataRoot.replace(reg, '$1$2$3');
 
-      //console.log("getSectionUrl: path1 ",path1);
+      //console.log("getSectionUrl: metadataRoot %s, path1 %s",metadataRoot,path1);
 
       // hack to sort out equivalent section problem with anatomy models
-      if(path1.indexOf("/anatomy/")) {
+      if(path1.indexOf("/anatomy/") !== -1) {
          reg = /anatomy/;
       } else {
          reg = /wlz/;
@@ -377,7 +379,8 @@ var tiledImageEquivalentSectionTool = new Class ({
       len = path2.length;
       url = webServer + path2.substring(0,len-1) + '.php';
 
-      //console.log(url);
+      //console.log("getSectionUrl: path1 %s, path2 %s, len %d",path1,path2,len);
+      //console.log("tiledImageEquivalentSectionTool.getSectionUrl: url %s",url);
       return url;
    },
 

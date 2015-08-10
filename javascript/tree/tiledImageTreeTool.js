@@ -129,10 +129,16 @@ var tiledImageTreeTool = new Class ({
       var selectAllButtonText;
       var clearAllButtonDiv;
       var clearAllButtonText;
+      var threeDButtonDiv;
+      var threeDButtonText;
 
       var systemChkbxDiv;
       var systemChkbx;
       var systemChkbxLabel;
+
+      var threeDChkbxDiv;
+      var threeDChkbx;
+      var threeDChkbxLabel;
 
       //----------------------------------------
       // container for treeTool title
@@ -194,6 +200,23 @@ var tiledImageTreeTool = new Class ({
       emouseatlas.emap.utilities.addButtonStyle("treeClearAllButtonDiv");
 
       //----------------------------------------
+      // 3d button
+      //----------------------------------------
+      threeDButtonDiv = new Element('div', {
+         'id': 'tree3dButtonDiv',
+	 'class': 'treeButtonDiv threeD'
+      });
+      threeDButtonDiv.inject(treeControlContainer, 'inside');
+      threeDButtonText = new Element('div', {
+         'id': 'tree3dButtonText',
+	 'class': 'treeButtonText threeD'
+      });
+      threeDButtonText.inject(threeDButtonDiv, 'inside');
+      threeDButtonText.appendText('3d window');
+
+      emouseatlas.emap.utilities.addButtonStyle("tree3dButtonDiv");
+
+      //----------------------------------------
       // System checkbox
       //----------------------------------------
 
@@ -214,12 +237,42 @@ var tiledImageTreeTool = new Class ({
 	    'checked': false
 	    });
 
+/*
       if(this.systems) {
          systemChkbxDiv.inject(treeControlContainer, 'inside');
          systemChkbx.inject(systemChkbxDiv, 'inside');
          systemChkbxLabel.inject(systemChkbxDiv, 'inside');
          systemChkbxLabel.set('text', 'Systems');
       }
+*/
+
+      //----------------------------------------
+      // 3d checkbox
+      //----------------------------------------
+      /*
+
+      threeDChkbxDiv = new Element('div', {
+	    'id': 'threeDChkbxDiv',
+	    'class': 'threeDChkbxDiv'
+	    });
+      threeDChkbxLabel = new Element('label', {
+	    'id': 'threeDChkbxLabel',
+	    'name': 'threeDChkbxLabel',
+	    'class': 'threeDChkbxLabel'
+	    });
+      threeDChkbx = new Element('input', {
+	    'id': 'threeDChkbx',
+	    'name': 'threeDChkbx',
+	    'class': 'threeDChkbx',
+	    'type': 'checkbox',
+	    'checked': false
+	    });
+
+      threeDChkbxDiv.inject(treeControlContainer, 'inside');
+      threeDChkbx.inject(threeDChkbxDiv, 'inside');
+      threeDChkbxLabel.inject(threeDChkbxDiv, 'inside');
+      threeDChkbxLabel.set('text', '3d');
+      */
 
       //----------------------------------------
       // container for the tree
@@ -257,26 +310,59 @@ var tiledImageTreeTool = new Class ({
       }.bind(this));
 
       clearAllButtonDiv.addEvent('click', function(){
-         //this.treeComponent.root.showAllDomains(false);
          this.treeComponent.root.clearAll();
-         this.view.setSelections("");
+         this.view.setSelections("", "clearAllButton");
       }.bind(this));
 
-      systemChkbxDiv.addEvent('change', function(){
-         this.treeComponent.setShowSystems(systemChkbx.checked);
+      threeDButtonDiv.addEvent('click', function(){
+         this.treeComponent.new3d();
       }.bind(this));
+
+      if(systemChkbxDiv) {
+	 systemChkbxDiv.addEvent('change', function(){
+	    this.treeComponent.setShowSystems(systemChkbx.checked);
+	 }.bind(this));
+      }
+
+      if(threeDChkbxDiv) {
+	 threeDChkbxDiv.addEvent('change', function(){
+	    this.treeComponent.showThreeD(threeDChkbx.checked);
+	 }.bind(this));
+      }
 
    }, // createElements
 
    //---------------------------------------------------------------
    modelUpdate: function(modelChanges) {
 
-      //console.log("enter tiledImageOpacityTool modelUpdate:",modelChanges);
+      var col;
+      var colArr;
+      var id;
+      var bare_id;
+      var treeData;
+      var checkedList;
+      var node;
+      var obj;
 
-      //if(modelChanges.initial === true) {
-      //}
+      if(modelChanges.treeNodeColour === true) {
+         //treeData = this.model.getTreeData(this.layer);
+	 col = this.view.getRGBA();
+	 colArr = [];
+	 colArr[0] = col.red.toString();
+	 colArr[1] = col.green.toString();
+	 colArr[2] = col.blue.toString();
+	 colArr[3] = (parseInt(col.alpha * 255)).toString() ;
+	 id = this.view.getElementToColour();
+	 bare_id = id.replace(/pic_/,'').trim();
+         //console.log("treeTool.modelUpdate id ",bare_id);
+	 checkedList = this.treeComponent.root.getCheckedNodes();
+	 node = this.treeComponent.root.getNodeById(bare_id);
+         //console.log("treeTool.modelUpdate node.color ",node.color);
+	 node.color = colArr;
+         //console.log("treeTool.modelUpdate node.color now ",node.color);
+	 this.treeComponent.showSelected(bare_id);
+      }
 
-      //console.log("exit tiledImageOpacityTool modelUpdate:");
    }, // modelUpdate
 
    //---------------------------------------------------------------
@@ -318,15 +404,57 @@ var tiledImageTreeTool = new Class ({
          treeWrapper.setStyle('height', (hght-tcTop-2) + 'px');
       }
 
+	 /*
       if(viewChanges.colour === true) {
+         //console.log("viewUpdate: colour %s",viewChanges.colour);
 	 id = this.view.getElementToColour();
+         //console.log("viewUpdate: elementToColour id %s",id);
 	 id = id.replace(/pic_/,'');
 	 rgba = this.view.getRGBA();
 	 this.treeComponent.root.changeImageElementColour(id, rgba);
 	 this.treeComponent.showSelected(id);
       }
+	 */
+
+      if(viewChanges.hide3d === true) {
+         var chk = document.getElementById("threeDChkbx");
+	 chk.checked = false;
+         //this.showIndexDataInImage();
+      }
 
    }, // viewUpdate
+
+   //---------------------------------------------------------
+   setCheckedNodes: function (ids) {
+
+      var idArr;
+      var id;
+      var node;
+      var nodeId;
+      var chkbx;
+      var chkbxId;
+      var len;
+      var i;
+ 
+      idArr = ids.split(",");
+ 
+      len = idArr.length;
+      for(i=0; i<len; i++) {
+         id = idArr[i];
+	 //console.log("setCheckedNodes: id ",id);
+         node = this.treeComponent.root.getNodeById(id);
+	 //console.log("setCheckedNodes: state ",node.state);
+
+         if(node) {
+            if (node.domainId !== undefined && node.domainId != ""){
+	       chkbxId = "cb_" + id;
+               chkbx = $(chkbxId);
+	       chkbx.checked = true;
+	       node.state.checked = true;
+            }
+         }
+      }
+   },
 
    //--------------------------------------------------------------
    setToolTip: function (text) {

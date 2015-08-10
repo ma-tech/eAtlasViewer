@@ -54,6 +54,7 @@ emouseatlas.emap.pointClickDropDown = function() {
    var model;
    var view;
    var util;
+   var project;
    var trgt;
    var type;
    var typeLC;
@@ -78,16 +79,30 @@ emouseatlas.emap.pointClickDropDown = function() {
 
    var initialise = function(params) {
 
+      //console.log(params);
+
       model = emouseatlas.emap.tiledImageModel;
       view = emouseatlas.emap.tiledImageView;
-      pointClick = emouseatlas.emap.tiledImagePointClick;
       util = emouseatlas.emap.utilities;
-
-      //console.log(params);
 
       model.register(this);
       view.register(this);
-      pointClick.register(this);
+
+      project = (params.project === undefined) ? "kaufman_atlas" : params.project;
+      //console.log("pointClickDropDown.initialise project %s",project);
+
+      if(project === "kaufman_atlas") {
+         pointClick = emouseatlas.emap.tiledImagePointClick;
+      } else if(project === "kaufman_supplement") {
+         pointClick = emouseatlas.emap.supplementPointClick;
+      }
+      //console.log("pointClickDropDown.initialise pointClick ",pointClick);
+
+      if(pointClick) {
+         pointClick.register(this);
+      } else {
+         return false;
+      }
 
       dropTargetId = model.getProjectDivId();
       trgt = params.targetId;
@@ -101,7 +116,7 @@ emouseatlas.emap.pointClickDropDown = function() {
       nOptionsBeforeSelectScroll = (params.noptions === undefined) ? 20 : params.noptions;
 
       // at the moment we don't have the first 4 plates in the Kaufman book
-      skipEarlyPlates = 3;
+      skipEarlyPlates = (project === "kaufman_atlas") ? 3 : 0;
 
 
    }; // initialise
@@ -120,8 +135,7 @@ emouseatlas.emap.pointClickDropDown = function() {
       var locator;
       var locatorT;
 
-      //console.log("pointClickDropDown.createElements type %s",typeLC);
-
+      //console.log("pointClickDropDown.createElements");
 
       //----------------------------------------
       // the overall container
@@ -269,7 +283,7 @@ emouseatlas.emap.pointClickDropDown = function() {
 
       return false;
 
-   }; // doDropDownMouseDown
+   }; // doDropDownMouseUp
 
    //---------------------------------------------------------------
    // this is needed to set the size of the select which provokes a scroll bar
@@ -333,7 +347,7 @@ emouseatlas.emap.pointClickDropDown = function() {
       var ddown;
       var regexp;
       var webserver;
-      var metadata;
+      var absMetadata;
       var pindx;
       var val;
       var ival;
@@ -354,20 +368,21 @@ emouseatlas.emap.pointClickDropDown = function() {
       regexp = new RegExp("plate", 'i')
       if(dropDownId.match(regexp) != null) {
 	 webserver = model.getWebServer();
-	 metadata = model.getMetadataRoot();
-	 //console.log("webserver %s, metadata %s",webserver,metadata);
-	 pindx = metadata.lastIndexOf("plate");
-	 metadata = metadata.substring(0, pindx);
-	 // start temporary hack for beta release of Kaufman Atlas
-	 //metadata = metadata.replace("ka", "ema");
-	 // finish temporary hack for beta release of Kaufman Atlas
+	 absMetadata = model.getAbsoluteMetadataRoot();
+	 //console.log("absMetadata %s",absMetadata);
+
+	 pindx = absMetadata.lastIndexOf("plate");
+	 absMetadata = absMetadata.substring(0, pindx);
+	 //console.log("absMetadata now %s",absMetadata);
 	 val = ddown.options[indx].text;
 	 ival = parseInt(val);
 	 if(ival < 10) {
 	    val = "0" + val;
 	 }
-	 //console.log("%s%s%s.php",webserver,metadata,val);
-	 url = webserver + metadata + "plate_" + val + ".php";
+	 url = webserver + absMetadata + "plate_" + val + ".php";
+	 if(model.isEditor()) {
+	    url += "?editor";
+	 }
 	 //console.log("doDropDownChanged plate url %s",url);
 	 window.location.href = url;
 	 return false;
@@ -387,10 +402,14 @@ emouseatlas.emap.pointClickDropDown = function() {
    //---------------------------------------------------------------
    var modelUpdate = function(modelChanges) {
 
+      //console.log("modelUpdate");
+
    }; // modelUpdate
 
    //---------------------------------------------------------------
    var viewUpdate = function(viewChanges) {
+
+      //console.log("viewUpdate");
 
       //.................................
       if(viewChanges.toolbox === true) {
@@ -406,8 +425,11 @@ emouseatlas.emap.pointClickDropDown = function() {
    //---------------------------------------------------------------
    var pointClickUpdate = function(pointClickChanges) {
 
-      if(pointClickChanges.plateList) {
+      //console.log("pointClickUpdate");
+
+      if(pointClickChanges.ready) {
          plateArr = pointClick.getPlateList();
+	 //console.log("pointClickUpdate plateArr ",plateArr);
          createElements();
          initDropDown()
       }
@@ -424,6 +446,8 @@ emouseatlas.emap.pointClickDropDown = function() {
       var indx;
       var len;
       var i;
+
+      //console.log("pointClickDropDown.initDropDown");
 
       if(typeLC === "plate") {
          data = pointClickImgData;

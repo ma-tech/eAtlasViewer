@@ -922,6 +922,27 @@ if(!emouseatlas.emap.utilities) {
 	 }
       },
 
+      //------------------------------------------------------------------------------------------
+      // from    http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
+      //------------------------------------------------------------------------------------------
+      // example 1:
+      // Sort an array of home objects by price high to low
+      //     homes.sort(sort_by('price', true, parseInt));
+      // example 2:
+      // Sort an array of home objects by city, case-insensitive, A-Z
+      //     homes.sort(sort_by('city', false, function(a){return a.toUpperCase()}));
+      //------------------------------------------------------------------------------------------
+      sort_by: function(field, reverse, primer) {
+
+         var key = primer ?  function(x) {return primer(x[field])} : function(x) {return x[field]};
+
+         reverse = !reverse ? 1 : -1;
+
+         return function (a, b) {
+            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+         } 
+      },
+
       //---------------------------------------------------------
       /**
        *   Removes selected entry in arrays of markers.
@@ -991,6 +1012,7 @@ if(!emouseatlas.emap.utilities) {
       //---------------------------------------------------------
       /**
        *   Checks if array contains given element
+       *   (Note: it doesn't work for arrays containing objects)
        */
       arrayContains: function(arr, lmnt) {
 
@@ -1006,6 +1028,21 @@ if(!emouseatlas.emap.utilities) {
 	    }
 	 }
 	 return ret;
+      },
+
+      //---------------------------------------------------------
+      /**
+       *   faster function which checks if array contains given element
+       *   (Note: it doesn't work for arrays containing objects)
+       */
+      contains: function (a, lmnt) {
+         var i = a.length;
+	 while (i--) {
+	    if (a[i] === lmnt) {
+	       return true;
+	    }
+	 }
+	 return false;
       },
 
       //---------------------------------------------------------
@@ -1381,6 +1418,25 @@ if(!emouseatlas.emap.utilities) {
 
       //---------------------------------------------------------
       /**
+       *   Converts hexnum to a decimal normalised by norm.
+       */
+      hexToNormDec: function(hexnum, norm, places) {
+         
+	 //console.log("hexToNormDec: hexnum %s, norm %d",hexnum, norm);
+
+	 var intnum;
+	 var decnum;
+	 var num;
+
+	 intnum = parseInt(hexnum, 16);
+	 decnum = intnum / norm;
+	 num = (places === undefined || isNaN(places)) ? 2 : parseInt(places);
+
+	 return decnum.toFixed(num);
+      },
+
+      //---------------------------------------------------------
+      /**
        *  Returns a hex colour string given RGB values
        */
       //-----------------------------------------------------
@@ -1423,7 +1479,8 @@ if(!emouseatlas.emap.utilities) {
          //console.log("extractNumbersFromString called from %s",from);
          //console.log(typeof(str));
          if(typeof(str) !== "string") {
-   	 return str;
+	    console.log("extractNumbersFromString: argument isn't a string!");
+            return str;
          }
    
          // from http://stackoverflow.com/questions/18712347/how-to-get-numeric-value-from-string
@@ -1480,6 +1537,68 @@ if(!emouseatlas.emap.utilities) {
       //-----------------------------------------------------
       debugOutput: function (msg) {
          console.log(msg);
+      },
+
+      //---------------------------------------------------------------
+      // Searches treeData for an object whose domainId = 'goal'
+      // root --> treeData[0]
+      // goal --> key
+      //---------------------------------------------------------------
+      iterativeDeepeningDepthFirstSearch: function (root, goal) {
+   
+         var depth;
+         var result;
+   
+         depth = 0;
+         result = undefined;
+   
+         while(result === undefined && depth < 10) {
+            result = emouseatlas.emap.utilities.depthLimitedSearch(root, goal, depth);
+            if(result !== undefined) {
+               //console.log("found domain #%d at depth %d",goal,depth);
+               return result;
+            }
+            depth = Number(depth + 1*1);
+         }
+   
+      },
+   
+      //---------------------------------------------------------------
+      depthLimitedSearch: function (node, goal, depth) {
+   
+         var result;
+         var property;
+         var children;
+         var child;
+         var len;
+         var i;
+   
+         result = undefined;
+   
+         if(depth === 0) {
+   	 if(node.property) {
+   	    property = node.property;
+   	    if(property.domainId) {
+   	       if(property.domainId === goal) {
+   	          return node;
+   	       }
+   	    }
+   	 }
+         } else if(depth > 0) {
+   	 children = node.children;
+   	 len = children.length;
+   	 //this.nameTheseKids(children)
+   	 for(i=0; i<len; i++) {
+   	    child = children[i];
+   	    result = emouseatlas.emap.utilities.depthLimitedSearch(child, goal, depth - 1);
+   	    if(result !== undefined) {
+   	       return result;
+   	    }
+   	 }
+         } else {
+   	 //console.log("couldn't find node with domainId %s",goal);
+   	 return undefined;
+         }
       }
 
    }; // emouseatlas.emap.utilities

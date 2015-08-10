@@ -90,6 +90,10 @@
    border-right: solid 1px #555;
    border-bottom: solid 1px #555;
 }
+.treeButtonDiv.threeD {
+   float: right;
+   right: 4px;
+}
 
 #resetButtonDiv {
    width: 30px;
@@ -102,6 +106,9 @@
    padding: 0 0 0 5px;
    color: #000;
    font-size: 10px;
+}
+.treeButtonText.threeD {
+   left: 0px;
 }
 
 #systemChkbxDiv {
@@ -126,6 +133,36 @@
    font-size: 10px;
 }
 #systemChkbx {
+   position: relative;
+   float: left;
+   top: -2px;
+   left: -2px;
+   padding: 0;
+   margin: 0;
+}
+
+#threeDChkbxDiv {
+   position: relative;
+   float: left;
+   top: 6px;
+   left: 19px;
+   padding: 0;
+   margin: 0;
+   height: 16px;
+   border: none;
+}
+#threeDChkbxLabel {
+   position: relative;
+   float: left;
+   top: 1px;
+   left: 1px;
+   width: 50px;
+   height: 16px;
+   padding: 0,0,0,3px;
+   margin: 0;
+   font-size: 10px;
+}
+#threeDChkbx {
    position: relative;
    float: left;
    top: -2px;

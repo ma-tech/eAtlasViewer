@@ -117,6 +117,15 @@ var queryTool = new Class ({
       this.layerNames = [];
       this.termData = [];
 
+      this.emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true';
+      this.mgiUrl = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
+      this.mgiUrl2 = '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+      this.mgiUrl3 = "http://www.informatics.jax.org/gxd/structure/";
+      this.gudmapUrl = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20';
+      this.gudmapUrl2 = '%20';
+
+      this.emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+
       this.createElements();
       this.initDummyForm();
 
@@ -700,15 +709,14 @@ var queryTool = new Class ({
 	       /*
 	       //anatStr = this.getAnatStr();
 	       anatStr = "renal vesicle";
-               url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20' + anatStr + '%20';
+               url = this.gudmapUrl + anatStr + this.gudmapUrl2;
 	       */
 	    } else {
-               url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
-               //url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=' + emapId + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+               url = this.emageUrl + emapId + this.emageUrl2;
 	    }
 	 } else if(type === 1) {
 	    emapIdNum = emapId.substring(5);
-	    url = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=' + emapIdNum + '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
+	    url = this.mgiUrl + emapIdNum + this.mgiUrl2;
          } else {
 	    return false;
 	 }
@@ -799,7 +807,8 @@ var queryTool = new Class ({
       for(i=0; i<len; i++) {
          key = indxArr[i];
          //console.log("key ",key);
-         resultNode = this.iterativeDeepeningDepthFirstSearch(treeData[0], key);
+         //resultNode = this.iterativeDeepeningDepthFirstSearch(treeData[0], key);
+         resultNode = emouseatlas.emap.utilities.iterativeDeepeningDepthFirstSearch(treeData[0], key);
          //console.log("resultNode ",resultNode);
    
          if(resultNode === undefined) {
@@ -819,7 +828,7 @@ var queryTool = new Class ({
       return ret;
    },
 
-
+/*
    //---------------------------------------------------------------
    iterativeDeepeningDepthFirstSearch: function (root, goal) {
 
@@ -877,6 +886,7 @@ var queryTool = new Class ({
 	 return undefined;
       }
    },
+*/
 
    //---------------------------------------------------------------
    // A utility function for debugging
@@ -952,6 +962,7 @@ var queryTool = new Class ({
       var first;
 
       termData = this.query.getQueryTermData();
+      //console.log("queryTool.doAnatomyQuery: termData ",termData);
       reverseData = emouseatlas.emap.utilities.reverseObject(termData);
 
       id_arr = [];
@@ -1017,10 +1028,9 @@ var queryTool = new Class ({
 
       if(emage_cb) {
 	 if(this.project.toLowerCase() === "gudmap") {
-	    url = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=';
+	    url = this.gudmapUrl;
 	 } else {
-	    url = 'http://www.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
-	    //url = 'http://testwww.emouseatlas.org/emagewebapp/pages/emage_general_query_result.jsf?structures=';
+	    url = this.emageUrl;
 	 }
 
 	 queryStr = "";
@@ -1036,7 +1046,7 @@ var queryTool = new Class ({
 	 if(this.project.toLowerCase() === "gudmap") {
 	    url += queryStr;
 	 } else {
-	    url += queryStr + '&exactmatchstructures=true&includestructuresynonyms=true';
+	    url += queryStr + this.emageUrl2;
 	 }
 	 //console.log(url);
 
@@ -1046,7 +1056,7 @@ var queryTool = new Class ({
       // we are only able to use 1 term for an MGI query
       // so we ask the user to choose if there is more than 1 term
       if(mgi_cb) {
-	 url = "http://www.informatics.jax.org/gxd/structure/";
+	 url = this.mgiUrl3
 
 	 //terms has been stringified, we need to get it back as an array.
 	 termArr = emouseatlas.JSON.parse(terms);
@@ -1059,6 +1069,7 @@ var queryTool = new Class ({
             stage = queryData[1].replace("TS", "");
             
             url = url + emaps + stage;
+	    console.log(url);
             this.view.getQueryResults(url);
 	 }
 
@@ -1105,7 +1116,7 @@ var queryTool = new Class ({
       ajaxParams = {
          url:url,
          method:"POST",
-	 urlParams:"emap_ids=" + json_id_arr + "&cbf=" + cbf + "&names=" + json_name_arr,
+	 urlParams:"project=mouse011&emap_ids=" + json_id_arr + "&cbf=" + cbf + "&names=" + json_name_arr,
 	 callback:this.getEmapaForEmapCallback,
          async:true
       }
@@ -1121,6 +1132,7 @@ var queryTool = new Class ({
       var json;
       var params;
       var callback;
+      var names;
 
       //console.log("getEmapaForEmapCallback: response \n",response);
       //console.log("getEmapaForEmapCallback: urlParams \n",urlParams);
@@ -1129,8 +1141,10 @@ var queryTool = new Class ({
       //console.log("getEmapaForEmapCallback: json ",json);
 
       params = urlParams.split("&");
-      callback = (params[1].split("="))[1];
-      names = (params[2].split("="))[1];
+      //console.log("getEmapaForEmapCallback: params ",params);
+      callback = (params[2].split("="))[1];
+      names = (params[3].split("="))[1];
+      //console.log("getEmapaForEmapCallback: callback ",callback);
       //console.log("getEmapaForEmapCallback: names ",names);
       
       switch (callback) {

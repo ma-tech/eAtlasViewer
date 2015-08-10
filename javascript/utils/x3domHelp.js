@@ -19,6 +19,8 @@ var x3domHelp = new Class ({
 
    initialize: function(params) {
 
+      //console.log("x3domHelp.initialize: params ",params);
+
       this.view = params.view;
       this.view.register(this);
 

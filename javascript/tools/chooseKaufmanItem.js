@@ -293,15 +293,13 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       var klass;
       var itemScrollContainer;
       var itemContainer;
-      var selectedRowKeys;
+      var selectedRowKnums;
       var numItems;
-      var itemData;
-      var item;
-      var key;
-      var descr;
-      var emap;
+      var annot;
+      var knum;
+      var kdesk;
       var emapa;
-      var wiki
+      var wikiArr
       var txt;
       var total;
       var top;
@@ -346,9 +344,9 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       height = baseHeight;
 
       if(typeLC  === "mgi" || typeLC  === "wiki") {
-         selectedRowKeys = pointClick.getSelectedRowKeys();
+         selectedRowKnums = pointClick.getSelectedRowKnums();
       }
-      //console.log(selectedRowKeys);
+      //console.log(selectedRowKnums);
 
       //----------------------------------------
       // containers for the items
@@ -358,23 +356,20 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       total = 0;
       cumHeight = Number(0);
 
-      numItems = selectedRowKeys.length;;
+      numItems = selectedRowKnums.length;;
 
       for(i=0; i<numItems; i++) {
-	 key = selectedRowKeys[i];
-	 termDets = pointClick.getTermDetsForKey(key);
-         //console.log("addItems: ",termDets);
-
-	 descr = termDets.description;
-	 emap = termDets.externalRef.emap;
-	 emapa = termDets.externalRef.emapa;
-	 wiki = termDets.externalRef.wiki;
-	 queryData[queryData.length] = {key: key, descr: descr, emap: emap, emapa:emapa, wiki: wiki};
+	 knum = selectedRowKnums[i];
+	 annot = pointClick.getAnnotationForKnum(knum);
+	 emapa = annot.emapa;
+	 kdesk = annot.kdesk;
+	 wikiArr = annot.wiki;
+	 queryData[queryData.length] = {knum: knum, kdesk: kdesk, emapa:emapa, wiki: wikiArr};
 
          top = cumHeight + 'px';
 
 	 itemDiv = new Element('div', {
-	    'id': descr + '_itemDiv',
+	    'id': kdesk + '_itemDiv',
 	    'class': klass
 	 });
 	 itemDiv.setStyles({
@@ -382,16 +377,16 @@ emouseatlas.emap.chooseKaufmanItem = function() {
          });
 
 	 itemTextContainer = new Element('div', {
-	    'id': descr + '_itemTextContainer',
+	    'id': kdesk + '_itemTextContainer',
 	    'class': 'chooseKaufmanItemItemTextContainer'
 	 });
 
 	 itemTextDiv = new Element('div', {
-	    'id': descr + '_itemTextDiv',
+	    'id': kdesk + '_itemTextDiv',
 	    'class': 'chooseKaufmanItemItemTextDiv'
 	 });
 
-         txt = key + ":   " + descr;
+         txt = knum + ":   " + kdesk;
 	 itemTextDiv.set('text', txt);
 	 //itemTextDiv.setStyle('width',txtwid+'px');
 
@@ -419,7 +414,6 @@ emouseatlas.emap.chooseKaufmanItem = function() {
          itemDiv.addEvent('mouseup',function(e) {
 	    doMouseUp(e);
          });
-
 
          total++;
 
@@ -622,130 +616,42 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       var len;
       var i;
       var dets;
-      var descr;
+      var kdesk;
       var emap;
       var wiki;
       var found = false;
       var url;
 
       //console.log("choice %s",choice);
-      //console.log(queryData);
 
       len = queryData.length;
       for(i=0; i<len; i++) {
          dets = queryData[i];
-	 descr = dets.descr;
+	 kdesk = dets.kdesk;
 	 //console.log(descr);
-	 if(descr === choice) {
+	 if(kdesk === choice) {
 	    found = true;
-	    emap = dets.emap;
+	    emapa = dets.emapa;
 	    wiki = dets.wiki;
+	    //console.log(wiki);
 	    break;
 	 }
       }
-      //console.log("emap %s",emap);
 
       if(found) {
 	 switch (queryType.toLowerCase()) {
 	    case 'mgi':
-               //url = mgiUrl + emapa;
-	       getEmapaForEmap(emap);
+               url = mgiUrl + emapa;
+	       window.open(url);
 	       break;
 	    case 'wiki':
-               url = wiki;
+               url = wiki[0];
 	       window.open(url);
 	       break;
 	    default:
 	 }
       }
    };
-
-   //---------------------------------------------------------------
-   var doQuery2 = function(queryData) {
-
-      var emaps;
-      var stage;
-      var url;
-
-      //console.log("choice %s",choice);
-      //console.log("doQuery2 ",queryData);
-
-      emaps = queryData[0].replace("EMAPA", "EMAPS");
-      stage = queryData[1].replace("TS", "");
-      url = mgiUrl + emaps + stage;
-
-      window.open(url);
-
-   };
-
-   //---------------------------------------------------------------
-   var getEmapaForEmap = function (emap) {
-
-      var arr = [];
-      var len;
-      var jsonArr;
-      var i;
-
-      arr[0] = emap;
-
-      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
-         jsonArr = JSON.stringify(arr);
-      } else {
-         jsonArr = emouseatlas.JSON.stringify(arr);
-      }
-      if(!jsonArr) {
-         return false;
-      }
-      //console.log(jsonArr);
-
-      /*
-         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
-	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
-	 and empty resultText (it is suffering from the 'different domain' problem).
-      */
-
-      url = '/ontologywebapp/GetEMAPA';
-      ajaxParams = {
-         url:url,
-         method:"POST",
-	 urlParams:"emap_ids=" + jsonArr + "&cbf=doQuery",
-	 callback:getEmapaForEmapCallback,
-         async:true
-      }
-      //if(_debug) console.log(ajaxParams);
-      ajax = new emouseatlas.emap.ajaxContentLoader();
-      ajax.loadResponse(ajaxParams);
-
-   }; // getEmapaForEmap
-
-   //---------------------------------------------------------------
-   var getEmapaForEmapCallback = function (response, urlParams) {
-
-      var json;
-      var params;
-      var len;
-      var callback;
-      var database;
-      var arr;
-
-      json = JSON.parse(response);
-
-      params = urlParams.split("&");
-      //console.log("params ",params);
-
-      callback = (params[1].split("="))[1];
-      //database = (params[2].split("="))[1];
-      
-      switch (callback) {
-         case "doQuery":
-	    doQuery2(json);
-	    break;
-	 default:
-	    return;
-      }
-
-   }; // getEmapaForEmapCallback
-
 
    //---------------------------------------------------------------
    var getName = function() {

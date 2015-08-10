@@ -38,6 +38,7 @@ Mif.Tree.implement({
 		and +/- node expansion (processExpand) 
 	*/
 	toggleClick: function(event){
+	        //alert("toggleClick");
 		if(this.mouse.target == 'checkbox') {
 			var y = this.mouse.coords.y;
 			var node = this.$index[((y)/this.height).toInt()];
@@ -53,6 +54,7 @@ Mif.Tree.implement({
 		displays domains corresponding to selected nodes
 	*/
 	processCheck: function(nodeId, checked){
+	        //alert("processCheck");
 		var node;
 
 		node = this.root.getNodeById(nodeId.replace(/cb_/,''));
@@ -72,6 +74,7 @@ Mif.Tree.implement({
 	Called from tiledImageView.getIndexDataAtMouseCallback
 	 */
         processCheckExternal: function(nodeId){
+	   //alert("processCheckExternal ");
            var node = this.root.getNodeById(nodeId.replace(/cb_/,''));
            node.state.checked = !node.state.checked;
            if($(nodeId)) {
@@ -88,10 +91,14 @@ Mif.Tree.implement({
       var node;
       var checked;
 
+      //alert("showSelected " + nodeId);
+
       if(this.showSystems) {
          node = this.root.getNodeById(nodeId.replace(/cb_/,''));
-	 checked = node.state.checked;
-         this.root.showSelectedSystems(nodeId, checked);
+         if(node) {
+            checked = node.state.checked;
+            this.root.showSelectedSystems(nodeId, checked);
+	 }
       } else {
          this.root.showSelectedNodes();
       }
@@ -338,6 +345,16 @@ Mif.Tree.implement({
 
 //----------------------------------------------------------------------------------
 	/** 
+		opens a new window with 3d rendering
+	 */
+        new3d: function(){
+
+	   this.root.new3d();
+           return false;
+        },
+
+//----------------------------------------------------------------------------------
+	/** 
 		Shows all domains in their corresponding colour
 	 */
 	showAllDomains: function(){
@@ -504,17 +521,13 @@ Mif.Tree.Node.implement({
 	*/
 
       //---------------------------------------------------------
-      // checked refers to the state of the checkbox that has changed
-      //---------------------------------------------------------
-      showSelectedNodes: function () {
+      getCheckedNodes: function () {
 
-         var values='';
+         var ids='';
          var el;
          var item;
          var num;
-         var num2;
          var i;
-         var j;
          
          //Get all selected nodes
          var allChildren = [];
@@ -526,6 +539,53 @@ Mif.Tree.Node.implement({
             if ($("cb_" + el.id)){
                if($("cb_" + el.id).checked) {
                   if (el.domainId !== undefined && el.domainId != ""){
+		     if(ids === "") {
+                        ids = ids + el.id;
+		     } else {
+                        ids = ids + "," + el.id;
+		     }
+                  }
+               } else {
+                  continue;
+               }
+            } else {
+               continue;
+            }
+	 }
+
+         return ids;
+      },
+
+      //---------------------------------------------------------
+      // checked refers to the state of the checkbox that has changed
+      //---------------------------------------------------------
+      showSelectedNodes: function () {
+
+         var values='';
+         var el;
+         var id;
+         var chkbx;
+         var num;
+         var num2;
+         var i;
+         var j;
+         
+	 //emouseatlas.emap.utilities.debugOutput("showSelectedNodes:");
+         //Get all selected nodes
+         var allChildren = [];
+         allChildren.combine(this.tree.root.getSelectedNodes([]));
+         num = allChildren.length;
+	 //emouseatlas.emap.utilities.debugOutput("showSelectedNodes: num " + num);
+         for(i=0; i<num; i++) {
+            el = allChildren[i];
+	    id = el.id.trim();
+	    //emouseatlas.emap.utilities.debugOutput("showSelectedNodes: id " + id);
+            // we are only interested in selected (checked) elements.
+	    chkbx = $("cb_" + id);
+            if (chkbx){
+	       //emouseatlas.emap.utilities.debugOutput("showSelectedNodes: chkbx " + chkbx);
+               if(chkbx.checked) {
+                  if (el.domainId !== undefined && el.domainId != ""){
                      values = values + "&sel=" + el.domainId + "," + el.color;
                   }
                } else {
@@ -536,7 +596,7 @@ Mif.Tree.Node.implement({
             }
 	 }
 
-         this.tree.view.setSelections(values);
+         this.tree.view.setSelections(values, "showSelectedNodes");
          return true;
       },
 
@@ -586,9 +646,46 @@ Mif.Tree.Node.implement({
 	    }
 	 }
 
-         this.tree.view.setSelections(values);
+         this.tree.view.setSelections(values, "showSelectedSystems");
 
          return true;
+      },
+
+      //---------------------------------------------------------
+      //---------------------------------------------------------
+      new3d: function () {
+
+         /*
+         var values='';
+         var el;
+         var item;
+         var num;
+         var num2;
+         var i;
+         var j;
+         
+         //Get all selected nodes
+         var allChildren = [];
+         allChildren.combine(this.tree.root.getSelectedNodes([]));
+         num = allChildren.length;
+         for(i=0; i<num; i++) {
+            el = allChildren[i];
+            // we are only interested in selected (checked) elements.
+            if ($("cb_" + el.id)){
+               if($("cb_" + el.id).checked) {
+                  if (el.domainId !== undefined && el.domainId != ""){
+                     values = values + "&sel=" + el.domainId + "," + el.color;
+                  }
+               } else {
+                  continue;
+               }
+            } else {
+               continue;
+            }
+	 }
+
+         */
+         this.tree.view.new3d();
       },
 
 	//---------------------------------------------------------
@@ -637,7 +734,7 @@ Mif.Tree.Node.implement({
             var alf;
 
             
-            node = this.tree.root.getNodeById(id);
+            node = this.tree.root.getNodeById(id.trim());
 	    if(node) {
 	       // deal with the very top node
 	       if(id === "0") {
@@ -657,6 +754,7 @@ Mif.Tree.Node.implement({
    	          //change this element's colour
                      // the alpha value required by css background: rgba(...) is from 0 to 1
                      // the alpha value required by IIP3DViewer is from 0 to 255
+		     //emouseatlas.emap.utilities.debugOutput("el.id "  + el.id + ", node.id "  + node.id);
                      alf = parseInt(rgba.alpha * 255);
                      cols = rgba.red + "," + rgba.green + "," + rgba.blue + "," + alf;
                      node.color[0] = rgba.red;
@@ -687,7 +785,7 @@ Mif.Tree.Node.implement({
 		});
 
 		//Compose and fire URL
-		this.tree.view.setSelections(values);
+		this.tree.view.setSelections(values, "showAllDomains");
 		return true;
 	},
 
@@ -722,7 +820,7 @@ Mif.Tree.Node.implement({
             this.tree.sysArr = [];
 
             //Compose and fire URL
-            this.tree.view.setSelections(values);
+            this.tree.view.setSelections(values, "clearAll");
             return true;
 	},
 
@@ -774,6 +872,8 @@ Mif.Tree.Node.implement({
 	getNodeById: function (nodeId) {    	
 		var foundNode = null;
 		if (this.id == nodeId) {
+	                //emouseatlas.emap.utilities.debugOutput("getNodeById: this.id " + this.id);
+	                //emouseatlas.emap.utilities.debugOutput("getNodeById: nodeId " + nodeId);
 			foundNode = this;
 			return foundNode;
 		}

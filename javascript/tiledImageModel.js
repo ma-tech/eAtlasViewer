@@ -65,6 +65,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var imageTitleTooltip;
    var webServer;
    var iipServerPath;
+   var iipViewerName;
    var metadataRoot;
    var dataImageDir;
    var imageExtension;
@@ -132,7 +133,8 @@ emouseatlas.emap.tiledImageModel = function() {
       saveQuerySection: false,
       changeQuerySection: false, // for spatial query when section has been selected from dialogue
       */
-      sectionChanged: false   // if dst or angle has been changed
+      sectionChanged: false,   // if dst or angle has been changed
+      treeNodeColour: false // if user changes colour of a tree item
    };
    var image = {};
    var scale = {};
@@ -186,6 +188,9 @@ emouseatlas.emap.tiledImageModel = function() {
 
    var keySections = [];
    var keySectionNames = [];
+
+   var anatomyDetails = {};
+   var updatedTreeNode = {};
 
    var scalebarLen;
 
@@ -283,6 +288,7 @@ emouseatlas.emap.tiledImageModel = function() {
       imageTitleTooltip = json.imageTitleTooltip;
       webServer = "http://" + json.webServer;
       iipServerPath = json.iipServerPath;
+      iipViewerName = (json.iipViewerName === undefined) ? "eAtlasViewer_ema" : json.iipViewerName;
       interfaceImageDir = json.interfaceImageDir;
       //console.log("initModelCallback interfaceImageDir %s ",interfaceImageDir);
       metadataRoot = json.metadataRoot;
@@ -603,6 +609,10 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(json.keySectionNames !== undefined) {
          keySectionNames = json.keySectionNames;
+      }
+
+      if(json.anatomyDetails !== undefined) {
+         anatomyDetails = json.anatomyDetails;
       }
 
       scalebarLen = (typeof(json.scalebarLen) === 'undefined') ? 100 : json.scalebarLen; 
@@ -978,6 +988,7 @@ emouseatlas.emap.tiledImageModel = function() {
       imageTitleTooltip = json.imageTitleTooltip;
       webServer = "http://" + json.webServer;
       iipServerPath = json.iipServerPath;
+      iipViewerName = (json.iipViewerName === undefined) ? "eAtlasViewer_ema" : json.iipViewerName;
       interfaceImageDir = json.interfaceImageDir;
       //console.log("initModelCallback interfaceImageDir %s ",interfaceImageDir);
       metadataRoot = json.metadataRoot;
@@ -1122,23 +1133,31 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var loadTreeData = function(layerName) {
 
-      //console.log("loadTreeData for layer %s",layerName);
-      var layer = layerData[layerName];
-      var url = layer.treeData;
+      var layer;
+      var url;
+      var ajax;
+      var ajaxParams;
 
-      var ajaxParams = {
+      //console.log("loadTreeData for layer %s",layerName);
+      layer = layerData[layerName];
+      url = layer.treeData;
+
+      ajaxParams = {
          url:url,
          method:"POST",
          callback: loadTreeDataCallback_1,
          async:true,
 	 urlParams:layerName
       }
-      var ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
    };
 
    //---------------------------------------------------------
    var loadTreeDataCallback_1 = function(response, layerName) {
+
+      var json;
+      var layer;
 
       response = util.trimString(response);
       if(response === null || typeof(response) === 'undefined' || response === "") {
@@ -1146,7 +1165,6 @@ emouseatlas.emap.tiledImageModel = function() {
 	 return false;
       }
 
-      var json;
       if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
          json = JSON.parse(response);
       } else {
@@ -1156,23 +1174,109 @@ emouseatlas.emap.tiledImageModel = function() {
 	 return false;
       }
 
-      var layer = layerData[layerName];
+      layer = layerData[layerName];
       layer.treeData = json;
       numberOfTreesLoaded++;
 
       //console.log("numberOfTrees %d, numberOfTreesLoaded %d",numberOfTrees,numberOfTreesLoaded);
       if(numberOfTreesLoaded === numberOfTrees) {
-	 modelChanges.initial = true;
-	 modelChanges.layerNames = true;
-	 modelInitialised = true;
-	 //console.log("finished initialising model");
-	 if(_debug) {
-	    printPaths();
-	 }
-	 initView();
-	 //initQuery();
+         loadAnatomyData(layerName, null);
       }
    };
+
+   //---------------------------------------------------------
+   var loadAnatomyData = function (layerName, params) {
+
+      var model;
+      var url;
+      var ajax;
+      var ajaxParams;
+
+      if(anatomyDetails === undefined) {
+         return false;
+      }
+
+      model = anatomyDetails.model;
+      type = anatomyDetails.type;
+
+      //console.log("loadAnatomyData: model %s, type %s",model,type);
+
+      url = '/emaAnatomywebapp/GetAnatomyData';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"project=emaAnatomy&layerName=" + layerName + "&model=" + model + "&type=" + type,
+         callback:loadAnatomyDataCallback,
+         async:true
+      }
+      //if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // loadAnatomyData
+
+   //---------------------------------------------------------------
+   var loadAnatomyDataCallback = function (response, urlParams) {
+
+      //if(_debug) console.log("loadAnatomyDataCallback: \n" + urlParams);
+      //console.log("loadAnatomyDataCallback: \n" + urlParams);
+
+      var params;
+      var json;
+      var layerName;
+      var layer;
+      var len;
+      var i;
+      
+
+      params = urlParams.split("&");
+      //console.log("loadAnatomyDataCallback: params ",params);
+      layerName = (params[1].split("="))[1];
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         if(_debug) console.log("loadAnatomyDataCallback: response null");
+         //console.log("loadAnatomyDataCallback: response null");
+         //console.log("doh!");
+         doInitView();
+      } else {
+         if(_debug) console.log(response);
+         //console.log("got it!");
+	 if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+	    json = JSON.parse(response);
+	 } else {
+	    json = emouseatlas.JSON.parse(response);
+	 }
+	 if(!json) {
+            doInitView();
+	 }
+
+         //console.log("loadAnatomyDataCallback layerName %s",layerName);
+         layer = layerData[layerName];
+         layer.anatomyData = json;
+      }
+
+      //console.log("loadAnatomyDataCallback layer.anatomyData ",layer.anatomyData);
+      doInitView();
+
+   }; // loadAnatomyDataCallback:
+
+   //---------------------------------------------------------
+   var doInitView = function() {
+
+      modelChanges.initial = true;
+      modelChanges.layerNames = true;
+      modelInitialised = true;
+      //console.log("finished initialising model");
+      if(_debug) {
+	 printPaths();
+      }
+      initView();
+      //initQuery();
+
+      return false;
+
+   }; // doInitView
 
    //---------------------------------------------------------
    // We should have read in the type of data we are dealing with.
@@ -1438,18 +1542,25 @@ emouseatlas.emap.tiledImageModel = function() {
       }
 
       fullDepth = parseInt(json.fulldepth); // the number of sections in the stack
+      //console.log("getStackMetadataCallback_1 fullDepth = ",fullDepth);
 
 
       if (typeof(json.startSection) !== 'undefined') {
 	 startSection = parseInt(json.startSection); // the first section with an image
       } else {
-	///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
-	if (urlSpecified.section !== 'undefined')
-	  startSection = urlSpecified.section;
-	else
-	  ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
 	 startSection = 0;
       }
+
+      if (isEurexpress) {
+	 ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
+	 if (urlSpecified.section !== 'undefined') {
+	    startSection = urlSpecified.section;
+	 } else {
+	    ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
+	    startSection = 0;
+	 }
+      }
+
       if (typeof(json.stopSection) !== 'undefined') {
 	 stopSection = parseInt(json.stopSection); // the last section with an image
       } else {
@@ -1469,6 +1580,8 @@ emouseatlas.emap.tiledImageModel = function() {
 
       dst.min = startSection;
       dst.max = stopSection;
+
+      //console.log("getStackMetadataCallback_1 dst ",dst);
 
       layer = layerData[layerNames[0]];
 
@@ -1871,6 +1984,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	    case "Max-size":
 	       //console.log("getObjectsCallback Max-size");
 	       imgSize = vals[i].split(" ");
+	       //console.log("imgSize ",imgSize);
 	       fullImgDims.width  = parseInt(imgSize[0] );
 	       fullImgDims.height = parseInt(imgSize[1] );
 	       //console.log("Max-size: now, width %d, height %d",fullImgDims.width,fullImgDims.height);
@@ -2057,6 +2171,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if(modelChanges.changeQuerySection) console.log("modelChanges.changeQuerySection ",modelChanges.changeQuerySection);
       */
       if(modelChanges.sectionChanged) console.log("modelChanges.sectionChanged ",modelChanges.sectionChanged);
+      if(modelChanges.treeNodeColour) console.log("modelChanges.treeNodeColour ",modelChanges.treeNodeColour);
       console.log("++++++++++++++++++++++++++++++++++++++++++++");
    };
 
@@ -2081,6 +2196,7 @@ emouseatlas.emap.tiledImageModel = function() {
       modelChanges.changeQuerySection =  false;
       */
       modelChanges.sectionChanged =  false;
+      modelChanges.treeNodeColour =  false;
    };
 
    //---------------------------------------------------------
@@ -2138,6 +2254,9 @@ emouseatlas.emap.tiledImageModel = function() {
    var printPaths = function() {
       if(typeof(iipServerPath) !== 'undefined') {
          console.log("iipServerPath: %s", iipServerPath);
+      }
+      if(typeof(iipViewerName) !== 'undefined') {
+         console.log("iipViewerName: %s", iipViewerName);
       }
       if(typeof(webServer) !== 'undefined') {
          console.log("webServer: %s", webServer);
@@ -2310,6 +2429,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if(_debug) {
          console.log("enter model.initialise");
       }
+      //console.log("enter model.initialise params ",params);
 
       projectDivId = "projectDiv";
 
@@ -2476,11 +2596,6 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
-   var getInterfaceImageDir = function () {
-      return interfaceImageDir;
-   };
-
-   //---------------------------------------------------------
    var getLayerNames = function () {
       return layerNames;
    };
@@ -2517,11 +2632,8 @@ emouseatlas.emap.tiledImageModel = function() {
    var getIndexData = function (layerName) {
       //console.log("model getIndexData ",layerName);
       var indexData = {};
-      var layer = layerData[layerName];
-      if(layer === undefined) {
-         return undefined;
-      }
-      var treeData = layer.treeData;
+      var layer;
+      var treeData;
       var node;
       var domainData;
       var len;
@@ -2529,6 +2641,14 @@ emouseatlas.emap.tiledImageModel = function() {
       var domainId;
       var colour = [];
       var selected = false;
+
+      //console.log("getIndexData layerNames ",layerNames);
+      layer = layerData[layerName];
+      if(layer === undefined) {
+         return undefined;
+      }
+
+      treeData = layer.treeData;
 
       if(typeof(treeData) === 'undefined') {
 	 //console.log("model getIndexData treeData ",treeData);
@@ -2553,6 +2673,7 @@ emouseatlas.emap.tiledImageModel = function() {
 	 domainId = undefined;
       }
 
+      //console.log("model getIndexData indexData ",indexData);
       return indexData;
    };
 
@@ -2573,9 +2694,66 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   // (unfortunately) this assumes a directory structure eAtlasViewerXYZ/application/...
+   var getAbsoluteMetadataRoot = function () {
+
+      var indx;
+      var endbit;
+
+      if(isPathRelative(metadataRoot)) {
+         //console.log("true!!!");
+         indx = metadataRoot.indexOf("application")
+	 endbit = metadataRoot.substr(indx);
+         //console.log(endbit);
+	 return "/" + iipViewerName + "/" + endbit;
+      } else {
+         //console.log("false!!!");
+	 return metadataRoot;
+      }
+   };
+
+   //---------------------------------------------------------
+   var getInterfaceImageDir = function () {
+      return interfaceImageDir;
+   };
+
+   //---------------------------------------------------------
+   // (unfortunately) this assumes a directory structure eAtlasViewerXYZ/images/...
+   var getAbsoluteInterfaceImageDir = function () {
+
+      var indx;
+      var endbit;
+
+      if(isPathRelative(interfaceImageDir)) {
+         //console.log("true!!!");
+         indx = interfaceImageDir.indexOf("images")
+	 endbit = interfaceImageDir.substr(indx);
+         //console.log(endbit);
+	 return "/" + iipViewerName + "/" + endbit;
+      } else {
+         //console.log("false!!!");
+	 return interfaceImageDir;
+      }
+   };
+
+   //---------------------------------------------------------
+   var isPathRelative = function (pth) {
+
+      var r = new RegExp('^(\.\.\/)(\.\.\/)*');
+      //if(metadataRoot.indexOf("/") === 0) {
+       return r.test(pth);
+   };
+
+   //---------------------------------------------------------
    var getIIPServer = function () {
       return webServer + iipServerPath;
    };
+
+   //---------------------------------------------------------
+   var getIIPViewerName = function () {
+      return iipViewerName;
+   };
+
    //---------------------------------------------------------
    var getImgQuality = function () {
       return qlt;
@@ -2689,8 +2867,11 @@ emouseatlas.emap.tiledImageModel = function() {
    // If it is set back to the default fixed point, the actual distance will change
    // and the image must be updated.
    //---------------------------------------------------------
-   var setFixedPoint = function (val) {
-      if(isWlz) {
+   var setFixedPoint = function (val, from) {
+
+      //console.log("setFixedPoint from %s ",from,val);
+
+      if(isWlz && val !== undefined) {
          var x = Math.round(val.x);
          var y = Math.round(val.y);
          var z = Math.round(val.z);
@@ -2879,7 +3060,7 @@ emouseatlas.emap.tiledImageModel = function() {
    };
    //---------------------------------------------------------
    var setBoundingBoxCallback = function () {
-      setFixedPoint();
+      setFixedPoint(undefined, "setBoundingBoxCallback");
    };
    //---------------------------------------------------------
    var getBoundingBox = function () {
@@ -3136,6 +3317,9 @@ emouseatlas.emap.tiledImageModel = function() {
       data = layerData[layerName].treeData;
       nodeData = data[nodeId];
       if(nodeData !== undefined) {
+         //if(nodeId === "11") {
+	  //  console.log(nodeData);
+	 //}
 	 nodeName = nodeData.name;
 	 domainData = nodeData.domainData;
 	 if(domainData !== undefined) {
@@ -3226,6 +3410,86 @@ emouseatlas.emap.tiledImageModel = function() {
       _debug = deb;
       //console.log(ret);
       return ret;
+   };
+
+   //---------------------------------------------------------
+   var updateTreeNodeColour = function (patchId, newCol) {
+
+      var currentLayerName;
+      var layer;
+      var treeData;
+      var nodeId;
+      var nodeData;
+      var found;
+      var len;
+      var i;
+      var nodeId;
+      var nodeData;
+      var len;
+
+
+      currentLayerName = emouseatlas.emap.tiledImageView.getCurrentLayer();
+      layer = layerData[currentLayerName];
+      treeData = layer.treeData;
+
+      // nodeId is the number at the end of patchId, ie pic_11 --> 11
+      nodeId = patchId.substr(4);
+      //console.log("updateTreeNodeColour patchId %s, nodeId %s, newCol ",patchId,nodeId,newCol);
+      nodeData = getTreeNode(treeData, nodeId.trim());
+
+      if(nodeData) {
+         //console.log("updateTreeNodeColour nodeData",nodeData);
+         //console.log("updateTreeNodeColour before: ",nodeData.domainData.domainColour);
+         nodeData.domainData.domainColour = [];
+         nodeData.domainData.domainColour[0] = newCol.red.toString();
+         nodeData.domainData.domainColour[1] = newCol.green.toString();
+         nodeData.domainData.domainColour[2] = newCol.blue.toString();
+         nodeData.domainData.domainColour[3] = newCol.alpha.toString();
+   
+         //console.log("updateTreeNodeColour after: ",nodeData.domainData.domainColour);
+	 updatedTreeNode = nodeData;
+         //emouseatlas.emap.tiledImageView.colourUpdated(true);
+         modelChanges.treeNodeColour = true;
+         notify("updateTreeNodeColour");
+      }
+   };
+
+   //---------------------------------------------------------
+   var getTreeNode = function (treeData, nodeId) {
+
+      var nodeData;
+      var found;
+      var len;
+      var i;
+
+      len = treeData.length;
+      //console.log("getTreeNode treeData.length ",treeData.length);
+
+      found = false;
+      for(i=0; i<len; i++) {
+         nodeData = treeData[i];
+	 if(nodeData.nodeId == nodeId) {
+            //console.log("nodeData.nodeId %s",nodeData.nodeId);
+	    found = true;
+	    break;
+	 }
+      }
+
+      if(found) {
+         return nodeData;
+      } else {
+         return undefined;
+      }
+   };
+
+   //---------------------------------------------------------
+   // Get the json object that describes the anatomy
+   var getAnatomyData = function (layerName) {
+
+      //console.log("getAnatomyData ",layerName);
+      layer = layerData[layerName];
+      //console.log("getAnatomyData ",layer.anatomyData);
+      return layer.anatomyData;
    };
 
    //---------------------------------------------------------
@@ -3410,6 +3674,14 @@ emouseatlas.emap.tiledImageModel = function() {
      return keySectionNames;
    };
 
+   var getAnatomyDetails = function () {
+     return anatomyDetails;
+   };
+
+   var getUpdatedTreeNode = function () {
+     return updatedTreeNode;
+   };
+
    //---------------------------------------------------------
    var getScalebarLen = function() {
      return scalebarLen;
@@ -3438,9 +3710,12 @@ emouseatlas.emap.tiledImageModel = function() {
       getName: getName,
       getWebServer: getWebServer,
       getMetadataRoot: getMetadataRoot,
-      getIIPServer: getIIPServer,
-      getDataImageDir: getDataImageDir,
+      getAbsoluteMetadataRoot: getAbsoluteMetadataRoot,
       getInterfaceImageDir: getInterfaceImageDir,
+      getAbsoluteInterfaceImageDir: getAbsoluteInterfaceImageDir,
+      getIIPServer: getIIPServer,
+      getIIPViewerName: getIIPViewerName,
+      getDataImageDir: getDataImageDir,
       getZSelectorInfo: getZSelectorInfo,
       getFullDepth: getFullDepth,
       getLayerNames: getLayerNames,
@@ -3463,6 +3738,7 @@ emouseatlas.emap.tiledImageModel = function() {
       getInfoDetails: getInfoDetails,
       getImgQuality: getImgQuality,
       isWlzData: isWlzData,
+      isPathRelative: isPathRelative,
       isPyrTiffData: isPyrTiffData,
       isEurexpressData: isEurexpressData,
       isEditor: isEditor,
@@ -3500,10 +3776,15 @@ emouseatlas.emap.tiledImageModel = function() {
       setTree: setTree,
       getMenuData: getMenuData,
       getTreeData: getTreeData,
+      //loadAnatomyDataCallback: loadAnatomyDataCallback,
+      getAnatomyData: getAnatomyData,
+      updateTreeNodeColour: updateTreeNodeColour,
       getQueryDataUrl: getQueryDataUrl,
       getQueryModes: getQueryModes,
       getKeySections: getKeySections,
       getKeySectionNames: getKeySectionNames,
+      getAnatomyDetails: getAnatomyDetails,
+      getUpdatedTreeNode: getUpdatedTreeNode,
       getUndelineatedRGBA: getUndelineatedRGBA,
       getScalebarLen: getScalebarLen,
       getProject: getProject,

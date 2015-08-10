@@ -459,7 +459,7 @@ emouseatlas.emap.fixedPoint = function() {
          case "cancel":
             fp = cancelFxPt;
             setFixedPointNumbers(fp);
-            model.setFixedPoint(fp);
+            model.setFixedPoint(fp, "fixedPoint.doFPButtonPressed");
 	    currentFxPt = {x:cancelFxPt.x, y:cancelFxPt.y, z:cancelFxPt.z};
 	    break;
          case "default":
@@ -467,7 +467,7 @@ emouseatlas.emap.fixedPoint = function() {
 	    cancelFxPt = {x:currentFxPt.x, y:currentFxPt.y, z:currentFxPt.z};
 	    currentFxPt = fp;
             setFixedPointNumbers(fp);
-            model.setFixedPoint(fp);
+            model.setFixedPoint(fp, "fixedPoint.doFPButtonPressed");
 	    break;
       }
       setMarkerVisible(false);
@@ -528,7 +528,7 @@ emouseatlas.emap.fixedPoint = function() {
 	 setMarkerVisible(true);
 	 markerContainer.setStyles({'left': l + 'px', 'top': t + 'px'});
          if(!isSamePoint(currentFxPt, newFxPt)) {
-            model.setFixedPoint(newFxPt);
+            model.setFixedPoint(newFxPt, "fixedPoint.viewUpdate selectFixedPoint");
 	    currentFxPt = {x:newFxPt.x, y:newFxPt.y, z:newFxPt.z};
          }
       }
