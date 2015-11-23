@@ -59,6 +59,9 @@ emouseatlas.emap.EmapMenu = function() {
    //---------------------------------------------------------
 
    var initialise = function (params) {
+
+      var webServer;
+
       view = params.view;
       view.register(this);
       menuName = params.menuName;
@@ -67,7 +70,9 @@ emouseatlas.emap.EmapMenu = function() {
       menuStructureUrl = params.structureUrl;
       menuContentUrl = params.contentUrl;
 
-      emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      webServer = emouseatlas.emap.tiledImageModel.getWebServer();
+
+      emageUrl = webServer + '/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
       emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true';
 
       readMenuStructure();

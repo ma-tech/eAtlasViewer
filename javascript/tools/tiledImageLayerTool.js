@@ -46,8 +46,8 @@ var tiledImageLayerTool = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageLayerTool");
+      this.view.register(this, "tiledImageLayerTool");
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 
@@ -104,8 +104,8 @@ var tiledImageLayerTool = new Class ({
       this.createElements();
 
       this.window.setDimensions(this.width, this.height);
-      this.setToolTip(this.toolTipText);
-      this.setPropertiesToolTip(this.propertiesToolTipText);
+      //this.setToolTip(this.toolTipText);
+      //this.setPropertiesToolTip(this.propertiesToolTipText);
 
       if(this.model.modelReady()) {
 	 //this.slider.setUserChange(false);
@@ -432,6 +432,7 @@ var tiledImageLayerTool = new Class ({
       }
    }, // viewUpdate
 
+   /*
    //--------------------------------------------------------------
    setToolTip: function (text) {
       // we only want 1 toolTip
@@ -510,6 +511,7 @@ var tiledImageLayerTool = new Class ({
       var viz = $(this.shortName + '-container').getStyle('visibility');
       $(this.shortName + '-toolTipContainer').setStyles({'left': left, 'top': top, 'visibility': viz});
    },
+   */
 
    //---------------------------------------------------------------
    getName: function() {

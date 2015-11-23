@@ -99,8 +99,10 @@ emouseatlas.emap.tprPointClick = function() {
 
       //console.log("enter tprPointClick.initialize");
 
-      model.register(this);
-      view.register(this);
+      var webServer;
+
+      model.register(this, "tprPointClick");
+      view.register(this, "tprPointClick");
 
       pointClickImgData = model.getPointClickImgData();
       //console.log("pointClickImgData ",pointClickImgData);
@@ -121,7 +123,9 @@ emouseatlas.emap.tprPointClick = function() {
       gudmapUrl = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20';
       gudmapUrl2 = '%20';
 
-      emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      webServer = model.getWebServer();
+
+      emageUrl =  webServer + '/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
 
       createElements();
       getImageData();

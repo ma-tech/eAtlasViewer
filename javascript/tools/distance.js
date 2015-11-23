@@ -47,15 +47,14 @@ emouseatlas.emap.distance = function() {
    var model;
    var view;
    var util;
-   var trgt;
+   var targetId;
+   var klass;
    var distSlider;
    var distNumber;
    var distDragContainerId;
    var sliderStep;
    var maxVal;
    var minVal;
-   var x_left;
-   var y_top;
    var MOUSE_DOWN;
    var EXT_CHANGE;
    var NUMBER_CHANGE;
@@ -68,17 +67,14 @@ emouseatlas.emap.distance = function() {
 
       //console.log("createElements");
 
-      var targetId;
       var target;
-      var sliderLength;
-      var isHorizontal;
       var distDragContainer;
       var distContainer;
       var fs1;
       var legend1;
       //------------------------
 
-      targetId = model.getProjectDivId();
+      targetId = (targetId) ? targetId : model.getProjectDivId();
       target = $(targetId);
 
       distDragContainer = $(distDragContainerId);
@@ -91,12 +87,8 @@ emouseatlas.emap.distance = function() {
       // the drag container
       //----------------------------------------
       distDragContainer = new Element('div', {
-         'id': distDragContainerId
-      });
-
-      distDragContainer.setStyles({
-         "top": y_top + "px",
-         "left": x_left + "px"
+         'id': distDragContainerId,
+	 'class': klass
       });
 
       //----------------------------------------
@@ -152,15 +144,16 @@ emouseatlas.emap.distance = function() {
       distSlider.addEvent('input',function(e) {
          doDistSliderChanged(e);
       });
-      distSlider.addEvent('mousedown',function(e) {
-         doDistSliderMouseUpDown(e);
-      });
-      distSlider.addEvent('mouseup',function(e) {
-         doDistSliderMouseUpDown(e);
-      });
       
       distNumber.addEvent('change',function(e) {
          doDistNumberChanged(e);
+      });
+
+      distSlider.addEvent('mousedown',function(e) {
+         enableDistToolDrag(false);
+      });
+      distSlider.addEvent('mouseup',function(e) {
+         enableDistToolDrag(true);
       });
 
    }; // createElements
@@ -258,26 +251,19 @@ emouseatlas.emap.distance = function() {
       return false;
    };
 
-   //---------------------------------------------------------
-   var doDistSliderMouseUpDown = function (e) {
+   //---------------------------------------------------------------
+   var enableDistToolDrag = function(draggable) {
 
-     // console.log("doDistSliderMouseUpDown");
-      var target;
+      //console.log("enableDistToolDrag: %s",draggable);
+      var dragContainer;
 
-      target = emouseatlas.emap.utilities.getTarget(e);
-      if(target === undefined) {
-         return false;
-      }
+      dragContainer = $(distDragContainerId);
+      dragContainer.setAttribute("draggable", draggable);
 
-
-      if(e.type.toLowerCase() === "mousedown") {
-         MOUSE_DOWN = true;
-      } else if(e.type.toLowerCase() === "mouseup") {
-         MOUSE_DOWN = false;
+      if(draggable) {
 	 updateDistance();
       }
 
-      return false;
    };
 
    //---------------------------------------------------------
@@ -365,17 +351,19 @@ emouseatlas.emap.distance = function() {
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "distance");
+      view.register(this, "distance");
 
       _debug = false;
 
       dropTargetId = model.getProjectDivId();
 
-      x_left = params.x; 
-      y_top = params.y; 
-
       distDragContainerId = "distDragContainer";
+
+      targetId = (params.targetId === undefined) ? undefined : params.targetId;
+      //console.log("distance: targetId %s", targetId);
+
+      klass = (params.klass === undefined) ? "" : params.klass; 
 
       sliderStep = 1;
  
@@ -387,7 +375,7 @@ emouseatlas.emap.distance = function() {
       EXT_CHANGE = false;
       NUMBER_CHANGE = false;
 
-      //emouseatlas.emap.drag.register({drag:distDragContainerId, drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:distDragContainerId, drop:dropTargetId}, "distance");
 
       // to help discover the arrow key codes
       //util.addEvent(document, "keydown", function(e) {discoverKeyCode(e);}, false);

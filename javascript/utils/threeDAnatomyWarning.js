@@ -19,7 +19,7 @@
  *
  */
 //---------------------------------------------------------
-//   dontShowAgain.js
+//   threeDAnatomyWarning.js
 //---------------------------------------------------------
 
 //---------------------------------------------------------
@@ -39,7 +39,7 @@ if(!emouseatlas.emap) {
 
 //---------------------------------------------------------
 //---------------------------------------------------------
-emouseatlas.emap.dontShowAgain = function() {
+emouseatlas.emap.threeDAnatomyWarning = function() {
 
    //---------------------------------------------------------
    // modules
@@ -75,11 +75,10 @@ emouseatlas.emap.dontShowAgain = function() {
       query = emouseatlas.emap.tiledImageQuery;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
-      query.register(this);
+      model.register(this, "threeDAnatomyWarning");
+      view.register(this, "threeDAnatomyWarning");
 
-      //console.log("dontShowAgain initialise");
+      //console.log("threeDAnatomyWarning initialise");
 
       project = (params.project === undefined) ? "emap" : params.project;
 
@@ -90,15 +89,15 @@ emouseatlas.emap.dontShowAgain = function() {
 
       mu = ' \u03BCm';
       createElements();
-      emouseatlas.emap.drag.register({drag:"dontShowAgainContainer", drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:"threeDAnatomyWarningContainer", drop:dropTargetId}, "threeDAnatomyWarning");
 
    }; // initialise
 
    //---------------------------------------------------------------
    var createElements = function(modelChanges) {
 
-      //console.log("dontShowAgain createElements");
-      var dontShowAgainContainer;
+      //console.log("threeDAnatomyWarning createElements");
+      var threeDAnatomyWarningContainer;
       var selectedTerms;
       var key;
       var termDets;
@@ -108,17 +107,19 @@ emouseatlas.emap.dontShowAgain = function() {
       var klass;
       var top;
       var titleText;
-      var explainContainer;;
-      var explainDiv;;
-      var explanation;;
-      var explainH;;
-      var itemDiv;
-      var itemIdContainer;
-      var itemIdDiv;
-      var itemDescContainer;
-      var itemDescDiv;
-      var itemRadioContainer;
-      var itemRadio;
+      var warningContainer;;
+      var warningDiv;;
+      var warning;;
+      var warningH;;
+      var remedyContainer;
+      var remedyDiv;
+      var remedy;
+      var remedyH;
+      var neverContainer;
+      var neverDiv;
+      var never;
+      var neverH;
+      /*
       var buttonContainer;
       var okButtonContainer;
       var okButtonDiv;
@@ -137,22 +138,24 @@ emouseatlas.emap.dontShowAgain = function() {
       var chkbxDiv;
       var chkbx;
       var chkbxLabel;
+      */
 
-      dontShowAgainContainer = new Element('div', {
-	 'id': 'dontShowAgainContainer'
+      threeDAnatomyWarningContainer = new Element('div', {
+	 'id': 'threeDAnatomyWarningContainer'
       });
       //target = $(trgt);
       target = $(dropTargetId);
-      dontShowAgainContainer.inject(target, 'inside');
+      threeDAnatomyWarningContainer.inject(target, 'inside');
 
       queryModes = model.getQueryModes();
 
+      /*
       titleTextContainer = new Element('div', {
-         'class': 'dontShowAgainTitleTextContainer'
+         'class': 'threeDAnatomyWarningTitleTextContainer'
       });
 
       titleTextDiv = new Element('div', {
-         'class': 'dontShowAgainTitleText'
+         'class': 'threeDAnatomyWarningTitleText'
       });
       switch (project.toLowerCase()) {
          case 'emap':
@@ -164,94 +167,137 @@ emouseatlas.emap.dontShowAgain = function() {
       titleTextDiv.set('text', titleText);
 
       titleTextDiv.inject(titleTextContainer, 'inside');
-      titleTextContainer.inject(dontShowAgainContainer, 'inside');
+      titleTextContainer.inject(threeDAnatomyWarningContainer, 'inside');
+      */
 
       //----------------------------------------
-      // container for the explanation
+      // container for the warning
       //----------------------------------------
 
-      explainContainer = new Element('div', {
-         'id': 'dontShowAgainExplainContainer',
-         'class': 'dontShowAgainExplainContainer'
+      warningContainer = new Element('div', {
+         'id': 'threeDAnatomyWarningWarningContainer',
+         'class': 'threeDAnatomyWarningMsgContainer'
       });
 
-      explainDivHeader = new Element('h3', {
-         'id': 'dontShowAgainExplainDivHeader',
-         'class': 'dontShowAgainExplainDivHeader'
+      warningDivHeader = new Element('h3', {
+         'id': 'threeDAnatomyWarningWarningDivHeader',
+         'class': 'threeDAnatomyWarningMsgDivHeader'
       });
-      explainDivHeader.set('text', "Warning");
+      warningDivHeader.set('text', "Warning");
 
-      explainDiv = new Element('div', {
-         'id': 'dontShowAgainExplainDiv',
-         'class': 'dontShowAgainExplainDiv'
+      warningDiv = new Element('div', {
+         'id': 'threeDAnatomyWarningWarningDiv',
+         'class': 'threeDAnatomyWarningMsgDiv'
       });
 
       switch (project.toLowerCase()) {
          case 'emap':
-            explanation = "there is a potential performance issue if too many 3d surfaces are displayed at once";
-	    break;
 	 default:
-            explanation = "there is a potential performance issue if too many 3d surfaces are displaye at onced";
+	    warning = "<center>";
+            warning += "Displaying too many 3d surfaces in a web browser can cause your computer to become slow or un-responsive.";
+	    warning += "<center>";
+	    break;
       }
-      explainDiv.set('text', explanation);
+      warningDiv.innerHTML = warning;
 
-      explainContainer.inject(dontShowAgainContainer, 'inside');
-      explainDivHeader.inject(explainContainer, 'inside');
-      explainDiv.inject(explainContainer, 'inside');
+      warningContainer.inject(threeDAnatomyWarningContainer, 'inside');
+      warningDivHeader.inject(warningContainer, 'inside');
+      warningDiv.inject(warningContainer, 'inside');
 
-      explainH = parseInt(window.getComputedStyle(explainDiv, null).getPropertyValue("height"));
+      warningH = parseInt(window.getComputedStyle(warningDiv, null).getPropertyValue("height"));
+      //console.log("warningH ",warningH);
+
+      //----------------------------------------
+      // container for the remedy
+      //----------------------------------------
+
+      remedyContainer = new Element('div', {
+         'id': 'threeDAnatomyWarningRemedyContainer',
+         'class': 'threeDAnatomyWarningMsgContainer'
+      });
+
+      /*
+      remedyDivHeader = new Element('h3', {
+         'id': 'threeDAnatomyWarningRemedyDivHeader',
+         'class': 'threeDAnatomyWarningMsgDivHeader'
+      });
+      remedyDivHeader.set('text', "Warning");
+      */
+
+      remedyDiv = new Element('div', {
+         'id': 'threeDAnatomyWarningRemedyDiv',
+         'class': 'threeDAnatomyWarningMsgDiv remedy'
+      });
+
+      switch (project.toLowerCase()) {
+         case 'emap':
+	 default:
+	    remedy = "<center>";
+	    remedy += "If this happens you may wish to limit the number of anatomy components which are selected for display (checked in the tree).";
+	    remedy += "<br><br>(Closing and re-starting your web-browser should restore normal browser performance.)";
+	    remedy += "<br><br><span class='never'>This message will not be shown again.</span>";
+	    remedy += "<center>";
+	    break;
+      }
+      remedyDiv.innerHTML = remedy;
+
+      remedyContainer.inject(threeDAnatomyWarningContainer, 'inside');
+      //remedyDivHeader.inject(remedyContainer, 'inside');
+      remedyDiv.inject(remedyContainer, 'inside');
+
+      remedyH = parseInt(window.getComputedStyle(remedyDiv, null).getPropertyValue("height"));
       //console.log("explainH ",explainH);
 
       //============================================================
       //----------------------------------------
       // spacer
       //----------------------------------------
-      dontShowAgainSpacer_1 = new Element('div', {
-         "class": "dontShowAgainSpacer"
+      threeDAnatomyWarningSpacer_1 = new Element('div', {
+         "class": "threeDAnatomyWarningSpacer"
       });
-      dontShowAgainSpacer_1.inject(dontShowAgainContainer, 'inside');
+      threeDAnatomyWarningSpacer_1.inject(threeDAnatomyWarningContainer, 'inside');
 
-      dontShowAgainSpacerBGdark_1 = new Element('div', {
-         "class": "dontShowAgainSpacerBGdark"
+      threeDAnatomyWarningSpacerBGdark_1 = new Element('div', {
+         "class": "threeDAnatomyWarningSpacerBGdark"
       });
-      dontShowAgainSpacerBGlight_1 = new Element('div', {
-         "class": "dontShowAgainSpacerBGlight"
+      threeDAnatomyWarningSpacerBGlight_1 = new Element('div', {
+         "class": "threeDAnatomyWarningSpacerBGlight"
       });
-      dontShowAgainSpacerBGdark_1.inject(dontShowAgainSpacer_1, 'inside');
-      dontShowAgainSpacerBGlight_1.inject(dontShowAgainSpacer_1, 'inside');
+      threeDAnatomyWarningSpacerBGdark_1.inject(threeDAnatomyWarningSpacer_1, 'inside');
+      threeDAnatomyWarningSpacerBGlight_1.inject(threeDAnatomyWarningSpacer_1, 'inside');
 
       //----------------------------------------
       // the container for the buttons
       //----------------------------------------
       buttonContainer = new Element('div', {
-	 'id': 'dontShowAgainButtonContainer',
-	 'class': 'dontShowAgainButtonContainer'
+	 'id': 'threeDAnatomyWarningButtonContainer',
+	 'class': 'threeDAnatomyWarningButtonContainer'
       });
 
       buttonDiv = new Element('div', {
-	 'id': 'dontShowAgainButtonDiv',
-	 'class': 'dontShowAgainButtonDiv'
+	 'id': 'threeDAnatomyWarningButtonDiv',
+	 'class': 'threeDAnatomyWarningButtonDiv'
       });
 
       okButton = new Element('div', {
-	 'id': 'dontShowAgainOKButton',
-	 'class': 'dontShowAgainButton ok'
+	 'id': 'threeDAnatomyWarningOKButton',
+	 'class': 'threeDAnatomyWarningButton ok'
       });
       okButton.appendText('Continue');
 
       cancelButton = new Element('div', {
-	 'id': 'dontShowAgainCancelButton',
-	 'class': 'dontShowAgainButton cancel'
+	 'id': 'threeDAnatomyWarningCancelButton',
+	 'class': 'threeDAnatomyWarningButton cancel'
       });
       cancelButton.appendText('Cancel');
 
       okButton.inject(buttonDiv, 'inside');
       cancelButton.inject(buttonDiv, 'inside');
       buttonDiv.inject(buttonContainer, 'inside');
-      buttonContainer.inject(dontShowAgainContainer, 'inside');
+      buttonContainer.inject(threeDAnatomyWarningContainer, 'inside');
 
-      emouseatlas.emap.utilities.addButtonStyle('dontShowAgainOKButton');
-      emouseatlas.emap.utilities.addButtonStyle('dontShowAgainCancelButton');
+      emouseatlas.emap.utilities.addButtonStyle('threeDAnatomyWarningOKButton');
+      emouseatlas.emap.utilities.addButtonStyle('threeDAnatomyWarningCancelButton');
 
       //----------------------------------------
       // add event handlers for the buttons
@@ -265,79 +311,79 @@ emouseatlas.emap.dontShowAgain = function() {
 	 doCancel();
       });
 
+      /*
       //----------------------------------------
       // the container for the 'always show' radio buttons
       //----------------------------------------
       radioContainer = new Element('div', {
-	 'id': 'dontShowAgainRadioContainer',
-	 'class': 'dontShowAgainRadioContainer'
+	 'id': 'threeDAnatomyWarningRadioContainer',
+	 'class': 'threeDAnatomyWarningRadioContainer'
       });
 
       radioNeverDiv = new Element('div', {
-	 'id': 'dontShowAgainRadioNeverDiv',
-	 'class': 'dontShowAgainRadioDiv'
+	 'id': 'threeDAnatomyWarningRadioNeverDiv',
+	 'class': 'threeDAnatomyWarningRadioDiv'
       });
 
       radioAlwaysDiv = new Element('div', {
-	 'id': 'dontShowAgainRadioAlwaysDiv',
-	 'class': 'dontShowAgainRadioDiv'
+	 'id': 'threeDAnatomyWarningRadioAlwaysDiv',
+	 'class': 'threeDAnatomyWarningRadioDiv'
       });
 
       radioAskDiv = new Element('div', {
-	 'id': 'dontShowAgainRadioAskDiv',
-	 'class': 'dontShowAgainRadioDiv'
+	 'id': 'threeDAnatomyWarningRadioAskDiv',
+	 'class': 'threeDAnatomyWarningRadioDiv'
       });
 
       radioNever = new Element('input', {
          "type": "radio",
          "checked": true,
-	 'id': 'dontShowAgainRadioNever',
-	 'name': 'dontShowAgainRadio',
-	 'class': 'dontShowAgain'
+	 'id': 'threeDAnatomyWarningRadioNever',
+	 'name': 'threeDAnatomyWarningRadio',
+	 'class': 'threeDAnatomyWarning'
       });
 
       radioNeverLabel = new Element('label', {
-	 'id': 'dontShowAgainRadioLabelNever',
-	 'class': 'dontShowAgainRadio'
+	 'id': 'threeDAnatomyWarningRadioLabelNever',
+	 'class': 'threeDAnatomyWarningRadio'
       });
       radioNeverLabelTxt = "never display more than " + MAX_TO_SHOW + " surfaces";
       radioNeverLabel.set('text', radioNeverLabelTxt);
-      radioNeverLabel.for = 'dontShowAgainRadioLabelNever';
+      radioNeverLabel.for = 'threeDAnatomyWarningRadioLabelNever';
       //.........................
       radioAlways = new Element('input', {
          "type": "radio",
          "checked": false,
-	 'id': 'dontShowAgainRadioAlways',
-	 'name': 'dontShowAgainRadio',
-	 'class': 'dontShowAgain'
+	 'id': 'threeDAnatomyWarningRadioAlways',
+	 'name': 'threeDAnatomyWarningRadio',
+	 'class': 'threeDAnatomyWarning'
       });
 
       radioAlwaysLabel = new Element('label', {
-	 'id': 'dontShowAgainRadioLabelAlways',
-	 'class': 'dontShowAgainRadio'
+	 'id': 'threeDAnatomyWarningRadioLabelAlways',
+	 'class': 'threeDAnatomyWarningRadio'
       });
       radioAlwaysLabel.set('text', "display what is selected");
-      radioNeverLabel.for = 'dontShowAgainRadioLabelAlways';
+      radioNeverLabel.for = 'threeDAnatomyWarningRadioLabelAlways';
       //.........................
       /*
       radioAsk = new Element('input', {
          "type": "radio",
          "checked": false,
-	 'id': 'dontShowAgainRadioAsk',
-	 'name': 'dontShowAgainRadio',
-	 'class': 'dontShowAgain'
+	 'id': 'threeDAnatomyWarningRadioAsk',
+	 'name': 'threeDAnatomyWarningRadio',
+	 'class': 'threeDAnatomyWarning'
       });
 
       radioAskLabel = new Element('label', {
-	 'id': 'dontShowAgainRadioLabelAsk',
-	 'class': 'dontShowAgainRadio'
+	 'id': 'threeDAnatomyWarningRadioLabelAsk',
+	 'class': 'threeDAnatomyWarningRadio'
       });
       radioAskLabel.set('text', "always ask me");
-      radioNeverLabel.for = 'dontShowAgainRadioLabelAsk';
-      */
+      radioNeverLabel.for = 'threeDAnatomyWarningRadioLabelAsk';
       //.........................
 
-      radioContainer.inject(dontShowAgainContainer, 'inside');
+      radioContainer.inject(threeDAnatomyWarningContainer, 'inside');
       radioNeverDiv.inject(radioContainer, 'inside');
       radioAlwaysDiv.inject(radioContainer, 'inside');
       radioAskDiv.inject(radioContainer, 'inside');
@@ -363,51 +409,53 @@ emouseatlas.emap.dontShowAgain = function() {
       //----------------------------------------
       // spacer
       //----------------------------------------
+      */
       /*
-      dontShowAgainSpacer_2 = new Element('div', {
-         "id": "dontShowAgainSpacer_2",
-         "class": "dontShowAgainSpacer"
+      threeDAnatomyWarningSpacer_2 = new Element('div', {
+         "id": "threeDAnatomyWarningSpacer_2",
+         "class": "threeDAnatomyWarningSpacer"
       });
-      dontShowAgainSpacer_2.inject(dontShowAgainContainer, 'inside');
+      threeDAnatomyWarningSpacer_2.inject(threeDAnatomyWarningContainer, 'inside');
 
-      dontShowAgainSpacerBGdark_2 = new Element('div', {
-         "class": "dontShowAgainSpacerBGdark"
+      threeDAnatomyWarningSpacerBGdark_2 = new Element('div', {
+         "class": "threeDAnatomyWarningSpacerBGdark"
       });
-      dontShowAgainSpacerBGlight_2 = new Element('div', {
-         "class": "dontShowAgainSpacerBGlight"
+      threeDAnatomyWarningSpacerBGlight_2 = new Element('div', {
+         "class": "threeDAnatomyWarningSpacerBGlight"
       });
-      dontShowAgainSpacerBGdark_2.inject(dontShowAgainSpacer_2, 'inside');
-      dontShowAgainSpacerBGlight_2.inject(dontShowAgainSpacer_2, 'inside');
+      threeDAnatomyWarningSpacerBGdark_2.inject(threeDAnatomyWarningSpacer_2, 'inside');
+      threeDAnatomyWarningSpacerBGlight_2.inject(threeDAnatomyWarningSpacer_2, 'inside');
       */
 
+      /*
       //----------------------------------------
       // the container for the 'don't show again' checkbox
       //----------------------------------------
       chkbxContainer = new Element('div', {
-	 'id': 'dontShowAgainChkbxContainer',
-	 'class': 'dontShowAgainChkbxContainer'
+	 'id': 'threeDAnatomyWarningChkbxContainer',
+	 'class': 'threeDAnatomyWarningChkbxContainer'
       });
 
       chkbxDiv = new Element('div', {
-	 'id': 'dontShowAgainChkbxDiv',
-	 'class': 'dontShowAgainChkbxDiv'
+	 'id': 'threeDAnatomyWarningChkbxDiv',
+	 'class': 'threeDAnatomyWarningChkbxDiv'
       });
 
       chkbx = new Element('input', {
          "type": "checkbox",
          "checked": false,
-	 'id': 'dontShowAgainChkbx',
-	 'class': 'dontShowAgain'
+	 'id': 'threeDAnatomyWarningChkbx',
+	 'class': 'threeDAnatomyWarning'
       });
 
       chkbxLabel = new Element('label', {
-	 'id': 'dontShowAgainChkbxLabel',
-	 'class': 'dontShowAgainChkbx',
-	 'for': 'dontShowAgainChkbx'
+	 'id': 'threeDAnatomyWarningChkbxLabel',
+	 'class': 'threeDAnatomyWarningChkbx',
+	 'for': 'threeDAnatomyWarningChkbx'
       });
       chkbxLabel.set('text', "don't show this warning again");
 
-      chkbxContainer.inject(dontShowAgainContainer, 'inside');
+      chkbxContainer.inject(threeDAnatomyWarningContainer, 'inside');
       chkbxDiv.inject(chkbxContainer, 'inside');
       chkbx.inject(chkbxDiv, 'inside');
       chkbxLabel.inject(chkbxDiv, 'inside');
@@ -419,6 +467,7 @@ emouseatlas.emap.dontShowAgain = function() {
       chkbx.addEvent('click', function(e){
 	 doChkbxChanged(e);
       });
+      */
 
    }; // createElements
 
@@ -430,7 +479,7 @@ emouseatlas.emap.dontShowAgain = function() {
    //---------------------------------------------------------------
    var viewUpdate = function(viewChanges, from) {
 
-      if(viewChanges.dontShowAgainDialog) {
+      if(viewChanges.threeDAnatomyWarningDialog) {
          setVisible(true);
       }
 
@@ -459,7 +508,7 @@ emouseatlas.emap.dontShowAgain = function() {
             //console.log("doRadioClicked: radioNever %s idlc",idlc);
 	    max = view.getOrigMax3dToShow();
             txt = "never display more than " + max + surfaces;
-	    radio = $('dontShowAgainRadioLabelNever');
+	    radio = $('threeDAnatomyWarningRadioLabelNever');
             radio.set('text', txt);
 	    view.setMax3dToShow(max);
 	    break;
@@ -491,7 +540,7 @@ emouseatlas.emap.dontShowAgain = function() {
       var viz;
 
       viz = (yes) ? "visible" : "hidden";
-      container = $("dontShowAgainContainer");
+      container = $("threeDAnatomyWarningContainer");
       container.setStyle("visibility", viz);
    };
 
@@ -507,7 +556,7 @@ emouseatlas.emap.dontShowAgain = function() {
 
       setVisible(false);
 
-      radioAlways= $('dontShowAgainRadioAlways');
+      radioAlways= $('threeDAnatomyWarningRadioAlways');
       //if(radioAlways.checked) {
          view.okToProceed3d();
       //}
@@ -515,7 +564,7 @@ emouseatlas.emap.dontShowAgain = function() {
 
    //---------------------------------------------------------------
    var getName = function() {
-      return "dontShowAgain";
+      return "threeDAnatomyWarning";
    };
 
    //---------------------------------------------------------

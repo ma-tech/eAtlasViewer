@@ -58,7 +58,7 @@ emouseatlas.emap.mouseFeedback = function() {
       dropTargetId = mouseFeedbackTargetId;
 
       createElements();
-      emouseatlas.emap.drag.register({drag:"mouseFeedbackDiv", drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:"mouseFeedbackDiv", drop:dropTargetId}, "mouseFeedback");
    };
 
    //---------------------------------------------------------

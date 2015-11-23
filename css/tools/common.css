@@ -136,6 +136,130 @@ select option {
    font-weight:normal;
 }
 
+/*-----------------------------------*/
+/*   from project.css                */
+/*-----------------------------------*/
+a {
+   text-decoration: none;
+}
+a:link {
+   color:#0000ff;
+}
+a:visited {
+   color:#0000bb;
+}
+a:hover {
+   color:#9900bb;
+}
+a:active {
+   color:#0055bb;
+}
+
+#projectDiv {
+   margin: 0px;
+   padding: 0px;
+}
+
+#logoContainer {
+   position: absolute;
+   left: 40px;
+   top: 7px;
+   margin: 0px;
+   padding: 0px;
+   width: 80px;
+   z-index: 1000;
+}
+#logoContainer.noToolBox {
+   left: 10px;
+}
+
+#helpIconContainer {
+   position: absolute;
+   right: 4px;
+   bottom:4px;
+   margin: 0px;
+   padding: 0px;
+   width: 16px;
+   height: 16px;
+   z-index: 1000;
+   visibility: visible;
+}
+#helpIconContainer.noToolBox {
+   visibility: hidden;
+}
+
+#emapIIPViewerDiv {
+   position: absolute;
+   left: 150px;
+   right: 5px;
+   top: 50px;
+   bottom: 10px;
+   width: auto;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 2px #ccc;
+   background: #fff;
+}
+#emapIIPViewerDiv.tree {
+   right: 245px;
+}
+#emapIIPViewerDiv.maximised {
+   left: 0px;
+   right: 0px;
+   top: 0px;
+   bottom: 0px;
+}
+
+#toolContainerDiv {
+   position: absolute;
+   top: 85px;
+   left: 4px;
+   width: 144px;
+   margin: 0px;
+   padding: 0px;
+   border: solid 1px #ccc;
+   border: none;
+   z-index: 1;
+}
+
+#contextMenuHintDiv {
+   font-size: 9px;
+   text-align: center;
+   position: relative;
+   left: 2px;
+   top: 0px;
+   width: 132px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 2px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #ffe;
+   visibility: visible;
+   z-index: 1000;
+}
+
+#debugDiv {
+   position: absolute;
+   top: 52px;
+   left: 152px;
+   height: 100px;
+   width: 200px;
+   padding: 0px 4px;
+   font-size: 9px;
+   color: #000;
+   text-align: left;
+   background: #eeeeee;
+   visibility: visible;
+   z-index: 100;
+}
+
+p.viewerInfo {
+   margin: 0,2px;
+}
+/*-----------------------------------*/
 .closeButton {
    position: relative;
    right: -1px;
@@ -174,4 +298,86 @@ select option {
    padding: 0px;
    margin: 0px;
    border: none;
+}
+/*-----------------------*/
+.topEdge {
+   position: absolute;
+   top: -10px;
+   left: 10px;
+   width: 226px;
+   margin: 0;
+   padding: 0;
+   visibility: visible;
+   border: none;
+   background: #ccc;
+}
+
+.topLeftCorner {
+   position: absolute;
+   top: -10px;
+   left: 0px;
+   width: 10px;
+   height: 10px;
+   margin: 0;
+   padding: 0;
+   visibility: visible;
+   border: none;
+   background: url("/eAtlasViewer_ema/images/corners/NW10.png");
+}
+
+.topRightCorner {
+   position: absolute;
+   top: -10px;
+   right: 0px;
+   width: 10px;
+   height: 10px;
+   margin: 0;
+   padding: 0;
+   visibility: visible;
+   border: none;
+   background: url("/eAtlasViewer_ema/images/corners/NE10.png");
+}
+
+.leftEdge {
+   position: absolute;
+   top: -10px;
+   left: -2px;
+   width: 2px;
+   height: 10px;
+   margin: 0;
+   padding: 0;
+   visibility: visible;
+   border: none;
+}
+
+.rightEdge {
+   position: absolute;
+   top: -10px;
+   left: -2px;
+   width: 2px;
+   height: 10px;
+   margin: 0;
+   padding: 0;
+   visibility: visible;
+   border: none;
+}
+/*-----------------------*/
+.toolbox {
+   position: absolute;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   background: #fafafa;
+   visibility: hidden;
+   z-index: 10;
+}
+
+.dropDownContainer {
+   position: absolute;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   width: 102px;
+   left: 0px;
+   visibility: visible;
 }

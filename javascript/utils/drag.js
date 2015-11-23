@@ -31,21 +31,32 @@ emouseatlas.emap.drag = function() {
    //---------------------------------------------------------
    //   methods
    //---------------------------------------------------------
-   var register = function (obj) {
+   var register = function (obj, from) {
+
+      //console.log("drag.register from %s", from);
 
       var todrag;
       var todrop;
+      var doc;
 
       if(dragObjs === undefined) {
          dragObjs = {};
       }
 
-      //console.log("register ",dragObjs);
+      if(from === "tiledImageView" && obj.drag === "threeDAnatomyHelpIFrameContainer") {
+         //console.log("drag.register ",obj.drag);
+	 if(emouseatlas.emap.threeDAnatomy) {
+	    doc = emouseatlas.emap.threeDAnatomy.getDocument();
+	    todrag = doc.getElementById(obj.drag);
+	 }
+      } else {
+         todrag = document.getElementById(obj.drag);
+      }
 
-      todrag = document.getElementById(obj.drag);
       todrop = document.getElementById(obj.drop);
 
       if(todrag === null || todrag === undefined) {
+         //console.log("drag.register returning as todrag  from %s is ",from,todrag);
          return false;
       }
 
@@ -73,6 +84,7 @@ emouseatlas.emap.drag = function() {
 
    //---------------------------------------------------------
    var doDragStart = function (e) {
+      //console.log("doDragStart ",e.target.id);
       if (!e) {
          var e = window.event;
       }

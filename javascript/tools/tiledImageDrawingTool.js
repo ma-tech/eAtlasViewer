@@ -51,9 +51,9 @@ var tiledImageDrawingTool = new Class ({
       this.view = params.view;
       this.query = params.query;
 
-      this.model.register(this);
-      this.view.register(this);
-      this.query.register(this);
+      this.model.register(this, "tiledImageDrawingTool");
+      this.view.register(this, "tiledImageDrawingTool");
+      this.query.register(this, "tiledImageDrawingTool");
 
       this.emapDraw = undefined;
 

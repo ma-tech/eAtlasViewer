@@ -277,7 +277,9 @@ emouseatlas.emap.emageExpression = function() {
    //   public methods
    //---------------------------------------------------------
    var initialise = function (params) {
+
       var _debug = false;
+      var webServer;
 
       if(_debug) {
          console.log("enter emageExpression.initialise params = ",params);
@@ -323,10 +325,12 @@ emouseatlas.emap.emageExpression = function() {
 
       EMAGE_ENTRY_URL = "http://www.emouseatlas.org/emagewebapp/pages/emage_entry_page.jsf?id=EMAGE:";
 
-      emage_eurexpress_url = "http://drumguish.hgu.mrc.ac.uk/eAtlasViewer/php/eurexpress.php?assay=";
-      emage_iip_sub_url = "http://drumguish.hgu.mrc.ac.uk/emage_iipviewer/application/emageSub/php/submission.php?greyImg=";
-      emage_iip_exp_url = "http://drumguish.hgu.mrc.ac.uk/emage_iipviewer/application/emageExpression/php/gene.php?greyImg=";
-      emage_iip_opt_url = "http://drumguish.hgu.mrc.ac.uk/emage_iipviewer/application/emageOpt/php/opt.php?greyImg=";
+      webServer = emouseatlas.emap.tiledImageModel.getWebServer();
+
+      emage_eurexpress_url =  webServer + "/eAtlasViewer/php/eurexpress.php?assay=";
+      emage_iip_sub_url =  webServer + "/emage_iipviewer/application/emageSub/php/submission.php?greyImg=";
+      emage_iip_exp_url =  webServer + "/emage_iipviewer/application/emageExpression/php/gene.php?greyImg=";
+      emage_iip_opt_url =  webServer + "/emage_iipviewer/application/emageOpt/php/opt.php?greyImg=";
 
       DISPLAY = params.display;
       STAGE = params.stage;

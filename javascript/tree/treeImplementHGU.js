@@ -655,36 +655,6 @@ Mif.Tree.Node.implement({
       //---------------------------------------------------------
       new3d: function () {
 
-         /*
-         var values='';
-         var el;
-         var item;
-         var num;
-         var num2;
-         var i;
-         var j;
-         
-         //Get all selected nodes
-         var allChildren = [];
-         allChildren.combine(this.tree.root.getSelectedNodes([]));
-         num = allChildren.length;
-         for(i=0; i<num; i++) {
-            el = allChildren[i];
-            // we are only interested in selected (checked) elements.
-            if ($("cb_" + el.id)){
-               if($("cb_" + el.id).checked) {
-                  if (el.domainId !== undefined && el.domainId != ""){
-                     values = values + "&sel=" + el.domainId + "," + el.color;
-                  }
-               } else {
-                  continue;
-               }
-            } else {
-               continue;
-            }
-	 }
-
-         */
          this.tree.view.new3d();
       },
 

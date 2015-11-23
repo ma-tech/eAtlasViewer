@@ -97,7 +97,7 @@ var DraggableWindow = new Class ({
 	 this.topEdgeWidth = 2;
       }
 
-      this.view.register(this);
+      this.view.register(this, "draggableWindow");
 
       this.container = new Element( 'div', {
 	 'id': this.title + '-container',
@@ -379,7 +379,7 @@ var DraggableWindow = new Class ({
 
       //if(this.initiator.name === "colChooser") {
       //if(this.initiator.name === "Locator") {
-       //  console.log("enter DraggableWindow.setPosition: %s",this.toBottom);
+         //console.log("enter DraggableWindow.setPosition: toRight %s",this.toRight);
       //}
       
       if(this.toRight) {

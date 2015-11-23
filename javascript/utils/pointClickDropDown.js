@@ -54,8 +54,9 @@ emouseatlas.emap.pointClickDropDown = function() {
    var model;
    var view;
    var util;
+   var klass;
    var project;
-   var trgt;
+   var targetId;
    var type;
    var typeLC;
    var pointClickImgData;
@@ -80,15 +81,17 @@ emouseatlas.emap.pointClickDropDown = function() {
    var initialise = function(params) {
 
       //console.log(params);
+      console.log("pointClickDropDown.initialise params ",params);
 
       model = emouseatlas.emap.tiledImageModel;
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "pointClickDropDown");
+      view.register(this, "pointClickDropDown");
 
-      project = (params.project === undefined) ? "kaufman_atlas" : params.project;
+      //project = (params.project === undefined) ? "kaufman_atlas" : params.project;
+      project = model.getProject();
       //console.log("pointClickDropDown.initialise project %s",project);
 
       if(project === "kaufman_atlas") {
@@ -96,16 +99,19 @@ emouseatlas.emap.pointClickDropDown = function() {
       } else if(project === "kaufman_supplement") {
          pointClick = emouseatlas.emap.supplementPointClick;
       }
-      //console.log("pointClickDropDown.initialise pointClick ",pointClick);
+      console.log("pointClickDropDown.initialise pointClick ",pointClick);
 
       if(pointClick) {
-         pointClick.register(this);
+         pointClick.register(this, "pointClickDropDown");
       } else {
          return false;
       }
 
       dropTargetId = model.getProjectDivId();
-      trgt = params.targetId;
+
+      targetId = (params.targetId === undefined) ? undefined : params.targetId;
+
+      klass = (params.klass === undefined) ? "" : params.klass; 
 
       type = (params.type === undefined) ? "" : params.type;
       typeLC = type.toLowerCase();
@@ -125,7 +131,7 @@ emouseatlas.emap.pointClickDropDown = function() {
    var createElements = function () {
 
       //var targetId = model.getProjectDivId();
-      var target = $(trgt);
+      var target;
       var optionArr = [];
       var len;
       var option;
@@ -137,12 +143,15 @@ emouseatlas.emap.pointClickDropDown = function() {
 
       //console.log("pointClickDropDown.createElements");
 
+      targetId = (targetId) ? targetId : model.getProjectDivId();
+      target = $(targetId);
+
       //----------------------------------------
       // the overall container
       //----------------------------------------
       dropDownContainer = new Element('div', {
-         'id': typeLC + '-dropDownContainer',
-         'class': 'dropDownContainer ' + typeLC
+         'id': typeLC + 'DropDown',
+	 'class': klass
       });
       
       // the height of the selector image is unknown so we can't set the top relative to it!
@@ -409,10 +418,9 @@ emouseatlas.emap.pointClickDropDown = function() {
    //---------------------------------------------------------------
    var viewUpdate = function(viewChanges) {
 
-      //console.log("viewUpdate");
-
       //.................................
-      if(viewChanges.toolbox === true) {
+      if(viewChanges.toolbox === false) {
+        //console.log("poinlickDropdown: viewChanges.toolbox  %s",viewChanges.toolbox);
 	if(view.toolboxVisible()) {
            setDropdownVisible(true);
         } else {
@@ -475,7 +483,7 @@ emouseatlas.emap.pointClickDropDown = function() {
 
       }
 
-      emouseatlas.emap.drag.register({drag: dropDownContainer.id, drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag: dropDownContainer.id, drop:dropTargetId}, "pointClickDropDown");
 
       return false;
    };
@@ -483,7 +491,9 @@ emouseatlas.emap.pointClickDropDown = function() {
    //---------------------------------------------------------------
    var setDropdownVisible = function(show) {
       var viz = show ? "visible" : "hidden";
-      dropDownContainer.setStyle("visibility", viz);
+      if(dropDownContainer) {
+         dropDownContainer.setStyle("visibility", viz);
+      }
    };
 
    //---------------------------------------------------------------

@@ -47,7 +47,8 @@ emouseatlas.emap.rotation = function() {
    var model;
    var view;
    var util;
-   var trgt;
+   var targetId;
+   var klass;
    var pitchSlider;
    var pitchNumber;
    var yawSlider;
@@ -59,9 +60,6 @@ emouseatlas.emap.rotation = function() {
    var sliderStep;
    var maxVal;
    var minVal;
-   var x_left;
-   var y_top;
-   //var MOUSE_DOWN;
    var EXT_CHANGE;
    var NUMBER_CHANGE;
    var IS_VISIBLE;
@@ -72,7 +70,6 @@ emouseatlas.emap.rotation = function() {
    //---------------------------------------------------------
    var createElements = function () {
 
-      var targetId;
       var target;
       var sliderLength;
       var isHorizontal;
@@ -90,7 +87,7 @@ emouseatlas.emap.rotation = function() {
       var labels;
       //------------------------
 
-      targetId = model.getProjectDivId();
+      targetId = (targetId) ? targetId : model.getProjectDivId();
       target = $(targetId);
 
       rotDragContainer = $(rotDragContainerId);
@@ -103,12 +100,8 @@ emouseatlas.emap.rotation = function() {
       // the drag container
       //----------------------------------------
       rotDragContainer = new Element('div', {
-         'id': rotDragContainerId
-      });
-
-      rotDragContainer.setStyles({
-         "top": y_top + "px",
-         "left": x_left + "px"
+         'id': rotDragContainerId,
+	 'class': klass
       });
 
       //----------------------------------------
@@ -183,12 +176,6 @@ emouseatlas.emap.rotation = function() {
       pitchSlider.addEvent('input',function(e) {
          doRotSliderChanged(e);
       });
-      pitchSlider.addEvent('mousedown',function(e) {
-         doMouseUpDown(e);
-      });
-      pitchSlider.addEvent('mouseup',function(e) {
-         doMouseUpDown(e);
-      });
       
       pitchNumber.addEvent('change',function(e) {
          doRotNumberChanged(e);
@@ -196,6 +183,13 @@ emouseatlas.emap.rotation = function() {
       
       pitchNumber.addEvent('input',function(e) {
          doRotNumberChanged(e);
+      });
+
+      pitchSlider.addEvent('mousedown',function(e) {
+         enableRotToolDrag(false);
+      });
+      pitchSlider.addEvent('mouseup',function(e) {
+         enableRotToolDrag(true);
       });
 
       //-----------------------------------------------------------------------
@@ -246,12 +240,6 @@ emouseatlas.emap.rotation = function() {
       yawSlider.addEvent('input',function(e) {
          doRotSliderChanged(e);
       });
-      yawSlider.addEvent('mousedown',function(e) {
-         doMouseUpDown(e);
-      });
-      yawSlider.addEvent('mouseup',function(e) {
-         doMouseUpDown(e);
-      });
       
       yawNumber.addEvent('change',function(e) {
          doRotNumberChanged(e);
@@ -259,6 +247,13 @@ emouseatlas.emap.rotation = function() {
       
       yawNumber.addEvent('input',function(e) {
          doRotNumberChanged(e);
+      });
+
+      yawSlider.addEvent('mousedown',function(e) {
+         enableRotToolDrag(false);
+      });
+      yawSlider.addEvent('mouseup',function(e) {
+         enableRotToolDrag(true);
       });
 
       //-----------------------------------------------------------------------
@@ -309,12 +304,6 @@ emouseatlas.emap.rotation = function() {
       rollSlider.addEvent('input',function(e) {
          doRotSliderChanged(e);
       });
-      rollSlider.addEvent('mousedown',function(e) {
-         doMouseUpDown(e);
-      });
-      rollSlider.addEvent('mouseup',function(e) {
-         doMouseUpDown(e);
-      });
       
       rollNumber.addEvent('change',function(e) {
          doRotNumberChanged(e);
@@ -322,6 +311,13 @@ emouseatlas.emap.rotation = function() {
       
       rollNumber.addEvent('input',function(e) {
          doRotNumberChanged(e);
+      });
+
+      rollSlider.addEvent('mousedown',function(e) {
+         enableRotToolDrag(false);
+      });
+      rollSlider.addEvent('mouseup',function(e) {
+         enableRotToolDrag(true);
       });
 
       //-----------------------------------------------------------------------
@@ -585,32 +581,18 @@ emouseatlas.emap.rotation = function() {
       return false;
    };
 
-   //---------------------------------------------------------
-   var doMouseUpDown = function (e) {
+   //---------------------------------------------------------------
+   var enableRotToolDrag = function(draggable) {
 
-      var target;
+      //console.log("enableRotToolDrag: %s",draggable);
       var dragContainer;
-      //console.log(e);
 
       dragContainer = $(rotDragContainerId);
-      target = emouseatlas.emap.utilities.getTarget(e);
-      if(target === undefined) {
-         return false;
+      dragContainer.setAttribute("draggable", draggable);
+
+      if(draggable) {
+	 updateRotation();
       }
-      //console.log("doMouseUpDown target.id ",target.id);
-
-      dragContainer = $(rotDragContainerId);
-
-      if(e.type.toLowerCase() === "mousedown") {
-         //MOUSE_DOWN = true;
-         dragContainer.setAttribute("draggable", false);
-      } else if(e.type.toLowerCase() === "mouseup") {
-         //MOUSE_DOWN = false;
-         updateRotation();
-         dragContainer.setAttribute("draggable", true);
-      }
-
-      return false;
 
    };
 
@@ -732,15 +714,17 @@ emouseatlas.emap.rotation = function() {
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "rotation");
+      view.register(this, "rotation");
 
       _debug = false;
 
       dropTargetId = model.getProjectDivId();
 
-      x_left = params.x; 
-      y_top = params.y; 
+      targetId = (params.targetId === undefined) ? undefined : params.targetId;
+
+      klass = (params.klass === undefined) ? "" : params.klass; 
+      //console.log("rotation: klass = -->%s<--",klass);
 
       rotDragContainerId = "rotDragContainer";
 
@@ -748,13 +732,11 @@ emouseatlas.emap.rotation = function() {
  
       createElements();
 
-      //MOUSE_DOWN = false;
-
       EXT_CHANGE = false;
       NUMBER_CHANGE = false;
       IS_VISIBLE = false;
 
-      emouseatlas.emap.drag.register({drag:rotDragContainerId, drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:rotDragContainerId, drop:dropTargetId}, "rotation");
 
       addHandlersForArrowKeys();
 

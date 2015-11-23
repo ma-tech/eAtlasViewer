@@ -46,9 +46,9 @@ var queryTermTool = new Class ({
       this.view = emouseatlas.emap.tiledImageView;
       this.query = emouseatlas.emap.tiledImageQuery;
 
-      this.model.register(this);
-      this.view.register(this);
-      this.query.register(this);
+      this.model.register(this, "queryTermTool");
+      this.view.register(this, "queryTermTool");
+      this.query.register(this, "queryTermTool");
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 

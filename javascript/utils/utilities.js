@@ -1437,6 +1437,37 @@ if(!emouseatlas.emap.utilities) {
 
       //---------------------------------------------------------
       /**
+       *  Returns a hex colour string given an array of RGBA values
+       *  If no alpha is given, returns 'ff' for alpha.
+       */
+      //-----------------------------------------------------
+      decColArrToHexStr: function(col) {
+
+	 var len;
+	 var rHex;
+	 var gHex;
+	 var bHex;
+	 var aHex;
+	 var hexCol;
+
+	 len = col.length;
+
+         rHex = emouseatlas.emap.utilities.toHex(col[0]);
+         gHex = emouseatlas.emap.utilities.toHex(col[1]);
+         bHex = emouseatlas.emap.utilities.toHex(col[2]);
+         aHex = (len > 3) ? emouseatlas.emap.utilities.toHex(col[3]) : "ff";
+
+         hexCol = "0x";
+         hexCol += rHex;
+	 hexCol += gHex;
+	 hexCol += bHex;
+	 hexCol += aHex;
+
+	 return hexCol;
+      },
+
+      //---------------------------------------------------------
+      /**
        *  Returns a hex colour string given RGB values
        */
       //-----------------------------------------------------

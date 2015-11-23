@@ -24,14 +24,32 @@
    border: solid 1px #f00;
 }
 
+#treeDragContainer {
+   position: absolute;
+   right: 3px;
+   top: 51px;
+   margin: 0;
+   padding: 2px 0 0;
+   width: 240px;
+   visibility: visible;
+   border: none;
+   background: none;
+}
+#treeDragContainer.threeD {
+}
+#treeDragContainer.key {
+}
+#treeDragContainer.limb {
+}
+#treeDragContainer.caltech {
+}
+
 #tree_container {
    position: absolute;
-   top: 28px;
+   top: 26px;
    left: 0px;
    margin: 0;
    padding: 2px 0 0;
-   width: 100%;
-   border-top: solid 1px #ccc;
 }
 
 #treeControlContainer {
@@ -40,9 +58,12 @@
    left: 0px;
    margin: 0;
    padding: 0;
-   width: 100%;
+   width: 238px;
    height: 28px;
    color: #000;
+   border-left: solid 1px #ccc;
+   border-right: solid 1px #ccc;
+   border-bottom: solid 1px #ccc;
 }
 
 #treeToolTitleContainer {
@@ -77,6 +98,23 @@
    border-bottom: solid 1px #999;
    background: #eee;
 }
+
+.treeButtonDiv.all {
+   width: 30px;
+}
+.treeButtonDiv.none {
+   width: 40px;
+}
+.treeButtonDiv.threeD {
+   float: right;
+   right: 4px;
+   width: 50px;
+}
+.treeButtonDiv.threeD.disabled {
+   border-right: solid 1px #bbb;
+   border-bottom: solid 1px #bbb;
+}
+
 .treeButtonDiv.over {
    background: #ddd;
 }
@@ -89,10 +127,6 @@
    border-top: solid 1px #555;
    border-right: solid 1px #555;
    border-bottom: solid 1px #555;
-}
-.treeButtonDiv.threeD {
-   float: right;
-   right: 4px;
 }
 
 #resetButtonDiv {
@@ -109,6 +143,10 @@
 }
 .treeButtonText.threeD {
    left: 0px;
+   left: 4px;
+}
+.treeButtonText.threeD.disabled {
+   color: #999;
 }
 
 #systemChkbxDiv {
@@ -141,40 +179,10 @@
    margin: 0;
 }
 
-#threeDChkbxDiv {
-   position: relative;
-   float: left;
-   top: 6px;
-   left: 19px;
-   padding: 0;
-   margin: 0;
-   height: 16px;
-   border: none;
-}
-#threeDChkbxLabel {
-   position: relative;
-   float: left;
-   top: 1px;
-   left: 1px;
-   width: 50px;
-   height: 16px;
-   padding: 0,0,0,3px;
-   margin: 0;
-   font-size: 10px;
-}
-#threeDChkbx {
-   position: relative;
-   float: left;
-   top: -2px;
-   left: -2px;
-   padding: 0;
-   margin: 0;
-}
-
-/*@global*/
+/*---------------------------------@global---------------------*/
 .mif-tree-wrapper {
 	position: absolute;
-	width: 100%;
+	width: 238px;
 	height: 100%;
 	margin: 0;
 	padding: 0;
@@ -184,6 +192,7 @@
 	line-height: 10px; /******Tree node height******/
 	white-space: nowrap;
 	cursor: default;
+        border: solid 1px #ccc;
 }
 
 .mif-tree-bg {

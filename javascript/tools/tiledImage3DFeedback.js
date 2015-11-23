@@ -44,8 +44,8 @@ var tiledImage3DFeedback = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImage3DFeedback");
+      this.view.register(this, "tiledImage3DFeedback");
 
       this._debug = false;
 
@@ -328,11 +328,11 @@ var tiledImage3DFeedback = new Class ({
       //................
       // help icon for x3dom feedback
       this.x3domHelpIconContainer = new Element( 'div', {
-         'id': 'x3domHelpFrameIconContainer',
-         'class': 'helpFrameIconContainer x3domHelp'
+         'id': 'x3domHelpIconContainer',
+         'class': 'helpIconContainer x3domHelp'
       });
       this.x3domHelpIconImg = new Element( 'img', {
-         'id': 'x3domHelpFrameIconImg',
+         'id': 'x3domHelpIconImg',
          'src': this.imagePath + 'help-26.png'
       });
 

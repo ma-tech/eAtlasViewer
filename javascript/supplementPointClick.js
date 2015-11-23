@@ -143,7 +143,9 @@ emouseatlas.emap.supplementPointClick = function() {
 
       _debug = false;
 
-      if(_debug) console.log("enter supplementPointClick.initialise");
+      var webServer;
+
+      //if(_debug) console.log("enter supplementPointClick.initialise");
 
       model.register(this);
       view.register(this);
@@ -178,10 +180,12 @@ emouseatlas.emap.supplementPointClick = function() {
       markerContainerId = 'histology_tileFrame';
       mgiUrl = "http://www.informatics.jax.org/gxd/structure/"; 
 
-      stagedOntologyUrl = "http://drumguish.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
-      abstractOntologyUrl = "http://drumguish.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/abstract.html";
-      emageUrl = "http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures=";
-      emouseatlasUrl = "http://drumguish.hgu.mrc.ac.uk";
+      webServer = model.getWebServer();
+
+      stagedOntologyUrl =  webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
+      abstractOntologyUrl =  webServer + "/emap/ema/DAOAnatomyJSP/abstract.html";
+      emageUrl =  webServer + "/emagewebapp/pages/emage_general_query_result.jsf?structures=";
+      emouseatlasUrl =  webServer;
 
       //---------------------------------------------------------
       // The marker img is 20x34 pixels and the locating point is mid-bottom-line
@@ -674,6 +678,8 @@ emouseatlas.emap.supplementPointClick = function() {
       var ajaxParams;
       var subplate = pointClickImgData.subplate;
 
+      //console.log("getSupplementTerms: ",subplate);
+
       url = '/kaufmanwebapp/GetSupplementTerms';
       ajaxParams = {
          url:url,
@@ -1132,6 +1138,7 @@ emouseatlas.emap.supplementPointClick = function() {
 
       pointClickChanges.ready = true;
       INITIALISED = true;
+      //console.log("supplementPointClick.buildInterface finished");
       notify("buildInterface");
 
    }; // buidInterface:
@@ -1189,9 +1196,8 @@ emouseatlas.emap.supplementPointClick = function() {
    //---------------------------------------------------------------
    var makeMarkers = function () {
 
-      var knum;
       var key;
-      var kdesk;
+      var annot;
       var numlocs;
       var flag;
       var label;
@@ -1199,54 +1205,39 @@ emouseatlas.emap.supplementPointClick = function() {
       var len;
       var i,j;
 
+      //markerDets = new Map();  // not widely available yet
       markerDets = {};
 
-      len = currentImgKnums.length;
-      //console.log("makeMarkers: currentImgKnums ",currentImgKnums);
-      if(_debug) {
-	 if(len === 0) {
-	    console.log("makeMarkers: no markers on %s",currentImg);
-	 } else {
-	    console.log("makeMarkers: %d markers on %s",len,currentImg);
-	 }
-      }
+      len = annotations.length;
+
+      //console.log("annotations ",annotations);
 
       for(i=0; i<len; i++) {
-         knum = currentImgKnums[i].knum;
-	 //console.log("makeMarkers: knum %s",knum);
-	 key = currentImg + "_" + knum;
+         //console.log("makeMarkers annotation %d -----------------------------------",i);
+         annot = annotations[i];
+	 key = annot.img_id + "_" + annot.knum;
 	 //console.log("makeMarkers: key %s",key);
 
-	 if(locationDets[key] === undefined) {
-	    //console.log("locationDets[%s] undefined",key);
-	    continue;
+	 if(markerDets[key] === undefined) {
+	    markerDets[key] = {key:key, flags:[], labels:[]};
 	 }
-
-         kdesk = getKdeskForKnum(knum);
-	 //console.log("makeMarkers: kdesk ",kdesk);
 
 	 numlocs = locationDets[key].locArr.length;
 	 //console.log("numlocs ",numlocs);
 
 	 for(j=0; j<numlocs; j++) {
-
-	    if(markerDets[key] === undefined) {
-	       markerDets[key] = {key:key, flags:[], labels:[], fnumArr:[]};
-	    }
-
-	    info = {img_id:currentImg, knum:knum, kdesk:kdesk, fnum:j};
+	    info = {img_id:annot.img_id, knum:annot.knum, kdesk:annot.kdesk, fnum:j};
 	    //console.log("info ",info);
 	    flag = makeMarkerFlag(info);
 	    label = makeMarkerLabel(info);
 
 	    markerDets[key].flags[j] = flag;
 	    markerDets[key].labels[j] = label;
-	    markerDets[key].fnumArr[j] = j;
 	 }
 
       }
 
-      //console.log("makeMarkers: markerDets ",markerDets);
+      //console.log(markerDets);
 
    }; // makeMarkers:
 
@@ -1882,6 +1873,8 @@ emouseatlas.emap.supplementPointClick = function() {
       //if(from === "updatePlateDataCallback") console.log("storeLocations subplateData ",subplateData);
       //console.log("storeLocations from %s, subplateData ",from,subplateData);
 
+      locationDets = {};
+
       len1 = subplateData.length;
 
       // for each image on the subplate
@@ -1891,6 +1884,7 @@ emouseatlas.emap.supplementPointClick = function() {
 	 //console.log("storeLocations imgData ",imgData);
 
 	 idlocs = imgData.locations;
+	 //if(from === "updatePlateDataCallback") console.log("storeLocations idlocs ",idlocs);
          fnums = undefined;
          fnums = [];
 	 fnum = 0;
@@ -1899,6 +1893,7 @@ emouseatlas.emap.supplementPointClick = function() {
          for(j=0; j<len2; j++) {
             idloc = idlocs[j];
 	    knum = idloc.knum;
+	    //console.log("knum -->%s<--",knum);
             key = idloc.img_id + "_" + idloc.knum;
 	    //if(from === "updatePlateDataCallback") console.log("key %s",key);
 	    if(fnums[key] === undefined) {
@@ -1912,7 +1907,6 @@ emouseatlas.emap.supplementPointClick = function() {
 	    //if(from === "updatePlateDataCallback") console.log("storeLocations idlocs[%d] ",j,idlocs[j]);
 
 	    if(locationDets[key] === undefined) {
-	       //locationDets[key] = { key:key, loc_oid:idloc.oid, locArr:[] }
 	       locationDets[key] = { key:key, oidArr:[], locArr:[], fnumArr:[] }
 	    }
 	    locationDets[key].oidArr[locationDets[key].oidArr.length] = idloc.oid;
@@ -1991,7 +1985,8 @@ emouseatlas.emap.supplementPointClick = function() {
 	 };
       }
 
-      //console.log("storeSupplementTerms ",supplementTerms);
+      //console.log("storeSupplementTerms termData ",supplementTerms);
+      //console.log("storeSupplementTerms supplementTerms ",supplementTerms);
 
    };  // storeSupplementTerms
 
@@ -2144,12 +2139,15 @@ emouseatlas.emap.supplementPointClick = function() {
       var mapArea;
       var klass;
 
+      //console.log("makeMarkerFlag: ",info);
       img_id = info.img_id;
       knum = info.knum;
       kdesk = info.kdesk;
       fnum = info.fnum;
 
-      //console.log("makeMarkerFlag: img_id %s, knum %s, fnum %s",img_id, knum, fnum);
+      //if(knum === "1") {
+       //  console.log("makeMarkerFlag: img_id %s, knum %s, fnum %s",img_id, knum, fnum);
+      //}
 
       strlen = knum.length;
       switch (strlen) {
@@ -2231,7 +2229,9 @@ emouseatlas.emap.supplementPointClick = function() {
 
       img_id = info.img_id;
       knum = info.knum;
+      //kdesk = info.kdesk[1];
       kdesk = info.kdesk;
+      //console.log("makeMarkerLabel ",info.kdesk);
       fnum = info.fnum;
 
       markerLabelDiv = new Element('div', {
@@ -2265,22 +2265,21 @@ emouseatlas.emap.supplementPointClick = function() {
    //---------------------------------------------------------------
    // There may be multiple markers associated with each img_id_knum
    //---------------------------------------------------------------
+   // based on kaufman atlas version
    var setMarkerSrc = function (knum, src, from) {
 
       var key;
       var dets;
-      //var locdets;
+      var locdets;
       var img_id;
       var knum;
-      var fnumArr;
       var flags;
       var flag;
       var flagImg;
       var len;
       var i;
 
-      if(_debug) console.log("setMarkerSrc, from %s",from);
-
+      if(_debug) console.log("enter setMarkerSrc, from %s",from);
       if(knum === undefined || knum === null) {
          return false;
       }
@@ -2288,13 +2287,12 @@ emouseatlas.emap.supplementPointClick = function() {
       key = getKeyForKnum(knum);
 
       dets = markerDets[key];
-      if(dets === undefined) {
+      locdets = locationDets[key];
+      if(locdets === undefined || locdets === null) {
          return false;
       }
 
-      fnumArr = dets.fnumArr;
-      len = fnumArr.length;
-
+      len = locdets.locArr.length;
       for(i=0; i<len; i++) {
 	 flag = dets.flags[i];
 	 flagImg = flag.getElementsByTagName("img")[0];
@@ -3755,6 +3753,7 @@ emouseatlas.emap.supplementPointClick = function() {
       currentImgKnums = [];
 
       len = supplementTerms.length;
+      //console.log("setCurrentImgKnums, supplementTerms.length %d", len);
       for(i=0; i<len; i++) {
          knum = supplementTerms[i].knum;
 	 key = currentImg + "_" + knum;
@@ -4035,6 +4034,7 @@ emouseatlas.emap.supplementPointClick = function() {
 
       ALL = (fnum === undefined) ? true : false;
 
+      //console.log("displayMarker from %s:  knum %s, fnum %s, currentImg %s",from,knum,fnum,currentImg);
       //console.log("displayMarker %s from %s", vizibl, from);
       //console.log("displayMarker knum %s, currentImg",knum,currentImg);
       //console.log(knum);
@@ -4055,6 +4055,8 @@ emouseatlas.emap.supplementPointClick = function() {
       len = locdets.locArr.length;
       for(i=0; i<len; i++) {
          if(ALL || i===fnum) {
+            //console.log("displayMarker from %s:  knum %s, i %s, currentImg %s",from,knum,i,currentImg);
+            //console.log('markerTxtDiv_' + currentImg + "_" + knum + "_" + i);
 	    markerTxt = $('markerTxtDiv_' + currentImg + "_" + knum + "_" + i);
 	    markerTxtWidth = getStringPixelWidth(markerTxt.id);
 	    //console.log("%s markerTxtWidth ",knum,markerTxtWidth);
@@ -4073,6 +4075,7 @@ emouseatlas.emap.supplementPointClick = function() {
 		  'top': newY + 'px'
 	       });
 	       if(SHOW_MARKER_TXT) {
+	          //console.log("markerTxt.id  %s",markerTxt.id);
 		  markerTxt.setStyles({
 		     'visibility': 'visible',
 		     'left': txtOfs.x + 'px',
@@ -4407,7 +4410,7 @@ emouseatlas.emap.supplementPointClick = function() {
       //if(_debug) console.log("currentImg ",currentImg);
       for(i=0; i<len; i++) {
          knum = selectedRowKnums[i];
-	 key = currentImg + "_" + knum;
+	 //key = currentImg + "_" + knum;
 	 displayMarker(knum, fnum, vizibl, "hideAllMarkers");
       }
    };
@@ -4593,10 +4596,22 @@ emouseatlas.emap.supplementPointClick = function() {
          setCurrentImgKnums();
 	 //if(_debug) console.log(currentImg);
 
+	 if(PLATE_DATA) {
+	    if(SHOW_ALL_MARKERS) {
+               deselectAllRows("modelUpdate.modelChanges.dst");
+               selectedRowKnums = [];
+	       showAllMarkers();
+	    } else {
+	       showSelectedMarkers("modelUpdate");
+	    }
+	    doDistChanged();
+	 }
+         /*
          doDistChanged("modelUpdate dst");
          if(INITIALISED) {
-	    updatePlateData();
+	    //updatePlateData();
 	 }
+	 */
       }
 
    }; // modelUpdate
@@ -5214,8 +5229,10 @@ emouseatlas.emap.supplementPointClick = function() {
    var notify = function (from) {
 
       var i;
-      //console.log("enter supplementPointClick.notify ",from);
-      //printViewChanges();
+      //console.log("supplementPointClick.notify from %s",from);
+      //printPointClickChanges();
+
+      //console.log("supplementPointClick registry ",registry);
 
       for (i = 0; i < registry.length; i++) {
 	 //console.log(registry[i].getName());

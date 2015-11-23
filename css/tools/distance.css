@@ -21,17 +21,23 @@
 /* style for magnification  */
 
 #distDragContainer {
-   position: absolute;
-   left: 10px;
-   top: 357px;
-   width: 130px;
-   margin: 0px;
-   padding: 0px;
-   border: none;
+   left: 3px;
+   top: 387px;
+   width: 132px;
    border: solid 1px #ccc;
-   background: #fafafa;
-   visibility: hidden;
-   z-index: 10;
+}
+#distDragContainer.threeD {
+   top: 387px;
+}
+#distDragContainer.limb {
+}
+#distDragContainer.caltech {
+}
+#distDragContainer.wlz {
+   top: 362px;
+}
+#distDragContainer.gudmap {
+   top: 387px;
 }
 
 #distSliderContainer {

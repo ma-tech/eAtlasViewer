@@ -44,8 +44,8 @@ var tiledImageSelectorTool = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageSelectorTool");
+      this.view.register(this, "tiledImageSelectorTool");
 
       this.name = "Selector";
       this.shortName = this.name.toLowerCase().split(" ").join("");

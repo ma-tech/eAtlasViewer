@@ -90,9 +90,9 @@ emouseatlas.emap.titleInfo = function () {
       details = params.details;
       info = details.info;
       model = params.model;
-      model.register(this);
+      model.register(this, "titleInfo");
       view = params.view;
-      view.register(this);
+      view.register(this, "titleInfo");
 
       utils = emouseatlas.emap.utilities;
 
@@ -174,6 +174,7 @@ emouseatlas.emap.titleInfo = function () {
       var emapAnatomyA;
       var url_emapStageDef;
       var url_emapAnatomy;
+      var webServer;
 
       stage = info.stage;
       //console.log("stage %d",stage);
@@ -183,8 +184,10 @@ emouseatlas.emap.titleInfo = function () {
       stage = parseInt(stage);
       //console.log("stage %d",stage);
 
-      url_emapStageDef = "http://drumguish.hgu.mrc.ac.uk/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
-      url_emapAnatomy = "http://drumguish.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
+      webServer = model.getWebServer();
+
+      url_emapStageDef = webServer + "/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
+      url_emapAnatomy = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
 
       mainContainer = mydocument.getElementById("titleInfoMainContainer");
       if(mainContainer === undefined || mainContainer === null) {

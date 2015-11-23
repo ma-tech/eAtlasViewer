@@ -50,10 +50,17 @@
 }
 .wlzIIPViewerIFrameContainer.kaufman {
    width: 947px;
-   height: 600px;
-   top: 65px;
+   height: 650px;
+   top: 90px;
    right: 330px;
    opacity: 1.0;
+}
+.wlzIIPViewerIFrameContainer.threeDAnatomy {
+   width: 400px;
+   height: 480px;
+   top: 70px;
+   left: 170px;
+   overflow: auto;
 }
 
 .wlzIIPViewerIFrameTopDiv {
@@ -176,7 +183,7 @@ img.iframeClose {
 }
 .wlzIIPViewerIFrame.mainHelp {
    width: 100%;
-   height: 559px;
+   height: 560px;
 }
 .wlzIIPViewerIFrame.threeD {
    width: 100%;
@@ -197,6 +204,10 @@ img.iframeClose {
 .wlzIIPViewerIFrame.x3domHelp {
    width: 700px;
    height: 440px;
+}
+.wlzIIPViewerIFrame.threeDAnatomyHelp {
+   width: 100%;
+   height: 400px;
 }
 
 h3.help {

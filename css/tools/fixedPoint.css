@@ -25,10 +25,27 @@
    position: absolute;
    top: 100px;
    left: 200px;
+   width: 80px;
    padding: 0px;
    margin: 0px;
    border: solid 1px #ccc;
    color: #000;
+}
+#fixedPointDragContainer.threeD {
+   top: 410px;
+   left: 200px;
+}
+#fixedPointDragContainer.key {
+   top: 397px;
+   left: 200px;
+}
+#fixedPointDragContainer.limb {
+   top: 397px;
+   left: 200px;
+}
+#fixedPointDragContainer.caltech {
+   top: 397px;
+   left: 200px;
 }
 
 #fixedPointToolContainer {

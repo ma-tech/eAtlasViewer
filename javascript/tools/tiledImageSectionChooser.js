@@ -46,9 +46,9 @@ var tiledImageSectionChooser = new Class ({
       this.view = emouseatlas.emap.tiledImageView;
       this.query = emouseatlas.emap.tiledImageQuery;
 
-      this.model.register(this);
-      this.view.register(this);
-      this.query.register(this);
+      this.model.register(this, "tiledImageSectionChooser");
+      this.view.register(this, "tiledImageSectionChooser");
+      this.query.register(this, "tiledImageSectionChooser");
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 

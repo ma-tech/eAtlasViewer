@@ -68,8 +68,8 @@ emouseatlas.emap.measuringTool = function() {
       model = params.model;
       view = params.view;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "measuringTool");
+      view.register(this, "measuringTool");
 
       /*
       imagePath = params.imagePath;

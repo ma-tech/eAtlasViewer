@@ -48,6 +48,7 @@ emouseatlas.emap.fixedPoint = function() {
    var view;
    var util;
    var trgt;
+   var klass;
    var project;
    var xNumber;
    var yNumber;
@@ -106,7 +107,8 @@ emouseatlas.emap.fixedPoint = function() {
       // the drag container
       //----------------------------------------
       fixedPointDragContainer = new Element('div', {
-         'id': fixedPointDragContainerId
+         'id': fixedPointDragContainerId,
+	 'class': klass
       });
 
       //----------------------------------------
@@ -546,14 +548,16 @@ emouseatlas.emap.fixedPoint = function() {
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "fixedPoint");
+      view.register(this, "fixedPoint");
 
       _debug = false;
 
       project = (params.project === undefined) ? "emap" : params.project;
 
       dropTargetId = model.getProjectDivId();
+
+      klass = (params.klass === undefined) ? "" : params.klass; 
 
       fixedPointDragContainerId = "fixedPointDragContainer";
 
@@ -562,7 +566,7 @@ emouseatlas.emap.fixedPoint = function() {
       EXT_CHANGE = false;
       NUMBER_CHANGE = false;
 
-      emouseatlas.emap.drag.register({drag:fixedPointDragContainerId, drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:fixedPointDragContainerId, drop:dropTargetId}, "fixedPoint");
 
       prevLayer = undefined;
       isVisible = false;

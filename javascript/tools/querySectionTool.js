@@ -45,9 +45,9 @@ var querySectionTool = new Class ({
       this.view = emouseatlas.emap.tiledImageView;
       this.query = emouseatlas.emap.tiledImageQuery;
 
-      this.model.register(this);
-      this.view.register(this);
-      this.query.register(this);
+      this.model.register(this, "querySectionTool");
+      this.view.register(this, "querySectionTool");
+      this.query.register(this, "querySectionTool");
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 

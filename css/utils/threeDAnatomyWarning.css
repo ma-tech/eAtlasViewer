@@ -22,13 +22,12 @@
    height: 50px;
 }
 /* --------------------------- */
-#dontShowAgainContainer {
+#threeDAnatomyWarningContainer {
    position: absolute;
    top: 130px;
-   left: 360px;
+   right: 280px;
    visibility: hidden;
    width: 230px;
-   height: 180px;
    padding: 0px;
    margin: 0px;
    border: none;
@@ -37,34 +36,14 @@
    background: #eaeaea;
    z-index: 2;
 }
-.dontShowAgainTitleTextContainer {
-   position: relative;
-   top: -1px;
-   width:60px;
-   height:10px;
-   padding: 0px;
-   margin: 0px;
-   margin-left: auto;
-   margin-right: auto;
-   border: none;
-   color: #000;
-}
-
-.dontShowAgainTitleText {
-   border: medium none;
-   color: #000000;
-   font-size: 10px;
-   margin-top: 2px;
-   padding: 0;
-}
 
 /* --------------------------- */
-.dontShowAgainExplainContainer {
+.threeDAnatomyWarningMsgContainer {
    position: relative;
    margin: 5px;
 }
 
-.dontShowAgainExplainDivHeader {
+.threeDAnatomyWarningMsgDivHeader {
    position: relative;
    width: 85px;
    margin: 0px;
@@ -74,16 +53,24 @@
    //font-size: 9px;
 }
 
-.dontShowAgainExplainDiv {
+.threeDAnatomyWarningMsgDiv {
    position: relative;
    //border: solid 1px #900;
-   padding: 3px;
-   margin: 5px;
+   padding: 0px;
+   margin: 4px;
    color: #900;
-   font-size: 9px;
+   font-size: 10px;
+}
+.threeDAnatomyWarningMsgDiv.warning {
+}
+.threeDAnatomyWarningMsgDiv.remedy {
+   color: #555;
+}
+.threeDAnatomyWarningMsgDiv.never {
+   color: #009;
 }
 
-.dontShowAgainButtonContainer {
+.threeDAnatomyWarningButtonContainer {
    position: relative;
    bottom: 0px;
    height: 22px;
@@ -92,7 +79,7 @@
    font-size: 9px;
 }
 
-.dontShowAgainButtonDiv {
+.threeDAnatomyWarningButtonDiv {
    position: relative;
    top: 0px;
    padding: 0px;
@@ -100,7 +87,7 @@
    margin-left: auto;
    margin-right: auto;
 }
-.dontShowAgainButton {
+.threeDAnatomyWarningButton {
    padding: 0 2px;
    margin: 0 5px;
    border-left: solid 1px #fff;
@@ -108,20 +95,20 @@
    border-right: solid 1px #999;
    border-bottom: solid 1px #999;
 }
-.dontShowAgainButton.ok {
+.threeDAnatomyWarningButton.ok {
    float: left
 }
-.dontShowAgainButton.cancel {
+.threeDAnatomyWarningButton.cancel {
    float: left
 }
 
-.dontShowAgainButton.over {
+.threeDAnatomyWarningButton.over {
    background: #ddd;
 }
-.dontShowAgainButton.out {
+.threeDAnatomyWarningButton.out {
    background: #eee;
 }
-.dontShowAgainButton.down {
+.threeDAnatomyWarningButton.down {
    background: #ddd;
    border-left: solid 1px #555;
    border-top: solid 1px #555;
@@ -129,75 +116,3 @@
    border-bottom: solid 1px #555;
 }
 
-/* --------------------------- */
-#dontShowAgainSpacer_2{
-   position: relative;
-   top: 50px;
-}
-
-.dontShowAgainSpacer{
-   height: 10px;
-   padding: 0px;
-   margin: 2px 0px;
-   background: #eaeaea;
-}
-
-.dontShowAgainSpacerBGdark{
-   position: relative;
-   top: 5px;
-   height: 1px;
-   padding: 0px;
-   margin: 0 30px 0 25px;
-   background: #999;
-}
-
-.dontShowAgainSpacerBGlight{
-   position: relative;
-   top: 5px;
-   height: 1px;
-   padding: 0px;
-   margin: 0 30px 0 25px;
-   background: #fff;
-}
-/* --------------------------- */
-.dontShowAgainRadioContainer{
-   color: #777;
-}
-
-.dontShowAgainRadioDiv{
-   float: left;
-   width: 200px;
-   padding: 0px;
-   margin: 0 0 0 5px;
-}
-
-input[type=radio].dontShowAgain{
-   float: left;
-}
-
-label.dontShowAgainRadio{
-   top: 4px;
-   margin: 0 0 0 7px;
-}
-/* --------------------------- */
-.dontShowAgainChkbxContainer{
-   position: relative;
-   top: 10px;
-   color: #777;
-}
-
-.dontShowAgainChkbxDiv{
-   float: left;
-   width: 170px;
-   padding: 0px;
-   margin: 0;
-}
-
-input[type=checkbox].dontShowAgain{
-   float: left;
-}
-
-label.dontShowAgainChkbx{
-   top: 7px;
-   margin: 0 0 0 5px;
-}

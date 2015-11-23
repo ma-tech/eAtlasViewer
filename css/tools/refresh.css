@@ -20,6 +20,32 @@
  */
 /* style for tiledImageScalebar */
 
+#refreshDragContainer {
+   left: 2px;
+   width: 136px;
+}
+#refreshDragContainer.threeD {
+   top: 186px;
+}
+#refreshDragContainer.key {
+   top: 161px;
+}
+#refreshDragContainer.limb {
+   top: 186px;
+}
+#refreshDragContainer.caltech {
+   top: 186px;
+}
+#refreshDragContainer.wlz {
+   top: 186px;
+}
+#refreshDragContainer.section {
+   top: 161px;
+}
+#refreshDragContainer.gudmap {
+   top: 186px;
+}
+
 #refreshButton {
    position: relative;
    margin: 0px;

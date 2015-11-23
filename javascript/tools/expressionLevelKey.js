@@ -43,8 +43,8 @@ var expressionLevelKey = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "expressionLevelKey");
+      this.view.register(this, "expressionLevelKey");
 
       this.name = "expressionKey";
       this.shortName = this.name.toLowerCase().split(" ").join("");

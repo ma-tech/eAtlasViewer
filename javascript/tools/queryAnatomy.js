@@ -44,8 +44,8 @@ var queryAnatomy = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "queryAnatomy");
+      this.view.register(this, "queryAnatomy");
 
       this.name = "queryAnatomy";
       this.shortName = this.name.toLowerCase().split(" ").join("");
@@ -109,7 +109,9 @@ var queryAnatomy = new Class ({
       this.mgiUrl = 'http://www.informatics.jax.org/searches/expression_report.cgi?edinburghKey=';
       this.mgiUrl2 = '&sort=Gene%20symbol&returnType=assay%20results&substructures=structures';
 
-      this.emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      var webServer = this.model.getWebServer();
+
+      this.emageUrl = webServer + '/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
       this.emageUrl2 = '&exactmatchstructures=true&includestructuresynonyms=true'; 
 
       this.createElements();

@@ -20,7 +20,7 @@ var tiledImageHelp = new Class ({
    initialize: function(params) {
 
       this.view = params.view;
-      this.view.register(this);
+      this.view.register(this, "tiledImageHelp");
 
       this.type = params.type;
       this.imagePath = params.imageDir;

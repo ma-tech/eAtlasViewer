@@ -97,6 +97,7 @@ emouseatlas.emap.markerPopup = function () {
       var plate;
       var subplate;
       var info;
+      var webServer;
 
      //console.log("markerPopupIFrame.initialise with params  ",params);
 
@@ -106,9 +107,9 @@ emouseatlas.emap.markerPopup = function () {
       //details = params.details;
       //info = details.info;
       model = params.model;
-      model.register(this);
+      model.register(this, "markerPopup");
       view = params.view;
-      view.register(this);
+      view.register(this, "markerPopup");
 
       project = (params.project === undefined) ? "kaufman_atlas" : params.project;
       //console.log("markerPopupIFrame.initialise project %s",project);
@@ -121,7 +122,7 @@ emouseatlas.emap.markerPopup = function () {
       //console.log("markerPopupIFrame.initialise pointClick ",pointClick);
 
       if(pointClick) {
-         pointClick.register(this);
+         pointClick.register(this, "markerPopup");
       } else {
          return false;
       }
@@ -155,12 +156,16 @@ emouseatlas.emap.markerPopup = function () {
 
       mgiUrl = "http://www.informatics.jax.org/gxd/structure/"
 
-      theilerLink = ["http://cudhub.hgu.mrc.ac.uk/emap/ema/theiler_stages/StageDefinition/Theiler/ts", "%20%20from%20Theiler.pdf"];
-      stagedOntologyUrl = "http://cudhub.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/anatomy.html?stage=";
-      abstractOntologyUrl = "http://cudhub.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/abstract.html"
-      theHouseMouseUrl = "http://cudhub.hgu.mrc.ac.uk/emap/ema/theiler_stages/house_mouse/book.html"
-      emapUrl = "http://cudhub.hgu.mrc.ac.uk/emap/ema/home.php";
-      emageUrl = "http://cudhub.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures=";
+      webServer = model.getWebServer();
+      //console.log("webServer ",webServer);
+
+      theilerLink = [webServer + "/emap/ema/theiler_stages/StageDefinition/Theiler/ts", "%20%20from%20Theiler.pdf"];
+      stagedOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=";
+      //abstractOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/abstract.html"      // for old version of ontology tree
+      abstractOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=abstract&search=";  // for new version this gets the EMAPA:xxxx tacked on
+      theHouseMouseUrl = webServer + "/emap/ema/theiler_stages/house_mouse/book.html"
+      emapUrl = webServer + "/emap/ema/home.php";
+      emageUrl = webServer + "/emagewebapp/pages/emage_general_query_result.jsf?structures=";
 
       linkToTheHouseMouse = makeLinkToTheHouseMouse();
 
@@ -246,10 +251,11 @@ emouseatlas.emap.markerPopup = function () {
       //--------------------------------------------------------
 
       linkToAbstractOntology = makeLinkToAbstractOntology(emapa);
-      if(linkToAbstractOntology === undefined || linkToAbstractOntology === null) {
-         console.log("linkToAbstractOntology not defined");
+      if(linkToAbstractOntology === undefined) {
+         //console.log("linkToAbstractOntology not defined");
          linkToAbstractOntology = "N/A";
       }
+      console.log("linkToAbstractOntology ",linkToAbstractOntology);
 
       anatomyRowContent = [];
       anatomyRowContent[0] = [];
@@ -978,11 +984,12 @@ emouseatlas.emap.markerPopup = function () {
 
       var link;
 
-      if(emapa === null || emapa === undefined) {
+      if(emapa === null || emapa === "null" || emapa === undefined) {
+         //console.log("makeLinkToAbstractOntology emapa === undefined");
          return undefined;
       }
 
-      link = "<a target='_blank' href='" + abstractOntologyUrl + "'>" + emapa + "</a>";
+      link = "<a target='_blank' href='" + abstractOntologyUrl + emapa + "'>" + emapa + "</a>";
 
       return link;
    };

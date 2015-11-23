@@ -79,9 +79,9 @@ emouseatlas.emap.chooseItemMGI = function() {
       query = emouseatlas.emap.tiledImageQuery;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
-      query.register(this);
+      model.register(this, "chooseItemMGI");
+      view.register(this, "chooseItemMGI");
+      query.register(this, "chooseItemMGI");
 
       project = (params.project === undefined) ? "emap" : params.project;
 
@@ -95,7 +95,7 @@ emouseatlas.emap.chooseItemMGI = function() {
 
       mu = ' \u03BCm';
       createElements();
-      emouseatlas.emap.drag.register({drag:"chooseItemContainer", drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:"chooseItemContainer", drop:dropTargetId}, "chooseItemMGI");
 
    }; // initialise
 

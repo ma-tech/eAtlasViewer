@@ -44,8 +44,8 @@ var pointClickSelector = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "pointClickSelector");
+      this.view.register(this, "pointClickSelector");
 
       this.name = "pointClickSelector";
       this.shortName = this.name.toLowerCase().split(" ").join("");

@@ -22,9 +22,8 @@
 
 #comboDistDragContainer {
    position: absolute;
-   left: 10px;
-   top: 357px;
-   width: 130px;
+   left: 2px;
+   width: 134px;
    margin: 0px;
    padding: 0px;
    border: none;
@@ -34,6 +33,15 @@
    z-index: 10;
    font-size: 9px;
    font-style: normal;
+}
+#comboDistDragContainer.key {
+   top: 186px;
+}
+#comboDistDragContainer.threeD {
+}
+#comboDistDragContainer.limb {
+}
+#comboDistDragContainer.caltech {
 }
 
 fieldset.keySlider {

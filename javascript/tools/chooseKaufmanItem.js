@@ -83,9 +83,9 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       pointClick = emouseatlas.emap.tiledImagePointClick;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
-      pointClick.register(this);
+      model.register(this, "chooseKaufmanItem");
+      view.register(this, "chooseKaufmanItem");
+      pointClick.register(this, "chooseKaufmanItem");
 
       project = (params.project === undefined) ? "emap" : params.project;
 
@@ -564,14 +564,14 @@ emouseatlas.emap.chooseKaufmanItem = function() {
       if(pointClickChanges.mgiChoice === true) {
 	 createElements("mgi");
 	 setVisible(true);
-         emouseatlas.emap.drag.register({drag:"chooseKaufmanItemContainer", drop:dropTargetId});
+         emouseatlas.emap.drag.register({drag:"chooseKaufmanItemContainer", drop:dropTargetId}, "chooseKaufmanItem");
 	 addItems("mgi");
       }
 
       if(pointClickChanges.wikiChoice === true) {
 	 createElements("wiki");
 	 setVisible(true);
-         emouseatlas.emap.drag.register({drag:"chooseKaufmanItemContainer", drop:dropTargetId});
+         emouseatlas.emap.drag.register({drag:"chooseKaufmanItemContainer", drop:dropTargetId}, "chooseKaufmanItem");
 	 addItems("wiki");
       }
 

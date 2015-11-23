@@ -20,6 +20,37 @@
  */
 /* style for rotation controls  */
 
+#rotDragContainer {
+   position: absolute;
+   left: 2px;
+   width: 132px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
+   visibility: hidden;
+   z-index: 10;
+}
+#rotDragContainer.threeD {
+   top: 222px;
+}
+#rotDragContainer.key {
+   top: 222px;
+}
+#rotDragContainer.limb {
+   top: 222px;
+}
+#rotDragContainer.caltech {
+   top: 222px;
+}
+#rotDragContainer.wlz {
+   top: 222px;
+}
+#rotDragContainer.gudmap {
+   top: 220px;
+}
+
 .rotTitleTextContainer {
    position: absolute;
    top: -12px;
@@ -34,20 +65,6 @@
    padding: 0px;
    margin: 0px;
    font-size: 9px;
-}
-
-#rotDragContainer {
-   position: absolute;
-   left: 10px;
-   top: 133px;
-   width: 130px;
-   margin: 0px;
-   padding: 0px;
-   border: none;
-   border: solid 1px #ccc;
-   background: #fafafa;
-   visibility: hidden;
-   z-index: 10;
 }
 
 #rotToolContainer {

@@ -48,6 +48,7 @@ emouseatlas.emap.layerProperties = function() {
    var view;
    var util;
    var trgt;
+   var klass;
    var currentLayer;
    var prevLayer;
    var nLayers;
@@ -62,14 +63,6 @@ emouseatlas.emap.layerProperties = function() {
    var layerPropsTitleTextDiv;
    var layerPropsDragContainerId;
    var isVisible;
-   var height;
-   var x_left;
-   var y_top;
-   var H_OPACITY;
-   var H_OPACITY_FILTER;
-   var H_OPACITY_RENDERMODE;
-   var H_OPACITY_FILTER_RENDERMODE;
-   var MOUSE_DOWN;
    var EXT_CHANGE;
    var NUMBER_CHANGE;
    var EXISTS;
@@ -94,7 +87,6 @@ emouseatlas.emap.layerProperties = function() {
       var imgPath;
       var closeImg1;
       var closeImg2;
-      //var layerPropsForm;
       var fs1;
       var fs2;
       var fs3;
@@ -107,6 +99,8 @@ emouseatlas.emap.layerProperties = function() {
       //------------------------
 
       targetId = model.getProjectDivId();
+      //console.log("layerProperties targetId %s",targetId);
+
       target = $(targetId);
 
       layerPropsDragContainer = $(layerPropsDragContainerId);
@@ -121,13 +115,8 @@ emouseatlas.emap.layerProperties = function() {
       // the drag container
       //----------------------------------------
       layerPropsDragContainer = new Element('div', {
-         'id': layerPropsDragContainerId
-      });
-
-      layerPropsDragContainer.setStyles({
-         "height": height,
-         "top": y_top + "px",
-         "left": x_left + "px"
+         'id': layerPropsDragContainerId,
+	 'class': klass
       });
 
       //----------------------------------------
@@ -244,10 +233,10 @@ emouseatlas.emap.layerProperties = function() {
 	    doLayerPropsSliderChanged(e);
 	 });
 	 opacitySlider.addEvent('mousedown',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(false);
 	 });
 	 opacitySlider.addEvent('mouseup',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(true);
 	 });
       
 	 opacityNumber.addEvent('change',function(e) {
@@ -343,28 +332,28 @@ emouseatlas.emap.layerProperties = function() {
 	    doLayerPropsSliderChanged(e);
 	 });
 	 redSlider.addEvent('mousedown',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(false);
 	 });
 	 redSlider.addEvent('mouseup',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(true);
 	 });
 	 greenSlider.addEvent('input',function(e) {
 	    doLayerPropsSliderChanged(e);
 	 });
 	 greenSlider.addEvent('mousedown',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(false);
 	 });
 	 greenSlider.addEvent('mouseup',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(true);
 	 });
 	 blueSlider.addEvent('input',function(e) {
 	    doLayerPropsSliderChanged(e);
 	 });
 	 blueSlider.addEvent('mousedown',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(false);
 	 });
 	 blueSlider.addEvent('mouseup',function(e) {
-	    enableDrag(e);
+	    enableLayerPropsDrag(true);
 	 });
       
 	 redNumber.addEvent('change',function(e) {
@@ -627,29 +616,14 @@ emouseatlas.emap.layerProperties = function() {
       return sane;
    };
 
-   //---------------------------------------------------------
-   var enableDrag = function (e) {
+   //---------------------------------------------------------------
+   var enableLayerPropsDrag = function(draggable) {
 
-      var target;
+      //console.log("enableRotToolDrag: %s",draggable);
       var dragContainer;
-      //console.log(e);
-      dragContainer = $(layerPropsDragContainerId);
-      target = emouseatlas.emap.utilities.getTarget(e);
-      if(target === undefined) {
-         return false;
-      }
-      //console.log("enableDrag target.id ",target.id);
 
       dragContainer = $(layerPropsDragContainerId);
-
-      if(e.type.toLowerCase() === "mousedown") {
-         MOUSE_DOWN = true;
-         dragContainer.setAttribute("draggable", false);
-      } else if(e.type.toLowerCase() === "mouseup") {
-         MOUSE_DOWN = false;
-         //target.blur();
-         dragContainer.setAttribute("draggable", true);
-      }
+      dragContainer.setAttribute("draggable", draggable);
 
    };
 
@@ -676,16 +650,6 @@ emouseatlas.emap.layerProperties = function() {
       hasOpacity = props.opacity;
       hasFilter = props.filter;
       hasRenderMode = (props.renderModes === undefined || props.renderModes === "false") ? false : true;
-
-      if(hasOpacity && !hasFilter && !hasRenderMode) {
-         height = H_OPACITY;
-      } else if(hasOpacity && hasFilter && !hasRenderMode) {
-         height = H_OPACITY_FILTER;
-      } else if(hasOpacity && !hasFilter && hasRenderMode) {
-         height = H_OPACITY_RENDERMODE;
-      } else if(hasOpacity && hasFilter && hasRenderMode) {
-         height = H_OPACITY_FILTER_RENDERMODE;
-      }
 
    }; // setLayerProperties
 
@@ -789,34 +753,25 @@ emouseatlas.emap.layerProperties = function() {
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "layerProperties");
+      view.register(this, "layerProperties");
 
       _debug = false;
 
       dropTargetId = model.getProjectDivId();
+      //console.log("layerProperties dropTargetId %s",dropTargetId);
 
       nLayers = model.getLayerNames().length;
       //console.log("nLayers ",nLayers);
 
-      x_left = params.x; 
-      y_top = params.y; 
-
       layerPropsDragContainerId = "layerPropsDragContainer";
 
-      H_OPACITY = 30;
-      H_OPACITY_FILTER = 100;
-      H_OPACITY_RENDERMODE = 68;
-      H_OPACITY_FILTER_RENDERMODE = 133;
-
-      MOUSE_DOWN = false;
+      klass = (params.klass === undefined) ? "" : params.klass; 
 
       EXISTS = false;
 
       EXT_CHANGE = false;
       NUMBER_CHANGE = false;
-
-      emouseatlas.emap.drag.register({drag:layerPropsDragContainerId, drop:dropTargetId});
 
       prevLayer = undefined;
 
@@ -876,7 +831,7 @@ emouseatlas.emap.layerProperties = function() {
 	 currentLayer = view.getCurrentLayer();
          createElements();
 	 setToCurrentLayer();
-         emouseatlas.emap.drag.register({drag:layerPropsDragContainerId, drop:dropTargetId});
+         emouseatlas.emap.drag.register({drag:layerPropsDragContainerId, drop:dropTargetId}, "layerProperties");
 	 XY = emouseatlas.emap.drag.getXY(layerPropsDragContainerId);
 	 //console.log("viewChanges.layer XY ",XY);
 	 if(XY) {

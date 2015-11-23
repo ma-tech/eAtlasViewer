@@ -42,14 +42,16 @@ var queryTool = new Class ({
 
       that = this;
 
+      this._debug = false;
+
       //console.log("enter queryTool.initialize: ",params);
       this.model = params.model;
       this.view = params.view;
       this.query = params.query;
 
-      this.model.register(this);
-      this.view.register(this);
-      this.query.register(this);
+      this.model.register(this, "queryTool");
+      this.view.register(this, "queryTool");
+      this.query.register(this, "queryTool");
 
       this.name = "queryTool";
       this.shortName = this.name.toLowerCase().split(" ").join("");
@@ -60,7 +62,7 @@ var queryTool = new Class ({
       this.height = parseInt(params.params.height);
 
       this.imagePath = this.model.getInterfaceImageDir();
-      //console.log(this.imagePath);
+      if(this._debug) console.log(this.imagePath);
 
       var allowClose = (params.params.allowClose === undefined) ? true : params.params.allowClose;
       allowClose = (allowClose === 'true' || allowClose === true) ? true : false;
@@ -72,7 +74,11 @@ var queryTool = new Class ({
       this.transparent = params.params.transparent;
 
       this.project = this.model.getProject();
-      //console.log("queryTool project ",this.project);
+      if(this._debug) console.log("queryTool project ",this.project);
+
+      if(this.project === "emap_sections" || this.project === "emap_wlz" || this.project === "emap_anatomy") {
+         this.project = "emap";
+      }
 
       this.bgc = "#eaeaea";
 
@@ -124,7 +130,9 @@ var queryTool = new Class ({
       this.gudmapUrl = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20';
       this.gudmapUrl2 = '%20';
 
-      this.emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      var webServer = this.model.getWebServer();
+
+      this.emageUrl =  webServer + '/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
 
       this.createElements();
       this.initDummyForm();
@@ -222,10 +230,10 @@ var queryTool = new Class ({
          'class': 'dbTextDiv'
       });
 
-      if(this.project.toLowerCase() === "gudmap") {
-         dbTextDiv_emage.set('text', 'GUDMAP');
-      } else {
+      if(this.project.toLowerCase() === "emap") {
          dbTextDiv_emage.set('text', 'EMAGE');
+      } else if(this.project.toLowerCase() === "gudmap") {
+         dbTextDiv_emage.set('text', 'GUDMAP');
       }
 
       dbChkbxContainer_emage = new Element('div', {
@@ -241,7 +249,7 @@ var queryTool = new Class ({
           "class": "dbChkbx",
       });
 
-      if(this.project.toLowerCase() !== "gudmap") {
+      if(this.project.toLowerCase() === "emap") {
 	 //----------------------------------------
 	 // the container for second database choice
 	 //----------------------------------------
@@ -294,7 +302,7 @@ var queryTool = new Class ({
 	 this.doChkbx(e);
       }.bind(this));
 
-      if(this.project.toLowerCase() !== "gudmap") {
+      if(this.project.toLowerCase() === "emap") {
 	 dbTextDiv_mgi.inject(dbTextContainer_mgi, 'inside');
 	 dbTextContainer_mgi.inject(dbItemContainer_mgi, 'inside');
 	 this.dbChkbx_mgi.inject(dbChkbxContainer_mgi, 'inside');
@@ -705,14 +713,14 @@ var queryTool = new Class ({
 	 emapId = this.getEmapId();
 	 //console.log("mode sub type = ",type);
 	 if(type === 0) {
-            if(this.project.toLowerCase() === "gudmap") {
+            if(this.project.toLowerCase() === "emap") {
+               url = this.emageUrl + emapId + this.emageUrl2;
+            } else if(this.project.toLowerCase() === "gudmap") {
 	       /*
 	       //anatStr = this.getAnatStr();
 	       anatStr = "renal vesicle";
                url = this.gudmapUrl + anatStr + this.gudmapUrl2;
 	       */
-	    } else {
-               url = this.emageUrl + emapId + this.emageUrl2;
 	    }
 	 } else if(type === 1) {
 	    emapIdNum = emapId.substring(5);
@@ -807,7 +815,6 @@ var queryTool = new Class ({
       for(i=0; i<len; i++) {
          key = indxArr[i];
          //console.log("key ",key);
-         //resultNode = this.iterativeDeepeningDepthFirstSearch(treeData[0], key);
          resultNode = emouseatlas.emap.utilities.iterativeDeepeningDepthFirstSearch(treeData[0], key);
          //console.log("resultNode ",resultNode);
    
@@ -827,66 +834,6 @@ var queryTool = new Class ({
       }
       return ret;
    },
-
-/*
-   //---------------------------------------------------------------
-   iterativeDeepeningDepthFirstSearch: function (root, goal) {
-
-      var depth;
-      var result;
-
-      depth = 0;
-      result = undefined;
-
-      while(result === undefined && depth < 10) {
-         result = this.depthLimitedSearch(root, goal, depth);
-	 if(result !== undefined) {
-	    //console.log("found domain #%d at depth %d",goal,depth);
-	    return result;
-	 }
-	 depth = Number(depth + 1*1);
-      }
-
-   },
-
-   //---------------------------------------------------------------
-   depthLimitedSearch: function (node, goal, depth) {
-
-      var result;
-      var property;
-      var children;
-      var child;
-      var len;
-      var i;
-
-      result = undefined;
-
-      if(depth === 0) {
-	 if(node.property) {
-	    property = node.property;
-	    if(property.domainId) {
-	       if(property.domainId === goal) {
-	          return node;
-	       }
-	    }
-	 }
-      } else if(depth > 0) {
-	 children = node.children;
-	 len = children.length;
-	 //this.nameTheseKids(children)
-	 for(i=0; i<len; i++) {
-	    child = children[i];
-	    result = this.depthLimitedSearch(child, goal, depth - 1);
-	    if(result !== undefined) {
-	       return result;
-	    }
-	 }
-      } else {
-	 //console.log("couldn't find node with domainId %s",goal);
-	 return undefined;
-      }
-   },
-*/
 
    //---------------------------------------------------------------
    // A utility function for debugging
@@ -1008,12 +955,7 @@ var queryTool = new Class ({
       emage_cb = $("dbChkbx_emage").checked;
       //mgi_cb = $("dbChkbx_emage").checked;
 
-      if(this.project.toLowerCase() === "gudmap") {
-	 if(!emage_cb) {
-	    alert("You have not chosen a database to query.\nPlease select 'GUDMAP'");
-	    return false;
-	 }
-      } else {
+      if(this.project.toLowerCase() === "emap") {
 	 mgi_cb = $("dbChkbx_mgi").checked;
 	 if(!emage_cb && !mgi_cb) {
 	    alert("You have not chosen a database to query.\nPlease select 'EMAGE' or 'MGI GXD' or both of these.");
@@ -1022,15 +964,20 @@ var queryTool = new Class ({
 	 if(mgi_cb) {
 	    //console.log("mgi_cb");
 	 }
+      } else if(this.project.toLowerCase() === "gudmap") {
+	 if(!emage_cb) {
+	    alert("You have not chosen a database to query.\nPlease select 'GUDMAP'");
+	    return false;
+	 }
       }
 
       len = queryData.length;
 
       if(emage_cb) {
-	 if(this.project.toLowerCase() === "gudmap") {
-	    url = this.gudmapUrl;
-	 } else {
+	 if(this.project.toLowerCase() === "emap") {
 	    url = this.emageUrl;
+	 } else if(this.project.toLowerCase() === "gudmap") {
+	    url = this.gudmapUrl;
 	 }
 
 	 queryStr = "";
@@ -1043,10 +990,10 @@ var queryTool = new Class ({
 	    queryStr += "&stages=" + queryData[len-1];
 	 }
 
-	 if(this.project.toLowerCase() === "gudmap") {
-	    url += queryStr;
-	 } else {
+	 if(this.project.toLowerCase() === "emap") {
 	    url += queryStr + this.emageUrl2;
+	 } else if(this.project.toLowerCase() === "gudmap") {
+	    url += queryStr;
 	 }
 	 //console.log(url);
 
@@ -1116,11 +1063,11 @@ var queryTool = new Class ({
       ajaxParams = {
          url:url,
          method:"POST",
-	 urlParams:"project=mouse011&emap_ids=" + json_id_arr + "&cbf=" + cbf + "&names=" + json_name_arr,
+	 urlParams:"project=mouse011&emap_ids=" + json_id_arr + "&cbf=" + cbf + "&names=" + json_name_arr,   // hard-wired 'mouse011'  needs to be obtained from configuration file
 	 callback:this.getEmapaForEmapCallback,
          async:true
       }
-      //if(_debug) console.log(ajaxParams);
+      //if(this._debug) console.log(ajaxParams);
       ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 

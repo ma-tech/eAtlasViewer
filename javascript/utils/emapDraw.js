@@ -449,11 +449,11 @@ emouseatlas.emap.EmapDraw = function() {
 
    var initialise = function (params) {
       view = params.view;
-      view.register(this);
+      view.register(this, "emapDraw");
       model = params.model;
-      model.register(this);
+      model.register(this, "emapDraw");
       query = emouseatlas.emap.tiledImageQuery;
-      query.register(this);
+      query.register(this, "emapDraw");
       curDrawMode = true;
       curDrawAction = 0;
       scale = view.getScale().cur;

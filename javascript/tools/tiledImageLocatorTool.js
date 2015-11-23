@@ -44,8 +44,8 @@ var tiledImageLocatorTool = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageLocatorTool");
+      this.view.register(this, "tiledImageLocatorTool");
 
       this.maxWidth = params.params.width;
       this.maxHeight = params.params.height;

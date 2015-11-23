@@ -134,6 +134,8 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       _debug = false;
 
+      var webServer;
+
       //if(_debug) console.log("enter tiledImagePointClick.initialise");
 
       model.register(this);
@@ -167,10 +169,12 @@ emouseatlas.emap.tiledImagePointClick = function() {
       markerContainerId = 'histology_tileFrame';
       mgiUrl = "http://www.informatics.jax.org/gxd/structure/"; 
 
-      stagedOntologyUrl = "http://drumguish.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
-      abstractOntologyUrl = "http://drumguish.hgu.mrc.ac.uk/emap/ema/DAOAnatomyJSP/abstract.html";
-      emageUrl = "http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures=";
-      emouseatlasUrl = "http://drumguish.hgu.mrc.ac.uk";
+      webServer = model.getWebServer();
+
+      stagedOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
+      abstractOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/abstract.html";
+      emageUrl = webServer + "/emagewebapp/pages/emage_general_query_result.jsf?structures=";
+      emouseatlasUrl = webServer;
 
       //---------------------------------------------------------
       // The marker img is 20x34 pixels and the locating point is mid-bottom-line
@@ -866,6 +870,8 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       len = annotations.length;
 
+      //console.log("annotations ",annotations);
+
       for(i=0; i<len; i++) {
          //console.log("makeMarkers annotation %d -----------------------------------",i);
          annot = annotations[i];
@@ -1554,12 +1560,13 @@ emouseatlas.emap.tiledImagePointClick = function() {
       len = annotData.length;
       for(i=0; i<len; i++) {
          annot = annotData[i];
+         //console.log("storeAnnotation annotData[%d] ",i, annot);
          //console.log("storeAnnotation img_id %s",annot.img_ident);
 	 annotations[annotations.length] = {
 	    img_oid:annot.img_fk,
 	    img_id:annot.img_ident,
 	    knum:annot.knum,
-	    emapa:annot.onc_fk,
+	    emapa:annot.ont_fk,
 	    kdesk:annot.kdesk,
 	    wiki:annot.wiki
 	 };
@@ -1600,7 +1607,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 	    break;
 	 }
       }
-      //console.log("getAnnotationForKnum %s ",knum, annot);
+      console.log("getAnnotationForKnum %s ",knum, annot);
       return  annot;
    }
 

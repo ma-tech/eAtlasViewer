@@ -88,14 +88,27 @@ emouseatlas.emap.scalebar = function() {
    //---------------------------------------------------------------
    var createElements = function() {
 
-      var targetId = model.getProjectDivId();
-      var target = $(targetId);
+      var targetId;
+      var target;
+      var project;
+      var klass;
+
+      targetId = model.getProjectDivId();
+      target = $(targetId);
+
+      project = model.getProject();
+      klass = "";
+
+      if(project === "emap_sections") {
+         klass = "sections";
+      }
 
       //----------------------------------------
       // the overall container
       //----------------------------------------
       scalebarContainer = new Element('div', {
-         'id': 'scalebarContainer'
+         'id': 'scalebarContainer',
+	 'class' : klass
       });
 
       //----------------------------------------

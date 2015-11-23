@@ -76,9 +76,9 @@ emouseatlas.emap.newQueryTool = function() {
       query = emouseatlas.emap.tiledImageQuery;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
-      query.register(this);
+      model.register(this, "newQueryTool");
+      view.register(this, "newQueryTool");
+      query.register(this, "newQueryTool");
 
       project = (params.project === undefined) ? "emap" : params.project;
 
@@ -92,11 +92,13 @@ emouseatlas.emap.newQueryTool = function() {
       this.gudmapUrl = 'http://www.gudmap.org/gudmap_beta/pages/global_search_index.html?gsinput=%20';
       this.gudmapUrl2 = '%20';
 
-      this.emageUrl = 'http://drumguish.hgu.mrc.ac.uk/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
+      this.webServer = this.model.getWebServer();
+
+      this.emageUrl = this.webServer + '/emagewebapp/pages/emage_general_query_result.jsf?structures='; 
 
       mu = ' \u03BCm';
       createElements();
-      emouseatlas.emap.drag.register({drag:"newQueryToolContainer", drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:"newQueryToolContainer", drop:dropTargetId}, "newQueryTool");
 
    }; // initialise
 
@@ -135,7 +137,6 @@ emouseatlas.emap.newQueryTool = function() {
       var exportButton;
       var importButton;
       var cancelButton;
-      var webServer;
       var iipServer;
       var action;
 
@@ -441,12 +442,11 @@ emouseatlas.emap.newQueryTool = function() {
       //----------------------------------------
       // add a dummy form for transferring drawing
       //----------------------------------------
-      webServer = model.getWebServer();
-      //console.log("web server: %s",webServer);
+      //console.log("web server: %s",this.webServer);
 
       // for production (test and released) use emagewebapp not nb_emagewebapp
-      //action = webServer + "/emagewebapp/pages/emage_spatial_query_result.jsf";
-      action = webServer + "/nb_emagewebapp/pages/emage_spatial_query_result.jsf";
+      //action = this.webServer + "/emagewebapp/pages/emage_spatial_query_result.jsf";
+      action = this.webServer + "/nb_emagewebapp/pages/emage_spatial_query_result.jsf";
       //console.log("action: %s",action);
 
       dummyForm = new Element('form', {
@@ -1245,7 +1245,6 @@ emouseatlas.emap.newQueryTool = function() {
       var len;
       var section;
       var i;
-      var webServer;
       var iipServer;
       var currentLayer;
       var layerData;
@@ -1256,13 +1255,12 @@ emouseatlas.emap.newQueryTool = function() {
          return undefined;
       }
 
-      webServer = this.model.getWebServer();
       iipServer = this.model.getIIPServer();
       currentLayer = this.view.getCurrentLayer();
       layerData = this.model.getLayerData();
       layer;
 
-      if(webServer === undefined || iipServer === undefined) {
+      if(this.webServer === undefined || iipServer === undefined) {
          //console.log("webServer or iipServer undefined");
          return undefined;
       }
@@ -1377,7 +1375,6 @@ emouseatlas.emap.newQueryTool = function() {
       var origin;
       var originStr;
       var section;
-      var webServer;
       var iipServer;
       var currentLayer;
       var layerDat;
@@ -1386,13 +1383,12 @@ emouseatlas.emap.newQueryTool = function() {
       
       sectionNames = this.getQuerySectionNames();
       len = sectionNames.length;
-      webServer = this.model.getWebServer();
       iipServer = this.model.getIIPServer();
       currentLayer = this.view.getCurrentLayer();
       layerData = this.model.getLayerData();
       queryStrHeader = "WLZ_DRAW_DOMAIN:1;";
 
-      if(webServer === undefined || iipServer === undefined) {
+      if(this.webServer === undefined || iipServer === undefined) {
          //console.log("webServer or iipServer undefined");
          return false;
       }

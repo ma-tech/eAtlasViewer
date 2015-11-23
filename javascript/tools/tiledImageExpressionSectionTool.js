@@ -46,8 +46,8 @@ var tiledImageExpressionSectionTool = new Class ({
       this.sectionName = params.sectionName;
       this.section = params.section;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageExpressionSectionTool");
+      this.view.register(this, "tiledImageExpressionSectionTool");
 
       this.isHorizontal = false;
 

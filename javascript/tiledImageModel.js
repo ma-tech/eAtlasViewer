@@ -61,7 +61,8 @@ emouseatlas.emap.tiledImageModel = function() {
    var _debug = false;
    var modelInitialised = false;
    //......................
-   var imageTitle;
+   var imageTitle; // deprecated
+   var imageTitleData;
    var imageTitleTooltip;
    var webServer;
    var iipServerPath;
@@ -189,6 +190,7 @@ emouseatlas.emap.tiledImageModel = function() {
    var keySections = [];
    var keySectionNames = [];
 
+   var HAS_3D_ANATOMY;
    var anatomyDetails = {};
    var updatedTreeNode = {};
 
@@ -523,7 +525,7 @@ emouseatlas.emap.tiledImageModel = function() {
       if(json.project !== undefined) {
          project = json.project;
       } else {
-         project = "";
+         project = undefined;
       }
 
       if(json.initialState !== undefined) {
@@ -613,6 +615,8 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(json.anatomyDetails !== undefined) {
          anatomyDetails = json.anatomyDetails;
+         HAS_3D_ANATOMY = (json.anatomyDetails.available === undefined) ? false : json.anatomyDetails.available; 
+         HAS_3D_ANATOMY = (HAS_3D_ANATOMY === 'true' || HAS_3D_ANATOMY === true) ? true : false;
       }
 
       scalebarLen = (typeof(json.scalebarLen) === 'undefined') ? 100 : json.scalebarLen; 
@@ -1192,26 +1196,30 @@ emouseatlas.emap.tiledImageModel = function() {
       var ajax;
       var ajaxParams;
 
-      if(anatomyDetails === undefined) {
-         return false;
+      //console.log("loadAnatomyDataCallback for layer %s, with params \n" ,layerName,params);
+      //console.log("loadAnatomyDataCallback anatomyDetails \n" ,anatomyDetails);
+
+      if(anatomyDetails === undefined || emouseatlas.emap.utilities.isEmpty(anatomyDetails) || anatomyDetails.available === "false") {
+         if(_debug) console.log("loadAnatomyData no anatomyDetails");
+         loadAnatomyDataCallback(undefined, undefined);
+      } else {
+         model = anatomyDetails.model;
+         type = anatomyDetails.type;
+   
+         //console.log("loadAnatomyData: model %s, type %s",model,type);
+   
+         url = '/emaAnatomywebapp/GetAnatomyData';
+         ajaxParams = {
+            url:url,
+            method:"POST",
+   	 urlParams:"project=emaAnatomy&layerName=" + layerName + "&model=" + model + "&type=" + type,
+            callback:loadAnatomyDataCallback,
+            async:true
+         }
+         //if(_debug) console.log(ajaxParams);
+         ajax = new emouseatlas.emap.ajaxContentLoader();
+         ajax.loadResponse(ajaxParams);
       }
-
-      model = anatomyDetails.model;
-      type = anatomyDetails.type;
-
-      //console.log("loadAnatomyData: model %s, type %s",model,type);
-
-      url = '/emaAnatomywebapp/GetAnatomyData';
-      ajaxParams = {
-         url:url,
-         method:"POST",
-	 urlParams:"project=emaAnatomy&layerName=" + layerName + "&model=" + model + "&type=" + type,
-         callback:loadAnatomyDataCallback,
-         async:true
-      }
-      //if(_debug) console.log(ajaxParams);
-      ajax = new emouseatlas.emap.ajaxContentLoader();
-      ajax.loadResponse(ajaxParams);
 
    }; // loadAnatomyData
 
@@ -1219,7 +1227,6 @@ emouseatlas.emap.tiledImageModel = function() {
    var loadAnatomyDataCallback = function (response, urlParams) {
 
       //if(_debug) console.log("loadAnatomyDataCallback: \n" + urlParams);
-      //console.log("loadAnatomyDataCallback: \n" + urlParams);
 
       var params;
       var json;
@@ -1229,34 +1236,29 @@ emouseatlas.emap.tiledImageModel = function() {
       var i;
       
 
-      params = urlParams.split("&");
-      //console.log("loadAnatomyDataCallback: params ",params);
-      layerName = (params[1].split("="))[1];
-      //----------------
-      response = emouseatlas.emap.utilities.trimString(response);
-      if(response === null || response === undefined || response === "") {
-         if(_debug) console.log("loadAnatomyDataCallback: response null");
-         //console.log("loadAnatomyDataCallback: response null");
-         //console.log("doh!");
-         doInitView();
+      if(response === null || response === "null" || response === undefined || response === "" || urlParams === undefined) {
+         if(_debug) console.log("loadAnatomyDataCallback: no 3D anatomy");
       } else {
-         if(_debug) console.log(response);
-         //console.log("got it!");
-	 if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
-	    json = JSON.parse(response);
-	 } else {
-	    json = emouseatlas.JSON.parse(response);
-	 }
-	 if(!json) {
-            doInitView();
-	 }
-
-         //console.log("loadAnatomyDataCallback layerName %s",layerName);
-         layer = layerData[layerName];
-         layer.anatomyData = json;
+         params = urlParams.split("&");
+         //console.log("loadAnatomyDataCallback: params ",params);
+         layerName = (params[1].split("="))[1];
+         //----------------
+         response = emouseatlas.emap.utilities.trimString(response);
+   	 if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+   	    json = JSON.parse(response);
+   	 } else {
+   	    json = emouseatlas.JSON.parse(response);
+   	 }
+   	 if(json) {
+            //console.log("loadAnatomyDataCallback layerName %s",layerName);
+            layer = layerData[layerName];
+            layer.anatomyData = json;
+         }
       }
 
-      //console.log("loadAnatomyDataCallback layer.anatomyData ",layer.anatomyData);
+      if(layer) {
+         //console.log("loadAnatomyDataCallback layer.anatomyData ",layer.anatomyData);
+      }
       doInitView();
 
    }; // loadAnatomyDataCallback:
@@ -2108,7 +2110,7 @@ emouseatlas.emap.tiledImageModel = function() {
       for(i=0; i<len; i++) {
 	 layerName = layerNames[i];
 	 layer = layerData[layerName];
-         //console.log("loadTrees: layer ",layer);
+         console.log("loadTrees: layer ",layer);
 	 if(layer.treeStructure !== undefined) {
 	    // treeData is loaded from loadTreeStructureCallback
 	    loadTreeStructure(layerName);
@@ -2433,6 +2435,8 @@ emouseatlas.emap.tiledImageModel = function() {
 
       projectDivId = "projectDiv";
 
+      HAS_3D_ANATOMY = false;
+
       // if urlSpecifiedSection is defined in url string it will override initialState.distance from tiledImageModelData.jso.
       if(params.urlSpecifiedSection !== undefined) {
          if(params.urlSpecifiedSection.length === 0) {
@@ -2582,8 +2586,8 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
-   var register = function (observer) {
-      //console.log("model: register observer ",observer.getName());
+   var register = function (observer, from) {
+      //console.log("model.register from %s",from);
       registry.push(observer);
    };
 
@@ -3448,6 +3452,7 @@ emouseatlas.emap.tiledImageModel = function() {
    
          //console.log("updateTreeNodeColour after: ",nodeData.domainData.domainColour);
 	 updatedTreeNode = nodeData;
+         //console.log("updateTreeNodeColour updatedTreeNode: ",updatedTreeNode);
          //emouseatlas.emap.tiledImageView.colourUpdated(true);
          modelChanges.treeNodeColour = true;
          notify("updateTreeNodeColour");
@@ -3617,8 +3622,15 @@ emouseatlas.emap.tiledImageModel = function() {
 
    //---------------------------------------------------------
    // Get the title for the image.
+   // deprecated
    var getImageTitle = function () {
       return imageTitle;
+   };
+
+   //---------------------------------------------------------
+   // Get the title data for the image.
+   var getImageTitleData = function () {
+      return imageTitleData;
    };
 
    //---------------------------------------------------------
@@ -3698,6 +3710,11 @@ emouseatlas.emap.tiledImageModel = function() {
    };
 
    //---------------------------------------------------------
+   var has3dAnatomy = function() {
+     return HAS_3D_ANATOMY;
+   };
+
+   //---------------------------------------------------------
    // expose 'public' properties
    //---------------------------------------------------------
    // don't leave a trailing ',' after the last member or IE won't work.
@@ -3770,7 +3787,8 @@ emouseatlas.emap.tiledImageModel = function() {
       getWlzToStackOffset: getWlzToStackOffset,
       getEquivSectionOffset: getEquivSectionOffset,
       getSectionOrderReversed: getSectionOrderReversed,
-      getImageTitle: getImageTitle,
+      getImageTitle: getImageTitle, // deprecated
+      getImageTitleData: getImageTitleData,
       getImageTitleTooltip: getImageTitleTooltip,
       getTree: getTree,
       setTree: setTree,
@@ -3788,7 +3806,8 @@ emouseatlas.emap.tiledImageModel = function() {
       getUndelineatedRGBA: getUndelineatedRGBA,
       getScalebarLen: getScalebarLen,
       getProject: getProject,
-      getProjectDivId: getProjectDivId
+      getProjectDivId: getProjectDivId,
+      has3dAnatomy: has3dAnatomy
    };
 
 }(); // end of module tiledImageModel

@@ -89,7 +89,6 @@ emouseatlas.emap.tiledImageView = function() {
       addQueryTerm: false,
       visibility: false,
       opacity: false,
-      colour: false,
       filter: false,
       selections: false,
       wlzUpdated: false,
@@ -103,12 +102,13 @@ emouseatlas.emap.tiledImageView = function() {
       hideViewerInfo: false,
       showMarkerPopup: false,
       hideMarkerPopup: false,
+      show3dAnatomyHelp: false,
+      hide3dAnatomyHelp: false,
       threeD: false,
-      //hide3d: false,
       hideMenu: false,
       contextMenuOn: false,
       contextMenuOff: false,
-      dontShowAgain: false
+      threeDAnatomyWarning: false
    };
    var targetContainer;
    var model;
@@ -187,7 +187,7 @@ emouseatlas.emap.tiledImageView = function() {
    var threeDLoaded = false;
    var max3dToShow;
    var origMax3dToShow;
-   var SHOW_DONT_SHOW_AGAIN_DIALOG;
+   var SHOW_3D_ANATOMY_WARNING_DIALOG;
    var modes = {
                 move:{name:'move', cursor:'move'},
                 measuring:{name:'measuring', cursor:'pointer'},
@@ -331,11 +331,11 @@ emouseatlas.emap.tiledImageView = function() {
       //..............
       // the HelpFrame icon
       //..............
-      var helpFrameIconContainer = document.getElementById("helpFrameIconContainer");
+      var helpIconContainer = document.getElementById("helpIconContainer");
 
-      util.addEvent(helpFrameIconContainer, 'click', doViewerHelpIconClicked, false);
-      util.addEvent(helpFrameIconContainer, 'mouseover', showViewerHelpFrame, false);
-      util.addEvent(helpFrameIconContainer, 'mouseout', hideViewerHelpFrame, false);
+      util.addEvent(helpIconContainer, 'click', doViewerHelpIconClicked, false);
+      util.addEvent(helpIconContainer, 'mouseover', showViewerHelpFrame, false);
+      util.addEvent(helpIconContainer, 'mouseout', hideViewerHelpFrame, false);
 
    };
 
@@ -344,11 +344,11 @@ emouseatlas.emap.tiledImageView = function() {
       //..............
       // the InfoFrame icon
       //..............
-      var infoFrameIconContainer = document.getElementById("infoFrameIconContainer");
+      var infoIconContainer = document.getElementById("infoIconContainer");
 
-      util.addEvent(infoFrameIconContainer, 'click', doViewerInfoIconClicked, false);
-      util.addEvent(infoFrameIconContainer, 'mouseover', showViewerInfoFrame, false);
-      util.addEvent(infoFrameIconContainer, 'mouseout', hideViewerInfoFrame, false);
+      util.addEvent(infoIconContainer, 'click', doViewerInfoIconClicked, false);
+      util.addEvent(infoIconContainer, 'mouseover', showViewerInfoFrame, false);
+      util.addEvent(infoIconContainer, 'mouseout', hideViewerInfoFrame, false);
 
    };
 
@@ -645,6 +645,7 @@ emouseatlas.emap.tiledImageView = function() {
       var containerId;
 
       containerId = layerName + "_tileFrameContainer";
+      //console.log("applyTileFrameOpacity containerId %s",containerId);
       if(typeof(document.getElementById(containerId)) !== 'undefined' && document.getElementById(containerId) !== null) {
 	 tileFrameContainer = document.getElementById(containerId);
 	 if(layerOpacity && layerOpacity[layerName] && layerOpacity[layerName].opacity) {
@@ -652,6 +653,8 @@ emouseatlas.emap.tiledImageView = function() {
 	 } else {
 	    tileFrameContainer.style.opacity = 1.0;
 	 }
+      } else {
+         if(_debug) console.log("applyTileFrameOpacity tileFrameContainer for layer %s undefined",layerName);
       }
    };
 
@@ -792,7 +795,8 @@ emouseatlas.emap.tiledImageView = function() {
       map = "";
 
       if(layer.type === 'label') {
-	 if(typeof(tools.tree) === 'undefined') {
+	 // treeTool is the new non-mooTools version
+	 if(typeof(tools.tree) === 'undefined' && typeof(tools.treeTool) === 'undefined') {
 	    //selectedIndexes = getAllSelections(layerName);
 	 } else {
 	    selectedIndexes = getSelections();
@@ -877,7 +881,6 @@ emouseatlas.emap.tiledImageView = function() {
       if(_debug) {
 	 console.log("view.getTileSrc: ",src);
       }
-      //console.log("view.getTileSrc: ",src);
 
       ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress data
       if (model.isEurexpressData() &&
@@ -891,7 +894,7 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    var getTiles = function(sx,ex,sy,ey) {
 
-      var deb = _debug;
+      var deb;
 
       var layer;
       var tileFrameContainer;
@@ -902,9 +905,6 @@ emouseatlas.emap.tiledImageView = function() {
       var k;
 
       var counter = 0;
-      if(_debug) {
-	 console.log("getTiles: sx %d, ex %d, sy %d, ey %d",sx,ex,sy,ey);
-      }
       
       var tileCollection={};
       var y;
@@ -913,15 +913,23 @@ emouseatlas.emap.tiledImageView = function() {
       var tilenum;
       var tilenumText;
 
+      deb = _debug;
+      //_debug = true;
+
+      if(_debug) console.log("getTiles: sx %d, ex %d, sy %d, ey %d",sx,ex,sy,ey);
+
       for(i=0; i<numLayers; i++) {
          layer = layerNames[i];
+	 //console.log("getTiles for %s",layer);
 	 if(layerVisibility[layer].visible === 'false' || layerVisibility[layer].visible === false) {
+            if(_debug) console.log("layer %s not visible",layer);
 	    continue;
 	 }
 	 applyTileFrameOpacity(layer);
 
 	 tileFrameContainer = tileFrameContainers[layer];
 	 if(typeof(tileFrameContainer) === 'undefined') {
+            if(_debug) console.log("tileFrameContainer undefined");
 	    return false;
 	 } else {
 	    tileFrame = tileFrameContainer.firstChild;
@@ -936,14 +944,19 @@ emouseatlas.emap.tiledImageView = function() {
 		y = k+sx + ((j+sy)*xtiles);
 		z = ""+y;
 		tile = tileCollection[z];
-		if (typeof(tile) !== 'undefined' && tile !== 'undefined')
+		if (typeof(tile) !== 'undefined' && tile !== 'undefined') {
+                  if(_debug) console.log("tileFrameContainer undefined");
 		  continue;
+	       }
 
 		tile = getTile(layer, k+sx, j+sy);
-		if(typeof(tile) === 'undefined' || tile === 'undefined')
+		if(typeof(tile) === 'undefined' || tile === 'undefined') {
+                  if(_debug) console.log("tile undefined");
 		  continue;
+	       }
 
 		tileCollection[z] = tile;
+		//console.log(tile);
 		
 		tileFrame.appendChild(tile);
 		counter++;
@@ -968,7 +981,7 @@ emouseatlas.emap.tiledImageView = function() {
 	       console.log("tileCollection ",tileCollection);
 	    }
 	    counter = 0;
-      _debug = deb;
+            //_debug = deb;
 	 } 
       } // for 
 
@@ -1168,7 +1181,6 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.deleteMarkerLocation) console.log("viewChanges.deleteMarkerLocation ",viewChanges.deleteMarkerLocation);
       if(viewChanges.visibility) console.log("viewChanges.visibility ",viewChanges.visibility);
       if(viewChanges.opacity) console.log("viewChanges.opacity ",viewChanges.opacity);
-      if(viewChanges.colour) console.log("viewChanges.colour ",viewChanges.colour);
       if(viewChanges.filter) console.log("viewChanges.filter ",viewChanges.filter);
       if(viewChanges.selections) console.log("viewChanges.selections ",viewChanges.selections);
       if(viewChanges.wlzUpdated) console.log("viewChanges.wlzUpdated ",viewChanges.wlzUpdated);
@@ -1182,11 +1194,13 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.hideViewerInfo) console.log("viewChanges.hideViewerInfo ",viewChanges.hideViewerInfo);
       if(viewChanges.showMarkerPopup) console.log("viewChanges.showMarkerPopup ",viewChanges.showMarkerPopup);
       if(viewChanges.hideMarkerPopup) console.log("viewChanges.hideMarkerPopup ",viewChanges.hideMarkerPopup);
+      if(viewChanges.show3dAnatomyHelp) console.log("viewChanges.show3dAnatomyHelp ",viewChanges.show3dAnatomyHelp);
+      if(viewChanges.hide3dAnatomyHelp) console.log("viewChanges.hide3dAnatomyHelp ",viewChanges.hide3dAnatomyHelp);
       if(viewChanges.threeD) console.log("viewChanges.threeD ",viewChanges.threeD);
       if(viewChanges.hideMenu) console.log("viewChanges.hideMenu ",viewChanges.hideMenu);
       if(viewChanges.contextMenuOn) console.log("viewChanges.contextMenuOn ",viewChanges.contextMenuOn);
       if(viewChanges.contextMenuOff) console.log("viewChanges.contextMenuOff ",viewChanges.contextMenuOff);
-      if(viewChanges.dontShowAgainDialog) console.log("viewChanges.dontShowAgainDialog ",viewChanges.dontShowAgainDialog);
+      if(viewChanges.threeDAnatomyWarningDialog) console.log("viewChanges.threeDAnatomyWarningDialog ",viewChanges.threeDAnatomyWarningDialog);
       console.log("++++++++++++++++++++++++++++++++++++++++++++");
    };
 
@@ -1224,7 +1238,6 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.deleteMarkerLocation = false;
       viewChanges.visibility =  false;
       viewChanges.opacity =  false;
-      viewChanges.colour =  false;
       viewChanges.filter = false;
       viewChanges.selections = false;
       viewChanges.wlzUpdated =  false;
@@ -1238,11 +1251,13 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.hideViewerInfo =  false;
       viewChanges.showMarkerPopup =  false;
       viewChanges.hideMarkerPopup =  false;
+      viewChanges.show3dAnatomyHelp =  false;
+      viewChanges.hide3dAnatomyHelp =  false;
       viewChanges.threeD =  false;
       viewChanges.hideMenu =  false;
       viewChanges.contextMenuOn =  false;
       viewChanges.contextMenuOff =  false;
-      viewChanges.dontShowAgainDialog =  false;
+      viewChanges.threeDAnatomyWarningDialog =  false;
    };
 
 
@@ -2246,7 +2261,7 @@ emouseatlas.emap.tiledImageView = function() {
    //---------------------------------------------------------
    // Mouse down event on tileFrame
    //---------------------------------------------------------
-   var doMouseDownInImage = function (e) {
+   var doMouseDownInImage = function (e) {       // version from git Aug 2015
 
       var evt;
       var buttons;
@@ -2323,7 +2338,6 @@ emouseatlas.emap.tiledImageView = function() {
       }
 
       // if we are in 'debug' mode
-      //if(mode.name.toLowerCase() === "debug") {
       if(debugWindow) {
          //console.log("mouse down in debug mode");
 	 mouseDownInImage = true;
@@ -3368,11 +3382,12 @@ emouseatlas.emap.tiledImageView = function() {
       dropListenerId = "emapIIPViewerDiv";
       dropListener = $(dropListenerId);
       if(dropListener) {
-         emouseatlas.emap.drag.register({drag:"wlzIIPViewerIFrameContainer", drop:dropListenerId});
-         emouseatlas.emap.drag.register({drag:"wlzIIPViewerInfoIFrameContainer", drop:dropListenerId});
-         emouseatlas.emap.drag.register({drag:"wlzIIPViewerX3domHelpIFrameContainer", drop:dropListenerId});
-         emouseatlas.emap.drag.register({drag:"wlzIIPViewer3DIFrameContainer", drop:dropListenerId});
+         emouseatlas.emap.drag.register({drag:"wlzIIPViewerIFrameContainer", drop:dropListenerId}, "tiledImageView");
+         emouseatlas.emap.drag.register({drag:"wlzIIPViewerInfoIFrameContainer", drop:dropListenerId}, "tiledImageView");
+         emouseatlas.emap.drag.register({drag:"wlzIIPViewerX3domHelpIFrameContainer", drop:dropListenerId}, "tiledImageView");
+         //emouseatlas.emap.drag.register({drag:"threeDAnatomyHelpIFrameContainer", drop:dropListenerId}, "tiledImageView");
       }
+         //emouseatlas.emap.drag.register({drag:"wlzIIPViewer3DIFrameContainer", drop:dropListenerId});
 
       _debug = deb;
 
@@ -3388,7 +3403,7 @@ emouseatlas.emap.tiledImageView = function() {
    var setTitle = function() {
 
       //..........................
-      // depracated way of setting title
+      // deprecated way of setting title
       //..........................
       var title = model.getImageTitle();
       if(titleDiv) {
@@ -3584,34 +3599,31 @@ emouseatlas.emap.tiledImageView = function() {
       supplementPointClick = emouseatlas.emap.supplementPointClick;
       gudmapPointClick = emouseatlas.emap.gudmapPointClick;
 
-      model.register(emouseatlas.emap.tiledImageView);
+      model.register(emouseatlas.emap.tiledImageView, "view");
 
       if(query) {
-         query.register(emouseatlas.emap.tiledImageView);
+         query.register(emouseatlas.emap.tiledImageView, "view");
       }
 
       if(pointClick) {
-         pointClick.register(emouseatlas.emap.tiledImageView);
+         pointClick.register(emouseatlas.emap.tiledImageView, "view");
       }
       if(supplementPointClick) {
-         supplementPointClick.register(emouseatlas.emap.tiledImageView);
-      }
-      if(gudmapPointClick) {
-         gudmapPointClick.register(emouseatlas.emap.tiledImageView);
+         supplementPointClick.register(emouseatlas.emap.tiledImageView, "view");
       }
        
       // this is a hack to fix the TPR demo
       stackofs = model.getWlzToStackOffset();
       //console.log("stackofs = ",stackofs);
 
-      origMax3dToShow = 5;
+      origMax3dToShow = 30;
       max3dToShow = origMax3dToShow;
-      SHOW_DONT_SHOW_AGAIN_DIALOG = true;
+      SHOW_3D_ANATOMY_WARNING_DIALOG = true;
 
       if(_debug) console.log("View: completeInitialisation");
       completeInitialisation();
       if(_debug) console.log("View: done");
-   };
+   }; // initialise
 
    //---------------------------------------------------------
    // tools registered here will be added in addtools()
@@ -3677,16 +3689,20 @@ emouseatlas.emap.tiledImageView = function() {
    // Construct all registered tools.
    var constructTools = function (toolData) {
 
-      //console.log("enter constructComponents");
-
       var params;
       var project;
+      var layer;
+      var treeLayer;
+      var sectionSelection;
+
+      params = {};
+      project = model.getProject();
+      //console.log("tiledImageView project -->%s<--",project);
 
       if(typeof(tools.layerProperties) !== 'undefined') {
          params = {
 	    targetId:toolData.layerProperties.targetId,
-	    x:toolData.layerProperties.x,
-	    y:toolData.layerProperties.y
+	    klass: toolData.layerProperties.klass
          }
          if(emouseatlas.emap.layerProperties) {
             emouseatlas.emap.layerProperties.initialise(params);
@@ -3695,10 +3711,8 @@ emouseatlas.emap.tiledImageView = function() {
 
       if(typeof(tools.magnification) !== 'undefined') {
          params = {
-	    targetId:toolData.magnification.targetId,
-	    x:toolData.magnification.x,
-	    y:toolData.magnification.y,
-	    width:toolData.magnification.width
+	    targetId: toolData.magnification.targetId,
+	    klass: toolData.magnification.klass
          }
          if(emouseatlas.emap.magnification) {
             emouseatlas.emap.magnification.initialise(params);
@@ -3708,8 +3722,7 @@ emouseatlas.emap.tiledImageView = function() {
       if(typeof(tools.distance) !== 'undefined') {
          params = {
 	    targetId:toolData.distance.targetId,
-	    x:toolData.distance.x,
-	    y:toolData.distance.y
+	    klass: toolData.distance.klass
          }
          if(emouseatlas.emap.distance) {
             emouseatlas.emap.distance.initialise(params);
@@ -3719,26 +3732,78 @@ emouseatlas.emap.tiledImageView = function() {
       if(typeof(tools.comboDistance) !== 'undefined') {
          params = {
 	    targetId:toolData.comboDistance.targetId,
-	    x:toolData.comboDistance.x,
-	    y:toolData.comboDistance.y
+	    klass: toolData.comboDistance.klass
          }
          if(emouseatlas.emap.comboDistance) {
             emouseatlas.emap.comboDistance.initialise(params);
          }
       }
 
-      if(typeof(tools.scale) !== 'undefined') {
-	 new tiledImageScaleTool({
-            model:model,
-            view:view,
-            params:{targetId:toolData.scale.targetId,
-               drag:toolData.scale.draggable,
-               width:toolData.scale.width,
-               height:toolData.scale.height,
-               x:toolData.scale.x,
-               y:toolData.scale.y,
-               isHorizontal:toolData.scale.isHorizontal}
-         });
+      if(typeof(tools.tree) !== 'undefined') {
+         treeLayer = model.getFirstTreeLayer();
+	 params = {
+	    project:project,
+	    title:"",
+	    layer:treeLayer,
+	    targetId:toolData.tree.targetId,
+	    klass: toolData.tree.klass
+	 }
+         if(emouseatlas.emap.treeTool) {
+            emouseatlas.emap.treeTool.initialise(params);
+         }
+      }
+
+      if(typeof(tools.colourTool) !== 'undefined') {
+	 params = {
+	    project:project,
+	    title:"Colour Tool",
+	    layer:"anatomy",
+	    targetId:toolData.colourTool.targetId,
+	    klass: toolData.colourTool.klass
+	 }
+         if(emouseatlas.emap.colourTool) {
+            emouseatlas.emap.colourTool.initialise(params);
+         }
+      }
+
+      if(typeof(tools.refreshTool) !== 'undefined') {
+         params = {
+            targetId:toolData.refreshTool.targetId,
+	    klass: toolData.refreshTool.klass
+         }
+         if(emouseatlas.emap.refreshTool) {
+            emouseatlas.emap.refreshTool.initialise(params);
+         }
+      }
+
+      if(typeof(tools.rotation) !== 'undefined') {
+         params = {
+	    targetId:toolData.rotation.targetId,
+	    klass: toolData.rotation.klass
+         }
+         if(emouseatlas.emap.rotation) {
+            emouseatlas.emap.rotation.initialise(params);
+         }
+      }
+
+      if(typeof(tools.fixedPoint) !== 'undefined') {
+         params = {
+	    targetId:toolData.fixedPoint.targetId,
+	    klass: toolData.fixedPoint.klass
+         }
+         if(emouseatlas.emap.fixedPoint) {
+            emouseatlas.emap.fixedPoint.initialise(params);
+         }
+      }
+
+      if(typeof(tools.scalebar) !== 'undefined') {
+         params = {
+	    targetId:toolData.scalebar.targetId,
+	    klass: toolData.scalebar.klass
+         }
+         if(emouseatlas.emap.scalebar) {
+            emouseatlas.emap.scalebar.initialise(params);
+         }
       }
 
       if(typeof(tools.sectionSelector) !== 'undefined') {
@@ -3750,28 +3815,6 @@ emouseatlas.emap.tiledImageView = function() {
          }
          if(emouseatlas.emap.sectionSelector) {
             emouseatlas.emap.sectionSelector.initialise(params);
-         }
-      }
-
-      if(typeof(tools.rotation) !== 'undefined') {
-         params = {
-	    targetId:toolData.rotation.targetId,
-	    x:toolData.rotation.x,
-	    y:toolData.rotation.y
-         }
-         if(emouseatlas.emap.rotation) {
-            emouseatlas.emap.rotation.initialise(params);
-         }
-      }
-
-      if(typeof(tools.fixedPoint) !== 'undefined') {
-         params = {
-	    targetId:toolData.fixedPoint.targetId,
-	    x:toolData.fixedPoint.x,
-	    y:toolData.fixedPoint.y
-         }
-         if(emouseatlas.emap.fixedPoint) {
-            emouseatlas.emap.fixedPoint.initialise(params);
          }
       }
 
@@ -3916,13 +3959,13 @@ emouseatlas.emap.tiledImageView = function() {
 		    x:toolData.expressionSection.x,
 		    y:toolData.expressionSection.y}
 	 });
-	 var sectionSelection = document.getElementById('expressionSection');
+	 sectionSelection = document.getElementById('expressionSection');
 	 if (typeof(sectionSelection) !== 'undefined')
 	   sectionSelection.selectedIndex = 0;
       }
 
-      var layer = model.getFirstTreeLayer();
-      if(typeof(tools.tree) !== 'undefined') {
+      layer = model.getFirstTreeLayer();
+      if(typeof(tools.oldtree) !== 'undefined') {
          //console.log(toolData.tree);
 	 new tiledImageTreeTool({
 	    model:model,
@@ -3958,21 +4001,18 @@ emouseatlas.emap.tiledImageView = function() {
 	 });
       }
 
-      if(typeof(tools.scalebar) !== 'undefined') {
-	 new tiledImageScalebar({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.scalebar.targetId,
-	            drag:toolData.scalebar.draggable,
-	            borders:toolData.scalebar.borders,
-	            width:toolData.scalebar.width,
-	            height:toolData.scalebar.height,
-		    x:toolData.scalebar.x,
-		    y:toolData.scalebar.y,
-		    allowClose: false}
+      /*
+      if(typeof(tools.threeDAnatomyHelp) !== 'undefined') {
+	 new threeDAnatomyHelp({
+	    targetId: "emapIIPViewerDiv",
+	    view: view,
+	    type: "threeDAnatomyHelp"
 	 });
       }
+      */
 
+
+      /*
       if(typeof(tools.refresh) !== 'undefined') {
 	 new tiledImageRefreshTool({
 	    model:model,
@@ -3987,7 +4027,9 @@ emouseatlas.emap.tiledImageView = function() {
 		    allowClose: false}
 	 });
       }
+      */
 
+      /*
       if(typeof(tools.combinedDistance) !== 'undefined') {
 	 new combinedDistanceTool({
 	    model:model,
@@ -4003,6 +4045,7 @@ emouseatlas.emap.tiledImageView = function() {
 		    allowClose: false}
 	 });
       }
+      */
 
       if(typeof(tools.tprPointClick) !== 'undefined') {
          emouseatlas.emap.tprPointClick.initialize();
@@ -4041,6 +4084,7 @@ emouseatlas.emap.tiledImageView = function() {
 	 });
       }
 
+      /*
       if(typeof(tools.colChooser) !== 'undefined') {
 	 colourChooser = new colChooser({
 	    model:model,
@@ -4058,6 +4102,7 @@ emouseatlas.emap.tiledImageView = function() {
 		   }
 	 });
       }
+      */
 
       if(query) {
 	 if(typeof(tools.query) !== 'undefined') {
@@ -4146,25 +4191,25 @@ emouseatlas.emap.tiledImageView = function() {
 	 });
       }
 
-      var params = {};
-      if(typeof(tools.pointClickDropDown) !== 'undefined') {
+      if(typeof(tools.plateDropDown) !== 'undefined') {
+         params = {
+	    project: project,
+	    targetId:toolData.plateDropDown.targetId,
+	    type: toolData.plateDropDown.type,
+	    klass: toolData.plateDropDown.klass
+         }
 	 plateDropDown = new emouseatlas.emap.pointClickDropDown();
-	 imageDropDown = new emouseatlas.emap.pointClickDropDown();
-      }
-      if(typeof(tools.supplementDropDown) !== 'undefined') {
-	 plateDropDown = new emouseatlas.emap.supplementDropDown();
-	 imageDropDown = new emouseatlas.emap.supplementDropDown();
-      }
-
-      project = model.getProject();
-      //console.log("tiledImageView project %s",project);
-
-      if(plateDropDown) {
-	 params = { project:project, targetId: "toolContainerDiv", type: "Plate", noptions: 15};
          plateDropDown.initialise(params);
       }
-      if(imageDropDown) {
-	 params = { project:project, targetId: "toolContainerDiv", type: "Image"};
+
+      if(typeof(tools.imageDropDown) !== 'undefined') {
+         params = {
+	    project: project,
+	    targetId:toolData.imageDropDown.targetId,
+	    type: toolData.imageDropDown.type,
+	    klass: toolData.imageDropDown.klass
+         }
+	 imageDropDown = new emouseatlas.emap.pointClickDropDown();
          imageDropDown.initialise(params);
       }
 
@@ -4176,33 +4221,47 @@ emouseatlas.emap.tiledImageView = function() {
    var constructUtils = function () {
 
       //console.log("enter constructUtils");
+      var project;
+      project = model.getProject();
 
       if(emouseatlas.emap.imgLabel) {
          emouseatlas.emap.imgLabel.initialise();
       }
 
+      /*
       if(emouseatlas.emap.scalebar) {
          emouseatlas.emap.scalebar.initialise();
       }
+      */
 
       if(emouseatlas.emap.newQueryTool) {
-         emouseatlas.emap.newQueryTool.initialise({project:"emap"});
+         emouseatlas.emap.newQueryTool.initialise({project:project});
       }
 
       if(emouseatlas.emap.chooseItemMGI) {
-         emouseatlas.emap.chooseItemMGI.initialise({project:"emap"});
+         emouseatlas.emap.chooseItemMGI.initialise({project:project});
       }
 
-      if(emouseatlas.emap.dontShowAgain) {
-         emouseatlas.emap.dontShowAgain.initialise({project:"emap"});
+      if(emouseatlas.emap.threeDAnatomyWarning) {
+         emouseatlas.emap.threeDAnatomyWarning.initialise({project:project});
       }
 
       if(emouseatlas.emap.chooseKaufmanItem) {
-         emouseatlas.emap.chooseKaufmanItem.initialise({project:"emap"});
+         emouseatlas.emap.chooseKaufmanItem.initialise({project:project});
       }
 
       if(emouseatlas.emap.mouseFeedback) {
          emouseatlas.emap.mouseFeedback.initialise();
+      }
+
+      if(emouseatlas.emap.threeDAnatomyHelp) {
+         var params;
+	 params = {
+	    project:project,
+	    view:view,
+	    type:"threeDAnatomyHelp"
+	 }
+         emouseatlas.emap.threeDAnatomyHelp.initialise(params);
       }
 
       // this is here because it must wait until the ajax calls have returned.
@@ -4750,14 +4809,8 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   var register = function (observer) {
-      /*
-      if(observer.getName) {
-         console.log(observer.getName());
-      } else {
-         console.log("name witheld");
-      }
-      */
+   var register = function (observer, from) {
+      //console.log("view.register from %s",from);
       registry.push(observer);
    };
 
@@ -4792,13 +4845,14 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   // Colour values are obtained from colChooser
+   // Colour values are obtained from colourTool
    var colourChange = function(from) {
 
       var lmnt;
       var col;
 
       col = getRGBA();
+      //console.log("colourChange from %s ",from, col);
 
       // this changes the colour of the patch in the tree
       if(elementIdToColour) {
@@ -4808,26 +4862,12 @@ emouseatlas.emap.tiledImageView = function() {
 	    background: 'rgba(' + col.red + ', ' + col.green + ', ' + col.blue + ', ' + col.alpha + ')'
 	 });
 	 model.updateTreeNodeColour(elementIdToColour, col);
-         viewChanges.colour = true;
-         notify("colourChange");
       }
 
    };
 
    //---------------------------------------------------------
-   // Colour values are obtained from colChooser
-   var colourUpdated = function(updated) {
-
-      if(updated) {
-         console.log("colourUpdated");
-         viewChanges.colour = true;
-         notify("colourChange");
-      }
-
-   };
-
-   //---------------------------------------------------------
-   // Specify which element is to use colChooser
+   // Specify which element is to use colourTool
    var setElementToColour = function(id) {
 
       var patch;
@@ -4875,10 +4915,15 @@ emouseatlas.emap.tiledImageView = function() {
 	 colourChooser.setRGBA(RGBA);
       }
 
+      if(emouseatlas.emap.colourTool) {
+	 emouseatlas.emap.colourTool.showColourTool(true);
+	 emouseatlas.emap.colourTool.setRGBA(RGBA);
+      }
+
    };
 
    //---------------------------------------------------------
-   // Get which element is to use colChooser
+   // Get which element is to use colourTool
    var getElementToColour = function() {
 
       //console.log("getElementToColour: %s", elementIdToColour);
@@ -4892,6 +4937,9 @@ emouseatlas.emap.tiledImageView = function() {
 
       if(colourChooser) {
          rgba = colourChooser.getRGBA();
+      }
+      if(emouseatlas.emap.colourTool) {
+         rgba = emouseatlas.emap.colourTool.getRGBA();
       }
       //console.log("getColour: ",rgba);
       return rgba;
@@ -5166,6 +5214,7 @@ emouseatlas.emap.tiledImageView = function() {
       var wlist;
 
       //console.log("view.setSelections from %s, mode %s ",from,mode.name,vals);
+
       treeSelections = vals;
       clearParams = {scale: false, distance: false, rotation: false, layer: layerNames[numLayers - 1]};
       clearTiles(clearParams);
@@ -5176,6 +5225,8 @@ emouseatlas.emap.tiledImageView = function() {
          viewChanges.selections = true;
          notify("setSelections");
       }
+
+      //emouseatlas.emap.treeTool.getDomainColour(8);
 
       wlist = get3dWindowList();
       if(wlist.length > 0) {
@@ -5190,58 +5241,79 @@ emouseatlas.emap.tiledImageView = function() {
 
       wlist = get3dWindowList();
       if(wlist.length > 0) {
-         okToProceedUpdate3d();
+         //okToProceedUpdate3d();
+         update3d();
       } else {
-         okToProceedNew3d();
+         //okToProceedNew3d();
+         doNew3d();
       }
    };
 
    //---------------------------------------------------------
    var new3d = function () {
 
-      var vals;
-      var len;
+      var wind;
 
-      vals = getSelections();
-      len = vals.split("&sel").length;
-      if(max3dToShow === undefined || len <= max3dToShow) {
-         okToProceedNew3d();
-      } else {
-         if(SHOW_DONT_SHOW_AGAIN_DIALOG === true) {
-            viewChanges.dontShowAgainDialog = true;
-	    notify("new3d");
+      // Modernizr test string must be all lower case, ie not localStorage
+      if (Modernizr.localstorage) {
+         if(!localStorage[SHOW_3D_ANATOMY_WARNING_DIALOG]) {
+            localStorage[SHOW_3D_ANATOMY_WARNING_DIALOG] = "NO"; // it doesn't matter what the value is as long as it exists.
+            viewChanges.threeDAnatomyWarningDialog = true;
+            notify("new3d");
+	 } else {
+	    // if localStorage[SHOW_3D_ANATOMY_WARNING_DIALOG] exists, we must have show the warning previously.
+	    if(open3dWindows.length === 0) {
+	       doNew3d();
+	    } else {
+	       update3d();
+	    }
 	 }
+      } else {
+         // not sure what to do here
       }
+
    };
 
    //---------------------------------------------------------
-   var okToProceedNew3d = function () {
+   //var okToProceedNew3d = function () {
+   var doNew3d = function () {
 
       var vals;
-      var limited;
       var wind;
       var url;
       var urlParams;
+      var winParams;
       var name;
       var web;
       var meta;
-      var pars;
+      var width;
+      var height;
+      var topp;
+      var left;
 
       vals = getSelections();
-      //console.log("okToProceedNew3d vals ",vals);
-      limited = limit3dToShow(vals);
       name = getNext3dWindowName();
       web = model.getWebServer();
       meta = model.getMetadataRoot();
 
       url = web + "/eAtlasViewer_ema/html/threeD.php";
 
-      urlParams = getUrlParams(limited);
+      urlParams = getUrlParams(vals);
       url = url + urlParams;
+      //console.log("doNew3d url ",url);
 
-      pars = 'scrollbars=no,toolbar=no,menubar=no';
+      winParams = getWinParams();
+      //console.log("winParams ",winParams);
+      width = winParams.width;
+      height = winParams.height;
+      topp = winParams.topp;
+      left = winParams.left;
 
-      wind = window.open(url,name,pars);
+      wind = window.open(
+         url,
+	 name,
+	 "outerWidth="+width+",outerHeight="+height+",top="+topp+",left="+left+",scrollbars=no,toolbar=no,menubar=no"
+      );
       emouseatlas.emap.utilities.addEvent(wind, 'beforeunload', threeDUnloading, false);
       register3dWindow(wind);
 
@@ -5274,32 +5346,6 @@ emouseatlas.emap.tiledImageView = function() {
    var update3d = function () {
 
       var vals;
-      var len;
-
-      //console.log("update3d max3dToShow ",max3dToShow);
-
-      vals = getSelections();
-      len = vals.split("&sel").length;
-      if(max3dToShow !== undefined && len <= max3dToShow) {
-         //console.log("update3d okToProceedUpdate3d, len = ",len);
-         okToProceedUpdate3d();
-      } else {
-         if(SHOW_DONT_SHOW_AGAIN_DIALOG === true) {
-            viewChanges.dontShowAgainDialog = true;
-	    notify("update3d");
-	 } else {
-            if(max3dToShow === undefined) {
-               okToProceedUpdate3d();
-	    }
-	 }
-      }
-   };
-
-   //---------------------------------------------------------
-   var okToProceedUpdate3d = function () {
-
-      var vals;
-      var limited;
       var wlist;
       var wind;
       var url;
@@ -5310,10 +5356,9 @@ emouseatlas.emap.tiledImageView = function() {
       var pars;
 
       vals = getSelections();
-      limited = limit3dToShow(vals);
 
-      urlParams = getUrlParams(limited);
-      //console.log("okToProceedUpdate3d urlParams ",urlParams);
+      urlParams = getUrlParams(vals);
+      //console.log("update3d urlParams ",urlParams);
 
       wlist = get3dWindowList();
       if(wlist === null || wlist === undefined || wlist.length === 0) {
@@ -5324,23 +5369,6 @@ emouseatlas.emap.tiledImageView = function() {
       wind = wlist[wlist.length -1];
 
       wind.emouseatlas.emap.threeDAnatomy.updateComponents(urlParams);
-
-   };
-
-   //---------------------------------------------------------
-   // a bit confusing I know, but if this is true
-   // the dialog is shown (if too many surfaces are about to be displayed)
-   //---------------------------------------------------------
-   var setShowDontShowAgainDialog = function (show) {
-
-      SHOW_DONT_SHOW_AGAIN_DIALOG = show;
-
-   };
-
-   //---------------------------------------------------------
-   var getShowDontShowAgainDialog = function () {
-
-      return SHOW_DONT_SHOW_AGAIN_DIALOG;
 
    };
 
@@ -5370,44 +5398,47 @@ emouseatlas.emap.tiledImageView = function() {
    };
 
    //---------------------------------------------------------
-   var limit3dToShow = function (vals) {
+   //  if we use domain id to access anatomy info from database
+   //---------------------------------------------------------
+   var getUrlParams = function (vals) {
 
+      var urlParams;
       var valArr;
-      var tag;
-      var limited;
-      var num;
+      var type;
+      var domainId;
+      var entry;
+      var entryArr;
+      var len;
+      var i;
 
-      //console.log("limit3dToShow vals ",vals);
-
-      if(vals === "") {
-         return vals;
-      }
-
-      if(max3dToShow === undefined) {
-         //console.log("limit3dToShow returning as max3dToShow ",max3dToShow);
-         return vals;
-      }
+      urlParams = "?comps=";
 
       valArr = vals.split(/&sel=/);
+      //console.log("getUrlParams vals %s, valArr ",vals,valArr);
       valArr.splice(0,1); // we don't want the empty string which is the first array element.
-      //console.log("limit3dToShow valArr ",valArr);
 
-      tag = "&sel=";
-      limited = "";
+      len = valArr.length;
+      for(i=0; i<len; i++) {
+         entry = valArr[i];
+	 entryArr = entry.split(",");
+	 domainId = entryArr[0];
+	 urlParams += domainId;
+	 if(i < len-1) {
+	    urlParams += ",";
+	 }
 
-      num = (valArr.length < max3dToShow) ? valArr.length : max3dToShow;
-
-      for(i=0; i<num; i++) {
-         limited += tag + valArr[i];
       }
 
-      //console.log("limit3dToShow limited ",limited);
-      return limited;
+      //console.log("getUrlParams: vals ",vals);
+      //console.log("getUrlParams: urlParams ",urlParams);
+      return urlParams;
+
    };
 
    //---------------------------------------------------------
-   //  we use EMAPA id to access anatomy info from database
+   //  if we use EMAPA id to access anatomy info from database
    //---------------------------------------------------------
+   /*
    var getUrlParams = function (vals) {
 
       var urlParams;
@@ -5453,8 +5484,60 @@ emouseatlas.emap.tiledImageView = function() {
 
       }
 
-      //console.log("getUrlParams: ",urlParams);
+      console.log("getUrlParams: vals ",vals);
+      console.log("getUrlParams: urlParams ",urlParams);
       return urlParams;
+
+   };
+   */
+
+   //---------------------------------------------------------
+   //  we want to open the new window to the right of this one
+   //  if possible
+   //---------------------------------------------------------
+   var getWinParams = function () {
+
+      var winParams;
+      var thisL;
+      var thisR;
+      var thisT;
+      var height;
+      var availW;
+      var possW;
+      var width;
+      var minWidth;
+
+      minWidth = 400;
+
+      thisT = window.screenY;
+      thisL = window.screenX;
+
+      height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight || document.body.clientHeight;
+      width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth || document.body.clientWidth;
+
+      thisR = thisL + width;
+
+      availW = screen.availWidth;
+      possW = (availW - thisR - 20);
+
+      width = possW < minWidth ? minWidth : possW;
+
+      // window.fullScreen is not well supported and seems to return false even when window is full screen!
+      // so we will just detect when there is not much room around the browser.
+      if(possW < width) {
+         //console.log("fullish screen");
+         left = availW - (minWidth + 5);
+         width = minWidth;
+      }
+
+      winParams = {
+         left:thisR + 5,
+         topp:thisT,
+         height:height,
+	 width:width
+      }
+
+      return winParams;
 
    };
 
@@ -5542,8 +5625,8 @@ emouseatlas.emap.tiledImageView = function() {
 
       var targetId = model.getViewerTargetId();
       var div = document.getElementById(targetId);
-      var infoIcon = document.getElementById("infoFrameIconContainer");
-      var helpIcon = document.getElementById("helpFrameIconContainer");
+      var infoIcon = document.getElementById("infoIconContainer");
+      var helpIcon = document.getElementById("helpIconContainer");
 
       div.className = '';
       if(imageIsMaximised) {
@@ -5636,26 +5719,40 @@ emouseatlas.emap.tiledImageView = function() {
       var treeContainer = document.getElementById("treetool-container");
       var logoContainer = document.getElementById("logoContainer");
       var hintContainer = document.getElementById("contextMenuHintDiv");
-      var helpIconContainer = document.getElementById("helpFrameIconContainer");
+      var helpIconContainer = document.getElementById("helpIconContainer");
+      var project;
+      var klass;
+
+      project = model.getProject();
+      //console.log("setToolboxVisibility project %s", project);
 
       if(toolbox) {
 	 if(toolbox.style.visibility.toLowerCase() === "visible") {
 	    toolbox.style.visibility = "hidden";
 	    hintContainer.style.visibility = "visible";
 	    toolsVisible = true; // so we know to hide them
+	    /*
 	    if(logoContainer) {
 	       logoContainer.className = "";
+	       if(project) {
+	          if(project === "eHistology") {
+	             logoContainer.className = "pointClick";
+		  }
+	       }
 	    }
+	    */
 	    if(helpIconContainer) {
-	       helpIconContainer.className = "helpFrameIconContainer";
+	       helpIconContainer.className = "helpIconContainer";
 	    }
 	 } else {
 	    toolbox.style.visibility = "visible";
 	    toolsVisible = false; // so we know to show them
 	    hintContainer.style.visibility = "hidden";
+	    /*
 	    if(logoContainer) {
 	       logoContainer.className = "noToolBox";
 	    }
+	    */
 	    if(helpIconContainer) {
 	       helpIconContainer.className = "noToolBox";
 	    }
@@ -5689,7 +5786,6 @@ emouseatlas.emap.tiledImageView = function() {
       return false;
    };
 
-
    //---------------------------------------------------------
    var setTree = function (viz) {
 
@@ -5704,6 +5800,13 @@ emouseatlas.emap.tiledImageView = function() {
 	 }
       }
       return false;
+   };
+
+   //---------------------------------------------------------
+   var getTreeTool = function () {
+
+      //console.log("getTreeTool ",viz);
+      return emouseatlas.emap.treeTool;
    };
 
    //---------------------------------------------------------
@@ -5736,33 +5839,71 @@ emouseatlas.emap.tiledImageView = function() {
       notify("hideViewerHelp");
    };
 
-   /* we are not showing 3d in an IFrame (yet) but don't delete this
-   //---------------------------------------------------------
-   var show3d = function () {
-      //console.log("show3d");
-      var closeDiv = document.getElementById("wlzIIPViewer3dIFrameCloseDiv");
-      var div = document.getElementById("wlzIIPViewer3dIFrameContainer");
-      div.style.visibility = "visible";
-      if(closeDiv) {
-	 util.addEvent(closeDiv, 'click', hide3d, false);
+   //---------------------------------------------------------------
+   var show3dAnatomyHelpFrame = function () {
+
+      var wlist;
+      var wind;
+      var closeDiv;
+//      var div;
+      var threeD_document;
+
+      wlist = get3dWindowList();
+      if(wlist === null || wlist === undefined || wlist.length === 0) {
+         console.log("no open windows");
+  	 return false;
       }
-      viewChanges.show3d = true;
-      notify("show3d");
+
+      // there should only be one open 3d window
+      wind = wlist[wlist.length -1];
+      threeD_document = wind.document;
+
+      closeDiv = threeD_document.getElementById("threeDAnatomyHelpIFrameContainerCloseDiv");
+      if(closeDiv) {
+	 util.addEvent(closeDiv, 'click', hide3dAnatomyHelpFrame, false);
+      }
+
+//      div = threeD_document.getElementById("threeDAnatomyHelpIFrameContainer");
+//      div.style.visibility = "visible";
+
+      viewChanges.show3dAnatomyHelp = true;
+      notify("show3dAnatomyHelp");
+
    };
    
    //---------------------------------------------------------
-   var hide3d = function () {
-      //console.log("hide3d");
-      var closeDiv = document.getElementById("wlzIIPViewer3dIFrameCloseDiv");
-      var div = document.getElementById("wlzIIPViewer3dIFrameContainer");
-      div.style.visibility = "hidden";
-      if(closeDiv) {
-	 util.removeEvent(closeDiv, 'click', hide3d, false);
+   var hide3dAnatomyHelpFrame = function () {
+
+      var wlist;
+      var wind;
+      var closeDiv;
+//      var div;
+      var threeD_document;
+
+      wlist = get3dWindowList();
+      if(wlist === null || wlist === undefined || wlist.length === 0) {
+         console.log("no open windows");
+  	 return false;
       }
-      viewChanges.hide3d = true;
-      notify("hide3d");
+
+      // there should only be one open 3d window
+
+      wind = wlist[wlist.length -1];
+      threeD_document = wind.document;
+
+      closeDiv = threeD_document.getElementById("threeDAnatomyHelpIFrameContainerCloseDiv");
+      if(closeDiv) {
+	 util.removeEvent(closeDiv, 'click', hide3dAnatomyHelpFrame, false);
+      }
+
+//      div = threeD_document.getElementById("threeDAnatomyHelpIFrameContainer");
+//      div.style.visibility = "hidden";
+
+      viewChanges.hide3dAnatomyHelp = true;
+      notify("hide3dAnatomyHelp");
+
    };
-   */
+   
 
    //---------------------------------------------------------
    var showX3domHelpFrame = function () {
@@ -5847,7 +5988,7 @@ emouseatlas.emap.tiledImageView = function() {
       notify("hideMarkerPopupIFrame");
 
    };
-   
+
    //--------------------------------------------------------------------------------------------
    // This is a context menu action.
    // Mode choices are radio buttons in the 'mode' group.
@@ -6041,7 +6182,6 @@ emouseatlas.emap.tiledImageView = function() {
       getOpacity: getOpacity,
       setOpacity: setOpacity,
       colourChange: colourChange,
-      colourUpdated: colourUpdated,
       setElementToColour: setElementToColour,
       getElementToColour: getElementToColour,
       getRGBA: getRGBA,
@@ -6124,12 +6264,15 @@ emouseatlas.emap.tiledImageView = function() {
       new3dCallback: new3dCallback,
       okToProceed3d: okToProceed3d,
       update3d: update3d,
-      setShowDontShowAgainDialog: setShowDontShowAgainDialog,
-      getShowDontShowAgainDialog: getShowDontShowAgainDialog,
+      //setShow3dWarningDialog: setShow3dWarningDialog,
+      //getShow3dWarningDialog: getShow3dWarningDialog,
       getMax3dToShow: getMax3dToShow,
       setMax3dToShow: setMax3dToShow,
       getOrigMax3dToShow: getOrigMax3dToShow,
       get3dWindowList: get3dWindowList,
+      show3dAnatomyHelpFrame: show3dAnatomyHelpFrame,
+      hide3dAnatomyHelpFrame: hide3dAnatomyHelpFrame,
+      getTreeTool: getTreeTool,
       resetViewChanges: resetViewChanges
    };
 

@@ -41,8 +41,8 @@ var tiledImageScalebar = new Class ({
       this.view = params.view;
       this.model = params.model;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageScalebar");
+      this.view.register(this, "tiledImageScalebar");
 
       this.name = "Scalebar";
       this.shortName = this.name.toLowerCase().split(" ").join("");

@@ -22,7 +22,7 @@ var x3domHelp = new Class ({
       //console.log("x3domHelp.initialize: params ",params);
 
       this.view = params.view;
-      this.view.register(this);
+      this.view.register(this, "x3domHelp");
 
       this.type = params.type;
       this.imagePath = params.imageDir;

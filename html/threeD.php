@@ -21,6 +21,7 @@
    <head>
       <!-- css files -->
       <link rel="stylesheet" type="text/css" media="all" href="../css/utils/threeD.css" />
+      <link rel="stylesheet" type="text/css" media="all" href="../css/utils/help.css" />
       <!-- javascript files -->
       <script type="text/javascript" src="../javascript/thirdParty/json2.js"></script>
       <script type="text/javascript" src="../javascript/thirdParty/mootools-core-1.4.5-full-nocompat.js"></script>
@@ -30,6 +31,7 @@
       <!-- the order here is important, make sure three comes before trackball -->
       <script type="text/javascript" src="../javascript/thirdParty/MARender/three.min.js"></script>
       <script type="text/javascript" src="../javascript/thirdParty/MARender/TrackballControls.js"></script>
+      <!-- <script type="text/javascript" src="../javascript/thirdParty/MARender/MARender.min.js"></script> -->
       <script type="text/javascript" src="../javascript/thirdParty/MARender/MARender.js"></script>
       <script type="text/javascript" src="../javascript/thirdParty/MARender/STLLoader.js"></script>
       <script type="text/javascript" src="../javascript/thirdParty/MARender/VTKLoader.js"></script>
@@ -43,10 +45,41 @@
       <script type="text/javascript" src="../javascript/tiledImageModel.js"></script>
       <script type="text/javascript" src="../javascript/tiledImageView.js"></script>
       <script type="text/javascript" src="../javascript/utils/threeDAnatomy.js"></script>
+      <script type="text/javascript" src="../javascript/utils/threeDAnatomyHelp.js"></script>
    </head>
 
    <body class="threeD" onload=doOnload()>
-      <div id="threeDContainer" name="threeDContainer">
+      <div id=projectDiv class=threeDAnatomy>
+	 <!-- ---------------------------------------------------------------- -->
+         <div id="pageHeaderDiv" class="threeDAnatomy">
+            <div id="threeDAnatomyHelpIconContainer" class="threeDAnatomyHelpIconContainer">
+               <img id="helpIconImg" src="../images/help-26.png"></img>
+            </div>
+            <div id="wlzIIPViewer3dTitle">
+            </div>
+         </div>
+	 <!-- ---------------------------------------------------------------- -->
+	 <center>
+            <div id="threeDAnatomyHelpIFrameContainer" class="wlzIIPViewerIFrameContainer threeDAnatomy" scrolling="auto">
+               <div id="threeDAnatomyHelpIFrameContainerTopDiv" class="wlzIIPViewerIFrameTopDiv">
+                  <h4 class="help">3D Anatomy Help</h4>
+                  <h6 class="help">(Click the <img src="../images/help-26.png" class="helpIcon"> icon to keep this help page displayed.)</h6>
+               </div>
+               <div id="threeDAnatomyHelpIFrameContainerCloseDiv" class="wlzIIPViewerIFrameCloseDiv">
+                  <img class="iframeClose" src="../images/close_10x8.png">
+               </div>
+               <iframe id="threeDAnatomyHelpIFrame" class="wlzIIPViewerIFrame threeDAnatomyHelp" src="./threeDAnatomy_helpFrame.html" name="threeDAnatomyHelpIFrame" scrolling="no">
+               </iframe>
+            </div>
+	 </center>
+	 <!-- ---------------------------------------------------------------- -->
+	 <center>
+            <div id="threeDContainer" name="threeDContainer">
+            </div>
+	 </center>
+	 <!-- ---------------------------------------------------------------- -->
       </div>
    </body>
 </html>
+
+

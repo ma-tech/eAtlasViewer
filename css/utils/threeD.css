@@ -21,14 +21,150 @@
 
 /* --------------------------- */
 body.threeD {
+   margin: 0px;
+   padding: 0px;
+   font-family: "Arial", sans-serif;
+   color: gray;
+   background: #fff;
    overflow: hidden;
 }
 
+a {
+   text-decoration: none;
+}
+a:link {
+   color:#0000ff;
+}
+a:visited {
+   color:#0000bb;
+}
+a:hover {
+   color:#9900bb;
+}
+a:active {
+   color:#0055bb;
+}
+/* --------------------------- */
 #threeDContainer {
    position: relative;
+   top: 10px;
    padding: 0px;
    margin: 0px;
    border: none;
    font-size: 9px;
    overflow: hidden;
 }
+
+#projectDiv {
+   margin: 0px;
+   padding: 0px;
+}
+
+#threeDAnatomyHelpIconContainer {
+   position: absolute;
+   right: 4px;
+   margin: 0px;
+   padding: 0px;
+   width: 16px;
+   height: 16px;
+   z-index: 1000;
+   visibility: visible;
+}
+
+#pageHeaderDiv {
+   position: relative;
+   left: 0px;
+   top: 10px;
+   width: 400px;
+   margin-left: auto;
+   margin-right: auto;
+   font-size: 20px;
+   font-family: "Arial", sans-serif;
+   font-style: normal;
+}
+
+#pageHeaderDiv.wider {
+   width: 490px;
+}
+
+#pageHeaderDiv h1 {
+   margin: 6px 0 0;
+   padding: 0px;
+}
+
+#pageHeaderDiv a {
+}
+
+#wlzIIPViewerTitle {
+   background: #fafaff;
+   height: 25px;
+}
+
+#wlzIIPViewer3dTitle {
+   background: #fafaff;
+   height: 25px;
+}
+
+#wlzIIPViewerTitleLink {
+   float: right;
+   margin: 0px;
+   padding: 0px;
+   position: relative;
+   top: -6px;
+}
+
+#titleTooltipContainerDiv {
+   position: relative;
+   left: 0px;
+   top: 40px;
+   width: 380px;
+   height: 50px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #ffe;
+   visibility: hidden;
+   z-index: 1000;
+}
+
+#titleTooltipTextContainer {
+   position: relative;
+   left: 0px;
+   top: 0px;
+   float: left;
+   height: 50px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 4px;
+   border: none;
+   background: #ffe;
+   z-index: 1000;
+}
+
+#titleTooltipLogoDiv {
+   position: relative;
+   left: 0px;
+   top: 0px;
+   float: left;
+   width: 101px;
+   height: 50px;
+   overflow: hidden;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   background: #fef;
+   z-index: 1000;
+}
+
+.titleTooltipLogoImg {
+   margin: 0px;
+   padding: 0px;
+   border: none;
+}
+
+.titleTooltipTextDiv {
+   font-size: 12px;
+}
+

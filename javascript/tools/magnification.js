@@ -51,13 +51,10 @@ emouseatlas.emap.magnification = function() {
    var magSlider;
    var magValText;
    var magDragContainerId;
+   var paramklass;
    var sliderStep;
    var maxVal;
    var minVal;
-   var x_left;
-   var y_top;
-   var width;
-   var MOUSE_DOWN;
    var EXT_CHANGE;
    var _debug;
 
@@ -66,6 +63,8 @@ emouseatlas.emap.magnification = function() {
    //---------------------------------------------------------
    var createElements = function () {
 
+      var project;
+      var klass;
       var target;
       var sliderLength;
       var isHorizontal;
@@ -74,6 +73,16 @@ emouseatlas.emap.magnification = function() {
       var fs1;
       var legend1;
       //------------------------
+
+      project = model.getProject();
+      //console.log("magnification project %s", project);
+
+      klass = "mag";
+
+      if (project === "kaufman_atlas" || project === "kaufman_supplement") {
+         klass = "mag ehist";
+      }
+      //console.log("magnification klass %s", klass);
 
       targetId = (targetId) ? targetId : model.getProjectDivId();
       target = $(targetId);
@@ -88,16 +97,9 @@ emouseatlas.emap.magnification = function() {
       // the drag container
       //----------------------------------------
       magDragContainer = new Element('div', {
-         'id': magDragContainerId
+         'id': magDragContainerId,
+	 'class': paramklass
       });
-
-      magDragContainer.setStyles({
-         "top": y_top + "px",
-         "left": x_left + "px"
-      });
-      if(width) {
-         magDragContainer.setStyle("width", width + "px");
-      }
 
       //----------------------------------------
       // the slider container
@@ -127,7 +129,7 @@ emouseatlas.emap.magnification = function() {
       magSlider = new Element('input', {
          'id': 'magSlider',
          'name': 'magSlider',
-         'class': 'mag',
+         'class': klass,
          'type': 'range',
 	 'min': '0',
 	 'step': '1'
@@ -136,9 +138,11 @@ emouseatlas.emap.magnification = function() {
       magSlider.setCustomValidity("");
       magSlider.setAttribute("formnovalidate", "");
 
+      /*
       if(width) {
          magSlider.setStyle("width", (width - 4) + "px");
       }
+      */
 
       magList = new Element('datalist', {
          'id': 'magList',
@@ -193,10 +197,10 @@ emouseatlas.emap.magnification = function() {
          doMagSliderChanged(e);
       });
       magSlider.addEvent('mousedown',function(e) {
-         enableDrag(e);
+         enableMagToolDrag(false);
       });
       magSlider.addEvent('mouseup',function(e) {
-         enableDrag(e);
+         enableMagToolDrag(true);
       });
 
    }; // createElements
@@ -234,31 +238,14 @@ emouseatlas.emap.magnification = function() {
       return false;
    };
 
-   //---------------------------------------------------------
-   var enableDrag = function (e) {
+   //---------------------------------------------------------------
+   var enableMagToolDrag = function(draggable) {
 
-      var target;
+      //console.log("enableMagToolDrag: %s",draggable);
       var dragContainer;
-      //console.log(e);
-      dragContainer = $(magDragContainerId);
-      target = emouseatlas.emap.utilities.getTarget(e);
-      if(target === undefined) {
-         return false;
-      }
-      //console.log("enableDrag target.id ",target.id);
 
       dragContainer = $(magDragContainerId);
-
-      if(e.type.toLowerCase() === "mousedown") {
-         MOUSE_DOWN = true;
-         dragContainer.setAttribute("draggable", false);
-      } else if(e.type.toLowerCase() === "mouseup") {
-         MOUSE_DOWN = false;
-         //target.blur();
-         dragContainer.setAttribute("draggable", true);
-      }
-
-      return false;
+      dragContainer.setAttribute("draggable", draggable);
 
    };
 
@@ -361,28 +348,26 @@ emouseatlas.emap.magnification = function() {
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "magnification");
+      view.register(this, "magnification");
 
       _debug = false;
 
       dropTargetId = model.getProjectDivId();
 
-      x_left = params.x; 
-      y_top = params.y; 
-      width = (params.width === undefined) ? undefined : params.width;
       targetId = (params.targetId === undefined) ? undefined : params.targetId;
+
+      paramklass = (params.klass === undefined) ? "" : params.klass; 
+      //console.log("paramklass %s",paramklass);
 
       magDragContainerId = "magDragContainer";
  
       createElements();
       initSlider();
 
-      MOUSE_DOWN = false;
-
       EXT_CHANGE = false;
 
-      emouseatlas.emap.drag.register({drag:magDragContainerId, drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:magDragContainerId, drop:dropTargetId}, "magnification");
 
       //console.log("leaving mag.initialise");
 

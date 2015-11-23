@@ -99,8 +99,8 @@ emouseatlas.emap.tiledImageQuery = function() {
    //---------------------------------------------------------
 
    //---------------------------------------------------------
-   var register = function (observer) {
-      //console.log("query: register observer ",observer.getName());
+   var register = function (observer, from) {
+      //console.log("query.register from %s",from);
       registry.push(observer);
    };
 
@@ -111,8 +111,8 @@ emouseatlas.emap.tiledImageQuery = function() {
    var initialise = function (from) {
 
       //console.log("emouseatlas.emap.tiledImageQuery.initialise from %s",from);
-      model.register(emouseatlas.emap.tiledImageQuery);
-      view.register(emouseatlas.emap.tiledImageQuery);
+      model.register(emouseatlas.emap.tiledImageQuery, "tileImageQuery");
+      view.register(emouseatlas.emap.tiledImageQuery, "tileImageQuery");
 
       queryTypes = ["none", "anatomy", "spatial"];
       queryType = NONE;

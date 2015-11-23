@@ -1,6 +1,7 @@
 /**
  * @author Eberhard Graether / http://egraether.com/
  * @author Mark Lundin 	/ http://mark-lundin.com
+ * @author Bill Hill / http://www.emouseatlas.org
  */
 
 THREE.TrackballControls = function ( object, domElement ) {
@@ -250,8 +251,12 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 				mouseChange.multiplyScalar( _eye.length() * _this.panSpeed );
 
-				pan.copy( _eye ).cross( _this.object.up ).setLength( mouseChange.x );
-				pan.add( objectUp.copy( _this.object.up ).setLength( mouseChange.y ) );
+				var u = new THREE.Vector3(),
+				    v = new THREE.Vector3();
+				u.crossVectors( _eye, _this.object.up );
+				v.crossVectors( _eye, u ).setLength( -(mouseChange.y) );
+				u.setLength( mouseChange.x );
+				pan.addVectors( u, v );
 
 				_this.object.position.add( pan );
 				_this.target.add( pan );

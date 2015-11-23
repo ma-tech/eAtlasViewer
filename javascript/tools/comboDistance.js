@@ -46,16 +46,16 @@ emouseatlas.emap.comboDistance = function() {
    var view;
    var util;
    var targetId;
+   var klass;
    var keySections;
    var comboDistDragContainerId;
-   var x_left;
-   var y_top;
+   //var x_left;
+   //var y_top;
    var keySlider;
    var keySliderNumber;
    var keySliderStep;
    var keySliderMaxVal;
    var keySliderMinVal;
-   var MOUSE_DOWN;
    var EXT_CHANGE;
    var NUMBER_CHANGE;
    var _debug;
@@ -96,13 +96,16 @@ emouseatlas.emap.comboDistance = function() {
       // the drag container
       //----------------------------------------
       comboDistDragContainer = new Element('div', {
-         'id': comboDistDragContainerId
+         'id': comboDistDragContainerId,
+	 'class': klass
       });
 
+      /*
       comboDistDragContainer.setStyles({
          "top": y_top + "px",
          "left": x_left + "px"
       });
+      */
 
       //----------------------------------------
       // the slider container
@@ -159,14 +162,16 @@ emouseatlas.emap.comboDistance = function() {
       keySlider.addEvent('input',function(e) {
          doKeySliderChanged(e);
       });
+      /*
       keySlider.addEvent('mousemove',function(e) {
          doKeySliderMouseMoved(e);
       });
+      */
       keySlider.addEvent('mousedown',function(e) {
-         enableDrag(e);
+	 enableComboDistToolDrag(false);
       });
       keySlider.addEvent('mouseup',function(e) {
-         enableDrag(e);
+	 enableComboDistToolDrag(true);
       });
       
       keySliderNumber.addEvent('change',function(e) {
@@ -375,6 +380,7 @@ emouseatlas.emap.comboDistance = function() {
    };
 
    //---------------------------------------------------------
+   /*
    var doKeySliderMouseMoved = function (e) {
 
       var target;
@@ -388,12 +394,9 @@ emouseatlas.emap.comboDistance = function() {
 
       target = emouseatlas.emap.utilities.getTarget(e);
 
-      if(!MOUSE_DOWN) {
-         target.blur();
-      }
-
       return false;
    };
+   */
 
    //---------------------------------------------------------
    var doKeySliderNumberChanged = function (e) {
@@ -553,35 +556,18 @@ emouseatlas.emap.comboDistance = function() {
       return false;
    };
 
-   //---------------------------------------------------------
-   var enableDrag = function (e) {
+   //---------------------------------------------------------------
+   var enableComboDistToolDrag = function(draggable) {
 
-      var target;
+      //console.log("enableComboDistanceDrag: %s",draggable);
       var dragContainer;
-      //console.log(e);
 
       dragContainer = $(comboDistDragContainerId);
-      target = emouseatlas.emap.utilities.getTarget(e);
-      if(target === undefined) {
-         return false;
+      dragContainer.setAttribute("draggable", draggable);
+
+      if(draggable) {
+         updateDistance();
       }
-      //console.log("enableDrag target.id ",target.id);
-
-      //emouseatlas.emap.distance.updateDistance();
-      updateDistance();
-
-      dragContainer = $(comboDistDragContainerId);
-
-      if(e.type.toLowerCase() === "mousedown") {
-         MOUSE_DOWN = true;
-         dragContainer.setAttribute("draggable", false);
-      } else if(e.type.toLowerCase() === "mouseup") {
-         MOUSE_DOWN = false;
-         //target.blur();
-         dragContainer.setAttribute("draggable", true);
-      }
-
-      return false;
 
    };
 
@@ -695,17 +681,19 @@ emouseatlas.emap.comboDistance = function() {
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "comboDistance");
+      view.register(this, "comboDistance");
 
       _debug = false;
 
       dropTargetId = model.getProjectDivId();
 
-      x_left = params.x; 
-      y_top = params.y; 
+      //x_left = params.x; 
+      //y_top = params.y; 
       width = (params.width === undefined) ? undefined : params.width;
       targetId = (params.targetId === undefined) ? undefined : params.targetId;
+
+      klass = (params.klass === undefined) ? "" : params.klass; 
 
       comboDistDragContainerId = "comboDistDragContainer";
       keySections = model.getKeySections();
@@ -716,12 +704,10 @@ emouseatlas.emap.comboDistance = function() {
       initComboDistSlider();
       //initKeyNumber();
 
-      MOUSE_DOWN = false;
-
       EXT_CHANGE = false;
       NUMBER_CHANGE = false;
 
-      emouseatlas.emap.drag.register({drag:comboDistDragContainerId, drop:dropTargetId});
+      emouseatlas.emap.drag.register({drag:comboDistDragContainerId, drop:dropTargetId}, "comboDistance");
 
       // to help discover the arrow key codes
       //util.addEvent(document, "keydown", function(e) {discoverKeyCode(e);}, false);

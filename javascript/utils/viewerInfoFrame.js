@@ -79,13 +79,15 @@ emouseatlas.emap.viewerInfo = function () {
    var initialise = function (params) {
 
       _debug = false;
+
+      //console.log("viewerInfoFrame.params ",params);
       targetId = params.targetId;
       target = document.getElementById(params.targetId);
       infoDetails = params.details;
       model = params.model;
-      model.register(this);
+      model.register(this, "viewerInfo");
       view = params.view;
-      view.register(this);
+      view.register(this, "viewerInfo");
 
       utils = emouseatlas.emap.utilities;
 

@@ -20,6 +20,30 @@
  */
 /* style for layer properties  */
 
+#layerPropsDragContainer {
+   position: absolute;
+   left: 170px;
+   width: 135px;
+   margin: 0px;
+   padding: 0px;
+   border: none;
+   border: solid 1px #ccc;
+   background: #fafafa;
+   visibility: hidden;
+}
+#layerPropsDragContainer.threeD {
+   top: 435px;
+}
+#layerPropsDragContainer.key {
+   top: 355px;
+}
+#layerPropsDragContainer.limb {
+   top: 425px;
+}
+#layerPropsDragContainer.caltech {
+   top: 425px;
+}
+
 .layerPropsTitleTextContainer {
    position: absolute;
    top: -12px;
@@ -40,19 +64,6 @@
    height:13px;
    font-size: 9px;
    background: #eeeeee;
-}
-
-#layerPropsDragContainer {
-   position: absolute;
-   left: 170px;
-   top: 100px;
-   width: 135px;
-   margin: 0px;
-   padding: 0px;
-   border: none;
-   border: solid 1px #ccc;
-   background: #fafafa;
-   visibility: hidden;
 }
 
 #layerPropsToolContainer {

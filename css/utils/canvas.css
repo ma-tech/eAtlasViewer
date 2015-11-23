@@ -32,3 +32,11 @@ canvas {
    z-index: 10000;
 }
 /* --------------------------- */
+canvas.colourTool {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   border: none;
+   border: 1px inset #f99;
+   visibility: visible;
+}

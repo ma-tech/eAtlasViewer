@@ -46,8 +46,8 @@ var tiledImageEquivalentSectionTool = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageEquivalentSectionTool");
+      this.view.register(this, "tiledImageEquivalentSectionTool");
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 

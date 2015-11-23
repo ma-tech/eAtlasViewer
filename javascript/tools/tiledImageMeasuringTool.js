@@ -46,8 +46,8 @@ var tiledImageMeasuringTool = new Class ({
       this.model = params.model;
       this.view = params.view;
 
-      this.model.register(this);
-      this.view.register(this);
+      this.model.register(this, "tiledImageMeasuringTool");
+      this.view.register(this, "tiledImageMeasuringTool");
 
       this.isHorizontal = (typeof(params.params.isHorizontal) === 'undefined') ? true : params.params.isHorizontal;
 

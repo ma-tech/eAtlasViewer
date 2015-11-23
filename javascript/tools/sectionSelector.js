@@ -1068,8 +1068,8 @@ var sectionSelector = new Class ({
       view = emouseatlas.emap.tiledImageView;
       util = emouseatlas.emap.utilities;
 
-      model.register(this);
-      view.register(this);
+      model.register(this, "sectionSelector");
+      view.register(this, "sectionSelector");
 
       _debug = false;
 
@@ -1096,7 +1096,7 @@ var sectionSelector = new Class ({
       EXT_CHANGE = false;
       NUMBER_CHANGE = false;
 
-      //emouseatlas.emap.drag.register({drag:selectorDragContainerId, drop:dropTargetId});
+      //emouseatlas.emap.drag.register({drag:selectorDragContainerId, drop:dropTargetId}, "sectionSelector");
 
    }; // initialise
 

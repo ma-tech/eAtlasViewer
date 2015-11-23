@@ -20,62 +20,63 @@
  */
 /* style for scalebar */
 
-#plateDropDown {
-   top: 75px;
+#scalebarContainer {
+   position: absolute;
+   bottom: 20px;
+   left: 140px;
+   margin: 0px;
+   padding: 0px;
+   height: 24px;
+   cursor: move;
    z-index: 10;
 }
-
-#imageDropDown {
-   z-index: 5;
+#scalebarContainer.sections {
+   left: 160px;
 }
 
-.dropDownTextContainer {
+#scalebarDiv {
    position: relative;
-   float: left;
-   margin: 0px;
+   top: 2px;
+   margin: 0px auto;
+   padding: 0px;
+   height: 4px;
+   background: #000;
+   border-bottom: 4px solid #FFF;
+}
+
+#scalebarTextContainer {
+   position: relative;
+   width: 55px;
+   height: 16px;
+   cursor: move;
+   margin: 0px auto;
    padding:0px;
+   background: #fff;
    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
    opacity: 0.75;
-   border: none;
 }
 
-.dropDownTextDiv {
-   position: relative;
-   top: 0px;
+#scalebarTextDiv {
    float: left;
+   height: 15px;
    font-size: 12px;
    color: #000;
    margin: 0px;
    padding:0px 2px;
 }
 
-/*   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)"; */
-.pointClickSelect {
+#scalebarMuContainer {
+   float: left;
    position: relative;
-   float: right;
-   margin: 0px;
-   padding:0px;
-   border: none;
-   color: #555;
-   font-size: 12px;
-   font-weight: bold;
-   background: #efefef;
-}
-.pointClickSelect.image {
-   top: -1px;
-   text-align: left;
-}
-.pointClickSelect.plate {
    top: 0px;
-   text-align: center;
+   height: 15px;
+   margin: 0px;
+   padding: 0px;
 }
-
-select option.pcDropDown {
-   border: none;
-   border-bottom: dotted 1px #e0e0e0;
-   color: #555;
-   font-size: 12px;
-   background: #efefef;
-   text-align: left;
+#scalebarMuContainer img {
+   position: relative;
+   top: 0px;
+   left: 0px
+   margin: 0px;
+   padding: 0px;
 }
-/* ------------------ */

@@ -21,17 +21,34 @@
 /* style for magnification  */
 
 #magDragContainer {
-   position: absolute;
-   left: 10px;
-   top: 322px;
-   width: 99px;
-   margin: 0px;
-   padding: 0px;
-   border: none;
+   left: 2px;
+   width: 132px;
    border: solid 1px #ccc;
-   background: #fafafa;
-   visibility: hidden;
-   z-index: 10;
+}
+#magDragContainer.threeD {
+   top: 421px;
+}
+#magDragContainer.key {
+   top: 305px;
+}
+#magDragContainer.limb {
+   top: 420px;
+}
+#magDragContainer.caltech {
+   top: 420px;
+}
+#magDragContainer.section {
+   top: 186px;
+}
+#magDragContainer.wlz {
+   top: 396px;
+}
+#magDragContainer.pointClick {
+   top: 40px;
+   width: 98px;
+}
+#magDragContainer.gudmap {
+   top: 420px;
 }
 
 #magSliderContainer {
@@ -55,6 +72,10 @@ input[type='range'].mag {
    top: -2px;
    left: 2px;
    width: 125px;
+}
+
+input[type='range'].mag.ehist {
+   width: 94px;
 }
 
 input[type='text'].mag {
