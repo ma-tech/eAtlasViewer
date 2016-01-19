@@ -469,6 +469,27 @@ emouseatlas.emap.treeTool = function () {
    };
 
    //---------------------------------------------------------
+   var getDomainName = function (domainId) {
+
+      var nodesWithDomain;
+      var id;
+      var name;
+      var len;
+      var i;
+
+      id = parseInt(domainId);
+
+      nodesWithDomain = treeComponent.root.getSignificantNodes([]);
+      nodesWithDomain.each(function(item){
+         if (item.domainId == id) {
+            name = item.name;
+         }
+      });
+
+      return name;
+   };
+
+   //---------------------------------------------------------
    var getDomainColour = function (domainId, hex) {
 
       var nodesWithDomain;
@@ -603,6 +624,7 @@ emouseatlas.emap.treeTool = function () {
       viewUpdate: viewUpdate,
       modelUpdate: modelUpdate,
       getDomainColour: getDomainColour,
+      getDomainName: getDomainName,
       isChecked: isChecked,
       getName: getName
    };

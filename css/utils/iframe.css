@@ -308,3 +308,25 @@ li.IIP3DViewerHelp.level3 {
    font-style: normal;
 }
 
+#threeDFeedbackExampleHeaderDiv {
+   position: relative;
+   left: 0px;
+   top: 60px;
+   width: 450px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   visibility: visible;
+}
+
+#threeDFeedbackExampleDiv {
+   position: relative;
+   left: 0px;
+   top: 70px;
+   width: 150px;
+   height: 150px;
+   padding: 0px;
+   margin: 0px;
+   border: none;
+   visibility: visible;
+}

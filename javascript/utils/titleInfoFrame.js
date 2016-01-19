@@ -172,9 +172,13 @@ emouseatlas.emap.titleInfo = function () {
       var stageDefDiv;
       var emapStageDefA;
       var emapAnatomyA;
+      var webServer;
+      var urlData;
       var url_emapStageDef;
       var url_emapAnatomy;
-      var webServer;
+
+      webServer = model.getWebServer();
+      urlData = model.getUrlData();
 
       stage = info.stage;
       //console.log("stage %d",stage);
@@ -184,10 +188,8 @@ emouseatlas.emap.titleInfo = function () {
       stage = parseInt(stage);
       //console.log("stage %d",stage);
 
-      webServer = model.getWebServer();
-
-      url_emapStageDef = webServer + "/emap/ema/theiler_stages/StageDefinition/ts" + stage + "definition.html";
-      url_emapAnatomy = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS" + stage;
+      url_emapStageDef = webServer + urlData.emap_stage_definition[0] + stage + urlData.emap_stage_definition[1];
+      url_emapAnatomy = webServer + urlData.staged_ontology + stage;
 
       mainContainer = mydocument.getElementById("titleInfoMainContainer");
       if(mainContainer === undefined || mainContainer === null) {

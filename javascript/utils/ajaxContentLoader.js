@@ -120,6 +120,7 @@ emouseatlas.emap.ajaxContentLoader = function () {
       //console.log("enter loadResponse");
       if(req === null || req === undefined) {
 	 url = loadResponseParams.url;
+	 //console.log("loadResponse url ",url);
 	 // set up default values
 	 method = (typeof loadResponseParams.method === 'undefined') ? "POST" : loadResponseParams.method;
 	 callback = (typeof loadResponseParams.callback === 'undefined') ? myload : loadResponseParams.callback;

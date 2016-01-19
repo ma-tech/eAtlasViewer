@@ -31,7 +31,7 @@ constructor: THREE.VTKLoader,
 	     },
 
 parse: function(data) {
-	       var idx, reg_index, pattern, result;
+	       var idx, pattern, reg_index, result;
 	       var line = 0, n_points = 0, n_polys = 0; n_dpp = 0;
 	       var colors;
 	       var geometry = new THREE.Geometry();
@@ -53,33 +53,40 @@ parse: function(data) {
 		* 3 2 0 3
 		*/
 	       // # vtk DataFile Version <uint>.<uint>
-	       pattern = /#[\s]+vtk[\s]+DataFile[\s]+Version[\s]+\d+\.\d+/gi
+	       pattern = /#[\s]+vtk[\s]+DataFile[\s]+Version[\s]+\d+\.\d+/gi;
 	       result = pattern.exec(data);
 	       if(result) {
 		       // Some comment text
 		       ++line;
 		       // ASCII
 		       ++line;
-		       pattern = /ASCII/g
+	               reg_index = pattern.lastIndex;
+		       pattern = /ASCII/g;
+		       pattern.lastIndex = reg_index;
 		       result = pattern.exec(data);
 	       }
 	       if(result) {
 		       // DATASET POLYDATA
 		       ++line;
-		       pattern = /DATASET[\s]+POLYDATA/g
+	               reg_index = pattern.lastIndex;
+		       pattern = /DATASET[\s]+POLYDATA/g;
+		       pattern.lastIndex = reg_index;
 		       result = pattern.exec(data);
 	       }
 	       if(result) {
 		       // POINTS 4 float
 		       ++line;
-		       pattern = /POINTS[\s]+([1-9]+[\d]*)[\s]+float/g
+		       pattern = /POINTS[\s]+([1-9]+[\d]*)[\s]+float/g;
+		       pattern.lastIndex = reg_index;
 		       if((result = pattern.exec(data)) !== null) {
 			       n_points = parseInt(result[1]);
 		       }
 	       }
 	       if(n_points > 0) {
 		       // <float> <float> <float>
-		       pattern = /(([+-]?[\d]+[.]?[\d\+\-eE]*)[\s]+([+-]?[\d]+[.]?[\d\+\-eE]*)[\s]+([+-]?[\d]+[.]?[\d\+\-eE]*))/g
+		       reg_index = pattern.lastIndex;
+		       pattern = /(([+-]?[\d]+[.]?[\d\+\-eE]*)[\s]+([+-]?[\d]+[.]?[\d\+\-eE]*)[\s]+([+-]?[\d]+[.]?[\d\+\-eE]*))/g;
+		       pattern.lastIndex = reg_index;
 		       for(idx = 0; idx < n_points; ++idx) {
 			       ++line;
 			       result = pattern.exec(data);
@@ -95,26 +102,27 @@ parse: function(data) {
 	       if((n_points > 0) && result) {
 		       // POLYGONS <uint> <uint> or LINES <uint> <uint>
 		       ++line;
-		       pattern = /(POLYGONS)[\s]+([1-9]+[\d]*)[\s]+([1-9]+[\d]*)/g
-			       if((result = pattern.exec(data)) !== null) {
-				       reg_index = pattern.lastIndex;
-			               if(result[1] === 'POLYGONS') {
-					       n_polys = parseInt(result[2]);
-					       var n_poly_points = parseInt(result[3]);
-					       n_dpp = n_poly_points / n_polys;
-				       } else {
-				         result = null;
-				       }
-
+		       pattern = /(POLYGONS)[\s]+([1-9]+[\d]*)[\s]+([1-9]+[\d]*)/g;
+		       if((result = pattern.exec(data)) !== null) {
+			       if(result[1] === 'POLYGONS') {
+				       n_polys = parseInt(result[2]);
+				       var n_poly_points = parseInt(result[3]);
+				       n_dpp = n_poly_points / n_polys;
 			       } else {
-				       result = true; // Allow just points, no polygons or lines
+				 result = null;
 			       }
+
+		       } else {
+			       result = true; // Allow just points, no polygons or lines
+		       }
 	       }
 	       if((n_points > 0) && result) {
 		       if(n_polys > 0) {
 			       if(n_dpp === 4) {
 				       // 3 <uint> <uint> <uint>
-				       pattern = /3[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)/g
+			               var reg_index = pattern.lastIndex;
+				       pattern = /3[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)/g;
+			               pattern.lastIndex = reg_index;
 				       for(idx = 0; idx < n_polys; ++idx) {
 					       ++line;
 					       if((result = pattern.exec(data)) === null) {
@@ -127,7 +135,9 @@ parse: function(data) {
 				       }
 			       } else if(n_dpp === 5) {
 				       // 4 <uint> <uint> <uint> <uint>
-				       pattern = /4[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)/g
+				       var reg_index = pattern.lastIndex;
+				       pattern = /4[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)[\s]+([\d]+)/g;
+				       pattern.lastIndex = reg_index;
 				       for(idx = 0; idx < n_polys; ++idx) {
 					       ++line;
 					       if((result = pattern.exec(data)) === null) {

@@ -201,6 +201,7 @@ emouseatlas.emap.viewerInfo = function () {
       }
 
       //console.log("assocIndx ",infoDetails.assocIndx);
+      //console.log("infoDetails ",infoDetails);
       info = modelInfo[infoDetails.assocIndx];
       if(info === undefined || info.length === 0) {
          //console.log("no model info");

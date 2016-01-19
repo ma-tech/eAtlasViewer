@@ -31,6 +31,39 @@
    z-index: 10000;
 }
 
+.threeDFeedback {
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   margin: 0;
+   padding: 0;
+   width: 140px;
+   height: 140px;
+   border: none;
+   z-index: 10000;
+}
+.threeDFeedback.noWebgl {
+   border: solid 1px #f00;
+}
+
+.noWebglSupportTextDiv {
+   position: relative;
+   top: 50px;
+   margin-left: auto;
+   margin-right: auto;
+   padding: 0;
+   width: 100px;
+   height: 40px;
+   border: none;
+}
+
+canvas#x3dom-threeDFeedback-canvas {
+   margin: 0;
+   padding: 0;
+   width: 140px;
+   height: 140px;
+}
+
 #x3dom_logdiv {
    position: absolute;
    top: 60px;

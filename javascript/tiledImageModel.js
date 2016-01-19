@@ -178,6 +178,8 @@ emouseatlas.emap.tiledImageModel = function() {
    var treeMenuStructureUrl;
    var treeMenuContentUrl;
    //......................
+   var urlData = {};
+   //......................
    var queryDataUrl;
 
    var greyImg;
@@ -536,6 +538,8 @@ emouseatlas.emap.tiledImageModel = function() {
 
       if(json.x3d !== undefined) {
          x3d = json.x3d;
+	 //var test4x3d = document.createElement('X3D');
+	 //console.log("X3D ",test4x3d);
 	 //console.log("x3d ",x3d);
 	 getX3dFromJson(x3d);
       }
@@ -1259,9 +1263,71 @@ emouseatlas.emap.tiledImageModel = function() {
       if(layer) {
          //console.log("loadAnatomyDataCallback layer.anatomyData ",layer.anatomyData);
       }
-      doInitView();
+
+      loadUrlData();
 
    }; // loadAnatomyDataCallback:
+
+   //---------------------------------------------------------------
+      //loadUrlData();
+   var loadUrlData = function () {
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      var url;
+      var ajax;
+      var ajaxParams;
+
+      url = '/URLwebapp/GetURLData';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"project=URL",
+         callback:loadUrlDataCallback,
+         async:true
+      }
+      if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // loadUrlData
+
+   //---------------------------------------------------------------
+   var loadUrlDataCallback = function (response) {
+
+      var webServer;
+      var json;
+
+      // get URL info via ajax
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         if(_debug) console.log("loadUrlDataCallback returning: response null");
+         return false;
+      } else {
+         //if(_debug) console.log(response);
+      }
+      
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         json = JSON.parse(response);
+      } else {
+         json = emouseatlas.JSON.parse(response);
+      }
+      if(!json) {
+         if(_debug) console.log("loadUrlDataCallback returning: json null");
+         return false;
+      }
+      if(_debug) console.log("loadUrlDataCallback json ",json);
+
+      urlData = json;
+
+      doInitView();
+
+   }; // loadUrlDataCallback
 
    //---------------------------------------------------------
    var doInitView = function() {
@@ -1323,7 +1389,7 @@ emouseatlas.emap.tiledImageModel = function() {
          ///////////!!!!!  Please do not remove it, unless your changes are tested on eurExpress dat
             fullDataPath = layer.imageDir + assayPath + stackMetadataFilename;
          }
-	 //console.log("fullDataPath ",fullDataPath);
+	 //console.log("getMetadata: fullDataPath ",fullDataPath);
 
 	 // we now have to deal with legacy filename formats ...
 
@@ -1823,7 +1889,8 @@ emouseatlas.emap.tiledImageModel = function() {
 	    if(_debug) {
 	       printPaths();
 	    }
-	    initView();
+
+	    loadUrlData();
 	 }
 
       }
@@ -2110,7 +2177,7 @@ emouseatlas.emap.tiledImageModel = function() {
       for(i=0; i<len; i++) {
 	 layerName = layerNames[i];
 	 layer = layerData[layerName];
-         console.log("loadTrees: layer ",layer);
+         //console.log("loadTrees: layer ",layer);
 	 if(layer.treeStructure !== undefined) {
 	    // treeData is loaded from loadTreeStructureCallback
 	    loadTreeStructure(layerName);
@@ -3690,6 +3757,12 @@ emouseatlas.emap.tiledImageModel = function() {
      return anatomyDetails;
    };
 
+   //---------------------------------------------------------
+   var getUrlData = function() {
+     return urlData;
+   };
+
+   //---------------------------------------------------------
    var getUpdatedTreeNode = function () {
      return updatedTreeNode;
    };
@@ -3707,6 +3780,11 @@ emouseatlas.emap.tiledImageModel = function() {
    //---------------------------------------------------------
    var getProjectDivId = function() {
      return projectDivId;
+   };
+
+   //---------------------------------------------------------
+   var hasTree = function() {
+     return (numberOfTreesLoaded > 0) ? true : false;
    };
 
    //---------------------------------------------------------
@@ -3807,6 +3885,8 @@ emouseatlas.emap.tiledImageModel = function() {
       getScalebarLen: getScalebarLen,
       getProject: getProject,
       getProjectDivId: getProjectDivId,
+      getUrlData: getUrlData,
+      hasTree: hasTree,
       has3dAnatomy: has3dAnatomy
    };
 

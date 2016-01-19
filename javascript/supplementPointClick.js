@@ -97,11 +97,12 @@ emouseatlas.emap.supplementPointClick = function() {
    var srcClose2;
    var CONTEXT_MENU = false;
    var SHOW_ALL_MARKERS = false;
+   var emouseatlasUrl;
    var stagedOntologyUrl;
    var abstractOntologyUrl;
-   var emageUrl;
-   var emouseatlasUrl;
-   var mgiUrl;
+   var emageQueryUrl;
+   var emageQueryUrlParams;
+   var mgiQueryUrl;
    var annotations;
    var markerDets;
    var locationDets;
@@ -143,8 +144,6 @@ emouseatlas.emap.supplementPointClick = function() {
 
       _debug = false;
 
-      var webServer;
-
       //if(_debug) console.log("enter supplementPointClick.initialise");
 
       model.register(this);
@@ -178,14 +177,6 @@ emouseatlas.emap.supplementPointClick = function() {
       maxCloseMarkersToShow = 3;
 
       markerContainerId = 'histology_tileFrame';
-      mgiUrl = "http://www.informatics.jax.org/gxd/structure/"; 
-
-      webServer = model.getWebServer();
-
-      stagedOntologyUrl =  webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=TS";
-      abstractOntologyUrl =  webServer + "/emap/ema/DAOAnatomyJSP/abstract.html";
-      emageUrl =  webServer + "/emagewebapp/pages/emage_general_query_result.jsf?structures=";
-      emouseatlasUrl =  webServer;
 
       //---------------------------------------------------------
       // The marker img is 20x34 pixels and the locating point is mid-bottom-line
@@ -208,9 +199,82 @@ emouseatlas.emap.supplementPointClick = function() {
       // the flow of control passes through each of them and their callback functions
       // so that all the data has been obtained from the database(s) before we
       // build the rest of the interface (see buildInterface() )
-      getListOfPlates();
+      constructUrls();
 
    }; // initialise
+
+   //---------------------------------------------------------------
+   var constructUrls = function () {
+
+      /*
+         You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
+	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
+	 and empty resultText (it is suffering from the 'different domain' problem).
+      */
+
+      var url;
+      var ajax;
+      var ajaxParams;
+
+      url = '/URLwebapp/GetURLData';
+      ajaxParams = {
+         url:url,
+         method:"POST",
+	 urlParams:"project=URL",
+         callback:constructUrlsCallback,
+         async:true
+      }
+      if(_debug) console.log(ajaxParams);
+      ajax = new emouseatlas.emap.ajaxContentLoader();
+      ajax.loadResponse(ajaxParams);
+
+   }; // constructUrls
+
+   //---------------------------------------------------------------
+   var constructUrlsCallback = function (response) {
+
+      var webServer;
+      var json;
+      var urlData;
+
+      // get URL info via ajax
+      //----------------
+      response = emouseatlas.emap.utilities.trimString(response);
+      if(response === null || response === undefined || response === "") {
+         if(_debug) console.log("constructUrlsCallback returning: response null");
+         return false;
+      } else {
+         //if(_debug) console.log(response);
+      }
+      
+      if(emouseatlas.JSON === undefined || emouseatlas.JSON === null) {
+         json = JSON.parse(response);
+      } else {
+         json = emouseatlas.JSON.parse(response);
+      }
+      if(!json) {
+         if(_debug) console.log("constructUrlsCallback returning: json null");
+         return false;
+      }
+      if(_debug) console.log("constructUrlsCallback json ",json);
+
+      urlData = json;
+      
+      webServer = model.getWebServer();
+      emouseatlasUrl = webServer;
+
+      mgiQueryUrl = urlData.mgi_query;
+
+
+      stagedOntologyUrl = webServer + urlData.staged_ontology;
+      abstractOntologyUrl = webServer + urlData.abstract_ontology;
+      emageQueryUrl = webServer + urlData.emage_query[0];
+      emageQueryUrlParams = urlData.emage_query[1];
+
+      //........................
+      getListOfPlates();
+
+   }; // constructUrlsCallback
 
    //---------------------------------------------------------------
    var getListOfPlates = function () {
@@ -2568,7 +2632,7 @@ emouseatlas.emap.supplementPointClick = function() {
 	    comma = (i===0) ? "" : ",";
 	    queryStr = queryStr + comma + emapaArr[i];
 	 }
-         url = emageUrl + queryStr + '&exactmatchstructures=true&includestructuresynonyms=true'; 
+         url = emageQueryUrl + queryStr + emageQueryUrlParams; 
       } else if(dbLC === MGI) {
 	 if(latestSelectedRow) {
 	    if(multiple) {
@@ -2576,7 +2640,7 @@ emouseatlas.emap.supplementPointClick = function() {
 	       notify("doTableLink");
 	       return false;
 	    } else {
-               url = mgiUrl + emapaArr[0]; 
+               url = mgiQueryUrl + emapaArr[0]; 
 	    }
 	 } else {
 	    return false;
@@ -5497,6 +5561,9 @@ emouseatlas.emap.supplementPointClick = function() {
       var selected;
       var termDets;
       var emapa;
+      var ajax;
+      var urlParams;
+      var ajaxParams;
 
       _deb = _debug;
       //_debug = true;
@@ -5523,18 +5590,19 @@ emouseatlas.emap.supplementPointClick = function() {
       if(_debug) console.log("addNewLocation selected ",selected);
       if(_debug) console.log("addNewLocation termDets ",termDets);
 
-      //removeMarkers();
+      urlParams = "project=kaufman_supplement&image=" + selected.img + "&knum=" + editedMarkerKnum + "&emapa=" + emapa + "&x=" + x + "&y=" + y;
 
       url = '/kaufmanwebapp/AddNewLocation';
       ajaxParams = {
          url:url,
          method:"POST",
-	 urlParams:"project=kaufman_supplement&image=" + selected.img + "&knum=" + editedMarkerKnum + "&emapa=" + emapa + "&x=" + x + "&y=" + y,
+	 urlParams: urlParams,
 	 callback:addNewLocationCallback,
          async:true
       }
       if(_debug) console.log(ajaxParams);
       ajax = new emouseatlas.emap.ajaxContentLoader();
+      //console.log("addNewLocation: urlParams ",urlParams);
       ajax.loadResponse(ajaxParams);
 
       _debug = _deb;
@@ -5740,6 +5808,7 @@ emouseatlas.emap.supplementPointClick = function() {
    var deleteHighlightedMarker = function () {
 
       var ajax;
+      var urlParams;
       var ajaxParams;
       var url;
       var key;
@@ -5768,6 +5837,8 @@ emouseatlas.emap.supplementPointClick = function() {
       loc_oid = locDets.oidArr[highlightedMarkerFnum]
       //console.log("loc_oid ",loc_oid);
 
+      urlParams = "project=kaufman_supplement&loc_oid=" + loc_oid;
+
       /*
          You need to make sure httpd.conf has a connector enabled for tomcat on port 8080.
 	 Using a url such as http://glenluig.hgu.mrc.ac.uk:8080/...  will result in a status of 0 
@@ -5778,11 +5849,12 @@ emouseatlas.emap.supplementPointClick = function() {
       ajaxParams = {
          url:url,
          method:"POST",
-	 urlParams:"project=kaufman_supplement&loc_oid=" + loc_oid,
+	 urlParams: urlParams,
 	 callback:deleteHighlightedMarkerCallback,
          async:true
       }
       //if(_debug) console.log(ajaxParams);
+      //console.log("deleteHighlightedMarker: urlParams ",urlParams);
       ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 
@@ -5891,7 +5963,7 @@ emouseatlas.emap.supplementPointClick = function() {
          async:true
       }
       //if(_debug) console.log(ajaxParams);
-      //console.log(ajaxParams);
+      //console.log("updateLocation: urlParams ",urlParams);
       ajax = new emouseatlas.emap.ajaxContentLoader();
       ajax.loadResponse(ajaxParams);
 

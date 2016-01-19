@@ -81,7 +81,7 @@ emouseatlas.emap.pointClickDropDown = function() {
    var initialise = function(params) {
 
       //console.log(params);
-      console.log("pointClickDropDown.initialise params ",params);
+      //console.log("pointClickDropDown.initialise params ",params);
 
       model = emouseatlas.emap.tiledImageModel;
       view = emouseatlas.emap.tiledImageView;
@@ -99,7 +99,7 @@ emouseatlas.emap.pointClickDropDown = function() {
       } else if(project === "kaufman_supplement") {
          pointClick = emouseatlas.emap.supplementPointClick;
       }
-      console.log("pointClickDropDown.initialise pointClick ",pointClick);
+      //console.log("pointClickDropDown.initialise pointClick ",pointClick);
 
       if(pointClick) {
          pointClick.register(this, "pointClickDropDown");

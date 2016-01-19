@@ -98,6 +98,8 @@ emouseatlas.emap.tiledImageView = function() {
       hideViewerHelp: false,
       showX3domHelp: false,
       hideX3domHelp: false,
+      showX3domUnsupported: false,
+      hideX3domUnsupported: false,
       showViewerInfo: false,
       hideViewerInfo: false,
       showMarkerPopup: false,
@@ -1190,6 +1192,8 @@ emouseatlas.emap.tiledImageView = function() {
       if(viewChanges.hideViewerHelp) console.log("viewChanges.hideViewerHelp ",viewChanges.hideViewerHelp);
       if(viewChanges.showX3domHelp) console.log("viewChanges.showX3domHelp ",viewChanges.showX3domHelp);
       if(viewChanges.hideX3domHelp) console.log("viewChanges.hideX3domHelp ",viewChanges.hideX3domHelp);
+      if(viewChanges.showX3domUnsupported) console.log("viewChanges.showX3domUnsupported ",viewChanges.showX3domUnsupported);
+      if(viewChanges.hideX3domUnsupported) console.log("viewChanges.hideX3domUnsupported ",viewChanges.hideX3domUnsupported);
       if(viewChanges.showViewerInfo) console.log("viewChanges.showViewerInfo ",viewChanges.showViewerInfo);
       if(viewChanges.hideViewerInfo) console.log("viewChanges.hideViewerInfo ",viewChanges.hideViewerInfo);
       if(viewChanges.showMarkerPopup) console.log("viewChanges.showMarkerPopup ",viewChanges.showMarkerPopup);
@@ -1247,6 +1251,8 @@ emouseatlas.emap.tiledImageView = function() {
       viewChanges.hideViewerHelp =  false;
       viewChanges.showX3domHelp =  false;
       viewChanges.hideX3domHelp =  false;
+      viewChanges.showX3domUnsupported =  false;
+      viewChanges.hideX3domUnsupported =  false;
       viewChanges.showViewerInfo =  false;
       viewChanges.hideViewerInfo =  false;
       viewChanges.showMarkerPopup =  false;
@@ -2778,9 +2784,6 @@ emouseatlas.emap.tiledImageView = function() {
 	    pointClickEditor &&
 	    buttons.left &&
 	    modifiers.shift) {
-	    //modifiers.shift &&
-	    //modifiers.alt) {
-	 //pointClickPoint = {x:mouseX, y:mouseY};
 	 pointClickPoint = getMousePositionInImage({x:mouseX, y:mouseY});
 	 //console.log("doMouseDrag pointClickPoint ",pointClickPoint);
 	 viewChanges.movingPCPoint = true;
@@ -3766,6 +3769,16 @@ emouseatlas.emap.tiledImageView = function() {
          }
       }
 
+      if(typeof(tools.test4Webgl) !== 'undefined') {
+         params = {
+	    targetId:toolData.test4Webgl.targetId,
+	    klass: toolData.test4Webgl.klass
+         }
+         if(emouseatlas.emap.test4Webgl) {
+            emouseatlas.emap.test4Webgl.initialise(params);
+         }
+      }
+
       if(typeof(tools.refreshTool) !== 'undefined') {
          params = {
             targetId:toolData.refreshTool.targetId,
@@ -4001,52 +4014,6 @@ emouseatlas.emap.tiledImageView = function() {
 	 });
       }
 
-      /*
-      if(typeof(tools.threeDAnatomyHelp) !== 'undefined') {
-	 new threeDAnatomyHelp({
-	    targetId: "emapIIPViewerDiv",
-	    view: view,
-	    type: "threeDAnatomyHelp"
-	 });
-      }
-      */
-
-
-      /*
-      if(typeof(tools.refresh) !== 'undefined') {
-	 new tiledImageRefreshTool({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.refresh.targetId,
-	            drag:toolData.refresh.draggable,
-	            borders:toolData.refresh.borders,
-	            width:toolData.refresh.width,
-	            height:toolData.refresh.height,
-		    x:toolData.refresh.x,
-		    y:toolData.refresh.y,
-		    allowClose: false}
-	 });
-      }
-      */
-
-      /*
-      if(typeof(tools.combinedDistance) !== 'undefined') {
-	 new combinedDistanceTool({
-	    model:model,
-	    view:view,
-	    params:{targetId:toolData.combinedDistance.targetId,
-	            drag:toolData.combinedDistance.draggable,
-	            borders:toolData.combinedDistance.borders,
-	            width:toolData.combinedDistance.width,
-	            height:toolData.combinedDistance.height,
-		    x:toolData.combinedDistance.x,
-		    y:toolData.combinedDistance.y,
-		    isHorizontal:toolData.combinedDistance.isHorizontal,
-		    allowClose: false}
-	 });
-      }
-      */
-
       if(typeof(tools.tprPointClick) !== 'undefined') {
          emouseatlas.emap.tprPointClick.initialize();
       }
@@ -4083,26 +4050,6 @@ emouseatlas.emap.tiledImageView = function() {
 		   }
 	 });
       }
-
-      /*
-      if(typeof(tools.colChooser) !== 'undefined') {
-	 colourChooser = new colChooser({
-	    model:model,
-	    view:view,
-	    params:{
-	            targetId:toolData.colChooser.targetId,
-	            drag:toolData.colChooser.draggable,
-                    toRight:toolData.colChooser.toRight,
-	            borders:toolData.colChooser.borders,
-		    allowClose: toolData.colChooser.allowClose,
-	            width:toolData.colChooser.width,
-		    height:toolData.colChooser.height,
-		    x:toolData.colChooser.x,
-		    y:toolData.colChooser.y
-		   }
-	 });
-      }
-      */
 
       if(query) {
 	 if(typeof(tools.query) !== 'undefined') {
@@ -5904,7 +5851,6 @@ emouseatlas.emap.tiledImageView = function() {
 
    };
    
-
    //---------------------------------------------------------
    var showX3domHelpFrame = function () {
       viewChanges.showX3domHelp = true;
@@ -5915,6 +5861,18 @@ emouseatlas.emap.tiledImageView = function() {
    var hideX3domHelpFrame = function () {
       viewChanges.hideX3domHelp = true;
       notify("hideX3domHelp");
+   };
+   
+   //---------------------------------------------------------
+   var showX3domUnsupportedFrame = function () {
+      viewChanges.showX3domUnsupported = true;
+      notify("showX3domUnsupported");
+   };
+   
+   //---------------------------------------------------------
+   var hideX3domUnsupportedFrame = function () {
+      viewChanges.hideX3domUnsupported = true;
+      notify("hideX3domUnsupported");
    };
    
    //---------------------------------------------------------
@@ -6033,9 +5991,11 @@ emouseatlas.emap.tiledImageView = function() {
       var div;
       var targetId = model.getViewerTargetId();
       var tableDiv;
+      var hasTree;
 
       if(document.getElementById(targetId)) {
          div = document.getElementById(targetId);
+	 //console.log("setMode: div = %s.%s", div.id, div.className);
       }
 
       if(mode.name === newmode && !(mode.name === "query" && query.getQueryType() === "anatomy")) {
@@ -6047,13 +6007,15 @@ emouseatlas.emap.tiledImageView = function() {
          imageContextMenu.setRadioButton('mode', 0);
       }
 
+      hasTree = model.hasTree();
+
       if(div) {
 	 tableDiv = $('pointClickTableDiv');
          if(mode.name === 'pointClick') {
 	    tableDiv.setStyle('visibility', 'visible');
             div.className = 'pointClick';
          } else {
-            div.className = '';
+            div.className = (hasTree) ? "tree" : "";
 	    if(tableDiv) {
 	       tableDiv.setStyle('visibility', 'hidden');
 	    }
@@ -6247,6 +6209,8 @@ emouseatlas.emap.tiledImageView = function() {
       showViewerHelp: showViewerHelp,
       showX3domHelpFrame: showX3domHelpFrame,
       hideX3domHelpFrame: hideX3domHelpFrame,
+      showX3domUnsupportedFrame: showX3domUnsupportedFrame,
+      hideX3domUnsupportedFrame: hideX3domUnsupportedFrame,
       setToolboxVisibility: setToolboxVisibility,
       enableImgLabels: enableImgLabels,
       showQueryDialogue: showQueryDialogue,

@@ -105,6 +105,7 @@ emouseatlas.emap.threeDAnatomy = function () {
       //anatomyDetails = model.getAnatomyDetails();
       //_console.log("threeDAnatomy.initialise: anatomyDetails ",anatomyDetails);
       anatomyDataFromDb = model.getAnatomyData("anatomy");
+      //_console.log("threeDAnatomy.initialise: anatomyDataFromDb ",anatomyDataFromDb);
       pathToSurfs = anatomyDataFromDb.locn;
       suffix = anatomyDataFromDb.suffix;
       anatomyData = anatomyDataFromDb.anat;
@@ -113,16 +114,17 @@ emouseatlas.emap.threeDAnatomy = function () {
 
       context = {
          name: "context",
-	 path: pathToSurfs + "/embryonic" + suffix,
+	 path: pathToSurfs + "/reference" + suffix,
 	 color: "0x999999",
 	 transparent: true,
-	 opacity: "0.3"
+	 opacity: "0.5"
       };
       //_console.log("threeDAnatomy.initialise: context ",context);
 
       container = document.getElementById("threeDContainer");
       ren = new MARenderer(window, container);
       ren.init();
+      ren.setPickOfs(35);
       ren.addModel(context);
       setCamera();
       ren.animate();
@@ -169,18 +171,26 @@ emouseatlas.emap.threeDAnatomy = function () {
 	    ren.setHome(new THREE.Vector3(-66.77296704395707, -1423.5844584254023, 136.11519431312934), new THREE.Vector3(0.33165461422288334, 0.09576835231571894, -0.9385273781618639));
 	 break;
          case "EMA17":
+            ren.setCamera(new THREE.Vector3(226.02814999999998, 131.42430000000002, 284.33131), 0.1, 5714.82, new THREE.Vector3(1587.0170996935876, 1978.9531609977153, 1.7353812720617157));
+            ren.setHome(new THREE.Vector3(1587.0170996935876, 1978.9531609977153, 1.7353812720617157), new THREE.Vector3(-0.05601199462646159, -0.180087689281455, -0.9820545201908211));
 	 break;
          case "EMA21":
+            ren.setCamera(new THREE.Vector3(219.63440000000003, 176.73955, 267.408305), 0.1, 5364.719999999999, new THREE.Vector3(-638.4701830058849, 2130.445819145013, 666.7350917507665));
+            ren.setHome(new THREE.Vector3(-638.4701830058849, 2130.445819145013, 666.7350917507665), new THREE.Vector3(-0.4746911924727429, 0.623012222923193, -0.6217105772600585));
 	 break;
          case "EMA24":
+            ren.setCamera(new THREE.Vector3(185.0745, 221.05345, 212.50694), 0.1, 4291.38, new THREE.Vector3(-1266.7653794479108, -736.6548049095416, -35.54566583241311));
+            ren.setHome(new THREE.Vector3(-1266.7653794479108, -736.6548049095416, -35.54566583241311), new THREE.Vector3(0.4203910840162584, -0.17593000678266166, -0.8901235696200197));
 	 break;
          case "EMA27":
-	    ren.setCamera(new THREE.Vector3(877, 548, 1074), 1, 10000, new THREE.Vector3(-2969.055338089681, 8278.675185913264, 519.4552933693614));
-	    ren.setHome(new THREE.Vector3(-2969.055338089681, 8278.675185913264, 519.4552933693614), new THREE.Vector3(0.06614901301747221, -0.10876734966564841, -0.9918551844516033));
+	    ren.setCamera(new THREE.Vector3(877.3924999999999, 551.6105, 1075.5019), 11.4119, 21281.8, new THREE.Vector3(-2890.297951880888, 3946.067109761968, -952.6104658506733));
+	    ren.setHome(new THREE.Vector3(-2890.297951880888, 3946.067109761968, -952.6104658506733), new THREE.Vector3(-0.045736654169990454, 0.19134849482609467, -0.9804471669565338));
 	 break;
          case "EMA28":
 	 break;
          case "EMA28_3D":
+            ren.setCamera(new THREE.Vector3(213.26135, 160.05675, -194.349435), 0.1, 4015.4199999999996, new THREE.Vector3(1027.828844651105, -870.6745865524956, -1146.1116869808454));
+            ren.setHome(new THREE.Vector3(1027.828844651105, -870.6745865524956, -1146.1116869808454), new THREE.Vector3(-0.8011353985069526, -0.2041553138018194, -0.5625857100083261));
 	 break;
          case "EMA49":
 	 break;
@@ -195,6 +205,10 @@ emouseatlas.emap.threeDAnatomy = function () {
          case "EMA65_3D":
 	 break;
          case "EMA76":
+	 break;
+         case "EMA103":
+	    ren.setCamera(new THREE.Vector3(530.67, 170.42999999999995, 2410.95855), 0.1, 48514.2, new THREE.Vector3(12293.39178230287, -13680.009153973551, -502.3763875331297));
+	    ren.setHome(new THREE.Vector3(12293.39178230287, -13680.009153973551, -502.3763875331297), new THREE.Vector3(-0.519299983756752, 0.6317147918589494, -0.5755403407380021));
 	 break;
          case "EMA108":
 	 break;
@@ -240,22 +254,22 @@ emouseatlas.emap.threeDAnatomy = function () {
 	    titleDiv.innerHTML = "3D Model (EMA:10): TS10(7 dpc)";
 	 break;
          case "EMA17":
-	    titleDiv.innerHTML = "";
+	    titleDiv.innerHTML = "3D Model (EMA:17): TS11(7.5 dpc)";
 	 break;
          case "EMA21":
-	    titleDiv.innerHTML = "";
+	    titleDiv.innerHTML = "3D Model (EMA:21): TS12(8 dpc)";
 	 break;
          case "EMA24":
-	    titleDiv.innerHTML = "";
+	    titleDiv.innerHTML = "3D Model (EMA:24): TS13(8.5 dpc)";
 	 break;
          case "EMA27":
 	    titleDiv.innerHTML = "3D Model (EMA:27): TS14(9 dpc)";
 	 break;
          case "EMA28":
-	    titleDiv.innerHTML = "";
+	    titleDiv.innerHTML = "3D Model (EMA:28): TS15(9.5 dpc)";
 	 break;
          case "EMA28_3D":
-	    titleDiv.innerHTML = "";
+	    titleDiv.innerHTML = "3D Model (EMA:28): TS15(9.5 dpc)";
 	 break;
          case "EMA49":
 	    titleDiv.innerHTML = "";
@@ -277,6 +291,9 @@ emouseatlas.emap.threeDAnatomy = function () {
 	 break;
          case "EMA76":
 	    titleDiv.innerHTML = "";
+	 break;
+         case "EMA103":
+	    titleDiv.innerHTML = "3D Model (EMA:103): TS25(17.5 dpc)";
 	 break;
          case "EMA108":
 	    titleDiv.innerHTML = "";
@@ -712,6 +729,8 @@ emouseatlas.emap.threeDAnatomy = function () {
       utils.addEvent(threeDAnatomyHelpIconContainer, 'click', do3dAnatomyHelpIconClicked, false);
       utils.addEvent(threeDAnatomyHelpIconContainer, 'mouseover', doMouseOverHelpIcon, false);
       utils.addEvent(threeDAnatomyHelpIconContainer, 'mouseout', doMouseOutHelpIcon, false);
+
+      ren.addEventListener('pick', doMousePick, false);
    };
 
    //---------------------------------------------------------------
@@ -791,6 +810,62 @@ emouseatlas.emap.threeDAnatomy = function () {
    var hide3dAnatomyHelpContainer = function () {
       var div = document.getElementById("threeDAnatomyHelpIFrameContainer");
       div.style.visibility = "hidden";
+   };
+
+   //---------------------------------------------------------------
+   // called on mouseclick in 3D image container
+   //---------------------------------------------------------------
+   var doMousePick = function (event) {
+
+      var type;
+      var hitlist;
+      var trgt;
+      var domainIdStr;
+      var domainName;
+      var listOfNames;
+      var len;
+      var i;
+
+      if(!event) {
+         return false;
+      }
+
+      type = event.type;
+      hitlist = event.hitlist;
+      trgt = event.target;
+
+      /*
+      _console.log("doMousePick hitlist length: %d",hitlist.length);
+      _console.log("doMousePick type: %s",type);
+      _console.log("doMousePick hitlist: ",hitlist);
+      _console.log("doMousePick trgt: ",trgt);
+      */
+
+      listOfNames = "Pick List\n-------------\n\n";
+
+      if(hitlist !== undefined && hitlist.length > 0) {
+         len = hitlist.length;
+
+	 for(i=0; i<len; i++) {
+	    hit = hitlist[i];
+	    domainIdStr = hit.object.name;
+
+            if(domainIdStr && domainIdStr === "context") {
+               domainName = undefined;
+            } else {
+               domainName = treeTool.getDomainName(domainIdStr);
+            }
+
+            _console.log("domain %s %s",domainIdStr,domainName);
+	    if(domainName !== undefined) {
+	       listOfNames += domainName + "\n";
+	    }
+   
+	 }
+
+	 alert(listOfNames);
+      }
+      
    };
    
    //---------------------------------------------------------

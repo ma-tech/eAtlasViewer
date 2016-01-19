@@ -49,6 +49,12 @@ var tiledImage3DFeedback = new Class ({
 
       this._debug = false;
 
+      this.WEBGL_SUPPORTED = emouseatlas.emap.test4Webgl.test();
+      if(!this.WEBGL_SUPPORTED) {
+         this.setX3domHelpUrlForNoWebgl();
+      }
+      //console.log("tiledImage3DFeedback.initialize:  this.WEBGL_SUPPORTED %s",this.WEBGL_SUPPORTED);
+
       this.width = params.params.width;
       this.height = params.params.height;
       //this.navImage = params.params.navImage;
@@ -116,7 +122,7 @@ var tiledImage3DFeedback = new Class ({
 
       var win;
       var topEdge;
-      var x3d;
+      var my_x3d;
       var scene;
       var param;
 
@@ -124,11 +130,8 @@ var tiledImage3DFeedback = new Class ({
       var fxpTrans;
       var initTrans;
 
-      /*
-      var axes_inline;
-      var axes_url;
-      var axes_transform;
-      */
+      var noWebglSupportDiv;
+      var noWebglSupportTextDiv;
 
       var embryo_group;
       var embryo_transform;
@@ -174,155 +177,206 @@ var tiledImage3DFeedback = new Class ({
       win = $(this.shortName + '-win');
       topEdge = $(this.shortName + '-topedge');
 
-      x3dInfo = this.model.getX3dInfo();
-      //console.log("x3dInfo ",x3dInfo);
-      fxpTrans = x3dInfo.fxpTrans.x + " " + x3dInfo.fxpTrans.y + " " + x3dInfo.fxpTrans.z;
-      initTrans = x3dInfo.initTrans.x + " " + x3dInfo.initTrans.y + " " + x3dInfo.initTrans.z;
+      if(this.WEBGL_SUPPORTED) {
 
-      threeDInfo = this.model.getThreeDInfo();
+         x3dInfo = this.model.getX3dInfo();
+         //console.log("x3dInfo ",x3dInfo);
+         fxpTrans = x3dInfo.fxpTrans.x + " " + x3dInfo.fxpTrans.y + " " + x3dInfo.fxpTrans.z;
+         initTrans = x3dInfo.initTrans.x + " " + x3dInfo.initTrans.y + " " + x3dInfo.initTrans.z;
+   
+         threeDInfo = this.model.getThreeDInfo();
+   
+         disc_data = x3dInfo.disc;
+         disc_colour = disc_data.colour.r + " " + disc_data.colour.g + " " + disc_data.colour.b;
+         disc_height = disc_data.height;
+         disc_radius = disc_data.radius;
+         disc_transparency = disc_data.transparency;
+         disc_initial_orient = disc_data.rot.xsi + " " + disc_data.rot.eta + " " + disc_data.rot.zeta + " " + disc_data.rot.rad;
+         disc_initial_trans = disc_data.trans.x + " " + disc_data.trans.y + " " + disc_data.trans.z;
+   
+         embryo_url = x3dInfo.url;
+   
+         embryo_data = x3dInfo.embryo;
+         //console.log("embryo_data ",embryo_data);
+         if(embryo_data.rot) {
+            embryo_initial_orient = embryo_data.rot.xsi + " " + embryo_data.rot.eta + " " + embryo_data.rot.zeta + " " + embryo_data.rot.rad;
+         }
+         if(embryo_data.trans) {
+            embryo_initial_trans = embryo_data.trans.x + " " + embryo_data.trans.y + " " + embryo_data.trans.z;
+         }
+   
+         this.vp_arr = [];
+         vp_count = x3dInfo.viewpoints.length;
+   
+         bgc_obj = x3dInfo.bgCol;
+         bgc_css = bgc_obj.r + " " + bgc_obj.g + " " + bgc_obj.b;
+   
+         //.................................................
+         my_x3d = document.createElement('X3D');
+         my_x3d.setAttribute('id', this.x3d_id);
+         my_x3d.setAttribute('class', this.x3d_id);
+         my_x3d.setAttribute('xmlns', 'http://www.web3d.org/specifications/x3d-namespace');
+         my_x3d.setAttribute('showlog', 'false');
+         my_x3d.setAttribute('showStat', 'false');
+         my_x3d.setAttribute('width', styl_width);  // required for flash fallback case
+         my_x3d.setAttribute('height', styl_height);  // required for flash fallback case
+   
+         //.................................................
+         // overrides style in /tools/threeDFeedback.css
+         //.................................................
+         styl = x3dInfo.style;
+         if(styl) {
+            styl_border = styl.border;
+            styl_float = styl.float;
+            styl_height = styl.height;
+            styl_width = styl.width;
+            styl_x = styl.x;
+            styl_y = styl.y;
+   
+            my_x3d.setStyle('left', styl_x);
+            my_x3d.setStyle('top', styl_y);
+            my_x3d.setStyle('width', styl_width);
+            my_x3d.setStyle('height', styl_height);
+            my_x3d.setStyle('border', styl_border);
+            my_x3d.style.float = styl_float;
+         }
+   
+         //................
+         //set value to true for debugging
+         scene = document.createElement('Scene');
+         scene.setAttribute('DEF', 'scene');
+         param = document.createElement('param');
+         param.setAttribute('name', 'showLog');
+         param.setAttribute('value', 'false');
+   
+         //................
+   
+         disc_group = document.createElement('Group');
+         //---------------------------------------------
+         //console.log("fxpTrans ",fxpTrans);
+         disc_transform_fix = document.createElement('Transform');
+         disc_transform_fix.setAttribute('id', 'fixTr');
+         disc_transform_fix.setAttribute('translation', fxpTrans);
+   
+         disc_transform_scl = document.createElement('Transform');
+         disc_transform_scl.setAttribute('id', 'sclTr');
+         disc_transform_scl.setAttribute('scale', '1.0 1.0 1.0');
+   
+         disc_transform_xsi = document.createElement('Transform');
+         disc_transform_xsi.setAttribute('id', 'xsiTr');
+         disc_transform_xsi.setAttribute('rotation', '0 0 1 0.0');
+         disc_transform_xsi.setAttribute('center', initTrans);
+   
+         disc_transform_eta = document.createElement('Transform');
+         disc_transform_eta.setAttribute('id', 'etaTr');
+         disc_transform_eta.setAttribute('rotation', '0 1 0 0.0');
+         disc_transform_eta.setAttribute('center', initTrans);
+   
+         disc_transform_zet = document.createElement('Transform');
+         disc_transform_zet.setAttribute('id', 'zetTr');
+         disc_transform_zet.setAttribute('rotation', '1 0 0 0.0');
+         disc_transform_zet.setAttribute('center', initTrans);
+   
+         disc_transform_dst = document.createElement('Transform');
+         disc_transform_dst.setAttribute('id', 'dstTr');
+         disc_transform_dst.setAttribute('translation', initTrans);
+   
+         //console.log("disc_initial_trans ",disc_initial_trans);
+         disc_transform = document.createElement('Transform');
+         disc_transform.setAttribute('id', 'discTr');
+         disc_transform.setAttribute('translation', disc_initial_trans);
+         disc_transform.setAttribute('rotation', disc_initial_orient);
+   
+         //---------------------------------------------
+         disc_shape = document.createElement('Shape');
+         disc_appearance = document.createElement('Appearance');
+   
+         disc_material = document.createElement('Material');
+         disc_material.setAttribute('id', 'secMat');
+         disc_material.setAttribute('diffuseColor', disc_colour);
+         disc_material.setAttribute('transparency', disc_transparency);
+   
+         disc_cylinder = document.createElement('Cylinder');
+         disc_cylinder.setAttribute('id', 'section');
+         disc_cylinder.setAttribute('radius', disc_radius);
+         disc_cylinder.setAttribute('height', disc_height);
+   
+         //................
+         embryo_group = document.createElement('Group');
+         //---------------------------------------------
+         embryo_transform = document.createElement('Transform');
+         embryo_transform.setAttribute('id', 'embTr');
+         if(embryo_initial_trans !== undefined) {
+            embryo_transform.setAttribute('translation', embryo_initial_trans);
+         }
+         if(embryo_initial_orient !== undefined) {
+            embryo_transform.setAttribute('rotation', embryo_initial_orient);
+         }
+   
+         embryo_inline = document.createElement('Inline');
+         embryo_inline.setAttribute('url', embryo_url);
+         embryo_inline.setAttribute('DEF', 'embryonic');
+   
+         //................
+         background = document.createElement('Background');
+         background.setAttribute('skyColor', bgc_css);
+   
+         //................
+         for(i=0; i < vp_count; i++) {
+            this.vp_arr[i] = document.createElement('Viewpoint');
+         }
+   
+         //------------------------------------------------------------------
+         // Note: innermost transforms are executed first
+         // Apply rotations in the correct order
+         //------------------------------------------------------------------
+         win.appendChild(my_x3d);
+   
+         //.............
+         my_x3d.appendChild(scene);
+         my_x3d.appendChild(param);
+   
+         //.............
+         for(i=0; i<vp_count; i++) {
+            scene.appendChild(this.vp_arr[i]);
+         }
+         scene.appendChild(background);
+         scene.appendChild(disc_group);
+         scene.appendChild(embryo_group);
+   
+         //.............
+         disc_group.appendChild(disc_transform_fix);
+         disc_transform_fix.appendChild(disc_transform_scl);
+         disc_transform_scl.appendChild(disc_transform_xsi);
+         disc_transform_xsi.appendChild(disc_transform_eta);
+         disc_transform_eta.appendChild(disc_transform_zet);
+         disc_transform_zet.appendChild(disc_transform_dst);
+         disc_transform_dst.appendChild(disc_transform);
+         //.............
+         // the disc
+         disc_transform.appendChild(disc_shape);
+         disc_shape.appendChild(disc_appearance);
+         disc_shape.appendChild(disc_cylinder);
+         disc_appearance.appendChild(disc_material);
+   
+         //.............
+         // the embryo
+         embryo_group.appendChild(embryo_transform);
+         embryo_transform.appendChild(embryo_inline);
+         //........................................................................................................
 
-      disc_data = x3dInfo.disc;
-      disc_colour = disc_data.colour.r + " " + disc_data.colour.g + " " + disc_data.colour.b;
-      disc_height = disc_data.height;
-      disc_radius = disc_data.radius;
-      disc_transparency = disc_data.transparency;
-      disc_initial_orient = disc_data.rot.xsi + " " + disc_data.rot.eta + " " + disc_data.rot.zeta + " " + disc_data.rot.rad;
-      disc_initial_trans = disc_data.trans.x + " " + disc_data.trans.y + " " + disc_data.trans.z;
-
-      embryo_url = x3dInfo.url;
-
-      embryo_data = x3dInfo.embryo;
-      //console.log("embryo_data ",embryo_data);
-      if(embryo_data.rot) {
-         embryo_initial_orient = embryo_data.rot.xsi + " " + embryo_data.rot.eta + " " + embryo_data.rot.zeta + " " + embryo_data.rot.rad;
-      }
-      if(embryo_data.trans) {
-         embryo_initial_trans = embryo_data.trans.x + " " + embryo_data.trans.y + " " + embryo_data.trans.z;
-      }
-
-      styl = x3dInfo.style;
-      styl_border = styl.border;
-      styl_float = styl.float;
-      styl_height = styl.height;
-      styl_width = styl.width;
-      styl_x = styl.x;
-      styl_y = styl.y;
-
-      this.vp_arr = [];
-      vp_count = x3dInfo.viewpoints.length;
-
-      bgc_obj = x3dInfo.bgCol;
-      bgc_css = bgc_obj.r + " " + bgc_obj.g + " " + bgc_obj.b;
-
-      //.................................................
-      x3d = document.createElement('X3D');
-      x3d.setAttribute('id', this.x3d_id);
-      x3d.setAttribute('xmlns', 'http://www.web3d.org/specifications/x3d-namespace');
-      x3d.setAttribute('showlog', 'false');
-      x3d.setAttribute('showStat', 'false');
-      x3d.setAttribute('width', styl_width);  // required for flash fallback case
-      x3d.setAttribute('height', styl_height);  // required for flash fallback case
-      x3d.setStyle('x', styl_x);
-      x3d.setStyle('y', styl_y);
-      x3d.setStyle('width', styl_width);
-      x3d.setStyle('height', styl_height);
-      x3d.setStyle('border', styl_border);
-      x3d.style.float = styl_float;
-
-      //................
-      //set value to true for debugging
-      scene = document.createElement('Scene');
-      scene.setAttribute('DEF', 'scene');
-      param = document.createElement('param');
-      param.setAttribute('name', 'showLog');
-      param.setAttribute('value', 'false');
-
-      //................
-      /*
-      axes_transform = document.createElement('Transform');
-      axes_transform.setAttribute('id', 'axes_trans');
-      axes_transform.setAttribute('DEF', 'axes_trans');
-
-      axes_url = "x3d/CoordinateAxes.x3d";
-      axes_inline = document.createElement('Inline');
-      axes_inline.setAttribute('url', axes_url);
-      */
-
-      //................
-
-      disc_group = document.createElement('Group');
-      //---------------------------------------------
-      //console.log("fxpTrans ",fxpTrans);
-      disc_transform_fix = document.createElement('Transform');
-      disc_transform_fix.setAttribute('id', 'fixTr');
-      disc_transform_fix.setAttribute('translation', fxpTrans);
-
-      disc_transform_scl = document.createElement('Transform');
-      disc_transform_scl.setAttribute('id', 'sclTr');
-      disc_transform_scl.setAttribute('scale', '1.0 1.0 1.0');
-
-      disc_transform_xsi = document.createElement('Transform');
-      disc_transform_xsi.setAttribute('id', 'xsiTr');
-      disc_transform_xsi.setAttribute('rotation', '0 0 1 0.0');
-      disc_transform_xsi.setAttribute('center', initTrans);
-
-      disc_transform_eta = document.createElement('Transform');
-      disc_transform_eta.setAttribute('id', 'etaTr');
-      disc_transform_eta.setAttribute('rotation', '0 1 0 0.0');
-      disc_transform_eta.setAttribute('center', initTrans);
-
-      disc_transform_zet = document.createElement('Transform');
-      disc_transform_zet.setAttribute('id', 'zetTr');
-      disc_transform_zet.setAttribute('rotation', '1 0 0 0.0');
-      disc_transform_zet.setAttribute('center', initTrans);
-
-      disc_transform_dst = document.createElement('Transform');
-      disc_transform_dst.setAttribute('id', 'dstTr');
-      disc_transform_dst.setAttribute('translation', initTrans);
-
-      //console.log("disc_initial_trans ",disc_initial_trans);
-      disc_transform = document.createElement('Transform');
-      disc_transform.setAttribute('id', 'discTr');
-      disc_transform.setAttribute('translation', disc_initial_trans);
-      disc_transform.setAttribute('rotation', disc_initial_orient);
-
-      //---------------------------------------------
-      disc_shape = document.createElement('Shape');
-      disc_appearance = document.createElement('Appearance');
-
-      disc_material = document.createElement('Material');
-      disc_material.setAttribute('id', 'secMat');
-      disc_material.setAttribute('diffuseColor', disc_colour);
-      disc_material.setAttribute('transparency', disc_transparency);
-
-      disc_cylinder = document.createElement('Cylinder');
-      disc_cylinder.setAttribute('id', 'section');
-      disc_cylinder.setAttribute('radius', disc_radius);
-      disc_cylinder.setAttribute('height', disc_height);
-
-      //................
-      embryo_group = document.createElement('Group');
-      //---------------------------------------------
-      embryo_transform = document.createElement('Transform');
-      embryo_transform.setAttribute('id', 'embTr');
-      if(embryo_initial_trans !== undefined) {
-         embryo_transform.setAttribute('translation', embryo_initial_trans);
-      }
-      if(embryo_initial_orient !== undefined) {
-         embryo_transform.setAttribute('rotation', embryo_initial_orient);
-      }
-
-      embryo_inline = document.createElement('Inline');
-      embryo_inline.setAttribute('url', embryo_url);
-      embryo_inline.setAttribute('DEF', 'embryonic');
-
-      //................
-      background = document.createElement('Background');
-      background.setAttribute('skyColor', bgc_css);
-
-      //................
-      for(i=0; i < vp_count; i++) {
-         this.vp_arr[i] = document.createElement('Viewpoint');
+      } else { // this.WEBGL_SUPPORTED
+         noWebglSupportDiv = new Element( 'div', {
+            'id': 'noWebglSupportDiv',
+            'class': 'threeDFeedback noWebgl'
+         });
+         noWebglSupportTextDiv = new Element( 'div', {
+            'id': 'noWebglSupportTextDiv',
+            'class': 'noWebglSupportTextDiv'
+         });
+	 noWebglSupportTextDiv.set("text", "3d feedback not available");
+         noWebglSupportDiv.appendChild(noWebglSupportTextDiv);
+         win.appendChild(noWebglSupportDiv);
       }
 
       //................
@@ -349,52 +403,10 @@ var tiledImage3DFeedback = new Class ({
       this.x3domHelpIconContainer.addEvent('mouseout', function() {
          this.doMouseOutHelpIcon();
       }.bind(this));
-
-      //------------------------------------------------------------------
-      // Note: innermost transforms are executed first
-      // Apply rotations in the correct order
-      //------------------------------------------------------------------
-      win.appendChild(x3d);
+   
       win.appendChild(this.x3domHelpIconContainer);
 
-      //.............
-      x3d.appendChild(scene);
-      x3d.appendChild(param);
-
-      //.............
-      //scene.appendChild(axes_transform);
-      //axes_transform.appendChild(axes_inline);
-
-      //.............
-      for(i=0; i<vp_count; i++) {
-         scene.appendChild(this.vp_arr[i]);
-      }
-      scene.appendChild(background);
-      scene.appendChild(disc_group);
-      scene.appendChild(embryo_group);
-
-      //.............
-      disc_group.appendChild(disc_transform_fix);
-      disc_transform_fix.appendChild(disc_transform_scl);
-      disc_transform_scl.appendChild(disc_transform_xsi);
-      disc_transform_xsi.appendChild(disc_transform_eta);
-      disc_transform_eta.appendChild(disc_transform_zet);
-      disc_transform_zet.appendChild(disc_transform_dst);
-      disc_transform_dst.appendChild(disc_transform);
-      //.............
-      // the disc
-      disc_transform.appendChild(disc_shape);
-      disc_shape.appendChild(disc_appearance);
-      disc_shape.appendChild(disc_cylinder);
-      disc_appearance.appendChild(disc_material);
-
-      //.............
-      // the embryo
-      embryo_group.appendChild(embryo_transform);
-      embryo_transform.appendChild(embryo_inline);
-      //........................................................................................................
-
-      //console.log("finished creating x3d elements");
+      //console.log("finished creating my_x3d elements");
       return false;
 
    }, // createElements
@@ -420,38 +432,15 @@ var tiledImage3DFeedback = new Class ({
 	 //console.log("locator: viewChanges.initial %s",viewChanges.initial);
 	 this.window.setVisible(true);
 	 this.window.setDimensions(this.width,this.height);
-	 
-	 /*
-	 x3dom.ready = function() {
-	     alert("Hi peeps");
-	 };
-	 x3dom.runtime.ready = function() {
-	     alert("About to render something the first time");
-         };
-	 */
 
-         x3dom.reload();
+         if(this.WEBGL_SUPPORTED) {
+            x3dom.reload();
+            this.setViewpoints();
+	 } else {
+	    console.log("Your Browser doesn't support webgl\nso you won't see the 3D feedback image.\nFor more information see http://www.x3dom.org/check/");
+	 }
 
-         // trying out some runtime stuff
-	 /*
-         feedback = document.getElementById(this.x3d_id);
-	 feedback.runtime.debug(false);
-	 feedback.runtime.statistics(false);
-	 tmp = feedback.runtime.navigationType();
-	 //console.log("navigationType initially %s",tmp);
-	 //feedback.runtime.lookAt();
-	 //feedback.runtime.lookAround();
-	 //feedback.runtime.walk();
-	 //tmp = feedback.runtime.navigationType();
-	 //console.log("navigationType now %s",tmp);
-	 tmp = feedback.runtime.speed();
-	 console.log("speed orig %s",tmp);
-	 feedback.runtime.speed(0.1);
-	 tmp = feedback.runtime.speed();
-	 console.log("speed now %s",tmp);
-	 */
 
-         this.setViewpoints();
       }; // viewChanges.initial
 
       if(viewChanges.toolbox === true) {
@@ -576,6 +565,10 @@ var tiledImage3DFeedback = new Class ({
       var fpy = 0;
       var fpz = 0;
       var mod = WlzThreeDViewMode.WLZ_UP_IS_UP_MODE;
+
+      if(!this.WEBGL_SUPPORTED) {
+         return false;
+      }
 
       threeD = this.model.getThreeDInfo();
       //console.log("setNewPos: threeD ",threeD);
@@ -714,6 +707,15 @@ var tiledImage3DFeedback = new Class ({
    hideX3domHelpContainer: function () {
       var div = document.getElementById("wlzIIPViewerX3domHelpIFrameContainer");
       div.style.visibility = "hidden";
+   },
+   
+   //---------------------------------------------------------
+   setX3domHelpUrlForNoWebgl: function () {
+
+      var iframe = document.getElementById("wlzIIPViewerX3domHelpIFrame");
+      if(iframe) {
+         iframe.setAttribute("src", "../../../html/x3domUnsupportedFrame.html");
+      }
    },
 
    //--------------------------------------------------------------

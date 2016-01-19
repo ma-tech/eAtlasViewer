@@ -63,7 +63,6 @@ emouseatlas.emap.markerPopup = function () {
    var hideOK;
    var infoGeneratedOK;
    var infoDetails;
-   var theilerLink;
    var anatomyRowLabels;
    var searchRowLabels;
    var anatomyRowContent;
@@ -73,12 +72,18 @@ emouseatlas.emap.markerPopup = function () {
    var utils;
    var prnt;
    var lmntArr;
+   //...........
+   var emouseatlasUrl;
+   var emaUrl;
    var stagedOntologyUrl;
    var abstractOntologyUrl;
+   var emageQueryUrl;
+   var emageQueryUrlParams;
+   var mgiQueryUrl;
+   var theilerBookChapterUrl;
+   var theilerBookChapterUrlParams;
    var theHouseMouseUrl;
-   var emapUrl;
-   var emageUrl;
-   var mgiUrl;
+   //...........
    var ontologyInfo = {};
    var linkToTheHouseMouse;
    var emdash;
@@ -96,8 +101,6 @@ emouseatlas.emap.markerPopup = function () {
 
       var plate;
       var subplate;
-      var info;
-      var webServer;
 
      //console.log("markerPopupIFrame.initialise with params  ",params);
 
@@ -154,25 +157,40 @@ emouseatlas.emap.markerPopup = function () {
       searchRowLabels = ["EMAGE", "MGI / GXD"];
       miscRowLabels = ["Wikipedia", "Kaufman Atlas"];
 
-      mgiUrl = "http://www.informatics.jax.org/gxd/structure/"
-
-      webServer = model.getWebServer();
-      //console.log("webServer ",webServer);
-
-      theilerLink = [webServer + "/emap/ema/theiler_stages/StageDefinition/Theiler/ts", "%20%20from%20Theiler.pdf"];
-      stagedOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=";
-      //abstractOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/abstract.html"      // for old version of ontology tree
-      abstractOntologyUrl = webServer + "/emap/ema/DAOAnatomyJSP/anatomy.html?stage=abstract&search=";  // for new version this gets the EMAPA:xxxx tacked on
-      theHouseMouseUrl = webServer + "/emap/ema/theiler_stages/house_mouse/book.html"
-      emapUrl = webServer + "/emap/ema/home.php";
-      emageUrl = webServer + "/emagewebapp/pages/emage_general_query_result.jsf?structures=";
-
-      linkToTheHouseMouse = makeLinkToTheHouseMouse();
 
       lmntArr = [];
 
-   };
-   
+      constructUrls();
+
+   }; // initialise
+
+   //---------------------------------------------------------------
+   var constructUrls = function () {
+
+      var webServer;
+      var urlData;
+
+      webServer = model.getWebServer();
+      urlData = model.getUrlData();
+
+      //console.log("constructUrls urlData ",urlData);
+      
+      emouseatlasUrl = webServer;
+      emaUrl = webServer + urlData.ema_home;
+      stagedOntologyUrl = webServer + urlData.staged_ontology;
+      abstractOntologyUrl = webServer + urlData.abstract_ontology;
+      emageQueryUrl = webServer + urlData.emage_query[0];
+      emageQueryUrlParams = urlData.emage_query[1];
+      mgiQueryUrl = urlData.mgi_query;
+      theilerBookChapterUrl = webServer + urlData.theiler_book_chapter[0];
+      theilerBookChapterUrlParams = "%20%20" + urlData.theiler_book_chapter[1];
+      theilerBookChapterUrlParams += "%20" + urlData.theiler_book_chapter[2];
+      theHouseMouseUrl = webServer + urlData.theiler_book_info;
+
+      linkToTheHouseMouse = makeLinkToTheHouseMouse();
+
+   }; // constructUrls
+
    //---------------------------------------------------------------
    var updateTableContent = function (annot, titleInfo) {
 
@@ -190,6 +208,7 @@ emouseatlas.emap.markerPopup = function () {
       var kdpc;
       var reg1;
       var reg2;
+      var theilerBookChapterLinkStr;
       var stageLinkStr;
       var linkToAbstractOntology;
       var linkToEMAPmodel;
@@ -245,7 +264,8 @@ emouseatlas.emap.markerPopup = function () {
       }
       //console.log("updateTableContent kstage ",kstage);
       //--------------------------------------------------------
-      stageLinkStr = makeStageLink(kstage, kdpc);
+      theilerBookChapterLinkStr = makeTheilerBookChapterLink(kstage, kdpc);
+      //console.log("updateTableContent theilerBookChapterLinkStr ",theilerBookChapterLinkStr);
       linkToEMAPmodel = makeLinkToEmapModel([kstage]);
 
       //--------------------------------------------------------
@@ -255,11 +275,11 @@ emouseatlas.emap.markerPopup = function () {
          //console.log("linkToAbstractOntology not defined");
          linkToAbstractOntology = "N/A";
       }
-      console.log("linkToAbstractOntology ",linkToAbstractOntology);
+      //console.log("linkToAbstractOntology ",linkToAbstractOntology);
 
       anatomyRowContent = [];
       anatomyRowContent[0] = [];
-      anatomyRowContent[1] = stageLinkStr + "  defined in " + linkToTheHouseMouse;
+      anatomyRowContent[1] = theilerBookChapterLinkStr + "  defined in " + linkToTheHouseMouse;
       anatomyRowContent[2] = linkToAbstractOntology;
       anatomyRowContent[3] = "";
       //console.log("stages ",stages);
@@ -828,13 +848,13 @@ emouseatlas.emap.markerPopup = function () {
    };
 
    //---------------------------------------------------------------
-   var makeStageLink = function (kstage, kdpc) {
+   var makeTheilerBookChapterLink = function (kstage, kdpc) {
 
-      var stageLink;
+      var link;
 
-      stageLink = "<a target='_blank' href='" + theilerLink[0] + kstage + theilerLink[1] + "'>E"  + kdpc + ", TS" + kstage + "</a>";
+      link = "<a target='_blank' href='" + theilerBookChapterUrl + kstage + theilerBookChapterUrlParams + "'>E"  + kdpc + ", TS" + kstage + "</a>";
 
-      return stageLink;
+      return link;
    };
 
    //-----------------------------------------------------------------------
@@ -888,7 +908,7 @@ emouseatlas.emap.markerPopup = function () {
       // get rid of the 'EMA:' bit
       modelArr = utils.extractNumbersFromString(model, "makeLinkToEmapModel");
 
-      emapLink = "<a target='_blank' href='" + emapUrl + "?stage=" + stageArr[0] + "&model=" + modelArr[0] + "'>EMAP standard model</a>";
+      emapLink = "<a target='_blank' href='" + emaUrl + "?stage=" + stageArr[0] + "&model=" + modelArr[0] + "'>EMAP standard model</a>";
 
       return emapLink;
    };
@@ -896,7 +916,6 @@ emouseatlas.emap.markerPopup = function () {
    //---------------------------------------------------------------
    var makeEmageSearchStr = function (queryData) {
 
-      var urlParams;
       var stageName;
       var stage;
       var emaps
@@ -906,18 +925,15 @@ emouseatlas.emap.markerPopup = function () {
       var abstr;
       var timed;
 
-      urlParams = '&exactmatchstructures=true&includestructuresynonyms=true';
-
       len = queryData.length; // it should be 2, an EMAPA:id and a stagename
-
       //console.log("makeEmageSearchStr queryData ",queryData);
 
       if(len > 1 && queryData[0] !== undefined && queryData[0] !== "") {
          //emaps = queryData[0].replace("EMAPA", "EMAPS");
          stage = queryData[1];
 	 stageName = "TS" + stage;
-         timed = "<a target='_blank' href='" + emageUrl + queryData[0] + "&stages=" + stageName + urlParams + "'>" + stageName + "</a> only";
-         abstr = "<a target='_blank' href='" + emageUrl + queryData[0] + urlParams + "'>all relevant stages</a>";
+         timed = "<a target='_blank' href='" + emageQueryUrl + queryData[0] + "&stages=" + stageName + emageQueryUrlParams + "'>" + stageName + "</a> only";
+         abstr = "<a target='_blank' href='" + emageQueryUrl + queryData[0] + emageQueryUrlParams + "'>all relevant stages</a>";
       } else {
          emageSearchStr = "";
       }
@@ -947,8 +963,8 @@ emouseatlas.emap.markerPopup = function () {
          emaps = queryData[0].replace("EMAPA", "EMAPS");
          stage = queryData[1];
 	 stageName = "TS" + stage;
-         timed = "<a target='_blank' href='" + mgiUrl + emaps + stage + "'>" + stageName + "</a> only";
-         abstr = "<a target='_blank' href='" + mgiUrl + queryData[0] + "'>all relevant stages</a>";
+         timed = "<a target='_blank' href='" + mgiQueryUrl + emaps + stage + "'>" + stageName + "</a> only";
+         abstr = "<a target='_blank' href='" + mgiQueryUrl + queryData[0] + "'>all relevant stages</a>";
       } else {
          MGISearchStr = "";
       }

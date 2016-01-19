@@ -40,3 +40,11 @@ canvas.colourTool {
    border: 1px inset #f99;
    visibility: visible;
 }
+canvas#x3dom-the_x3d-canvas.x3dom-canvas {
+   position: relative;
+   top: 0px;
+   left: 0px;
+   width: 152px;
+   height: 140px;
+   background: #fbb;
+}

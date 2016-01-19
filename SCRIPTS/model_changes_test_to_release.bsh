@@ -1,0 +1,138 @@
+#!  /bin/bash
+
+HERE=$(pwd);
+RUN_DIR=/opt/MAWWW/Public/html/eAtlasViewer_ema/application;
+EMAP_DIR="${RUN_DIR}"/ema
+EHIST_DIR="${RUN_DIR}"/kaufman
+SUPPL_DIR="${RUN_DIR}"/kaufman_supplement
+GUD_DIR="${RUN_DIR}"/gudmap
+EXPR_DIR="${GUD_DIR}"/expression
+TISS_DIR="${GUD_DIR}"/tissue
+
+#-----------------------------------------------------------------------------------------------------------------------
+cd "${EMAP_DIR}"
+
+for typ in anatomy sections wlz ; do
+
+   cd "${EMAP_DIR}/${typ}"
+   printf  "%s\n" "=== ${typ} ==="
+   
+   for i in EMA*; do
+      
+      if [ -d "${i}" ] ; then
+         DIR=true
+         printf  "    %s\n" "${i}"
+      else
+         DIR=false
+         #echo "file" ${i}
+      fi
+      
+      if $DIR ; then
+      
+         #change web server
+         sed -i -e '/webServer/ s/testwww.emouseatlas.org/www.emouseatlas.org/' ${i}/tiledImageModelData.jso
+         #..............................
+         #change iip server
+         sed -i -e '/iip3dsrv/ s/iip3dsrv_1.1.2_dev/iip3dsrv_1.1.2/' ${i}/tiledImageModelData.jso
+      
+      fi
+   
+   done
+
+done
+
+cd "${RUN_DIR}"
+
+#-----------------------------------------------------------------------------------------------------------------------
+cd "${EMAP_DIR}"
+for app in kaufman kaufman_supplement ; do
+
+   cd "${EMAP_DIR}/${app}"
+   printf  "%s\n" "=== ${app} ==="
+   
+   for i in plate_*; do
+      
+      if [ -d "${i}" ] ; then
+         DIR=true
+         printf  "    %s\n" "${i}"
+      else
+         DIR=false
+         #echo "file" ${i}
+      fi
+      
+      if $DIR ; then
+      
+         #change web server
+         sed -i -e '/webServer/ s/testwww.emouseatlas.org/www.emouseatlas.org/' ${i}/tiledImageModelData.jso
+         #..............................
+         #change iip server
+         sed -i -e '/iip3dsrv/ s/iip3dsrv_1.1.2_dev/iip3dsrv_1.1.2/' ${i}/tiledImageModelData.jso
+      
+      fi
+   
+   done
+      
+done
+
+cd "${RUN_DIR}"
+
+#-----------------------------------------------------------------------------------------------------------------------
+cd "${GUD_DIR}"
+
+   cd "${EXPR_DIR}"
+   printf  "\n=== Gudmap Expression ===\n"
+   
+   for i in EMA*; do
+      
+      if [ -d "${i}" ] ; then
+         DIR=true
+         printf  "    %s\n" "${i}"
+      else
+         DIR=false
+         #echo "file" ${i}
+      fi
+      
+      if $DIR ; then
+      
+         #change web server
+         sed -i -e '/webServer/ s/testwww.emouseatlas.org/www.emouseatlas.org/' ${i}/tiledImageModelData.jso
+         #..............................
+         #change iip server
+         sed -i -e '/iip3dsrv/ s/iip3dsrv_1.1.2_dev/iip3dsrv_1.1.2/' ${i}/tiledImageModelData.jso
+      
+      fi
+   
+   done
+
+   #.......................................................
+   cd "${TISS_DIR}"
+   printf  "\n=== Gudmap Tissue ===\n"
+   
+   for i in SISHTS23Kidney; do
+      
+      if [ -d "${i}" ] ; then
+         DIR=true
+         printf  "    %s\n" "${i}"
+      else
+         DIR=false
+         #echo "file" ${i}
+      fi
+      
+      if $DIR ; then
+      
+         #change web server
+         sed -i -e '/webServer/ s/testwww.emouseatlas.org/www.emouseatlas.org/' ${i}/tiledImageModelData.jso
+         #..............................
+         #change iip server
+         sed -i -e '/iip3dsrv/ s/iip3dsrv_1.1.2_dev/iip3dsrv_1.1.2/' ${i}/tiledImageModelData.jso
+      
+      fi
+   
+   done
+      
+cd "${RUN_DIR}"
+
+#-----------------------------------------------------------------------------------------------------------------------
+cd "${HERE}"
+
+printf  "\nfinished\n\n"

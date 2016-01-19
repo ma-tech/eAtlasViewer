@@ -48,6 +48,12 @@
    top: 70px;
    left: 170px;
 }
+.wlzIIPViewerIFrameContainer.x3domUnsupported {
+   width: 700px;
+   height: 480px;
+   top: 70px;
+   left: 170px;
+}
 .wlzIIPViewerIFrameContainer.kaufman {
    width: 947px;
    height: 650px;
@@ -58,8 +64,8 @@
 .wlzIIPViewerIFrameContainer.threeDAnatomy {
    width: 400px;
    height: 480px;
-   top: 70px;
-   left: 170px;
+   top: 35px;
+   left: 0px;
    overflow: auto;
 }
 
@@ -202,6 +208,10 @@ img.iframeClose {
    height: 84%;
 }
 .wlzIIPViewerIFrame.x3domHelp {
+   width: 700px;
+   height: 440px;
+}
+.wlzIIPViewerIFrame.x3domUnsupported {
    width: 700px;
    height: 440px;
 }

@@ -81,6 +81,7 @@ var tiledImageLayerTool = new Class ({
       //console.log("layerTool: x ",x,", ",y);
       this.window.setPosition(x, y);
 
+      /*
       // for tooltips
       this.window.handle.addEvent('mouseover', function(){
 	 this.ttchain = new Chain();
@@ -98,6 +99,7 @@ var tiledImageLayerTool = new Class ({
 	    this.showToolTip(false);
 	 }
       }.bind(this));
+      */
 
       this.layerNames = [];
 
