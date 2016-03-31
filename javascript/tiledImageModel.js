@@ -1255,6 +1255,7 @@ emouseatlas.emap.tiledImageModel = function() {
    	 }
    	 if(json) {
             //console.log("loadAnatomyDataCallback layerName %s",layerName);
+            //console.log("loadAnatomyDataCallback json ",json);
             layer = layerData[layerName];
             layer.anatomyData = json;
          }
@@ -2544,6 +2545,12 @@ emouseatlas.emap.tiledImageModel = function() {
       if(typeof(params.comps) !== 'undefined') {
          if(_debug) console.log("model: params.comps -->%s<--",params.comps);
 	 urlSpecified.comps = params.comps;
+      }
+
+      if(typeof(params.emapa_ids) !== 'undefined') {
+         if(_debug) console.log("model: params.emapa_ids -->%s<--",params.emapa_ids);
+         //console.log("model: params.emapa_ids -->%s<--",params.emapa_ids);
+	 urlSpecified.emapa_ids = params.emapa_ids;
       }
 
       // For kaufman point & click entry: end

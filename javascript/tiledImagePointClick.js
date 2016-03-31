@@ -813,6 +813,32 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // getEmapaFromAnnotation:
 
    //---------------------------------------------------------------
+   var getKnumForEmapa = function (id) {
+
+      var emapa;
+      var annot = undefined;
+      var knum = undefined;
+      var len;
+      var i;
+
+      emapa = "EMAPA:" + id.toString();
+
+      len = annotations.length;
+
+      for (i=0; i<len; i++) {
+         annot = annotations[i];
+	 if(annot.emapa == emapa) {
+	    //console.log(annot);
+	    knum = annot.knum;
+	    break;
+	 }
+      }
+
+      return knum;
+
+   }; // getEmapaFromAnnotation:
+
+   //---------------------------------------------------------------
    var addOntologyNameAndSynsToAnnotation = function (nameAndSyns) {
 
       len = annotations.length;
@@ -3452,6 +3478,8 @@ emouseatlas.emap.tiledImagePointClick = function() {
 
       var urlSpecified;
       var compArr = undefined;
+      var emapaArr = undefined;
+      var emapa = undefined;
       var len;
       var i;
 
@@ -3462,24 +3490,38 @@ emouseatlas.emap.tiledImagePointClick = function() {
       urlSpecified = model.getUrlSpecifiedParams();
       //console.log("showUrlSpecifiedMarkers urlSpecified ",urlSpecified);
 
-      if(urlSpecified.comps !== undefined) {
-         compArr = urlSpecified.comps.split(",");
-	 if(compArr === undefined || compArr === null || compArr[0] === "") {
+      if(urlSpecified.emapa_ids !== undefined) {
+         emapaArr = urlSpecified.emapa_ids.split(",");
+	 if(emapaArr === undefined || emapaArr === null || emapaArr[0] === "") {
 	    //console.log("showUrlSpecifiedMarkers none to show");
 	    return false;
 	 }
-	 //console.log("compArr ",compArr);
-	 len = compArr.length;
+	 compArr = [];
+	 len = emapaArr.length;
 	 for(i=0; i<len; i++) {
-	    //selectedRowKnums[selectedRowKnums.length] = parseInt(compArr[i]);
-	    selectedRowKnums[selectedRowKnums.length] = compArr[i];
+	    emapa = emapaArr[i];
+	    //console.log(emapa);
+	    compArr[i] = getKnumForEmapa(emapa);
 	 }
-	 latestSelectedRow = selectedRowKnums[selectedRowKnums.length -1];
-         previousSelectedRow = latestSelectedRow;
-
-	 //console.log("selectedRowKnums ",selectedRowKnums);
-	 showSelectedMarkers();
+      } else if(urlSpecified.comps !== undefined) {
+         compArr = urlSpecified.comps.split(",");
       }
+
+      if(compArr === undefined || compArr === null || compArr[0] === "") {
+	 //console.log("showUrlSpecifiedMarkers none to show");
+	 return false;
+      }
+      //console.log("compArr ",compArr);
+      len = compArr.length;
+      for(i=0; i<len; i++) {
+	 //selectedRowKnums[selectedRowKnums.length] = parseInt(compArr[i]);
+	 selectedRowKnums[selectedRowKnums.length] = compArr[i];
+      }
+      latestSelectedRow = selectedRowKnums[selectedRowKnums.length -1];
+      previousSelectedRow = latestSelectedRow;
+
+      //console.log("selectedRowKnums ",selectedRowKnums);
+      showSelectedMarkers();
 
    }; // showUrlSpecifiedMarkers
    
