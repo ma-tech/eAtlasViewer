@@ -813,8 +813,9 @@ emouseatlas.emap.tiledImagePointClick = function() {
    }; // getEmapaFromAnnotation:
 
    //---------------------------------------------------------------
-   var getKnumForEmapa = function (id) {
+   var getKnumsForEmapa = function (id, compArr) {
 
+      var ret;
       var emapa;
       var annot = undefined;
       var knum = undefined;
@@ -830,11 +831,14 @@ emouseatlas.emap.tiledImagePointClick = function() {
 	 if(annot.emapa == emapa) {
 	    //console.log(annot);
 	    knum = annot.knum;
-	    break;
+	    compArr[compArr.length] = knum;
 	 }
       }
 
-      return knum;
+      ret = utils.filterDuplicatesFromArray(compArr);
+
+      //console.log("compArr for %s ",emapa,ret);
+      return ret;
 
    }; // getEmapaFromAnnotation:
 
@@ -3501,7 +3505,7 @@ emouseatlas.emap.tiledImagePointClick = function() {
 	 for(i=0; i<len; i++) {
 	    emapa = emapaArr[i];
 	    //console.log(emapa);
-	    compArr[i] = getKnumForEmapa(emapa);
+	    compArr = getKnumsForEmapa(emapa, compArr);
 	 }
       } else if(urlSpecified.comps !== undefined) {
          compArr = urlSpecified.comps.split(",");
